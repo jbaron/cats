@@ -1,0 +1,12 @@
+{
+  "name": "tsedit",
+  "main": "index.html",
+  "description" : "TypeScript Editor",
+  "version" : "0.1",
+  "window": {
+    "toolbar": true,
+    "width": 800,
+    "height": 800,
+    "position": "mouse"
+  }
+}

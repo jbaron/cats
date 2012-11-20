@@ -1,0 +1,2 @@
+--out lib/typescript-hint.js
+src/jsedit/typescript-hint.ts
