@@ -16,14 +16,14 @@ Installation
 ============
 To install, just follow these steps:
 
-1. Download jsedit: git clone ....
+1. Download the jsedit source: git clone https://github.com/jbaron/tsedit.git
 
 2. Download and install both the standalone tsc and node-webkit (binaries will do) in case you don't have them yet:
      - For tsc, you can just run: npm -g install tsc
      - For node-webkit, you can get a binary from:https://github.com/rogerwang/node-webkit
 
 
-3. Compile jsedit: tsc @build
+3. Compile jsedit from within the jsedit directory: tsc @build
 
 4. Start the editor: /path_to_node_webkit/nw ./
    
