@@ -11,7 +11,6 @@
     <script src="./lib/typescript-hint.js"></script> 
     <script src="./cm/util/simple-hint.js"></script>
     <script src="./cm/mode/javascript/javascript.js"></script>
-    <!-- link rel="stylesheet" href="../../doc/docs.css" --> 
     <style type="text/css">.CodeMirror {border-top: 1px solid black; border-bottom: 1px solid black;}</style>
   </head>
   <body>
@@ -42,24 +41,7 @@ document.body.appendChild(button)
 </textarea>
 </div>
 
-     <script>
-      var tsh = new TypeScriptHint();
-      
-      // Lets add some declaration files that should always be included.
-      tsh.addFile("./src/typescript/typings/lib.d.ts");
-      var autoComplete = tsh.autoComplete.bind(tsh);
-
-      CodeMirror.commands.autocomplete = function(cm) {
-        CodeMirror.simpleHint(cm, autoComplete);
-      }
-
-      var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-        lineNumbers: true,
-        extraKeys: {"Ctrl-Space": "autocomplete"},
-        matchBrackets: true,
-        mode: "text/typescript"
-      });
-    </script>
+   <script src="./lib/main.js"></script>
 
   </body>
 </html>

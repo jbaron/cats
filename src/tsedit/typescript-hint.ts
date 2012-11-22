@@ -2,7 +2,7 @@
 
 ///<reference path='./harness.ts'/>
 ///<reference path='../typescript/compiler/io.ts'/>
-///<reference path='./codemirror.ts'/>
+///<reference path='./codemirror.d.ts'/>
 
 declare var IO: IIO;
 
@@ -11,7 +11,7 @@ class TypeScriptHint {
     // private typescriptLS = new Harness.TypeScriptLS();
     private typescriptLS = new Harness.TypeScriptLS();
     private id = "sample";
-    private ls;
+
 
     addFile(filename) {
         var scriptText = IO.readFile(filename);
@@ -27,7 +27,7 @@ class TypeScriptHint {
     }
 
 
-	public autoComplete(editor: CodeMirrorEditor) {
+	public autoComplete(editor: mCodeMirror.Editor) {
          var cur = editor.getCursor();
          this.updateSource(editor.getValue());
          var line = cur.line+1;
