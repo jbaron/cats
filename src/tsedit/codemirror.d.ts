@@ -1,5 +1,7 @@
 // THis is not really yet fully up to date for CodeMirror version 3.0.
 
+
+// Use module name with m prefix to not conflict with global variable name
 module mCodeMirror {
 
 interface ScrollInfo {
@@ -227,7 +229,7 @@ interface StaticVar  {
     defineMIME(mime:string,mode:string);
     connect(target:EventTarget, event:String,func:Function);
     commands:any;
-    simpleHint(a,b); // Added by JBaron
+    simpleHint(a,b); // Assuming jshint is loaded
 }
 
 

@@ -23,7 +23,9 @@ To install, just follow these steps:
      - For node-webkit, you can get a binary from:https://github.com/rogerwang/node-webkit
 
 
-3. Compile jsedit from within the jsedit directory: tsc @build
+3. Compile jsedit from within the jsedit directory:
+      - tsc @build
+      - tsc @build2
 
 4. Start the editor: /path_to_node_webkit/nw ./
    
