@@ -45,19 +45,21 @@ class TypeScriptHint {
         var filesTXT = IO.readFile(path.join(projectDir,"build"));
         var lines = filesTXT.split(/\r?\n/);
         lines.forEach( (line) => {
-                if (! ( line.indexOf("--") === 0 ))  this.addScript(line);            
+                line = line.trim();
+                if ( line && (line.indexOf("--") !== 0) )  
+                this.addScript(line);            
         });
         this.ls = this.typescriptLS.getLanguageService();
     }
 
     // private typescriptLS = new Harness.TypeScriptLS();
-    private typescriptLS = new Harness.TypeScriptLS();
+    private typescriptLS : Harness.TypeScriptLS = new Harness.TypeScriptLS();
 
     getScriptIds() : string[] {
         var count = this.typescriptLS.getScriptCount();
         var result = [];
         for (var i=0;i<count;i++) {
-            result.push(this.typescriptLS.getScriptId[i]);
+            result.push(this.typescriptLS.getScriptId(i));
         }
         return result;
     }

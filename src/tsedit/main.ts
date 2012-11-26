@@ -1,11 +1,9 @@
 ///<reference path='./typescript-hint.ts'/>
 ///<reference path='./codemirror.d.ts'/>
 
-var tsh = new TypeScriptHint("./demo/");
-var script = tsh.getScript(0);
+var tsh, filename;
 
-var filename = script.name;
-
+ 
 function getAutoComplete(level:number)  {
 var l = level;    
 return function autoComplete() {
@@ -49,7 +47,6 @@ var editor = CodeMirror(document.body, {
     mode: "text/typescript"
 });
 
-editor.setValue(script.content);
 
 var root:Element = <any>document.getElementsByClassName("CodeMirror")[0];
 
@@ -61,4 +58,27 @@ root.addEventListener("mousemove", function (e:MouseEvent) {
         // console.log(coord.line + ":" + coord.ch);
     }, 200);
 });
+
+function updateEditor(nr: number) {
+    var script = tsh.getScript(nr);
+    filename = script.name;
+    editor.setValue(script.content);
+};
+
+function setProject() {
+    var projectDir = <HTMLInputElement>document.getElementById("projectDir");
+    tsh = new TypeScriptHint(projectDir.value);
+    var select = document.getElementById("projectFiles");
+    select.innerHTML = '';
+
+    tsh.getScriptIds().forEach( (file) => {
+        var option = document.createElement("option");
+        option.setAttribute("value", file);
+        option.innerHTML = file;
+        select.appendChild(option);
+    }); 
+}
+
+setProject();
+updateEditor(0);
 

@@ -26,6 +26,8 @@
   </head>
   <body>
     <h1>TypeScript Editor</h1>
+    <input id="projectDir" type="text" value="./demo/" /><button onclick="setProject()">Set Project Directory</button>
+     Select the file: <select id="projectFiles" onchange="updateEditor(this.selectedIndex)"></select>
     <script src="./lib/main.js"></script>
 
   </body>
