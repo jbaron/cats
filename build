@@ -1,3 +1,2 @@
---declaration 
---out lib/typescript-hint.js
-src/tsedit/typescript-hint.ts
+--out lib/main.js
+src/tsedit/main.ts

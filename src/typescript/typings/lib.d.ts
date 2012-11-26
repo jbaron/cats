@@ -5686,7 +5686,7 @@ declare var SVGMaskElement: {
 declare var Audio: { new (src?: string): HTMLAudioElement; };
 declare var Option: { new (text?: string, value?: string, defaultSelected?: bool, selected?: bool): HTMLOptionElement; };
 declare var Image: { new (width?: number, height?: number): HTMLImageElement; };
-
+/*
 declare var ondragend: (ev: DragEvent) => any;
 declare var onkeydown: (ev: KeyboardEvent) => any;
 declare var ondragover: (ev: DragEvent) => any;
@@ -5823,6 +5823,8 @@ declare function addEventListener(type: string, listener: EventListener, useCapt
 declare function dispatchEvent(evt: Event): bool;
 declare var localStorage: Storage;
 declare var sessionStorage: Storage;
+
+*/
 declare function clearTimeout(handle: number): void;
 declare function setTimeout(expression: any, msec?: number, language?: any): number;
 declare function clearInterval(handle: number): void;

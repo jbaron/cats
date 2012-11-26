@@ -25,7 +25,6 @@ To install, just follow these steps:
 
 3. Compile jsedit from within the jsedit directory:
       - tsc @build
-      - tsc @build2
 
 4. Start the editor: /path_to_node_webkit/nw ./
    

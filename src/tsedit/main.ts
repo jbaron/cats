@@ -1,22 +1,55 @@
-///<reference path='../../lib/typescript-hint.d.ts'/>
+///<reference path='./typescript-hint.ts'/>
 ///<reference path='./codemirror.d.ts'/>
 
-var tsh = new TypeScriptHint();
+var tsh = new TypeScriptHint("./demo/");
+var script = tsh.getScript(0);
 
-// Lets add some declaration files that should always be included.
-tsh.addFile("./src/typescript/typings/lib.d.ts");
-var autoComplete = tsh.autoComplete.bind(tsh);
+var filename = script.name;
 
-CodeMirror.commands.autocomplete = function (cm) {
-    CodeMirror.simpleHint(cm, autoComplete);
+function getAutoComplete(level:number)  {
+var l = level;    
+return function autoComplete() {
+        var cur = editor.getCursor();
+        if (level === 0) {
+            editor.replaceRange(".",cur);
+            cur.ch++;
+        }
+        var src = editor.getValue();
+        var coord:Coord = {
+            line: cur.line + 1,
+            col: cur.ch
+        };
+
+        var result = tsh.autoComplete(l,coord, filename, src); 
+        return result;
+    }
+}
+
+CodeMirror.commands.autocomplete_member = function (cm) {
+    CodeMirror.simpleHint(cm, getAutoComplete(0));
 };
 
-var editor = CodeMirror.fromTextArea(<HTMLTextAreaElement>document.getElementById("code"), {
+CodeMirror.commands.autocomplete_type = function (cm) {
+    CodeMirror.simpleHint(cm, getAutoComplete(1));
+};
+
+
+CodeMirror.commands.autocomplete = function (cm) {
+    CodeMirror.simpleHint(cm, getAutoComplete(2));
+};
+
+var editor = CodeMirror(document.body, {
     lineNumbers: true,
-    extraKeys: {"Ctrl-Space": "autocomplete"},
+    extraKeys: {
+        "Ctrl-Space": "autocomplete",
+        "." : "autocomplete_member",
+        ":" : "autocomplete_type"
+    },
     matchBrackets: true,
     mode: "text/typescript"
 });
+
+editor.setValue(script.content);
 
 var root:Element = <any>document.getElementsByClassName("CodeMirror")[0];
 
@@ -25,7 +58,7 @@ root.addEventListener("mousemove", function (e:MouseEvent) {
     clearTimeout(mytime);
     mytime = setTimeout(() => {
         var coord = editor.coordsChar({left: e.pageX, top: e.pageY});
-        console.log(coord.line + ":" + coord.ch);
+        // console.log(coord.line + ":" + coord.ch);
     }, 200);
 });
 
