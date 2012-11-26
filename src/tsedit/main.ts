@@ -76,9 +76,11 @@ function setProject() {
         option.setAttribute("value", file);
         option.innerHTML = file;
         select.appendChild(option);
-    }); 
+    });
+
+    updateEditor(0); 
 }
 
 setProject();
-updateEditor(0);
+
 

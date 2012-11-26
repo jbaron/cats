@@ -19,7 +19,7 @@ function caseInsensitive(a, b) {
 }
 
 
-// member = 0, type =1, other = 2
+// member = 0, type = 1, other = 2
 var autoCompleteMode:any[] = [
     {
         "method":true,
@@ -32,7 +32,10 @@ var autoCompleteMode:any[] = [
     {
         "method" : true,
         "variable" : true,
-        "class" : true
+        "class" : true,
+        "module" : true,
+        "function" : true,
+        "enum" : true
     }
     
 ]
@@ -40,9 +43,16 @@ var autoCompleteMode:any[] = [
 class TypeScriptHint {
 
     private ls;
+    private typescriptLS : Harness.TypeScriptLS = new Harness.TypeScriptLS();
 
+    // Create a new TypeScript instance with projectDir as project home
     constructor(public projectDir:string) {
-        var filesTXT = IO.readFile(path.join(projectDir,"build"));
+        try {
+            var buildFile = path.join(projectDir,"build");
+            var filesTXT = IO.readFile(buildFile);
+        } catch (err) {
+            console.error("Couldn't read build file: " + buildFile);            
+        }
         var lines = filesTXT.split(/\r?\n/);
         lines.forEach( (line) => {
                 line = line.trim();
@@ -52,9 +62,7 @@ class TypeScriptHint {
         this.ls = this.typescriptLS.getLanguageService();
     }
 
-    // private typescriptLS = new Harness.TypeScriptLS();
-    private typescriptLS : Harness.TypeScriptLS = new Harness.TypeScriptLS();
-
+    // Get the filenames of the scripts
     getScriptIds() : string[] {
         var count = this.typescriptLS.getScriptCount();
         var result = [];
@@ -64,6 +72,7 @@ class TypeScriptHint {
         return result;
     }
 
+    // Get the script name and content 
     getScript(index:number) {
         var script = this.typescriptLS.scripts[index];
 
@@ -74,11 +83,12 @@ class TypeScriptHint {
         
     }
 
+    // Add a new script
     addScript(fileName:string) {
         var fullName = path.join(this.projectDir,fileName);
         var scriptText = IO.readFile(fullName);
         this.typescriptLS.addScript(fileName, scriptText,true);
-        console.log("Added " + fileName);
+        console.log("Added " + fileName + " to project.");
     }
 
     addSource(src, fileName) {
@@ -100,6 +110,7 @@ class TypeScriptHint {
         return pos;
     }
 
+    // Get the position
     public getTypeAtPosition(fileName: string, coord: Coord) {
         var pos = this.getPosition(fileName,coord);
         return this.ls.getTypeAtPosition(fileName,pos);
@@ -121,13 +132,13 @@ class TypeScriptHint {
         var result = [];
         var okKinds = autoCompleteMode[mode];
         member.entries.forEach(entry => {
-            // console.log(JSON.stringify(entry));
-            if (okKinds[entry.kind]) result.push(entry.name); 
+            console.log(JSON.stringify(entry));
+            if (okKinds[entry.kind]) result.push(entry.name); // Todo return all info
         });
-        result.sort(caseInsensitive);
+        result.sort(caseInsensitive); // Sort case insensitive
         return {
             list: result,
-            from : {line:coord.line -1, ch:coord.col},
+            from : {line:coord.line -1, ch:coord.col}, //compensate for line is one based in TS services
             to:    {line:coord.line -1, ch:coord.col}
         };
 
