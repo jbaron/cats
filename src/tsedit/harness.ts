@@ -1,44 +1,14 @@
-// This is based on the harness.ts file from TypeScript (95% identical)
+// This is based on the harness.ts file from TypeScript (85% identical)
 // Major difference is that this module uses real language services API and not the Shim.
 // Licensed under the Apache License, Version 2.0. 
 
-////<reference path='../typescript/compiler/io.ts'/>
+
 ///<reference path='../typescript/compiler/typescript.ts'/>
 ///<reference path='../typescript/services/typescriptServices.ts' />
 
-declare var IO: IIO;
-declare var __dirname; // Node-specific
 
 module Harness {
-    var global = <any>Function("return this").call(null);
-    export var userSpecifiedroot = "";
-	var defaultLibraryDir = "";
-
-	export function setDefaultLibraryDir(dir: string) {
-		defaultLibraryDir = dir;
-	}
-
-    function getLibText() {
-		return IO ? IO.readFile(defaultLibraryDir + "lib.d.ts") : '';
-	}
-
-    // Reads collateral relative to the collateral root.
-    export module CollateralReader {
-        export var root = "tests\\";
-
-        export function setRoot(newRoot: string) {
-            // Normalize root path to end in back slash
-            if (newRoot[newRoot.length - 1] !== '\\')
-                newRoot += '\\';
-
-            root = newRoot;
-        }
-
-        export function read(path: string) {
-            return IO.readFile(Harness.userSpecifiedroot + root + path);
-        }
-    }
-
+   
     export class ScriptInfo {
         public version: number;
         public editRanges: { length: number; editRange: TypeScript.ScriptEditRange; }[] = [];
@@ -103,14 +73,6 @@ module Harness {
         public scripts: ScriptInfo[] = [];
         public maxScriptVersions = 100;
 
-        public addDefaultLibrary() {
-            this.addScript("lib.d.ts", getLibText(), true);
-        }
-
-        public addFile(name: string, isResident = false) {
-            var code: string = Harness.CollateralReader.read(name);
-            this.addScript(name, code, isResident);
-        }
 
         public addScript(name: string, content: string, isResident = false) {
             var script = new ScriptInfo(name, content, isResident, this.maxScriptVersions);
@@ -217,14 +179,7 @@ module Harness {
             var script = parser.parse(sourceText, fileName, 0);
             return script;
         }
-
-        //
-        // Parse a file on disk given its filename
-        //
-        public parseFile(fileName: string) {
-            var sourceText = new TypeScript.StringSourceText(IO.readFile(fileName))
-            return this.parseSourceText(fileName, sourceText);
-        }
+      
 
         //
         // line and column are 1-based
@@ -322,5 +277,5 @@ module Harness {
 
     }
 
-    export var setCollateralRoot = CollateralReader.setRoot;
+
 }

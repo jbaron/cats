@@ -3,7 +3,7 @@
   <head>
 
     <meta charset="utf-8">
-    <title>JSEdit | TypeScript Editor</title>
+    <title>CATS | TypeScript Editor</title>
     <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
         
     <script src="./codemirror/lib/codemirror.js"></script>
@@ -21,13 +21,24 @@
           height: 500px;
         }
 
+        .crinkle {
+          border-bottom: 1px solid red;
+        }
+
+        .CompileError {
+          width: 16px;
+        }
+
     </style>
 
   </head>
   <body>
-    <h1>TypeScript Editor</h1>
-    <input id="projectDir" type="text" value="./demo/" /><button onclick="setProject()">Set Project Directory</button>
-     Select the file: <select id="projectFiles" onchange="updateEditor(this.selectedIndex)"></select>
+    <h1>CATS</h1>
+    <h3>Code Assistant for TypeScript</h3>
+    <button onclick="TSEdit.setProject()">Set Project Directory</button>
+    <input id="projectDir" type="text" value="./demo/" />
+     Select the file: 
+    <select id="projectFiles" onchange="TSEdit.updateEditor(this.selectedIndex)"></select>
     <script src="./lib/main.js"></script>
 
   </body>

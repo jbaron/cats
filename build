@@ -1,2 +1,3 @@
---out lib/main.js
-src/tsedit/main.ts
+--out lib/worker.js
+--declaration
+src/tsedit/worker.ts

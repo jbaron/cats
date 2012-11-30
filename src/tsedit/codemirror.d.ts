@@ -2,7 +2,7 @@
 
 
 // Use module name with m prefix to not conflict with global variable name
-module mCodeMirror {
+module CM {
 
 interface ScrollInfo {
 	x:number;
@@ -135,6 +135,10 @@ interface Mode {
 
 interface Editor {
 	coordsChar(pos:Coords) : Position; // added by JBaron
+	setGutterMarker: any;
+	clearGutter(className: string);
+	
+	on(name:string,handler:Function):void;
     getValue(): string;
     setValue(valu:string):void;
     getSelection():string;
@@ -220,7 +224,7 @@ interface Options {
 }
 
 
-interface StaticVar  {
+interface CodeMirror  {
     (element:HTMLElement,options:Options):Editor;
     version:string;
     defaults:Options;
@@ -230,10 +234,11 @@ interface StaticVar  {
     connect(target:EventTarget, event:String,func:Function);
     commands:any;
     simpleHint(a,b); // Assuming jshint is loaded
+    Pass: any;
 }
 
 
 
 }
 
-declare var CodeMirror : mCodeMirror.StaticVar;
+declare var CodeMirror : CM.CodeMirror;
