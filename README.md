@@ -2,18 +2,17 @@ Introduction
 ============
 CATS is an editor for the TypeScript developer. It stands for Code Assistant for TypeScript. Previously it was called tsEdit, but it turns out there is already an editor with that same name. And to avoid any confusion, I decided to rename my editor to CATS.
 
-Right now it is more a proof of concept than a full-blown editor. But at least it supports:
+Right now it is a very basic editor. But at least it has already some support for:
 
 - Basic code completion: 
 	  - When you type a "." member bsaed code completion will be triggered.
-	  - Anywhere else you can type <Ctrl><Space> 
+	  - Anywhere else you can type control-space. 
 
 - Syntax highlighting
 
-- Background compiling
+- Background validation of the source
 
-For simple playing around it should so. There is no save functionality yet, but that is on the todo list.
-One nice thing is that CATS is actually build in TypeScript (with the use of some plain JavaScript libraries).
+For playing around it with some snippets, it should already be useful. There is no save functionality yet, but that is on the todo list. One nice thing is that CATS is actually build in TypeScript (with the use of some plain JavaScript libraries).
 
 
 Installation & Running it
