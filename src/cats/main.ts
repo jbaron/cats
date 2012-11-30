@@ -1,9 +1,9 @@
-///<reference path='../../lib/isense.d.ts'/>
+///<reference path='../../lib/worker.d.ts'/>
 ///<reference path='./codemirror.d.ts'/>
 ///<reference path='./node.d.ts'/>
 
 
-module TSEdit {
+module CATS {
 
 var filename:string;
 
@@ -16,6 +16,37 @@ var filename:string;
 declare var require;
 var fs = require("fs");
 var path = require("path");
+
+
+
+
+function createTreeViewer(dir:string, parent?: Element) : Element {
+
+    if (! parent) parent = document.createElement("ul");
+
+    fs.readdirSync(dir).forEach( file => {
+
+        var li = document.createElement("li");
+        var name = path.join(dir,file);
+        var stat = fs.statSync(name);
+
+        if (stat.isFile()) {
+            li.appendChild(document.createTextNode(file));
+            li.setAttribute("data-full", name);
+            parent.appendChild(li);
+        }
+
+        if (stat.isDirectory()) {
+            li.appendChild(document.createTextNode(file));
+            li.appendChild(createTreeViewer(name, li));
+            parent.appendChild(li)
+        }
+    });
+
+    return parent;
+
+}
+
 
 
 
@@ -50,7 +81,7 @@ function autoComplete(editor)  {
 }
 
 
-var editor = CodeMirror(document.body, {
+var editor = CodeMirror(document.getElementById("editorPane"), {
     lineNumbers: true,
     extraKeys: {
         "Ctrl-Space": autoComplete
@@ -82,7 +113,7 @@ function handleCompileErrors(editor:CM.Editor,errors:TypeScript.ErrorEntry[]) {
 
         var img = document.createElement("img");
         img.setAttribute("title",error.message);
-        img.setAttribute("src","img/error.png");
+        img.setAttribute("src","static/error.png");
         editor.setGutterMarker(from.line,"CompileError",img);
 
     });    
@@ -147,15 +178,13 @@ function loadScripts(projectDir:string) {
         return result;
 }
 
-export function setProject() {
+export function setProject(projectDir) {
     iSense.perform("reset",() => {});
-
-    var projectDir = <HTMLInputElement>document.getElementById("projectDir");
 
     var select = document.getElementById("projectFiles");
     select.innerHTML = '';
 
-    var files = loadScripts(projectDir.value);
+    var files = loadScripts(projectDir);
     files.forEach( file => {
         var option = document.createElement("option");
         option.setAttribute("value", file.name);
@@ -167,7 +196,11 @@ export function setProject() {
     if (files.length)
         updateEditor(0); 
     else 
-        editor.setValue("");    
+        editor.setValue("");  
+
+
+    // var elem = document.getElementById("projectFiles2");
+    // var f = createTreeViewer(projectDir,elem);
 }
 
 
@@ -185,7 +218,7 @@ export class ISenseHandler {
         this.init();
     }
 
-    // Invoke a method on the iSense Woker
+    // Invoke a method on the Worker 
     perform(method, ...data:any[]) {
         var handler = data.pop();
         this.messageId++;
@@ -219,9 +252,25 @@ export class ISenseHandler {
 
 }
 
-var iSense = new ISenseHandler();
-setProject();
 
+export function chooseFile(chooser) {
+    chooser.trigger('click');            
+    chooser.change(function(evt) {
+      setProject(this.value);
+    });
+};
+
+
+var iSense = new ISenseHandler();
+setProject("./demo");
+
+var gui = require('nw.gui');
+var win = gui.Window.get().maximize();
+
+  
 
 }
+
+
+
 

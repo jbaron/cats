@@ -1,7 +1,7 @@
 // Licensed under the Apache License, Version 2.0. 
 ///<reference path='./harness.ts'/>
 
-
+module CATS {
 
 
 
@@ -164,3 +164,6 @@ addEventListener('message', function(e) {
     postMessage({id: id,error: error},null);
    } 
 }, false);
+
+
+}

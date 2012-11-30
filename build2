@@ -1,2 +1,2 @@
 --out lib/main.js
-src/tsedit/main.ts
+src/cats/main.ts

@@ -13,33 +13,42 @@
     <link rel="stylesheet" href="./codemirror/lib/util/simple-hint.css">
     
     <script src="./codemirror/mode/javascript/javascript.js"></script>
-    
-    <style type="text/css">
-        .CodeMirror {
-          border-top: 1px solid black; border-bottom: 1px solid black;
-          font-family: 'Inconsolata';
-          height: 500px;
-        }
+    <script type="text/javascript" src="static/jquery-latest.js"></script>
+    <script type="text/javascript" src="static/jquery-ui-latest.js"></script>
 
-        .crinkle {
-          border-bottom: 1px solid red;
-        }
+    <script type="text/javascript" src="static/jquery.layout-latest.js"></script>
+    <link rel="stylesheet" href="static/layout-default-latest.css">
+    <link rel="stylesheet" href="static/cats.css">
 
-        .CompileError {
-          width: 16px;
-        }
-
-    </style>
+    <script type="text/javascript">
+    $(document).ready(function () {
+      $('body').layout({ applyDemoStyles: false });
+    });
+    </script>
 
   </head>
   <body>
+    <div id="editorPane" class="ui-layout-center">
+        
+</div>
+<div class="ui-layout-north">
     <h1>CATS</h1>
-    <h3>Code Assistant for TypeScript</h3>
-    <button onclick="TSEdit.setProject()">Set Project Directory</button>
-    <input id="projectDir" type="text" value="./demo/" />
-     Select the file: 
-    <select id="projectFiles" onchange="TSEdit.updateEditor(this.selectedIndex)"></select>
-    <script src="./lib/main.js"></script>
+    <h3><span>C</span>ode <span>A</span>ssistant for <span>T</span>ype<span>S</span>cript</h3>
+</div>
+<div class="ui-layout-south"></div>
+<div class="ui-layout-east">Todo</div>
+<div class="ui-layout-west">
+    <input style="display:none;" id="fileDialog" type="file" nwdirectory />  
+    <button onclick="CATS.chooseFile($('#fileDialog'))">Open folder...</button>
 
+
+</script>
+    
+     <br/><br/>Select a file:<br/> 
+    <select id="projectFiles" size=20 onchange="CATS.updateEditor(this.selectedIndex)"></select>
+</div>
+
+   
+     <script src="./lib/main.js"></script>
   </body>
 </html>
