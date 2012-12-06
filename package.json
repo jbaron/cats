@@ -3,8 +3,7 @@
   "main": "index.html",
   "description" : "TypeScript Editor",
   "version" : "0.2.0",
-  "window": {
-    "toolbar": true,
+  "window": {   
      "position": "center",
      "width": 800,
      "height": 800

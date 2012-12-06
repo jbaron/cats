@@ -1,13 +1,23 @@
 // Licensed under the Apache License, Version 2.0. 
 ///<reference path='./harness.ts'/>
 
+importScripts("typescript.js")
+
+
 module CATS {
 
 
 
+
+var console = {
+    log : function(str) {
+        postMessage(str,null);
+    }
+}
+
 function caseInsensitive(a, b) {
-    if (a.toLowerCase() < b.toLowerCase()) return -1;
-    if (a.toLowerCase() > b.toLowerCase()) return 1;
+    if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+    if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
     return 0;
 }
 
@@ -33,19 +43,25 @@ var autoCompleteMode:any[] = [
     
 ]
 
+declare interface Cursor {
+        column: number;
+        row: number;
+}
+
+
 class TypeScriptHint {
 
     private ls;
-    private typescriptLS : Harness.TypeScriptLS = new Harness.TypeScriptLS();
+    private typescriptLS : LiteHarness.TypeScriptLS;
 
     // Create a new TypeScript instance with projectDir as project home
     constructor() {
-        // this.ls = this.typescriptLS.getLanguageService();
+        this.typescriptLS = new LiteHarness.TypeScriptLS();
         this.ls = this.typescriptLS.getLanguageService();
     }
 
-    reset() {
-        this.typescriptLS = new Harness.TypeScriptLS();
+    reset123() {
+        this.typescriptLS = new LiteHarness.TypeScriptLS();
         this.ls = this.typescriptLS.getLanguageService();
     }
 
@@ -69,8 +85,24 @@ class TypeScriptHint {
         }
     }
 
-    // Get the script name and content 
-    getScript(index:number) {
+    getIndex(id:string) : number {
+        var scripts = this.typescriptLS.scripts;
+        var i = scripts.length;
+        while (i--) {
+            if (scripts[i].name === id) return i;
+        }
+        throw new Error("Script not found with name " + id);
+    }
+
+
+    // Get the script name and content
+    getScript(id:string);
+    getScript(index:number);  
+    getScript(index) {
+        if (typeof index === "string") {
+            index = this.getIndex(index);
+        }
+
         var script = this.typescriptLS.scripts[index];
 
         return {
@@ -81,26 +113,57 @@ class TypeScriptHint {
     }
 
     // Add a new script
-    addScript(script) {
-        this.typescriptLS.addScript(script.name, script.content,false);
+    addScript(name,source,resident?) {
+        this.typescriptLS.addScript(name, source,resident);
     }
 
     // updated the content of a script
-    updateScript(fileName,src) {
+    updateScript(fileName:string,src:string,errors=true) {
         this.typescriptLS.updateScript(fileName, src, false);
+        if (! errors) {
+            return;
+        }
         // this.ls = this.typescriptLS.getLanguageService();
-        return this.ls.getScriptErrors(fileName,10);
+        var errors = this.ls.getScriptErrors(fileName,10);
+        var script = this.ls.getScriptAST(fileName);
+        
+        var result = [];
+
+        errors.forEach((error:TypeScript.ErrorEntry) => {
+                var coord = TypeScript.getLineColumnFromPosition(script, error.minChar);
+                var resultEntry = {
+                    row:coord.line-1,
+                    column:coord.col-1,
+                    type:"error",
+                    text:error.message,
+                    raw: error.message
+                };
+                result.push(resultEntry);
+        });
+        return result;
     }
 
     // Get the position based on the coordinates
-    private getPosition(filename:string, coord) : number{
-        var script = this.ls.getScriptAST(filename);
+    private getPosition(fileName:string, coord) : number{
+        var script = this.ls.getScriptAST(fileName);
         var lineMap = script.locationInfo.lineMap;  
 
         // Determine the position
         var pos = lineMap[coord.line] + coord.col;
         return pos;
     }
+
+     // Get the position based on the coordinates
+    private getPositionFromCursor(fileName:string, cursor:Cursor) : number{
+        var script = this.ls.getScriptAST(fileName);
+        var lineMap = script.locationInfo.lineMap;  
+
+        // Determine the position
+        var pos = lineMap[cursor.row + 1] + cursor.column;
+        console.log(pos);
+        return pos;
+    } 
+
 
     // Get the position
     public getTypeAtPosition(fileName: string, coord) {
@@ -109,7 +172,7 @@ class TypeScriptHint {
     }
 
     // Determine type of autocompletion
-    private determineAutoCompleteType(source:string, pos:number) {
+    private determineAutoCompleteType(source:string, pos:number) : string {
         var memberMatch=/\.[0-9A-Za-z_]*$/;
         var typeMatch=/:[0-9A-Za-z_]*$/;
         var previousCode = source.substring(0,pos);
@@ -119,8 +182,10 @@ class TypeScriptHint {
     }
 
    
-	public autoComplete(pos: number, filename:string) : any {
-        
+    
+
+	public autoComplete(cursor:Cursor, filename:string) : any {
+        var pos = this.getPositionFromCursor(filename,cursor);
         var memberMode = false;
         var source = this.getScriptContent(filename);
         var type = this.determineAutoCompleteType(source,pos);
@@ -129,23 +194,14 @@ class TypeScriptHint {
         }
         // Lets find out what autocompletion there is possible		
         var completions =  this.ls.getCompletionsAtPosition(filename, pos, memberMode);
-
-        var result = [];
-        // var okKinds = autoCompleteMode[mode];
-        completions.entries.forEach(entry => {
-            // console.log(JSON.stringify(entry));
-            // if (okKinds[entry.kind]) result.push(entry.name); // Todo return all info
-            result.push(entry.name); // Todo return all info
-        });
-        result.sort(caseInsensitive); // Sort case insensitive
-        return result;
+        
+        completions.entries.sort(caseInsensitive); // Sort case insensitive
+        return completions;
 
 	}
 }
 
-
 var tsh = new TypeScriptHint();
-
 
 addEventListener('message', function(e) {
   var msg = e.data;

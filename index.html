@@ -4,51 +4,64 @@
 
     <meta charset="utf-8">
     <title>CATS | TypeScript Editor</title>
-    <link href='http://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
-        
-    <script src="./codemirror/lib/codemirror.js"></script>
-    <link rel="stylesheet" href="./codemirror/lib/codemirror.css">
+     
+    <script type="text/javascript" src="static/jquery/jquery-latest.js"></script>
+    <script type="text/javascript" src="static/jquery/jquery-ui-latest.js"></script>
+    <link rel="stylesheet" href="static/jquery/jquery-ui-themes/themes/base/jquery-ui.css">
 
-    <script src="./codemirror/lib/util/simple-hint.js"></script>
-    <link rel="stylesheet" href="./codemirror/lib/util/simple-hint.css">
-    
-    <script src="./codemirror/mode/javascript/javascript.js"></script>
-    <script type="text/javascript" src="static/jquery-latest.js"></script>
-    <script type="text/javascript" src="static/jquery-ui-latest.js"></script>
+    <script type="text/javascript" src="static/jquery/jquery.layout-latest.js"></script>
+    <link rel="stylesheet" href="static/jquery/layout-default-latest.css">
+    <link rel="stylesheet" href="static/css/cats.css">
 
-    <script type="text/javascript" src="static/jquery.layout-latest.js"></script>
-    <link rel="stylesheet" href="static/layout-default-latest.css">
-    <link rel="stylesheet" href="static/cats.css">
+    <script src="static/ace-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+
+     <link href="static/jquery/skin/ui.dynatree.css" rel="stylesheet" type="text/css">
+     <script src="static/jquery/jquery.dynatree.js" type="text/javascript"></script>
 
     <script type="text/javascript">
     $(document).ready(function () {
-      $('body').layout({ applyDemoStyles: false });
+      $('body').layout({ 
+        applyDemoStyles: false, 
+        spacing_open: 3
+      });
+
     });
     </script>
 
   </head>
   <body>
-    <div id="editorPane" class="ui-layout-center">
-        
-</div>
-<div class="ui-layout-north">
-    <h1>CATS</h1>
-    <h3><span>C</span>ode <span>A</span>ssistant for <span>T</span>ype<span>S</span>cript</h3>
-</div>
-<div class="ui-layout-south"></div>
-<div class="ui-layout-east">Todo</div>
-<div class="ui-layout-west">
-    <input style="display:none;" id="fileDialog" type="file" nwdirectory />  
-    <button onclick="CATS.chooseFile($('#fileDialog'))">Open folder...</button>
 
+    <input style="display:none;" id="fileDialog" type="file" nwdirectory />    
 
-</script>
+    <div class="ui-layout-center">
+        <div id="editor"></div>
+    </div>
     
-     <br/><br/>Select a file:<br/> 
-    <select id="projectFiles" size=20 onchange="CATS.updateEditor(this.selectedIndex)"></select>
-</div>
+    <div class="ui-layout-north">
+      <img id="logo" src="static/img/logo.png" />
+      <h3><span>C</span>ode <span>A</span>ssistant for <span>T</span>ype<span>S</span>cript</h3>
+    </div>
 
-   
-     <script src="./lib/main.js"></script>
+    <div class="ui-layout-south">
+        <div id="findArea">
+            <span>Find text: </span>
+            <input size="40" id="findText" />
+            <button onclick="actionFind()">Find</button>
+        </div>
+
+        <div id="replaceArea">
+            <span>Replace text: </span>
+            <input size="40" id="replaceText" />
+            <button onclick="actionReplace()">Replace</button>
+        </div>
+    </div>
+
+    <div class="ui-layout-east">Outline...</div>
+    
+    <div class="ui-layout-west">      
+        <div id="fileTree"></div>
+    </div>
+  
+     <script src="lib/main.js"></script>
   </body>
 </html>

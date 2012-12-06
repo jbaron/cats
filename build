@@ -1,3 +1,2 @@
 --out lib/worker.js
---declaration
 src/cats/worker.ts

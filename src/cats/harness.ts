@@ -2,12 +2,11 @@
 // Major difference is that this module uses real language services API and not the Shim.
 // Licensed under the Apache License, Version 2.0. 
 
+importScripts("typescript.js")
 
-///<reference path='../typescript/compiler/typescript.ts'/>
-///<reference path='../typescript/services/typescriptServices.ts' />
+///<reference path='./typescript.d.ts' />
 
-
-module Harness {
+module LiteHarness {
    
     export class ScriptInfo {
         public version: number;
@@ -81,12 +80,12 @@ module Harness {
 
         public updateScript(name: string, content: string, isResident = false) {
             for (var i = 0; i < this.scripts.length; i++) {
-                if (this.scripts[i].name == name) {
+                if (this.scripts[i].name === name) {
                     this.scripts[i].updateContent(content, isResident);
                     return;
                 }
             }
-
+            
             this.addScript(name, content, isResident);
         }
 

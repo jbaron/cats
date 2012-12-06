@@ -1,0 +1,131 @@
+
+#logo {
+  width:50px;
+  height:50px;
+  float: left;
+}
+
+/* Overwrite default layout settings*/
+body .ui-layout-pane {
+  background: inherit;
+  color: inherit;
+  padding: 5px;
+}
+
+
+
+#editorPane {
+	padding: 0px;
+}
+
+
+h3 span {
+	color: blue;
+}
+
+
+/* Default settings ACE editor */
+#editor { 
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        font-size: 16px;
+}
+
+
+/*********************************************************
+Auto complete styling
+***********************************************************/    
+.autocomplete{
+    height:226px;
+    overflow:hidden;
+    border:1px solid #ccc;
+    font-size: 90%;
+    position: fixed;
+    z-index: 1000;
+    display: none;
+}
+
+.autocomplete ul{
+    width:400px;
+    margin:0px;
+    padding:2px;
+}
+
+.autocomplete li:hover{
+
+}
+
+.autocomplete li{
+    padding:1px;
+    line-height:1.2em;
+    height:1.2em;
+    overflow:hidden;
+    list-style: none;
+}
+
+.autocomplete_selected{
+   background:#eee;
+}
+
+.autocomplete_selected .label-name{
+    font-weight:bold;
+}
+
+.autocomplete .name {
+    padding-left: 15px;
+}
+
+.autocomplete .kind-method{
+    background: url('../img/types/methpub_obj.gif') no-repeat; 
+}
+
+.autocomplete .kind-method:after{
+    content: "()";
+}
+
+.autocomplete .kind-interface{
+    background: url('../img/types/intf_obj.gif') no-repeat; 
+}
+
+.autocomplete .kind-enum{
+    background: url('../img/types/enum_obj.gif') no-repeat; 
+}
+
+
+.autocomplete .kind-class{
+    background: url('../img/types/class_obj.gif') no-repeat; 
+}
+
+.autocomplete .kind-variable, .autocomplete .kind-property {
+    background: url('../img/types/property_obj.gif') no-repeat; 
+}
+
+.autocomplete  .type{
+    padding-left:10px;
+    color:blue;
+    visibility:hidden;
+}
+
+.autocomplete_selected .type{
+    visibility:visible;
+}    
+
+
+
+#findArea, #replaceArea {
+  display: none;
+}
+
+#findArea span, #replaceArea span {
+  width: 100px;
+  float: left;
+}
+
+#findArea button, #replaceArea button {
+  width: 100px;
+}
+
+

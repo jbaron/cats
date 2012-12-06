@@ -1,275 +1,235 @@
-///<reference path='../../lib/worker.d.ts'/>
-///<reference path='./codemirror.d.ts'/>
-///<reference path='./node.d.ts'/>
-
-
-module CATS {
-
-var filename:string;
-
-
-// Bug in tsc that makes --out directory not working
-// when using import statements. So for now a plain require
-// import fs = module("fs");
-// import path = module("path");
-
-declare var require;
-var fs = require("fs");
-var path = require("path");
+///<reference path='project.ts'/>
+///<reference path='treeviewer.ts'/>
 
 
 
+module cats {
 
-function createTreeViewer(dir:string, parent?: Element) : Element {
-
-    if (! parent) parent = document.createElement("ul");
-
-    fs.readdirSync(dir).forEach( file => {
-
-        var li = document.createElement("li");
-        var name = path.join(dir,file);
-        var stat = fs.statSync(name);
-
-        if (stat.isFile()) {
-            li.appendChild(document.createTextNode(file));
-            li.setAttribute("data-full", name);
-            parent.appendChild(li);
-        }
-
-        if (stat.isDirectory()) {
-            li.appendChild(document.createTextNode(file));
-            li.appendChild(createTreeViewer(name, li));
-            parent.appendChild(li)
-        }
-    });
-
-    return parent;
-
-}
-
-
-
-
-
-function autoComplete(editor)  {
-        var cur = editor.getCursor();
-        console.log(JSON.stringify(editor.getTokenAt(cur)));
-        
-
-        var pos = editor.indexFromPos(cur);
-
-        // Any pending changes that are not yet send to the worker?
-        if (changed) {
-                var source = editor.getValue();
-                iSense.perform("updateScript",filename, source,(err,result) => {
-                    handleCompileErrors(editor,result);
-                }); 
-                changed = false; 
-        };
-
-        iSense.perform("autoComplete",pos, filename, (err,completes) => {
-            var result = {
-                  list: completes,
-                  from : {line:cur.line, ch:cur.col}, 
-                  to: {line:cur.line, ch:cur.col}
-            };
- 
-            CodeMirror.simpleHint(editor,() => {return result});
-
-        });
-
-}
-
-
-var editor = CodeMirror(document.getElementById("editorPane"), {
-    lineNumbers: true,
-    extraKeys: {
-        "Ctrl-Space": autoComplete
-    },
-    matchBrackets: true,
-    mode: "text/typescript",
-    gutters: ["CompileError"]
-});
-
-editor.on("change", onChangeHandler);
-
-
-var updateSourceTimer;
-var changed = false;
-var markedErrors = [];
-
-// Display any compile errors we got back
-function handleCompileErrors(editor:CM.Editor,errors:TypeScript.ErrorEntry[]) {
-    markedErrors.forEach((mark) => mark.clear());
-    editor.clearGutter("CompileError");
-
-    markedErrors = [];
-    errors.forEach((error) => {
-        console.log(JSON.stringify(error));
-        var from = editor.posFromIndex(error.minChar);
-        var to = editor.posFromIndex(error.limChar);
-        var markedError = editor.markText(from,to,{className: "crinkle"});
-        markedErrors.push(markedError);
-
-        var img = document.createElement("img");
-        img.setAttribute("title",error.message);
-        img.setAttribute("src","static/error.png");
-        editor.setGutterMarker(from.line,"CompileError",img);
-
-    });    
-}
-
-function onChangeHandler(editor:CM.Editor,info) {
-    changed = true;
-    clearTimeout(updateSourceTimer);
-    if (info.text[0] === '.') {
-        autoComplete(editor);
-    }
-    updateSourceTimer = setTimeout(() => {    
-          if (changed) { 
-              console.log("updating source code"); 
-              var source = editor.getValue();
-              iSense.perform("updateScript",filename, source,(err,result) => {
-                    handleCompileErrors(editor,result);
-              });
-              changed= false; // Already make sure we know a change has been send.
-          }
-    },500);  
+// Open a new project
+export function selectProject() {
+    var chooser:any = document.getElementById('fileDialog');
+    chooser.onchange = function(evt) {
+      console.log(this.value);
+      setProject(this.value);
+    };
+    chooser.click();            
 };
+
+export var project = null;
+
+
+// Create a new project
+export function setProject(dir:string) {
+    project = new Project(dir)
+}
+
+
+setProject("./demo");
+
+
+
+// var win = gui.Window.get().maximize();
+
+
+
+
+
+}
 
 
 /*
-var root:Element = <any>document.getElementsByClassName("CodeMirror")[0];
+var menubar = [
 
-var mytime;
-root.addEventListener("mousemove", function (e:MouseEvent) {
-    clearTimeout(mytime);
-    mytime = setTimeout(() => {
-        var coord = editor.coordsChar({left: e.pageX, top: e.pageY});
+  {label:"File",click:nop,
+    submenu : [
+        {label:"Open project..."},        
+        {label:"Close project"},        
+        {label:"XYZ"}        
+    ]
+  },
 
-    }, 500);
-});
-*/
+  {label:"Edit",click:nop,
+    submenu : [
+        {label:"Undo"},        
+        {label:"Redo"},        
+    ]
+  },
 
-export function updateEditor(nr: number) {
-    iSense.perform("getScript", nr, (err,script) => {
-        filename = script.name;
-        editor.setValue(script.content);
-    });
-};
 
-function loadScripts(projectDir:string) {
-        var result = [];
-        try {
-            var buildFile = path.join(projectDir,"build");
-            var filesTXT = fs.readFileSync(buildFile,"utf-8");
-        } catch (err) {
-            alert("Couldn't find valid build file at " + buildFile);
-            return [];            
-        }
-        var lines = filesTXT.split(/\r?\n/);
-        lines.forEach( (line) => {
-                line = line.trim();
-                if ( line && (line.indexOf("--") !== 0) )  {
-                        var fullName = path.join(projectDir,line);
-                        result.push({name:line, content:fs.readFileSync(fullName,"utf-8")});        
-                }
-        });
-        return result;
-}
+  {label:"Edit",click:nop,
+    submenu : [
+        {label:"Undo"},        
+        {label:"Redo"},        
+    ]
+  },
 
-export function setProject(projectDir) {
-    iSense.perform("reset",() => {});
 
-    var select = document.getElementById("projectFiles");
-    select.innerHTML = '';
 
-    var files = loadScripts(projectDir);
-    files.forEach( file => {
-        var option = document.createElement("option");
-        option.setAttribute("value", file.name);
-        option.innerHTML = file.name;
-        select.appendChild(option);
-        iSense.perform("addScript",file,() => {});    
-    });
+]
+
+
+
+createMenuItem(config,type="menu") {
+  var menu = new gui.Menu({type: type});
+  config.forEach((item) => {
+    if (item.submenu) {
+      var submenu = createMenuItem(item.submenu);
+      item.submenu = submenu;
+    }
+    var menuItem = new gui.menu(item);  
+    menu.append
     
-    if (files.length)
-        updateEditor(0); 
-    else 
-        editor.setValue("");  
-
-
-    // var elem = document.getElementById("projectFiles2");
-    // var f = createTreeViewer(projectDir,elem);
+  }
+  return 
 }
 
+*/
+  var gui = require('nw.gui');
+  var win = gui.Window.get();
 
-// Handles the communication witht the ISense Worker
-// The implementation uses aJSON-RPC style of communication
-export class ISenseHandler {
-
-    private worker;
-    private messageId = 0;
-    private registry = {};
-
-    constructor() {
-        // Lets create a new worker
-        this.worker = new Worker("./lib/worker.js");
-        this.init();
-    }
-
-    // Invoke a method on the Worker 
-    perform(method, ...data:any[]) {
-        var handler = data.pop();
-        this.messageId++;
-        var message = {
-            id: this.messageId,
-            method: method,
-            params: data
-        }
-        this.worker.postMessage(message);
-        // console.log("Send message " + method + ":" + this.messageId + " to worker");
-        if (handler) this.registry[this.messageId] = handler;
-    }
-
-    private init() {
-        // Setup the message handler
-        this.worker.onmessage = (e) => {
-            var msg = e.data;
-            var id = msg.id;
-            // console.log("Received message reply " + id + " from worker.");
-            if (msg.error) {
-                console.error("Got error back !!! " + msg.error);
-                console.error(msg.error.stack);
-            }
-            var handler = this.registry[id];
-            if (handler) {
-                delete this.registry[id];
-                handler(msg.error, msg.result);
-            }
-        };
-    }
-
-}
-
-
-export function chooseFile(chooser) {
-    chooser.trigger('click');            
-    chooser.change(function(evt) {
-      setProject(this.value);
-    });
+function runFile() {
+  window.open('./demo/index.html', '_blank');
 };
 
 
-var iSense = new ISenseHandler();
-setProject("./demo");
+function nop() {
+  console.log("clicked");
+};  
 
-var gui = require('nw.gui');
-var win = gui.Window.get().maximize();
 
-  
-
+function undoChange() {
+  var man = cats.project.editor.getSession().getUndoManager();
+  man.undo();
 }
+
+function redoChange() {
+  var man = cats.project.editor.getSession().getUndoManager();
+  man.redo();
+}
+
+
+function enableFind() {
+  document.getElementById("findArea").style.display = "block";  
+}
+
+
+function actionFind() {
+    var input = <HTMLInputElement>document.getElementById("findText");
+    cats.project.editor.find(input.value,{},true);
+}
+
+
+function actionReplace() {
+    var findText = <HTMLInputElement>document.getElementById("findText");
+    var replaceText = <HTMLInputElement>document.getElementById("replaceText");
+    var options = {
+      needle: findText.value
+    };
+    cats.project.editor.replace(replaceText.value,options);
+}
+
+
+
+var themes = [
+
+
+          
+            {theme:"ace/theme/chrome",label:"Chrome"},
+            {theme:"ace/theme/clouds",label:"Clouds"},
+            {theme:"ace/theme/crimson_editor",label:"Crimson Editor"},
+            {theme:"ace/theme/dawn",label:"Dawn"},
+            {theme:"ace/theme/dreamweaver",label:"Dreamweaver"},
+            {theme:"ace/theme/eclipse",label:"Eclipse"},
+            {theme:"ace/theme/github",label:"GitHub"},
+            {theme:"ace/theme/solarized_light",label:"Solarized Light"},
+            {theme:"ace/theme/textmate",label:"TextMate"},
+            {theme:"ace/theme/tomorrow",label:"Tomorrow"},
+            {theme:"ace/theme/xcode",label:"XCode"},
+
+          
+            {theme:"ace/theme/ambiance",label:"Ambiance"},
+            {theme:"ace/theme/clouds_midnight",label:"Clouds Midnight"},
+            {theme:"ace/theme/cobalt",label:"Cobalt"},
+            {theme:"ace/theme/idle_fingers",label:"idleFingers"},
+            {theme:"ace/theme/kr_theme",label:"krTheme"},
+            {theme:"ace/theme/merbivore",label:"Merbivore"},
+            {theme:"ace/theme/merbivore_soft",label:"Merbivore Soft"},
+            {theme:"ace/theme/mono_industrial",label:"Mono Industrial"},
+            {theme:"ace/theme/monokai",label:"Monokai"},
+            {theme:"ace/theme/pastel_on_dark",label:"Pastel on dark"},
+            {theme:"ace/theme/solarized_dark",label:"Solarized Dark"},
+            {theme:"ace/theme/twilight",label:"Twilight"},
+            {theme:"ace/theme/tomorrow_night",label:"Tomorrow Night"},
+            {theme:"ace/theme/tomorrow_night_blue",label:"Tomorrow Night Blue"},
+            {theme:"ace/theme/tomorrow_night_bright",label:"Tomorrow Night Bright"},
+            {theme:"ace/theme/tomorrow_night_eighties",label:"Tomorrow Night 80s"},
+            {theme:"ace/theme/vibrant_ink",label:"Vibrant Ink"},
+
+];
+
+
+
+
+
+
+function setThemeWrapper(theme) {
+  return function setTheme() {
+      cats.project.editor.setTheme(theme);
+      cats.project.assimilate();
+  }
+}
+
+function createThemeMenu() {
+  var menu = new gui.Menu();
+  themes.forEach( (theme) => {
+    menu.append(new gui.MenuItem({
+      label:theme.label,
+      click: setThemeWrapper(theme.theme)
+    }));
+  });
+  return menu;
+}
+
+function enableReplace() {
+  document.getElementById("findArea").style.display = "block";
+  document.getElementById("replaceArea").style.display = "block";
+}
+
+function createMenubar() {
+
+    var menubar = new gui.Menu({ type: 'menubar' });
+    
+    var file = new gui.Menu();
+    file.append(new gui.MenuItem({ label: 'Open Project...', click: cats.selectProject}));
+
+    var edit = new gui.Menu();
+    edit.append(new gui.MenuItem({label: 'Undo',click: undoChange}));
+    edit.append(new gui.MenuItem({label: 'Redo',click: redoChange}));
+
+    edit.append(new gui.MenuItem({label: 'Find',click: enableFind}));
+    edit.append(new gui.MenuItem({label: 'Replace',click: enableReplace}));
+
+    var refactor = new gui.Menu();
+    refactor.append(new gui.MenuItem({label: 'Rename', click: nop }));
+
+    var run = new gui.Menu();
+    run.append(new gui.MenuItem({label: 'Run main', click: runFile }));
+    run.append(new gui.MenuItem({label: 'Debug main', click: nop }));
+
+    var settings = new gui.Menu();
+    settings.append(new gui.MenuItem({label: 'xyz', click: nop }));
+    settings.append(new gui.MenuItem({label: 'theme', submenu: createThemeMenu() }));
+
+    menubar.append(new gui.MenuItem({ label: 'File', submenu: file}));
+    menubar.append(new gui.MenuItem({ label: 'Edit', submenu: edit}));
+    menubar.append(new gui.MenuItem({ label: 'Refactor', submenu: refactor}));    
+    menubar.append(new gui.MenuItem({ label: 'Run', submenu: run}));    
+    menubar.append(new gui.MenuItem({ label: 'Settings', submenu: settings}));    
+    win.menu = menubar;
+}
+
+createMenubar();
+
 
 
 
