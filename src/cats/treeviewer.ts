@@ -4,24 +4,47 @@ declare var require;
 var fs = require("fs");
 var path = require("path");
 
-// Create the tree representing a directory on the filesystem.
-export function createTreeViewer(dir:string, parent: any[], tsHandler: Function)  {
 
-    fs.readdirSync(dir).forEach( file => {
+// Sort first on directory versus file and then alphabet
+function sort(a,b) {
+    if (a.stat.isFile() && b.stat.isDirectory()) return 1;
+    if (a.stat.isDirectory() && b.stat.isFile()) return -1;
+    if (a.name > b.name) return 1;
+    if (b.name > a.name) return -1;
+    return 0;
+}
 
-        var name = path.join(dir,file);
+
+
+// Create the tree structure representing a directory on the filesystem.
+// This structure is suited for dynatree
+export function createTreeViewer(dir:string, parent: any[], tsHandler: Function) :any[] {    
+    var files = fs.readdirSync(dir);
+    var entries = [];
+
+    files.forEach( file => {
+        var fullName = path.join(dir,file);
+        entries.push({
+            name: file,
+            fullName: fullName,
+            stat: fs.statSync(fullName)
+        });
+    });
+
+    entries.sort(sort);
+
+    entries.forEach( file => {
+
+        name = file.fullName;
 
         var child = {
-            title: file,
+            title: file.name,
             key: "",
             isFolder: false,
             children:[]
         };
 
-        
-        var stat = fs.statSync(name);
-
-        if (stat.isFile()) {
+        if (file.stat.isFile()) {
             child["abc"] = true;
             child.key = name;
 
@@ -33,7 +56,7 @@ export function createTreeViewer(dir:string, parent: any[], tsHandler: Function)
             parent.push(child);
         }
 
-        if (stat.isDirectory()) {
+        if (file.stat.isDirectory()) {
             child.isFolder = true;
             createTreeViewer(name,child.children, tsHandler);
             parent.push(child);

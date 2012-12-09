@@ -3,6 +3,8 @@ declare var ace;
 
 var HashHandler = ace.require('ace/keyboard/hash_handler').HashHandler;
 
+// This class takes care of the autocomplete popup and deals with 
+// the key events
 class AutoCompleteView {
     
     static selectedClassName = 'autocomplete_selected';
@@ -31,7 +33,7 @@ class AutoCompleteView {
       // Get the text between cursor and start
       getInputText() {
           var cursor = this.editor.getCursorPosition();
-          var result = this.editor.getSession().getTokenAt(cursor.row,cursor.column);
+          var result = this.editor.getSession().getTokenAt(cursor.row,cursor.column);          
           if (result) 
             return result.value;
           else 
@@ -39,11 +41,14 @@ class AutoCompleteView {
       }
 
       filter() {
-        var text = this.getInputText().toLowerCase();
+        var text = this.getInputText(); // .toLowerCase();
         if (! text) return this.completions;
 
+        console.log("token: " + text);
+        if (text === ".") return this.completions;
+
         var result = this.completions.filter(function(entry){
-                    return entry.name.toLowerCase().indexOf(text) > -1 ;
+                    return entry.name.indexOf(text) === 0 ;
         });
         return result;
       }
@@ -91,25 +96,17 @@ class AutoCompleteView {
           var key = ev.data.text;
           if(" -=,[]_/()!';:<>".indexOf(key) !== -1){ 
                     this.hide();
+                    return;
           }
+          this.render();
       }
 
-
-      showCompletions(completions){
-            if ( this.active) return;
-
-            this.completions = completions;
-            var infos = completions; // this.filter();
+      private render() {
+          var infos = this.filter();
 
             if (infos.length > 0){
                 this.listElement.innerHTML="";
-                // Todo fix text length
-                var text = ""; // compilationService.matchText;
-                var cursor = this.editor.getCursorPosition();
-                var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column - text.length);
-                this.setPosition(coords);
-
-                this.show();
+                
                 var html = '';
                 // TODO use template
                 for(var n in infos) {
@@ -126,9 +123,18 @@ class AutoCompleteView {
                 }
                 this.listElement.innerHTML = html;
                 this.ensureFocus();
-            }else{
-                this.hide();
             }
+      }
+
+
+      showCompletions(completions){
+            if ( this.active) return;
+            this.completions = completions;
+            var cursor = this.editor.getCursorPosition();
+            var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
+            this.setPosition(coords);
+            this.show();            
+            this.render();
         };
 
 

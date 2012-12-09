@@ -273,15 +273,13 @@ ul.dynatree-container a
 	text-decoration: none;
 	vertical-align: top;
 	margin: 0px;
-	margin-left: 3px;
+	margin-left: 0px;
 /*	outline: 0; /* @ Firefox, prevent dotted border after click */
 }
 
 ul.dynatree-container a:hover
 {
-/*	text-decoration: underline; */
-	background-color: #F2F7FD; /* light blue */
-	border-color: #B8D6FB; /* darker light blue */
+	font-weight:bold;
 }
 
 span.dynatree-node a
@@ -289,14 +287,11 @@ span.dynatree-node a
 	font-size: 10pt; /* required for IE, quirks mode */
 	display: inline-block; /* Better alignment, when title contains <br> */
 /*	vertical-align: top;*/
-	padding-left: 3px;
+	padding-left: 0px;
 	padding-right: 3px; /* Otherwise italic font will be outside bounds */
 	/*	line-height: 16px; /* should be the same as img height, in case 16 px */
 }
-span.dynatree-folder a
-{
-	font-weight: bold;
-}
+
 
 ul.dynatree-container a:focus,
 span.dynatree-focused a:link  /* @IE */
@@ -312,6 +307,7 @@ span.dynatree-expanded a
 {
 }
 
+/*
 span.dynatree-selected a
 {
 	color: green;
@@ -321,8 +317,9 @@ span.dynatree-selected a
 span.dynatree-active a
 {
 	background-color: #3169C6 !important;
-	color: white !important; /* @ IE6 */
+	color: white !important;
 }
+*/
 
 /*******************************************************************************
  * Drag'n'drop support

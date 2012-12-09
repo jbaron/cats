@@ -108,12 +108,22 @@ class TypeScriptHint {
         return {
             content : script.content,
             name : script.name
-        }
-        
+        }        
+    }
+
+    getFormattingEditsForRange(fileName, start, end) {
+        return this.ls.getFormattingEditsForRange(fileName, start, end , {});
+    }
+
+
+    // Quick hack to get access to the language services
+    languageService(operation:string,params) {
+        var result = this.ls[operation].call(this.ls,params);
+        return result;
     }
 
     // Add a new script
-    addScript(name,source,resident?) {
+    addScript(name:string,source:string,resident?:bool) {
         this.typescriptLS.addScript(name, source,resident);
     }
 

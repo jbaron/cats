@@ -1,10 +1,10 @@
-// This is based on the harness.ts file from TypeScript (85% identical)
+// This is based on the harness.ts file from TypeScript (80% identical)
 // Major difference is that this module uses real language services API and not the Shim.
 // Licensed under the Apache License, Version 2.0. 
 
 importScripts("typescript.js")
 
-///<reference path='./typescript.d.ts' />
+///<reference path='../../typings/typescript.d.ts' />
 
 module LiteHarness {
    

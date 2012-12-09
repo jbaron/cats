@@ -27,13 +27,27 @@ h3 span {
 /* Default settings ACE editor */
 #editor { 
         position: absolute;
-        top: 0;
+        top: 30px; /* Make room for tabs */
         right: 0;
         bottom: 0;
         left: 0;
         font-size: 16px;
 }
 
+
+.tabs {
+  padding: 5px;
+  margin: 5px;
+  list-style: none;
+}
+
+
+.tabs li {
+  float: left;
+  width: 80px;
+  font-size: 10px;
+
+}
 
 /*********************************************************
 Auto complete styling
@@ -66,20 +80,12 @@ Auto complete styling
     list-style: none;
 }
 
-.autocomplete_selected{
-   background:#eee;
-}
-
-.autocomplete_selected .label-name{
-    font-weight:bold;
-}
-
 .autocomplete .name {
-    padding-left: 15px;
+    padding-left: 20px;
 }
 
 .autocomplete .kind-method{
-    background: url('../img/types/methpub_obj.gif') no-repeat; 
+    background: url('../img/type_method.png') no-repeat; 
 }
 
 .autocomplete .kind-method:after{
@@ -87,33 +93,54 @@ Auto complete styling
 }
 
 .autocomplete .kind-interface{
-    background: url('../img/types/intf_obj.gif') no-repeat; 
+    background: url('../img/type_interface.png') no-repeat; 
 }
 
 .autocomplete .kind-enum{
-    background: url('../img/types/enum_obj.gif') no-repeat; 
+    background: url('../img/type_enum.png') no-repeat; 
 }
 
 
 .autocomplete .kind-class{
-    background: url('../img/types/class_obj.gif') no-repeat; 
+    background: url('../img/type_class.png') no-repeat; 
 }
 
-.autocomplete .kind-variable, .autocomplete .kind-property {
-    background: url('../img/types/property_obj.gif') no-repeat; 
+.autocomplete .kind-variable {
+  background: url('../img/type_var.png') no-repeat; 
+}
+
+ .autocomplete .kind-property {
+    background: url('../img/type_prop.png') no-repeat; 
+}
+
+.autocomplete .kind-keyword {
+    background: url('../img/type_keyword.png') no-repeat; 
 }
 
 .autocomplete  .type{
     padding-left:10px;
     color:blue;
+    background: white;
     visibility:hidden;
 }
 
+
+.autocomplete_selected{
+   background-color: #eee;
+   color: #222;
+}
+
+.autocomplete_selected .name{
+    font-weight:bold;
+}
+
 .autocomplete_selected .type{
-    visibility:visible;
+    visibility:visible;    
 }    
 
+/*        
 
+*/
 
 #findArea, #replaceArea {
   display: none;
@@ -129,3 +156,9 @@ Auto complete styling
 }
 
 
+/*********************** Filetree *******************************/
+#fileTree > div {
+  border-bottom: 1px dotted;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}

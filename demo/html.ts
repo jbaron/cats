@@ -1,4 +1,19 @@
+// ****************************************************************************
+// A small trial to use the TypeScript typing system to create a strong typed 
+// DOM API with good autocomplete support.
+// Just try it out in the next section 
+// ***********************************************************************
 
+var html = new Doc().html;
+html.body.div.span.div.text("hello world");
+
+
+
+
+
+// **********************************************************************
+// Implementation classes and interfaces
+// **********************************************************************
 class SingleElem {
 
 	constructor(public tag, public parent:SingleElem) {}
@@ -274,16 +289,6 @@ interface A extends Elem {
 	times(i) : A;
 }
 
-// ***********************************************************************
-// Testing 
-// ***********************************************************************
-
-var html = new Doc().html;
-html.body.div.span.div
-html.body.div.a.attr("href","#").times(5).text("Click here");
-console.log(html.toHTML());
-html.body.div.a.remove();
-console.log(html.toHTML());
 
 
 

@@ -16,7 +16,7 @@ export class ISenseHandler {
     }
 
     // Invoke a method on the Worker 
-    perform(method, ...data:any[]) {
+    perform(method:string, ...data:any[]) {
         var handler = data.pop();
         this.messageId++;
         var message = {
@@ -25,7 +25,7 @@ export class ISenseHandler {
             params: data
         }
         this.worker.postMessage(message);
-        console.log("Send message " + message.method + ":"  + message.id + " to worker");
+        // console.log("Send message " + message.method + ":"  + message.id + " to worker");
         if (handler) this.registry[this.messageId] = handler;
     }
 
@@ -34,7 +34,7 @@ export class ISenseHandler {
         this.worker.onmessage = (e) => {
             var msg = e.data;
             // console.log("Received message " + JSON.stringify(msg) + " from worker");
-            console.log("Received message reply " + msg.id + " from worker.");
+            // console.log("Received message reply " + msg.id + " from worker.");
             if (msg.error) {
                 console.error("Got error back !!! ");
                 console.error(msg.error.stack);

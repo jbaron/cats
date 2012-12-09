@@ -1,21 +1,23 @@
 ///<reference path='autocompleteview.ts'/>
 ///<reference path='isensehandler.ts'/>
+///<reference path='treeviewer.ts'/>
 
 declare var ace;
 declare var require;
-
+declare var _canLog; // logging flag dynatree;
 
 module cats {
 
 var fs = require("fs");
 var path = require("path");
 
+export var project:Project;
 
 export class Project {
     // The name of the file that is currently being edited
-    private filename:string;
+    filename:string;
     private ignoreChange = false;
-    private iSense;
+    iSense;
     editor;
 
     private loadDefaultLib = true;
@@ -33,7 +35,7 @@ export class Project {
 
 // Set the project to a new directory and make sure 
 // we remove old artifacts.
-constructor(private projectDir:string) {
+constructor(public projectDir:string) {
 
     this.initEditor();
     this.autoCompleteView = new AutoCompleteView(this.editor); 
@@ -65,9 +67,16 @@ assimilate() {
       $(".autocomplete").css("color",fg);
       $("input").css("background-color",fg);
       $("input").css("color",bg);
+  }, 100);
+}
 
-  }, 500);
 
+saveFile() {  
+  var confirmation = confirm("Save file " + this.filename);
+  if (confirmation) {
+      var content = this.editor.getValue();      
+      Project.writeTextFile(this.filename,content);
+  }
 }
 
 // Perform code autocompletion
@@ -97,11 +106,18 @@ initEditor() {
     editor.getSession().setMode("ace/mode/typescript");
     this.ignoreChange = true;
 
-    editor.commands.addCommands([{
+    editor.commands.addCommands([
+    {
         name:"autoComplete",
         bindKey:"Ctrl-Space",
         exec:this.autoComplete.bind(this)
-    }]);
+    },
+    {
+        name:"save",
+        bindKey:"Ctrl-s",
+        exec:this.saveFile.bind(this)
+    }
+    ]);
 
     var originalTextInput = editor.onTextInput;
     editor.onTextInput = (text) => {
@@ -130,12 +146,6 @@ onChangeHandler(event) {
     this.changed = true;
     clearTimeout(this.updateSourceTimer);
     
-    /*
-    if (info.text[0] === '.') {
-        autoComplete(editor);
-    }
-    */
-
     this.updateSourceTimer = setTimeout(() => {    
           if (this.changed) { 
               console.log("updating source code for file " + this.filename); 
@@ -163,20 +173,26 @@ updateEditor(name: string) {
     if (ext !== ".ts") {
         this.updateNonTs(name);
     } else {
-      var tsName = path.basename(name);
+      var tsName = name; //path.basename(name);
       this.iSense.perform("getScript", tsName, (err,script) => {
         this.filename = tsName;
         this.editor.getSession().setMode("ace/mode/typescript");
+        this.ignoreChange = false;
         this.editor.setValue(script.content);
         this.editor.moveCursorTo(0, 0);
-        this.ignoreChange = false;
+        
     });
     }
 };
 
 
+
+static writeTextFile(fullName:string,content:string) {
+    fs.writeFileSync(fullName,content,"utf8");
+}
+
 static readTextFile(fullName:string) :string {
-    var data = fs.readFileSync(fullName,"utf-8");
+    var data = fs.readFileSync(fullName,"utf8");
     var content = data.replace(/\r\n?/g,"\n");
     return content;
 }
@@ -188,17 +204,29 @@ scanProjectDir() {
 
         var children = createTreeViewer(this.projectDir,[],(tsName)=>{            
             var script = {
-                name: path.basename(tsName),
+                name: tsName, //path.basename(tsName),
                 content: Project.readTextFile(tsName)
             }
 
             // this.iSense.perform("addScript",script,() => {});
             this.iSense.perform("updateScript",script.name,script.content,() => {});
-            console.log("Added script " + script.name);  
+            // console.log("Added script " + script.name);  
         });
 
-        $("#fileTree").innerHTML = "";
-        $("#fileTree").dynatree({
+        _canLog = false;        
+
+        var root = document.getElementById("fileTree");
+        var ftree = document.createElement("div");
+        root.appendChild(ftree);
+
+        children = [{
+          title: path.basename(this.projectDir),
+          isFolder: true,
+          children: children
+        }];
+
+        // $("#fileTree").innerHTML = "";
+        $(ftree).dynatree({
           onActivate: function(node) { 
             var scriptname:string = node.data.key;
             if (scriptname) {
