@@ -2,28 +2,35 @@ Introduction
 ============
 CATS is an editor for the TypeScript developer. It stands for Code Assistant for TypeScript. Previously it was called tsEdit, but it turns out there is already an editor with that same name. And to avoid any confusion, I decided to rename my editor to CATS.
 
-CATS is not yet a fullblown editor, but it is slowly getting there. Right now it has already support for:
+CATS is not yet a full-blown editor, but it is slowly getting there. Right now it has already support for:
 
-- Basic code completion: 
-	  - When you type a "." member based code completion will be triggered.
-	  - Anywhere else you can type control-space to get code completion
+- Basic code completion:
 
-- Syntax highlighting
+    a) When you type a "." member based code completion will be triggered.
 
-- Validation of the source code (running in the background) informing you of any compiler warnings
+    b) Anywhere else you can type control-space to get code completion. 
+                       
+- Syntax highlighting.
 
-- Various basic coding assistance like indentation (see help => keyboard shortcuts to see the list)
+- Validation of the source code (running in the background) informing you of any compiler warnings.
 
-- Theme support
+- Various basic coding assistance like indentation (see help => keyboard shortcuts to see the list).
+
+- Theme support:
+
+<img src="https://raw.github.com/jbaron/cats/master/artifacts/screenshot.jpg" height="250px" width="250px" />
+
 
 With this version you can now also save changed file. It is however strongly advised to make a backup first before using CATS on your project since the software is still considered to be alpha quality.
 
 
 Installation & Running it
 =========================
-To install CATS, just follow these simple steps:
+To install CATS, just follow these steps:
 
-1. Download the CATS from Github: git clone https://github.com/jbaron/cats.git
+1. Download the CATS from Github: 
+
+                git clone https://github.com/jbaron/cats.git
 
 2. Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at:
      
@@ -35,7 +42,7 @@ To install CATS, just follow these simple steps:
 
 Configuration
 =============
-The editor scans the project directory and finds automaticcaly all the TypeScript files. You can also open and edit other text files within that directory. Don't open binary files.
+The editor scans a project directory and finds automatically all the TypeScript files in there. You can also open and edit other text files within that directory. Just don't open binary files yet.
 
 
 Compiling from source
@@ -54,6 +61,7 @@ There is no need to compile CATS yourself, since all the compiled files are alre
 
 That is all there is to it. 
 
+
 Couldn't have done it without ....
 =================================
 Some of the main components that are being used by CATS:
@@ -63,7 +71,6 @@ Some of the main components that are being used by CATS:
 - Node-webkit. This is a great initiative of Intel to allow Node libraries to be used within a web page. We use this to read and write local files without the need for a server component.
 
 
-ToDo
-====
+Todo
+=====
 See the TODO.md file.
-
