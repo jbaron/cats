@@ -22,7 +22,7 @@ CATS is not yet a full-blown editor, but it is slowly getting there. Right now i
 <img src="https://raw.github.com/jbaron/cats/master/artifacts/screenshot2.jpg" height="250px" width="250px" />
 <img src="https://raw.github.com/jbaron/cats/master/artifacts/screenshot3.jpg" height="250px" width="250px" />
 
-With this version you can now also save changed file. It is however strongly advised to make a backup first before using CATS on your project since the software is still considered to be alpha quality.
+With this version you can now also save a changed file. It is however strongly advised to make a backup first before using CATS on your project since the software is still considered to be alpha quality.
 
 
 Installation & Running it
@@ -46,28 +46,31 @@ Configuration
 The editor scans a project directory and finds automatically all the TypeScript files in there. You can also open and edit other text files within that directory. Just don't open binary files yet.
 
 
-Compiling from source
+Building from source
 =====================
-There is no need to compile CATS yourself, since all the compiled files are already included. But if you want to try it, here are the simple steps:
+There is no need to compile CATS yourself, since all the compiled files are already included. But if you want to play aorund with it, here are the steps:
 
 1. Make sure you have installed TypeScript 0.8.1 or later
 
 2. Go to the cats directory
 
-3. type> tsc @build
-   This will compile the worker.js file
+3. The following will compile the required worker.js file:
 
-4. type> tsc @build2
-   This will compile the main.js file 
+         tsc @build
 
-That is all there is to it. 
+4. Now the only thing left is to compile the main.js file: 
+
+		tsc @build2
+   
+
+That is all there is to it. The lib file should now have an updated main.js and worker.js file and you are ready to run CATS editor.
 
 
 Couldn't have done it without ....
-=================================
+==================================
 Some of the main components that are being used by CATS:
 
-- ACE is an embeddable code editor written in JavaScript.
+- ACE, an embeddable code editor written in JavaScript.
 - Typescipt 0.8.1 (of course).
 - Node-webkit. This is a great initiative of Intel to allow Node libraries to be used within a web page. We use this to read and write local files without the need for a server component.
 

@@ -1,3 +1,8 @@
+/**
+  This class is "inspired" by the ace typescript playground project.
+  Especially the way popup is drawn and focused.
+*/
+
 declare var $;
 declare var ace;
 

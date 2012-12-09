@@ -5,7 +5,7 @@ var fs = require("fs");
 var path = require("path");
 
 
-// Sort first on directory versus file and then alphabet
+// Sort first on directory versus file and then on alphabet
 function sort(a,b) {
     if (a.stat.isFile() && b.stat.isDirectory()) return 1;
     if (a.stat.isDirectory() && b.stat.isFile()) return -1;
