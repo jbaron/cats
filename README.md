@@ -18,8 +18,9 @@ CATS is not yet a full-blown editor, but it is slowly getting there. Right now i
 
 - Theme support:
 
-<img src="https://raw.github.com/jbaron/cats/master/artifacts/screenshot.jpg" height="250px" width="250px" />
-
+<img src="https://raw.github.com/jbaron/cats/master/artifacts/screenshot.jpg" height="250px" width="200px" />
+<img src="https://raw.github.com/jbaron/cats/master/artifacts/screenshot2.jpg" height="250px" width="200px" />
+<img src="https://raw.github.com/jbaron/cats/master/artifacts/screenshot3.jpg" height="250px" width="200px" />
 
 With this version you can now also save changed file. It is however strongly advised to make a backup first before using CATS on your project since the software is still considered to be alpha quality.
 
