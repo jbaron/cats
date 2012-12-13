@@ -1,30 +1,31 @@
-
 #logo {
   width:50px;
   height:50px;
   float: left;
 }
 
-/* Overwrite default layout settings*/
-body .ui-layout-pane {
-  background: inherit;
-  color: inherit;
-  padding: 5px;
-}
-
-
-
-#editorPane {
-	padding: 0px;
-}
-
-
 h3 span {
 	color: blue;
 }
 
+/************************************************************** 
+  Overwrite default layout settings
+***************************************************************/
 
-/* Default settings ACE editor */
+body .ui-layout-pane {
+  background: inherit;
+  color: inherit;
+  padding: 2px;
+}
+
+#editorPane {
+  padding: 0px;
+}
+
+/************************************************************* 
+Some basic settings for the ACE editor 
+**************************************************************/
+
 #editor { 
         position: absolute;
         top: 30px; /* Make room for tabs */
@@ -34,19 +35,30 @@ h3 span {
         font-size: 16px;
 }
 
+/***********************************************************
+Tab section
+************************************************************/
 
-.tabs {
-  padding: 5px;
-  margin: 5px;
+#tabs {
+  padding: 0px;
+  margin: 0px;
   list-style: none;
 }
 
+#tabs li.active {
+  font-weight: bold;
+}
 
-.tabs li {
+#tabs li:hover {
+  font-size: 120%;
+}
+
+#tabs li {
   float: left;
-  width: 80px;
-  font-size: 10px;
-
+  font-size: 80%;
+  padding: 0px 5px 0px 0px;
+  margin: 0px 0px 0px 5px;  
+  border-right: 1px dotted;
 }
 
 /*********************************************************
@@ -100,9 +112,12 @@ Auto complete styling
     background: url('../img/type_enum.png') no-repeat; 
 }
 
-
 .autocomplete .kind-class{
     background: url('../img/type_class.png') no-repeat; 
+}
+
+.autocomplete .kind-module{
+    background: url('../img/type_module.png') no-repeat; 
 }
 
 .autocomplete .kind-variable {
@@ -124,7 +139,6 @@ Auto complete styling
     visibility:hidden;
 }
 
-
 .autocomplete_selected{
    background-color: #eee;
    color: #222;
@@ -138,9 +152,9 @@ Auto complete styling
     visibility:visible;    
 }    
 
-/*        
-
-*/
+/*******************************************************************        
+  Find Area styling
+********************************************************************/
 
 #findArea, #replaceArea {
   display: none;
@@ -155,8 +169,9 @@ Auto complete styling
   width: 100px;
 }
 
-
-/*********************** Filetree *******************************/
+/******************************************************************** 
+  Filetree 
+********************************************************************/
 #fileTree > div {
   border-bottom: 1px dotted;
   padding-bottom: 5px;

@@ -6,7 +6,7 @@ importScripts("typescript.js")
 
 module CATS {
 
-
+var outputFiles = {};
 
 
 var console = {
@@ -21,31 +21,9 @@ function caseInsensitive(a, b) {
     return 0;
 }
 
-
-// member = 0, type = 1, other = 2
-var autoCompleteMode:any[] = [
-    {
-        "method":true,
-        "property":true
-    },
-    {
-        "interface":true,
-        "keyword":true
-    },
-    {
-        "method" : true,
-        "variable" : true,
-        "class" : true,
-        "module" : true,
-        "function" : true,
-        "enum" : true
-    }
-    
-]
-
 declare interface Cursor {
-        column: number;
-        row: number;
+    column: number;
+    row: number;
 }
 
 
@@ -64,6 +42,63 @@ class TypeScriptHint {
         this.typescriptLS = new LiteHarness.TypeScriptLS();
         this.ls = this.typescriptLS.getLanguageService();
     }
+
+
+    createWriter() {
+        var output = "";
+        return {
+            Write: function (s) { output  += s; },
+            WriteLine: function (s) { output  += s + "\n";},
+            Close: function () {},
+            Get : function() { return output }
+        };
+    }
+
+
+    createVirtualFiles(path:string,useUTF8?:bool):ITextWriter {        
+        var output = "";
+        var result = {
+            Write: function (s) { output  += s; },
+            WriteLine: function (s) { output  += s + "\n";},
+            Close: function () {},
+            Get : function() { return output }
+        };
+        outputFiles[path] = result;
+        return result;
+    }
+
+
+    compile(){
+
+        var outfile = this.createWriter();
+        var outerr = this.createWriter();
+
+        var compiler = new TypeScript.TypeScriptCompiler(outerr, new TypeScript.NullLogger(), new TypeScript.CompilationSettings());
+        var scripts = this.typescriptLS.scripts;
+        scripts.forEach( (script) =>{
+            compiler.addUnit(script.content, script.name, false);
+        })
+        
+        outputFiles = {};
+        compiler.typeCheck();
+        
+        // compiler.emit(false, function (name) {});
+        // public emit(createFile: (path: string, useUTF8?: bool) => ITextWriter): void;
+
+        compiler.emit(this.createVirtualFiles);
+        var resultSource = {}
+        for ( var file in outputFiles) {
+            resultSource[file] = outputFiles[file].Get();
+        }
+
+        // compiler.emitToOutfile(outfile);
+        return {
+            source: resultSource, // outfile.Get(),
+            error: outerr.Get()
+        } 
+    }
+
+
 
 
     // Get the filenames of the scripts

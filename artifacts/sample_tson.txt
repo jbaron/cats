@@ -1,0 +1,36 @@
+///@type=cats/config.d.ts
+
+{	
+	theme : "Cobalt",	
+	sourceDirecty : "src"
+	compiler : {
+		outputSingleFile: false,
+		outputPath: "lib",
+        ecmaScriptVersion: "ES5",
+	}		
+}
+
+
+
+{	
+	theme : "Cobalt",	
+	sourceDirecty : "."
+	compiler : {
+		outputSingleFile: true,
+		outputPath: "main.js",
+        ecmaScriptVersion: 3,
+	}		
+}
+
+
+
+
+
+
+/*
+    The above would translarte into before intellisense would be offered.
+	var config:Config = 
+		....
+	}
+
+*/

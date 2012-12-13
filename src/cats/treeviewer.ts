@@ -15,7 +15,6 @@ function sort(a,b) {
 }
 
 
-
 // Create the tree structure representing a directory on the filesystem.
 // This structure is suited for dynatree
 export function createTreeViewer(dir:string, parent: any[], tsHandler: Function) :any[] {    

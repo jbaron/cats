@@ -1,5 +1,5 @@
 ///<reference path='project.ts'/>
-
+declare var process;
 
 module Menu {
 
@@ -9,6 +9,7 @@ var win = gui.Window.get();
 // This is the class that creates the main menubar and has actions that are linked to the 
 // click events.
 class Menubar {
+defaultOutput = "main.js";
 menubar;
 themes = [
             {theme:"ace/theme/chrome",label:"Chrome"},
@@ -72,14 +73,17 @@ constructor() {
 
     var run = new gui.Menu();
     run.append(new gui.MenuItem({label: 'Run main', click: this.runFile }));
+    run.append(new gui.MenuItem({label: 'Compile All', click: this.nop /* this.compileAll */}));
     run.append(new gui.MenuItem({label: 'Debug main', click: this.nop }));
 
     var settings = new gui.Menu();
     settings.append(new gui.MenuItem({label: 'Theme', submenu: this.createThemeMenu() }));
+    settings.append(new gui.MenuItem({label: 'Preferences', click: this.preferences }));
 
     var help = new gui.Menu();
     help.append(new gui.MenuItem({label: 'Keyboard shortcuts', click: this.showShortcuts }));
     help.append(new gui.MenuItem({label: 'About', click: this.showAbout }));
+    help.append(new gui.MenuItem({label: 'Process', click: this.showProcess }));
 
 
     menubar.append(new gui.MenuItem({ label: 'File', submenu: file}));
@@ -106,6 +110,32 @@ showShortcuts() {
 
 showAbout() {
   alert("CATS version 0.3.0\nCode Assisitant for TypeScript\nCreated by JBaron");
+}
+
+showProcess() {
+  var mem = process.memoryUsage();
+  var display = "memory used: " + mem.heapUsed;
+  display += "\nmemory total: " + mem.heapTotal;
+  display += "\nplatform: " + process.platform;
+  display += "\nworking directory: " + process.cwd();
+  alert(display);
+}
+
+compileAll() {
+  var path = require("path");
+  this.defaultOutput = window.prompt("Output file",this.defaultOutput);
+  cats.project.iSense.perform("compile", (err,data) => {
+    var fullOutput = path.join(cats.project.projectDir,this.defaultOutput);
+    var content = data.source;
+    alert("going to write " + content.length + " characters to file " + fullOutput);
+    console.log(content);
+  });
+}
+
+preferences() {
+  var content = cats.project.config.stringify();
+  var name = cats.project.config.fileName;
+  cats.project.editFile(name,content);
 }
 
 openProject() {

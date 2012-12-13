@@ -2,9 +2,9 @@
   "name": "CATS",
   "main": "index.html",
   "description" : "TypeScript Editor",
-  "version" : "0.3.0",
+  "version" : "0.4.0",
   "window": { 
-     "toolbar": false,  
+     "toolbar": true,  
      "position": "center",
      "width": 800,
      "height": 800

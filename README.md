@@ -1,6 +1,6 @@
 Introduction
 ============
-CATS is an editor for the TypeScript developer. It stands for Code Assistant for TypeScript. Previously it was called tsEdit, but it turns out there is already an editor with that same name. And to avoid any confusion, I decided to rename my editor to CATS.
+CATS is an editor for the TypeScript developer. It stands for *C*ode *A*ssistant for *T*ype*S*cript. Previously it was called tsEdit, but it turns out there is already an editor with that same name. And to avoid any confusion, I decided to rename my editor to CATS.
 
 CATS is not yet a full-blown editor, but it is slowly getting there. Right now it has already support for:
 
@@ -14,13 +14,11 @@ CATS is not yet a full-blown editor, but it is slowly getting there. Right now i
 
 - Validation of the source code (running in the background) informing you of any compiler warnings.
 
-- Various basic coding assistance like indentation (see help => keyboard shortcuts to see the list).
+- Various basic coding assistance like folding, indentation (see help => keyboard shortcuts to see a list).
 
 - Theme support:
 
-<img src="https://raw.github.com/jbaron/cats/master/artifacts/screenshot.jpg" height="250px" width="250px" />
-<img src="https://raw.github.com/jbaron/cats/master/artifacts/screenshot2.jpg" height="250px" width="250px" />
-<img src="https://raw.github.com/jbaron/cats/master/artifacts/screenshot3.jpg" height="250px" width="250px" />
+<img src="https://raw.github.com/jbaron/cats/master/artifacts/themes.jpg" height="250px" width="850px" />
 
 With this version you can now also save a changed file. It is however strongly advised to make a backup first before using CATS on your project since the software is still considered to be alpha quality.
 

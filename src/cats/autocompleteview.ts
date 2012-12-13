@@ -35,12 +35,26 @@ class AutoCompleteView {
         this.wrap.appendChild(this.listElement);
       };
 
+      
+      getInputText() {  
+        var cursor = this.editor.getCursorPosition();
+        // console.log(cursor.column);
+        var text = this.editor.session.getLine(cursor.row).slice(0, cursor.column+1);
+        // console.log(text);
+        var matches = text.match(/[a-zA-Z_0-9\$]*$/);
+        if (matches && matches[0]) 
+          return matches[0];
+        else 
+          return "";        
+      };
+    
+
       // Get the text between cursor and start
-      getInputText() {
+      getInputText2() {
           var cursor = this.editor.getCursorPosition();
           var result = this.editor.getSession().getTokenAt(cursor.row,cursor.column);          
-          if (result) 
-            return result.value;
+          if (result && result.value) 
+            return result.value.trim();
           else 
             return "";
       }
@@ -67,7 +81,11 @@ class AutoCompleteView {
         this.handler.bindKey("Return|Tab",() => {
             var current = this.current();
             if(current){
-                    this.editor.insert(current.dataset["name"]);
+                var inputText = this.getInputText() 
+                for(var i = 0; i< inputText.length; i++){
+                   this.editor.remove("left");
+                }
+               this.editor.insert(current.dataset["name"]);
             }
             this.hide();
         });    

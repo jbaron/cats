@@ -26,9 +26,9 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.4142136"
      inkscape:cx="286.72511"
-     inkscape:cy="281.39058"
+     inkscape:cy="223.14528"
      inkscape:document-units="px"
-     inkscape:current-layer="g3763-0"
+     inkscape:current-layer="g3763-25"
      showgrid="false"
      inkscape:window-width="1334"
      inkscape:window-height="1017"
@@ -213,7 +213,7 @@
            sodipodi:cy="338.07648"
            sodipodi:rx="84.285713"
            sodipodi:ry="82.85714"
-           d="m 259.99999,338.07648 a 84.285713,82.85714 0 1 1 -168.571424,0 84.285713,82.85714 0 1 1 168.571424,0 z" />
+           d="m 259.99999,338.07648 c 0,45.76073 -37.736,82.85714 -84.28571,82.85714 -46.54971,0 -84.285714,-37.09641 -84.285714,-82.85714 0,-45.76074 37.736004,-82.85714 84.285714,-82.85714 46.54971,0 84.28571,37.0964 84.28571,82.85714 z" />
         <flowRoot
            xml:space="preserve"
            id="flowRoot2987-80"
@@ -266,6 +266,47 @@
                style="font-size:144px" /></flowRegion><flowPara
              style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:KacstDecorative;-inkscape-font-specification:KacstDecorative Bold"
              id="flowPara2993-07">k</flowPara></flowRoot>      </g>
+    </g>
+    <g
+       id="g3763-25"
+       inkscape:export-filename="/home/dks/Documents/type_class.png"
+       inkscape:export-xdpi="8.4399996"
+       inkscape:export-ydpi="8.4399996"
+       transform="translate(92.279181,528.31663)">
+      <g
+         id="g3046"
+         inkscape:export-filename="/home/dks/ts/cats/artifacts/type_module.png"
+         inkscape:export-xdpi="8.4399996"
+         inkscape:export-ydpi="8.4399996">
+        <path
+           inkscape:export-ydpi="8.4399996"
+           inkscape:export-xdpi="8.4399996"
+           inkscape:export-filename="/home/dks/ts/cats/artifacts/type_module.png"
+           sodipodi:type="arc"
+           style="fill:#de8787;fill-opacity:1;stroke:#808080;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+           id="path2985-78"
+           sodipodi:cx="175.71428"
+           sodipodi:cy="338.07648"
+           sodipodi:rx="84.285713"
+           sodipodi:ry="82.85714"
+           d="m 259.99999,338.07648 a 84.285713,82.85714 0 1 1 -168.571424,0 84.285713,82.85714 0 1 1 168.571424,0 z" />
+        <flowRoot
+           inkscape:export-ydpi="8.4399996"
+           inkscape:export-xdpi="8.4399996"
+           inkscape:export-filename="/home/dks/ts/cats/artifacts/type_module.png"
+           xml:space="preserve"
+           id="flowRoot2987-83"
+           style="font-size:144px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Impact;-inkscape-font-specification:Sans"
+           transform="translate(-25.427128,-52.842784)"><flowRegion
+             id="flowRegion2989-42"><rect
+               id="rect2991-5"
+               width="262.85715"
+               height="274.28571"
+               x="131.42857"
+               y="298.07648"
+               style="font-size:144px" /></flowRegion><flowPara
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:KacstDecorative;-inkscape-font-specification:KacstDecorative Bold"
+             id="flowPara2993-7">M</flowPara></flowRoot>      </g>
     </g>
   </g>
 </svg>

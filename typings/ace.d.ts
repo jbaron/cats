@@ -1,0 +1,9 @@
+module ACE {
+	class EditSession {
+	
+	}
+
+
+
+
+}
