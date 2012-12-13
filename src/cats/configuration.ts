@@ -1,4 +1,49 @@
 
+var allOptions = {
+	canCallDefinitionSignature: false,
+	codeGenTarget: 0,
+	controlFlow: false,
+	controlFlowUseDef: false,
+	emitComments: false,
+	errorOnWith: true,
+	errorRecovery: false,
+	exec: false,
+	generateDeclarationFiles: false,
+	inferPropertiesFromThisAssignment: false,
+	mapSourceFiles: false,
+	minWhitespace: false,
+	moduleGenTarget: 0,
+	outputFileName: "",
+	outputMany: true,
+	parseOnly: false,
+	preprocess: true,
+	printControlFlow: false,
+	propagateConstants: false,
+	resolve: true,
+	styleSettings: {
+		assignmentInCond: false,
+		bitwise: false,
+		blockInCompoundStmt: false,
+		emptyBlocks: true,
+		eqeqeq: false,
+		eqnull: false,
+		evalOK: true,
+		forin: false,
+		funcInLoop: true,
+		implicitAny: false,
+		innerScopeDeclEscape: true,
+		literalSubscript: true,
+		newMustBeUsed: false,
+		reDeclareLocal: true,
+		requireSemi:false
+	},
+	useCaseSensitiveFileResolution: false,
+	useDefaultLib: true,
+	watch: false
+}
+
+
+
 
 function errorHandler(err,data) {
 	if (err) {
@@ -53,23 +98,26 @@ module cats {
 		}
 
 
+
 		loadDefault() {
 			this._config = {	
 				theme : "ace/theme/clouds",
 				fontSize: 14,
-
+				main: "index.html",
 				sourcePath : null, //If not set, the whole project directory is the source directory
-				
+				outputPath: null,
+
 				compiler : {
 					useDefaultLib: true,
-					outputSingleFile: false,
-					outputPath: null, // Filename or directory
-        			ecmaScriptVersion: "ES5",
-        			generateDeclarations: false,
-        			generateSourceMaps: false,
-        			minify: false
+					outputMany: true,
+					outputFileName: "",
+					emitComments: false,
+					generateDeclarationFiles: false,
+					mapSourceFiles: false,
+        			codeGenTarget: 1,
+        			moduleGenTarget: 0
 				},
-
+				minify: false,
 				rememberOpenFiles : false
 			};
 		}

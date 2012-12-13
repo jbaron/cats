@@ -1,7 +1,6 @@
 
 module gui {
 
-
 export class Tabbar {
 
     private static instances = {};

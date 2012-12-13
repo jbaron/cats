@@ -8,7 +8,6 @@ var html = new Doc().html;
 html.body.div.span.div.text("hello world");
 
 
-
 // ****************************************************************************
 // Implementation classes and interfaces
 // ****************************************************************************

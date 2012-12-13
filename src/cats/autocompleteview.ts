@@ -1,6 +1,7 @@
 /**
   This class is "inspired" by the ace typescript playground project.
-  Especially the way popup is drawn and focused.
+  Especially the way popup is drawn and focused. 
+  @TODO create less HTML and 
 */
 
 declare var $;
@@ -140,9 +141,7 @@ class AutoCompleteView {
                     if (info.name !== info.type) {
                         type =  '<span class="type">' + info.type + '</span>';
                     }
-                    var kind = ""; // '<span class="label-kind label-kind-'+ info.kind + '">' + info.kind.charAt(0) + '</span>';
-
-                    html += '<li data-name="' + info.name + '">' + kind + name + type + '</li>';
+                    html += '<li data-name="' + info.name + '">' + name + type + '</li>';
                 }
                 this.listElement.innerHTML = html;
                 this.ensureFocus();

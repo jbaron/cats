@@ -68,12 +68,18 @@ class TypeScriptHint {
     }
 
 
-    compile(){
+    compile(options){
 
         var outfile = this.createWriter();
         var outerr = this.createWriter();
 
-        var compiler = new TypeScript.TypeScriptCompiler(outerr, new TypeScript.NullLogger(), new TypeScript.CompilationSettings());
+        var compOptions = new TypeScript.CompilationSettings();
+        for (var i in options) {
+            compOptions[i] = options[i];
+        } 
+
+
+        var compiler = new TypeScript.TypeScriptCompiler(outerr, new TypeScript.NullLogger(), compOptions);
         var scripts = this.typescriptLS.scripts;
         scripts.forEach( (script) =>{
             compiler.addUnit(script.content, script.name, false);

@@ -2,16 +2,14 @@
 ///<reference path='isensehandler.ts'/>
 ///<reference path='treeviewer.ts'/>
 ///<reference path='configuration.ts'/>
+///<reference path='session.ts'/>
 
 declare var ace;
 declare var require;
 declare var _canLog; // logging flag dynatree;
 
-
 module cats {
 
-var EditSession = ace.require("ace/edit_session").EditSession;
-var UndoManager = ace.require("ace/undomanager").UndoManager;
 
 // Bug in tsc that makes --out directory not working
 // when using import statements. So for now a plain require
@@ -24,18 +22,16 @@ export var project:Project; // Singleton project
 
 export class Project {
     // The name of the file that is currently being edited
-    filename:string;
-    private ignoreChange = false;
+    // filename:string;
+    // private ignoreChange = false;
     private sessions = {};
-    private defaultTheme = "ace/theme/clouds";
-    editor;
-    iSense;
+    private session:Session;
+    editor:any;
+    iSense:ISenseHandler;
     config: Configuration;
 
     private loadDefaultLib = true;
-    private updateSourceTimer;
-    private changed = false;
-    private markedErrors = [];
+    // private markedErrors = [];
     autoCompleteView;
 
 
@@ -45,7 +41,8 @@ constructor(public projectDir:string) {
     this.config = new Configuration(this.projectDir);
     this.config.load();
 
-    this.initEditor();
+    this.editor = this.createEditor();
+    
     this.autoCompleteView = new AutoCompleteView(this.editor); 
     
     this.iSense = new ISenseHandler();
@@ -81,38 +78,27 @@ assimilate() {
 
 
 saveFile() {  
-  var confirmation = confirm("Save file " + this.filename);
-  if (confirmation) {
-      var content = this.editor.getValue();      
-      Project.writeTextFile(this.filename,content);
+  var script = this.session.getValue();      
+  var confirmation = confirm("Save file " + script.name);
+  if (confirmation) {  
+      Project.writeTextFile(script.name,script.content);
   }
 }
 
 // Perform code autocompletion
 autoComplete()  {
-        
-    // Any pending changes that are not yet send to the worker?
-    if (this.changed) {
-            var source = this.editor.getValue();
-            this.iSense.perform("updateScript",this.filename, source,(err,result) => {
-                this.handleCompileErrors(result);
-            }); 
-            this.changed = false; 
-    };
-
-    var cursor = this.editor.getCursorPosition();
-    this.iSense.perform("autoComplete",cursor, this.filename, (err,completes) => {
-        if (completes != null) this.autoCompleteView.showCompletions(completes.entries);
-    });
+    if (this.session.enableAutoComplete) {
+      var cursor = this.editor.getCursorPosition();        
+      this.session.autoComplete(cursor,this.autoCompleteView);
+    }
 }
 
 
 // Initialize the editor
-initEditor() {
+private createEditor() {
     var editor = ace.edit("editor");
     editor.setTheme(this.config.config().theme);    
     editor.getSession().setMode("ace/mode/typescript");
-    this.ignoreChange = true;
 
     editor.commands.addCommands([
     {
@@ -120,6 +106,7 @@ initEditor() {
         bindKey:"Ctrl-Space",
         exec:this.autoComplete.bind(this)
     },
+
     {
         name:"save",
         bindKey:"Ctrl-s",
@@ -132,89 +119,37 @@ initEditor() {
         originalTextInput.call(editor, text);
         if (text === ".") this.autoComplete();
     };
-
-    // editor.getSession().on("change", this.onChangeHandler.bind(this));
-    editor.on("change", this.onChangeHandler.bind(this));
-
-    this.editor = editor;
-
-
+    return editor;
 }
-
-// Display the compile errors we get back from the compiler
-handleCompileErrors(errors) {
-    this.editor.getSession().setAnnotations(errors);
-}
-
-// Check what to do when de content of the editor changes
-onChangeHandler(event) {
-
-    if (this.ignoreChange) {
-        console.log("ignoring change");
-        return;
-    }
-
-    this.changed = true;
-    clearTimeout(this.updateSourceTimer);
-    
-    this.updateSourceTimer = setTimeout(() => {    
-          if (this.changed) { 
-              console.log("updating source code for file " + this.filename); 
-              var source = this.editor.getValue();
-              this.iSense.perform("updateScript",this.filename, source,(err,result) => {
-                    this.handleCompileErrors(result);
-              });
-              this.changed= false; // Already make sure we know a change has been send.
-          }
-    },1000);  
-};
 
 editFile(name: string,content?:string) {
-  var session = this.sessions[name];
+  var session:Session = this.sessions[name];
   
   if (! session) {
-      session = this.createNewSession(name,content);
-      session.fileName = name;
+      if (content == null) content = Project.readTextFile(name);
+      session = new Session(this,name,content);
       this.sessions[name] = session;
-      this.editor.setSession(session);
+      this.editor.setSession(session.editSession);
+      this.editor.moveCursorTo(0, 0);    
+
+      // Tabbar stuff, should be removed
       var li = document.createElement("li");
       li.innerText = path.basename(name);
       li.setAttribute("id","tab_" + name);  
       li.setAttribute("title",name);  
       document.getElementById("tabs").appendChild(li);
-      this.editor.moveCursorTo(0, 0);    
+      
   } else {
-      this.editor.setSession(session);
-       var ext = path.extname(name);
-       if (ext === ".ts") 
-             this.ignoreChange = false;
-        else 
-             this.ignoreChange = true;             
+      this.editor.setSession(session.editSession);
   }
+  this.session = session;
 
-  this.filename = name;  
   $("#tabs li").removeClass("active");
   document.getElementById("tab_" + name).className = "active";
   document.getElementById("tabs").onclick = function(ev) {
     console.log(ev);
   }
-}
 
-private createNewSession(name:string,content?:string) {
-  console.log("Creating new session for file " + name);
-  if (content == null) content = Project.readTextFile(name);
-  var mode = "ace/mode/typescript";
-  var ext = path.extname(name);
-  this.ignoreChange = false;
-  if (ext !== ".ts") {
-    mode = "ace/mode/text";
-    this.ignoreChange = true;        
-  } else {
-    this.iSense.perform("updateScript",name,content,() => {});
-  }
-  var session = new EditSession(content,mode);
-  session.setUndoManager(new UndoManager());
-  return session;  
 }
 
 private static writeTextFile(fullName:string,content:string) {

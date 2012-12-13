@@ -6,7 +6,7 @@ var EditSession = ace.require("ace/edit_session").EditSession;
 var UndoManager = ace.require("ace/undomanager").UndoManager;
 var path = require("path");
 
-class Session {
+export class Session {
 	
 	static MODES = {
 		".js" : "ace/mode/javascript",
@@ -14,30 +14,41 @@ class Session {
 		".html" : "ace/mode/html",
 		".htm" : "ace/mode/html",
 		".css" : "ace/mode/css",
+		".less" : "ace/mode/css",
+		".svg" : "ace/mode/svg",
+		".yaml" : "ace/mode/yaml",
+		".xml" : "ace/mode/xml",
 		".json" : "ace/mode/json"
 	};
 
 	editSession;
 	updateSourceTimer;
-	autocomplete = false;
+	enableAutoComplete = false;
 	iSense;
 	changed = false;
 
 	constructor(private project:Project,private name:string,content:string) {
-		console.log("Creating new session for file " + name);
+		console.log("Creating new session for file " + name + " with content length " + content.length);
   		var ext = path.extname(name);
 
   		this.editSession = new EditSession(content,this.getMode(ext));
 
 		if (ext === ".ts") {
-			this.autocomplete = true;        
+			this.enableAutoComplete = true;        
 			this.editSession.on("change", this.onChangeHandler.bind(this));
 		}
 
   		this.editSession.setUndoManager(new UndoManager());  		
 	}
 
+	getValue() {
+		return {
+			name:this.name,
+			content:this.editSession.getValue()
+		}
+	}
 
+	// Determine the edit mode based on the file extension
 	private getMode(ext: string) : string {
 		var result = Session.MODES[ext];
 		if (! result) result = "ace/mode/text";
@@ -46,7 +57,8 @@ class Session {
 
 	// Perform code autocompletion
 	autoComplete(cursor, view)  {    
-		if (! this.autoComplete) return;
+		if (! this.enableAutoComplete) return;
+
 	    // Any pending changes that are not yet send to the worker?
 	    if (this.changed) {
 	            var source = this.editSession.getValue();

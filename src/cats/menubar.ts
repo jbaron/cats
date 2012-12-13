@@ -73,7 +73,7 @@ constructor() {
 
     var run = new gui.Menu();
     run.append(new gui.MenuItem({label: 'Run main', click: this.runFile }));
-    run.append(new gui.MenuItem({label: 'Compile All', click: this.nop /* this.compileAll */}));
+    run.append(new gui.MenuItem({label: 'Compile All', click: this.compileAll }));
     run.append(new gui.MenuItem({label: 'Debug main', click: this.nop }));
 
     var settings = new gui.Menu();
@@ -123,12 +123,17 @@ showProcess() {
 
 compileAll() {
   var path = require("path");
-  this.defaultOutput = window.prompt("Output file",this.defaultOutput);
-  cats.project.iSense.perform("compile", (err,data) => {
-    var fullOutput = path.join(cats.project.projectDir,this.defaultOutput);
-    var content = data.source;
-    alert("going to write " + content.length + " characters to file " + fullOutput);
-    console.log(content);
+  // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
+  var options = cats.project.config.config().compiler;
+  cats.project.iSense.perform("compile", options, (err,data) => {
+    // var fullOutput = path.join(cats.project.projectDir,this.defaultOutput);
+    // var content = data.source;
+    // alert("going to write " + content.length + " characters to file " + fullOutput);
+    console.log(data);
+    var sources = data.source
+    for (var name in sources) {
+      cats.Project.writeTextFile(name,sources[name]);
+    }
   });
 }
 
@@ -150,9 +155,8 @@ openProject() {
 
 
 formatText() {
-  var content = cats.project.editor.getValue();
-  var fileName = cats.project.filename;
-  cats.project.iSense.perform("getFormattingEditsForRange",fileName,0,content.length,(err,result) => {
+  var script = cats.project.editor.session.getScript();
+  cats.project.iSense.perform("getFormattingEditsForRange",script.name,0,script.content.length,(err,result) => {
       console.log(result);
   });
 }
@@ -164,7 +168,12 @@ saveFile() {
 
 runFile() {
   var path = require("path");
-  var startPage = path.join(cats.project.projectDir,"index.html");
+  var main = cats.project.config.config().main;
+  if (! main) {
+    alert("Please specify the main html file to run in the project settings.");
+    return;
+  }
+  var startPage = path.join(cats.project.projectDir,main);
   gui.Window.open(startPage,{toolbar:true});
   // window.open(startPage, '_blank');
 };
