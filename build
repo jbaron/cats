@@ -1,2 +1,2 @@
---out lib/worker.js
-src/cats/worker.ts
+--out lib/tsworker.js
+src/tsworker/tsworker.ts

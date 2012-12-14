@@ -1,7 +1,5 @@
 src/*/*.js
 src/*/*/*.js
 src/*/*/*/*.js
-demo/*.js
-demo/*/*.js
-demo/.settings/config.json
+
 

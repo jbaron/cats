@@ -2,9 +2,10 @@
 
 module cats {
 
+import path = module("path");
+
 var EditSession = ace.require("ace/edit_session").EditSession;
 var UndoManager = ace.require("ace/undomanager").UndoManager;
-var path = require("path");
 
 export class Session {
 	

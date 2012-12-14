@@ -1,0 +1,19 @@
+{
+    "theme": "clouds",
+    "fontSize": 14,
+    "main": "parallax.html",
+    "sourcePath": null,
+    "outputPath": null,
+    "compiler": {
+        "useDefaultLib": true,
+        "outputMany": true,
+        "outputFileName": null,
+        "emitComments": false,
+        "generateDeclarationFiles": false,
+        "mapSourceFiles": false,
+        "codeGenTarget": 1,
+        "moduleGenTarget": 0
+    },
+    "minify": false,
+    "rememberOpenFiles": false
+}

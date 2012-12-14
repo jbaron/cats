@@ -2,6 +2,10 @@
 ///<reference path='contextmenu.ts'/>
 ///<reference path='project.ts'/>
 
+module cats {
+
+import fs = module("fs");
+import path = module("path");
 
 function getParameterByName(name) {
   name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -22,8 +26,9 @@ function getParamByName(name:string) {
 }
 
 
+var defaultProject = "./samples" + path.sep + "greeter";
 
-cats.project = new cats.Project(getParameterByName("project") || "./demo");
+cats.project = new cats.Project(getParameterByName("project") || defaultProject);
 
 
-
+}

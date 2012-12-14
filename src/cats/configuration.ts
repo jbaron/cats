@@ -1,4 +1,4 @@
-
+/*
 var allOptions = {
 	canCallDefinitionSignature: false,
 	codeGenTarget: 0,
@@ -41,7 +41,7 @@ var allOptions = {
 	useDefaultLib: true,
 	watch: false
 }
-
+*/
 
 
 
@@ -54,18 +54,17 @@ function errorHandler(err,data) {
 
 module cats {
 	
-	var fs = require("fs");
-    var path = require("path");
+	import fs = module("fs");
+	import path = module("path");
 
 	export class Configuration {
 
-		private static NAME = ".settings/config.json";
-		fileName;
+		static NAME = ".settings" + path.sep + "config.json";
 		private _config;
 
 		constructor(projectRoot:string) {
-			this.fileName = path.join(projectRoot,Configuration.NAME);
-			var dir = path.dirname(this.fileName);
+			var fileName = path.join(projectRoot,Configuration.NAME);
+			var dir:string = path.dirname(fileName);
 			fs.exists(dir, (exists) => {
 					if (! exists) {
 						fs.mkdirSync(dir); //Should be called only once.
@@ -76,16 +75,12 @@ module cats {
 
 		load() {
 			try {
-				var content = fs.readFileSync(this.fileName,"utf8");
+				var content = project.readTextFile(Configuration.NAME);
 				this._config = JSON.parse(content);
 			} catch (err) {
 				console.log("Couldn't load project configuration, loading defaults");
 				this.loadDefault();
 			}
-		}
-
-		save() {
-			fs.writeFile(this.fileName,"utf8",errorHandler);
 		}
 
 		config() {
@@ -101,7 +96,7 @@ module cats {
 
 		loadDefault() {
 			this._config = {	
-				theme : "ace/theme/clouds",
+				theme : "clouds",
 				fontSize: 14,
 				main: "index.html",
 				sourcePath : null, //If not set, the whole project directory is the source directory
@@ -110,7 +105,7 @@ module cats {
 				compiler : {
 					useDefaultLib: true,
 					outputMany: true,
-					outputFileName: "",
+					outputFileName: "main.js",
 					emitComments: false,
 					generateDeclarationFiles: false,
 					mapSourceFiles: false,

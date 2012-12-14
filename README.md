@@ -1,26 +1,27 @@
 Introduction
 ============
-CATS is an editor for the TypeScript developer. It stands for *C*ode *A*ssistant for *T*ype*S*cript. Previously it was called tsEdit, but it turns out there is already an editor with that same name. And to avoid any confusion, I decided to rename my editor to CATS.
+CATS is an IDE for the TypeScript developer. It stands for Code Assistant for TypeScript. CATS is opensource and runs on Linux, Windows and OSX. CATS itself is written in TypeScript.
 
-CATS is not yet a full-blown editor, but it is slowly getting there. Right now it has already support for:
+Although not yet feature complete, it is getting there. Right now CATS already has built-in suppor
+t for the following features:
 
-- Basic code completion:
-
-    a) When you type a "." member based code completion will be triggered.
-
-    b) Anywhere else you can type control-space to get code completion. 
+- Code completion (just type a dot or Ctrl-Space to invoke it).
                        
-- Syntax highlighting.
+- Syntax highlighting (and not only for TypeScript).
 
-- Validation of the source code (running in the background) informing you of any compiler warnings.
+- Validation of the source code (running in the background) informing you of compiler warnings and errors.
 
-- Various basic coding assistance like folding, indentation (see help => keyboard shortcuts to see a list).
+- Various editing features like folding, indentation (see also help => keyboard shortcuts to see a list).
+
+- Compilation, both to a single file or to multiple files.
+
+- Running the code from the IDE.
 
 - Theme support:
 
 <img src="https://raw.github.com/jbaron/cats/master/artifacts/themes.jpg" height="250px" width="850px" />
 
-With this version you can now also save a changed file. It is however strongly advised to make a backup first before using CATS on your project since the software is still considered to be alpha quality.
+It is strongly encouraged to first make a backup before using CATS on your project since the software is still considered to be of alpha quality. 
 
 
 Installation & Running it
@@ -29,7 +30,7 @@ To install CATS, just follow these steps:
 
 1. Download the CATS from Github: 
 
-                git clone https://github.com/jbaron/cats.git
+        		git clone https://github.com/jbaron/cats.git
 
 2. Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at:
      
@@ -37,11 +38,22 @@ To install CATS, just follow these steps:
 
 
 3. Go to the cats directory and type: /path_to_node_webkit/nw ./
+
+By default the "greeter" project will be loaded. In the samples directory there are several other projects you can try out. Of course when you open a new project, you can also open a directory that contains your own project.
    
 
 Configuration
 =============
-The editor scans a project directory and finds automatically all the TypeScript files in there. You can also open and edit other text files within that directory. Just don't open binary files yet.
+CATS will look for a file in the project directory called: ".settings/config.json". If found, CATS will use the values configured in this file, otherwise it will use sensible default values.
+
+You can edit this file (or the default values if you don't have this file yet) from the main menu.
+
+
+Bugs and Issues
+===============
+In case you encounter an issue, you can open a ticket on Github. Also feature requests can be entered here:
+
+		      https://github.com/jbaron/cats/issues
 
 
 Building from source
@@ -75,4 +87,4 @@ Some of the main components that are being used by CATS:
 
 Todo
 =====
-See the TODO.md file.
+See the TODO.md file for details.

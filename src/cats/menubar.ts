@@ -9,39 +9,39 @@ var win = gui.Window.get();
 // This is the class that creates the main menubar and has actions that are linked to the 
 // click events.
 class Menubar {
-defaultOutput = "main.js";
+
 menubar;
 themes = [
-            {theme:"ace/theme/chrome",label:"Chrome"},
-            {theme:"ace/theme/clouds",label:"Clouds"},
-            {theme:"ace/theme/crimson_editor",label:"Crimson Editor"},
-            {theme:"ace/theme/dawn",label:"Dawn"},
-            {theme:"ace/theme/dreamweaver",label:"Dreamweaver"},
-            {theme:"ace/theme/eclipse",label:"Eclipse"},
-            {theme:"ace/theme/github",label:"GitHub"},
-            {theme:"ace/theme/solarized_light",label:"Solarized Light"},
-            {theme:"ace/theme/textmate",label:"TextMate"},
-            {theme:"ace/theme/tomorrow",label:"Tomorrow"},
-            {theme:"ace/theme/xcode",label:"XCode"},
+            {theme:"chrome",label:"Chrome"},
+            {theme:"clouds",label:"Clouds"},
+            {theme:"crimson_editor",label:"Crimson Editor"},
+            {theme:"dawn",label:"Dawn"},
+            {theme:"dreamweaver",label:"Dreamweaver"},
+            {theme:"eclipse",label:"Eclipse"},
+            {theme:"github",label:"GitHub"},
+            {theme:"solarized_light",label:"Solarized Light"},
+            {theme:"textmate",label:"TextMate"},
+            {theme:"tomorrow",label:"Tomorrow"},
+            {theme:"xcode",label:"XCode"},
 
             {theme:null, label:"seperator dark themes"},
-            {theme:"ace/theme/ambiance",label:"Ambiance"},
-            {theme:"ace/theme/clouds_midnight",label:"Clouds Midnight"},
-            {theme:"ace/theme/cobalt",label:"Cobalt"},
-            {theme:"ace/theme/idle_fingers",label:"idleFingers"},
-            {theme:"ace/theme/kr_theme",label:"krTheme"},
-            {theme:"ace/theme/merbivore",label:"Merbivore"},
-            {theme:"ace/theme/merbivore_soft",label:"Merbivore Soft"},
-            {theme:"ace/theme/mono_industrial",label:"Mono Industrial"},
-            {theme:"ace/theme/monokai",label:"Monokai"},
-            {theme:"ace/theme/pastel_on_dark",label:"Pastel on dark"},
-            {theme:"ace/theme/solarized_dark",label:"Solarized Dark"},
-            {theme:"ace/theme/twilight",label:"Twilight"},
-            {theme:"ace/theme/tomorrow_night",label:"Tomorrow Night"},
-            {theme:"ace/theme/tomorrow_night_blue",label:"Tomorrow Night Blue"},
-            {theme:"ace/theme/tomorrow_night_bright",label:"Tomorrow Night Bright"},
-            {theme:"ace/theme/tomorrow_night_eighties",label:"Tomorrow Night 80s"},
-            {theme:"ace/theme/vibrant_ink",label:"Vibrant Ink"},
+            {theme:"ambiance",label:"Ambiance"},
+            {theme:"clouds_midnight",label:"Clouds Midnight"},
+            {theme:"cobalt",label:"Cobalt"},
+            {theme:"idle_fingers",label:"idleFingers"},
+            {theme:"kr_theme",label:"krTheme"},
+            {theme:"merbivore",label:"Merbivore"},
+            {theme:"merbivore_soft",label:"Merbivore Soft"},
+            {theme:"mono_industrial",label:"Mono Industrial"},
+            {theme:"monokai",label:"Monokai"},
+            {theme:"pastel_on_dark",label:"Pastel on dark"},
+            {theme:"solarized_dark",label:"Solarized Dark"},
+            {theme:"twilight",label:"Twilight"},
+            {theme:"tomorrow_night",label:"Tomorrow Night"},
+            {theme:"tomorrow_night_blue",label:"Tomorrow Night Blue"},
+            {theme:"tomorrow_night_bright",label:"Tomorrow Night Bright"},
+            {theme:"tomorrow_night_eighties",label:"Tomorrow Night 80s"},
+            {theme:"vibrant_ink",label:"Vibrant Ink"},
 ];
 
 
@@ -109,7 +109,7 @@ showShortcuts() {
 }
 
 showAbout() {
-  alert("CATS version 0.3.0\nCode Assisitant for TypeScript\nCreated by JBaron");
+  alert("CATS version 0.5.0\nCode Assisitant for TypeScript\nCreated by JBaron");
 }
 
 showProcess() {
@@ -126,20 +126,21 @@ compileAll() {
   // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
   var options = cats.project.config.config().compiler;
   cats.project.iSense.perform("compile", options, (err,data) => {
-    // var fullOutput = path.join(cats.project.projectDir,this.defaultOutput);
-    // var content = data.source;
-    // alert("going to write " + content.length + " characters to file " + fullOutput);
-    console.log(data);
+    if (err) {
+      console.error(err);
+      alert("Error during compiling " + err);
+      return;
+    }
     var sources = data.source
     for (var name in sources) {
-      cats.Project.writeTextFile(name,sources[name]);
+        cats.project.writeTextFile(name,sources[name]);
     }
   });
 }
 
 preferences() {
   var content = cats.project.config.stringify();
-  var name = cats.project.config.fileName;
+  var name = cats.Configuration.NAME;
   cats.project.editFile(name,content);
 }
 
@@ -163,7 +164,6 @@ formatText() {
 
 saveFile() {
   cats.project.editor.execCommand("save");
-  // saveFile();
 }
 
 runFile() {
@@ -173,9 +173,9 @@ runFile() {
     alert("Please specify the main html file to run in the project settings.");
     return;
   }
-  var startPage = path.join(cats.project.projectDir,main);
+  var startPage = "file://" + cats.project.getFullName(main);
+  console.log(startPage);
   gui.Window.open(startPage,{toolbar:true});
-  // window.open(startPage, '_blank');
 };
 
 
@@ -220,8 +220,7 @@ actionReplace() {
 
 setThemeWrapper(theme) {
   return function setTheme() {
-      cats.project.editor.setTheme(theme);
-      cats.project.assimilate();
+      cats.project.setTheme(theme);
   }
 }
 

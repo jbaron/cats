@@ -3,20 +3,20 @@
 ///<reference path='treeviewer.ts'/>
 ///<reference path='configuration.ts'/>
 ///<reference path='session.ts'/>
+///<reference path='node.d.ts'/>
 
 declare var ace;
-declare var require;
 declare var _canLog; // logging flag dynatree;
 
 module cats {
 
-
+import fs = module("fs");
+import path = module("path");
 // Bug in tsc that makes --out directory not working
 // when using import statements. So for now a plain require
-// import fs = module("fs");
-// import path = module("path");
-var fs = require("fs");
-var path = require("path");
+
+// var fs = require("fs");
+// var path = require("path");
 
 export var project:Project; // Singleton project
 
@@ -26,6 +26,7 @@ export class Project {
     // private ignoreChange = false;
     private sessions = {};
     private session:Session;
+    private projectDir;
     editor:any;
     iSense:ISenseHandler;
     config: Configuration;
@@ -37,18 +38,21 @@ export class Project {
 
 // Set the project to a new directory and make sure 
 // we remove old artifacts.
-constructor(public projectDir:string) {
+constructor(projectDir:string) {
+    project = this;
+    this.projectDir = path.resolve(projectDir);
+    
     this.config = new Configuration(this.projectDir);
     this.config.load();
 
     this.editor = this.createEditor();
-    
+    this.setTheme(this.config.config().theme);        
     this.autoCompleteView = new AutoCompleteView(this.editor); 
     
     this.iSense = new ISenseHandler();
 
     if (this.loadDefaultLib) {
-      var libdts = Project.readTextFile("typings/lib.d.ts");
+      var libdts = fs.readFileSync("typings/lib.d.ts","utf8");
       this.iSense.perform("addScript","lib.d.ts", libdts, true, null);
     }
 
@@ -61,7 +65,7 @@ constructor(public projectDir:string) {
 
 
 // Get the color of ace editor and use it to style the rest
-assimilate() {
+private assimilate() {
   // Use a timeout to make usre the editor has updated its style
   setTimeout( function() {
       var elem = $(".ace_gutter");
@@ -77,11 +81,16 @@ assimilate() {
 }
 
 
+setTheme(theme:string) {
+  this.editor.setTheme("ace/theme/" + theme);
+  this.assimilate();
+}
+
 saveFile() {  
   var script = this.session.getValue();      
   var confirmation = confirm("Save file " + script.name);
-  if (confirmation) {  
-      Project.writeTextFile(script.name,script.content);
+  if (confirmation) {
+      this.writeTextFile(script.name,script.content);
   }
 }
 
@@ -96,8 +105,7 @@ autoComplete()  {
 
 // Initialize the editor
 private createEditor() {
-    var editor = ace.edit("editor");
-    editor.setTheme(this.config.config().theme);    
+    var editor = ace.edit("editor");    
     editor.getSession().setMode("ace/mode/typescript");
 
     editor.commands.addCommands([
@@ -126,7 +134,7 @@ editFile(name: string,content?:string) {
   var session:Session = this.sessions[name];
   
   if (! session) {
-      if (content == null) content = Project.readTextFile(name);
+      if (content == null) content = this.readTextFile(name);
       session = new Session(this,name,content);
       this.sessions[name] = session;
       this.editor.setSession(session.editSession);
@@ -152,12 +160,16 @@ editFile(name: string,content?:string) {
 
 }
 
-private static writeTextFile(fullName:string,content:string) {
-    fs.writeFileSync(fullName,content,"utf8");
+getFullName(name:string):string {
+  return path.join(this.projectDir,name);
 }
 
-private static readTextFile(fullName:string) :string {
-    var data = fs.readFileSync(fullName,"utf8");
+writeTextFile(name:string,content:string):void {
+    fs.writeFileSync(this.getFullName(name),content,"utf8");
+}
+
+readTextFile(name:string) :string {
+    var data = fs.readFileSync(this.getFullName(name),"utf8");
     var content = data.replace(/\r\n?/g,"\n");
     return content;
 }
@@ -167,10 +179,12 @@ private static readTextFile(fullName:string) :string {
 // Also update the worker to have these scripts
 scanProjectDir() {
 
-        var children = createTreeViewer(this.projectDir,[],(tsName)=>{            
+      var tv = new TreeViewer(this.projectDir);
+
+        var children = tv.createTreeViewer("",[],(tsName)=>{            
             var script = {
                 name: tsName, //path.basename(tsName),
-                content: Project.readTextFile(tsName)
+                content: this.readTextFile(tsName)
             }
 
             // this.iSense.perform("addScript",script,() => {});

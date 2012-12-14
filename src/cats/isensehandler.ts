@@ -11,7 +11,7 @@ export class ISenseHandler {
 
     constructor() {
         // Lets create a new worker
-        this.worker = new Worker("./lib/worker.js");
+        this.worker = new Worker("./lib/tsworker.js");
         this.init();
     }
 
