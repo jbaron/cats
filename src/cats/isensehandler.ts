@@ -1,5 +1,5 @@
-// Handles the communication witht the ISense Worker
-// The implementation uses a JSON-RPC style of communication
+// Load the TSWorker and handles the communication witht the ISense Worker
+// This implementation uses a JSON-RPC style of communication
 
 module cats {
 
@@ -27,6 +27,11 @@ export class ISenseHandler {
         this.worker.postMessage(message);
         // console.log("Send message " + message.method + ":"  + message.id + " to worker");
         if (handler) this.registry[this.messageId] = handler;
+    }
+
+    // Clear pending handlers.
+    clear() {
+        this.registry = {};
     }
 
     private init() {

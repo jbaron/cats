@@ -1,8 +1,7 @@
 module cats {
 
-    import fs = module("fs");
-    import path = module("path");
-
+import fs = module("fs");
+import path = module("path");
 
 // Sort first on directory versus file and then on alphabet
 function sort(a,b) {

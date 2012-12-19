@@ -1,13 +1,16 @@
 var Greeter = (function () {
-    function Greeter(greeting) {
-        this.greeting = greeting;
+    function Greeter(message) {
+        this.greeting = message;
     }
     Greeter.prototype.greet = function () {
-        return "<h1>" + this.greeting + "</h1>";
+        return "Hello, " + this.greeting;
     };
     return Greeter;
 })();
-; ;
-var greeter = new Greeter("Hello, world!");
-var str = greeter.greet();
-document.body.innerHTML = str;
+var greeter = new Greeter("world");
+var button = document.createElement('button');
+button.innerText = "Say Hello";
+button.onclick = function () {
+    alert(greeter.greet());
+};
+document.body.appendChild(button);

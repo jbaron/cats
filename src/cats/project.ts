@@ -4,6 +4,7 @@
 ///<reference path='configuration.ts'/>
 ///<reference path='session.ts'/>
 ///<reference path='node.d.ts'/>
+///<reference path='ui/filetree.ts'/>
 
 declare var ace;
 declare var _canLog; // logging flag dynatree;
@@ -12,21 +13,15 @@ module cats {
 
 import fs = module("fs");
 import path = module("path");
-// Bug in tsc that makes --out directory not working
-// when using import statements. So for now a plain require
 
-// var fs = require("fs");
-// var path = require("path");
-
-export var project:Project; // Singleton project
 
 export class Project {
     // The name of the file that is currently being edited
     // filename:string;
     // private ignoreChange = false;
-    private sessions = {};
-    private session:Session;
-    private projectDir;
+    sessions:Session[] = [];
+    session:Session;
+    projectDir;
     editor:any;
     iSense:ISenseHandler;
     config: Configuration;
@@ -57,7 +52,8 @@ constructor(projectDir:string) {
     }
 
 
-    this.scanProjectDir();
+    // this.scanProjectDir();
+    this.loadTypeScriptFiles("");
 
     // this.editor.getSession().getUndoManager().reset();    
     this.assimilate();        
@@ -86,11 +82,22 @@ setTheme(theme:string) {
   this.assimilate();
 }
 
-saveFile() {  
-  var script = this.session.getValue();      
-  var confirmation = confirm("Save file " + script.name);
-  if (confirmation) {
-      this.writeTextFile(script.name,script.content);
+saveFile() {
+  if (this.session.name === "untitled") {
+      this.session.name = prompt("Please enter the file name") || "untitled";
+  }    
+  
+  if (this.session.name !== "untitled") {
+      this.writeSession(this.session);
+      this.session.changed = false;
+  }
+}
+
+
+private getSession(name:string):Session {
+  for (var i=0;i<this.sessions.length;i++) {
+      var session = this.sessions[i];
+      if (session.name === name) return session;
   }
 }
 
@@ -102,6 +109,33 @@ autoComplete()  {
     }
 }
 
+closeSession(name) {
+  var session = this.getSession(name);
+  if (session.changed) {
+    var c = confirm("Save " + session.name + " before closing ?");
+    if (c) this.writeSession(session);
+  }
+
+  // Remove it for the list of sessions
+  var index = this.sessions.indexOf(session);
+  this.sessions.splice(index,1);
+
+  // Check if was the current session displayed
+  if (this.session === session) {
+    this.session === null;
+    $("#editor").hide();
+  }
+  tabbar.refresh();
+}
+
+close() {
+  this.sessions.forEach((session:Session) => {
+    if (session.changed) {
+        var c = confirm("Save " + session.name + " before closing ?");
+        if (c != null) this.writeSession(session);
+    };
+  });
+}
 
 // Initialize the editor
 private createEditor() {
@@ -130,45 +164,54 @@ private createEditor() {
     return editor;
 }
 
+
 editFile(name: string,content?:string) {
-  var session:Session = this.sessions[name];
+  var session:Session = this.getSession(name);
   
   if (! session) {
       if (content == null) content = this.readTextFile(name);
       session = new Session(this,name,content);
-      this.sessions[name] = session;
+      this.sessions.push(session);
       this.editor.setSession(session.editSession);
       this.editor.moveCursorTo(0, 0);    
 
-      // Tabbar stuff, should be removed
+      /* Tabbar stuff, should be removed
       var li = document.createElement("li");
       li.innerText = path.basename(name);
       li.setAttribute("id","tab_" + name);  
       li.setAttribute("title",name);  
       document.getElementById("tabs").appendChild(li);
+      */
       
   } else {
       this.editor.setSession(session.editSession);
   }
   this.session = session;
 
+  /*
   $("#tabs li").removeClass("active");
   document.getElementById("tab_" + name).className = "active";
   document.getElementById("tabs").onclick = function(ev) {
     console.log(ev);
-  }
-
+  } */
+  $("#editor").show();
+  tabbar.refresh();
 }
 
 getFullName(name:string):string {
   return path.join(this.projectDir,name);
 }
 
-writeTextFile(name:string,content:string):void {
-    fs.writeFileSync(this.getFullName(name),content,"utf8");
+writeTextFile(name:string, value:string):void {
+    fs.writeFileSync(this.getFullName(name),value,"utf8");
+}
+
+writeSession(session:Session):void {
+    this.writeTextFile(session.name,session.getValue());
 }
 
 readTextFile(name:string) :string {
+    if (name === "untitled") return "";
     var data = fs.readFileSync(this.getFullName(name),"utf8");
     var content = data.replace(/\r\n?/g,"\n");
     return content;
@@ -177,45 +220,24 @@ readTextFile(name:string) :string {
 // Load all the script that are part of the project
 // For now use a synchronous call to load.
 // Also update the worker to have these scripts
-scanProjectDir() {
-
-      var tv = new TreeViewer(this.projectDir);
-
-        var children = tv.createTreeViewer("",[],(tsName)=>{            
-            var script = {
-                name: tsName, //path.basename(tsName),
-                content: this.readTextFile(tsName)
-            }
-
-            // this.iSense.perform("addScript",script,() => {});
-            this.iSense.perform("updateScript",script.name,script.content,() => {});
-            // console.log("Added script " + script.name);  
-        });
-
-        _canLog = false;        
-
-        var root = document.getElementById("fileTree");
-        // var ftree = document.createElement("div");
-        // root.appendChild(ftree);
-
-        children = [{
-          title: path.basename(this.projectDir),
-          isFolder: true,
-          children: children
-        }];
-
-        // $("#fileTree").innerHTML = "";
-        $(root).dynatree({
-          onActivate: function(node) { 
-            var scriptname:string = node.data.key;
-            if (scriptname) {
-              cats.project.editFile(scriptname);
-            }
-          },
-          children: children
-       });
-
-};
+private loadTypeScriptFiles(directory) {
+    var files = fs.readdirSync(this.getFullName(directory));
+    files.forEach((file) =>{
+      var fullName = path.join(directory,file); 
+      var stats = fs.statSync(this.getFullName(fullName));
+      if(stats.isFile()) {
+          var ext = path.extname(file);
+          if (ext === ".ts") {
+              var content = this.readTextFile(fullName);
+              this.iSense.perform("updateScript",fullName,content,() => {});
+              console.log("Loaded " + fullName);
+          }
+      }
+      if(stats.isDirectory()) {
+          this.loadTypeScriptFiles(fullName);
+      }
+    });
+}   
 
 
 }

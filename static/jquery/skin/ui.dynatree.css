@@ -53,7 +53,7 @@ ul.dynatree-no-connector > li
 {
 	opacity: 0.5;
 /*	filter: alpha(opacity=50); /* Yields a css warning */
-	background-color: silver;
+	/* background-color: silver; */
 }
 
 /*******************************************************************************
@@ -296,7 +296,7 @@ span.dynatree-node a
 ul.dynatree-container a:focus,
 span.dynatree-focused a:link  /* @IE */
 {
-	background-color: #EFEBDE; /* gray */
+	/* background-color: #EFEBDE; */
 }
 
 span.dynatree-has-children a

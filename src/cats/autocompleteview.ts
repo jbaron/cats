@@ -218,7 +218,8 @@ class AutoCompleteView {
         }
       };
 
-      // ToDO use plain DOM API isntead of jquery
+      // ToDO use plain DOM API instead of jquery and speedup, sincee this is slow
+      // for fast scrolling through large sets
       adjustPosition() {
         var elm, elmOuterHeight, newMargin, pos, preMargin, wrapHeight;
         elm = this.current();

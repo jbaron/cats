@@ -1,9 +1,8 @@
 Introduction
 ============
-CATS is an IDE for the TypeScript developer. It stands for Code Assistant for TypeScript. CATS is opensource and runs on Linux, Windows and OSX. CATS itself is written in TypeScript.
+CATS is an IDE for the TypeScript developer. It stands for Code Assistant for TypeScript. CATS is opensource software and runs on Linux, Windows and OSX. CATS itself is written in TypeScript.
 
-Although not yet feature complete, it is getting there. Right now CATS already has built-in suppor
-t for the following features:
+Although not yet feature complete, it is getting there. Right now CATS already has built-in support for the following features:
 
 - Code completion (just type a dot or Ctrl-Space to invoke it).
                        
@@ -15,7 +14,7 @@ t for the following features:
 
 - Compilation, both to a single file or to multiple files.
 
-- Running the code from the IDE.
+- Running the code from within IDE.
 
 - Theme support:
 
@@ -32,9 +31,7 @@ To install CATS, just follow these steps:
 
         		git clone https://github.com/jbaron/cats.git
 
-2. Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at:
-     
-     			https://github.com/rogerwang/node-webkit
+2. Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at: [Node-Webkit](https://github.com/rogerwang/node-webkit)
 
 
 3. Go to the cats directory and type: /path_to_node_webkit/nw ./
@@ -51,14 +48,12 @@ You can edit this file (or the default values if you don't have this file yet) f
 
 Bugs and Issues
 ===============
-In case you encounter an issue, you can open a ticket on Github. Also feature requests can be entered here:
-
-		      https://github.com/jbaron/cats/issues
+In case you encounter an issue, you can open a ticket on Github. Also feature requests can be entered here: [Github issue tracker](https://github.com/jbaron/cats/issues)
 
 
 Building from source
 =====================
-There is no need to compile CATS yourself, since all the compiled files are already included. But if you want to play aorund with it, here are the steps:
+There is normally no need to compile CATS yourself, since all the compiled files are already included. But if you want to play aorund with it, here are the steps:
 
 1. Make sure you have installed TypeScript 0.8.1 or later
 
@@ -80,8 +75,8 @@ Couldn't have done it without ....
 ==================================
 Some of the main components that are being used by CATS:
 
-- ACE, an embeddable code editor written in JavaScript.
-- Typescipt 0.8.1 (of course).
+- Typescipt (of course), developed by Microsoft.
+- ACE, an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.
 - Node-webkit. This is a great initiative of Intel to allow Node libraries to be used within a web page. We use this to read and write local files without the need for a server component.
 
 

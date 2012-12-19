@@ -1,12 +1,48 @@
 #logo {
-  width:50px;
   height:50px;
   float: left;
+  margin: 5px;
 }
 
-h3 span {
-	color: blue;
+/*
+::-webkit-scrollbar {
+  background-color: #698;
 }
+
+::-webkit-scrollbar-thumb {
+  background-color: #9a8; 
+}
+*/
+
+/************************************************************** 
+  Simple file tree styling
+***************************************************************/
+
+#fileTree ul {
+  list-style: none;
+  padding-left: 14px;
+}
+
+#fileTree li {
+    font-size: 14px;
+    line-height: 18px;
+    cursor: pointer;
+    margin-bottom: 2px;
+}
+
+
+#fileTree li.collapsed:before {
+  content: "+ ";
+  margin-left: -15px;
+  font-family: courier;
+}
+
+#fileTree li.opened:before {
+  content: "- ";
+  margin-left: -15px;
+  font-family: courier;
+}
+
 
 /************************************************************** 
   Overwrite default layout settings
@@ -39,26 +75,35 @@ Some basic settings for the ACE editor
 Tab section
 ************************************************************/
 
-#tabs {
+#tabs ul {
   padding: 0px;
   margin: 0px;
   list-style: none;
 }
 
-#tabs li.active {
-  font-weight: bold;
+#tabs li:hover {
+    text-decoration:underline;
 }
 
-#tabs li:hover {
-  font-size: 120%;
+#tabs li.active {
+  border: 1px solid;
+  margin-left: -1px;
+  cursor: default;
+  text-decoration:none;
+}
+
+#tabs li.changed:after {
+  content: " *";
+  font-size: 90%; 
 }
 
 #tabs li {
   float: left;
   font-size: 80%;
-  padding: 0px 5px 0px 0px;
+  padding: 2px 5px 2px 2px;
   margin: 0px 0px 0px 5px;  
   border-right: 1px dotted;
+  cursor: pointer;
 }
 
 /*********************************************************
@@ -169,11 +214,3 @@ Auto complete styling
   width: 100px;
 }
 
-/******************************************************************** 
-  Filetree 
-********************************************************************/
-#fileTree > div {
-  border-bottom: 1px dotted;
-  padding-bottom: 5px;
-  margin-bottom: 5px;
-}

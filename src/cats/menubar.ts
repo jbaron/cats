@@ -7,7 +7,7 @@ var gui = require('nw.gui');
 var win = gui.Window.get();
 
 // This is the class that creates the main menubar and has actions that are linked to the 
-// click events.
+// menubar.
 class Menubar {
 
 menubar;
@@ -51,10 +51,14 @@ constructor() {
     
     var file = new gui.Menu();
     file.append(new gui.MenuItem({ label: 'Open Project...', click: this.openProject}));
-    file.append(new gui.MenuItem({ label: 'New File', click: this.nop}));
+    file.append(new gui.MenuItem({ label: 'New File', click: this.newFile}));
     file.append(new gui.MenuItem({ label: 'Save (Ctrl+S)', click: this.editorCommand("save")}));
     file.append(new gui.MenuItem({ label: 'Save As ...', click: this.nop}));
     file.append(new gui.MenuItem({ label: 'Save All', click: this.nop}));
+    file.append(new gui.MenuItem({ label: 'Close File', click: this.closeFile}));
+    file.append(new gui.MenuItem({ label: 'Close All Files', click: this.closeAllFile}));
+    file.append(new gui.MenuItem({ label: 'Close Project', click: this.closeProject}));
+    file.append(new gui.MenuItem({ label: 'Close All Projects', click: this.closeAllProjects}));
 
     var edit = new gui.Menu();
     edit.append(new gui.MenuItem({label: 'Undo',click: this.editorCommand("undo")}));
@@ -81,9 +85,10 @@ constructor() {
     settings.append(new gui.MenuItem({label: 'Preferences', click: this.preferences }));
 
     var help = new gui.Menu();
-    help.append(new gui.MenuItem({label: 'Keyboard shortcuts', click: this.showShortcuts }));
+    help.append(new gui.MenuItem({label: 'Keyboard shortcuts', click: this.showShortcuts }));    
+    help.append(new gui.MenuItem({label: 'Process Info', click: this.showProcess }));
+    help.append(new gui.MenuItem({label: 'Developers tools', click: this.showDevTools }));
     help.append(new gui.MenuItem({label: 'About', click: this.showAbout }));
-    help.append(new gui.MenuItem({label: 'Process', click: this.showProcess }));
 
 
     menubar.append(new gui.MenuItem({ label: 'File', submenu: file}));
@@ -109,7 +114,43 @@ showShortcuts() {
 }
 
 showAbout() {
-  alert("CATS version 0.5.0\nCode Assisitant for TypeScript\nCreated by JBaron");
+  alert("CATS version 0.5.1\nCode Assisitant for TypeScript\nCreated by JBaron");
+}
+
+closeAllProjects() {
+  var sure = confirm("Do you really want to quit?");
+  if (sure) gui.App.closeAllWindows();
+}
+
+showDevTools() {
+  win.showDevTools()
+}
+
+newFile() {
+  cats.project.editFile("untitled","");
+}
+
+
+closeFile() {
+  cats.project.closeSession(cats.project.session.name);
+}
+
+closeAllFile() {
+  var sessions = cats.project.sessions;
+  sessions.forEach((session) => {
+          cats.project.closeSession(session.name);
+  })
+}
+
+
+
+closeProject() {
+  window.close();
+}
+
+quit() {
+  var sure = confirm("Do you really want to quit?");
+  if (sure) gui.App.quit();
 }
 
 showProcess() {
@@ -168,14 +209,21 @@ saveFile() {
 
 runFile() {
   var path = require("path");
+
   var main = cats.project.config.config().main;
   if (! main) {
     alert("Please specify the main html file to run in the project settings.");
     return;
   }
   var startPage = "file://" + cats.project.getFullName(main);
-  console.log(startPage);
-  gui.Window.open(startPage,{toolbar:true});
+  console.log("Opening file: " + startPage);
+  var win2 = gui.Window.open(startPage,{
+    toolbar:true,
+    webkit : {
+      "page-cache": false
+    }
+  });
+  win2.reloadIgnoringCache()
 };
 
 

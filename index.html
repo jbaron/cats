@@ -34,27 +34,27 @@
 
     <div class="ui-layout-center">
 
-      <ul id="tabs" class="tabs"></ul>
+      <div id="tabs"></div>
       <div id="editor"></div>
 
     </div>
     
     <div class="ui-layout-north">
-      <img id="logo" src="static/img/logo.png" />
-      <h3><span>C</span>ode <span>A</span>ssistant for <span>T</span>ype<span>S</span>cript</h3>
+      <img id="logo" title="Code Assistant for TypeScript logo" src="static/img/logo.png" />
+      <h3>Code Assistant for TypeScript</h3>
     </div>
 
     <div class="ui-layout-south">
         <div id="findArea">
             <span>Find text: </span>
             <input size="40" id="findText" />
-            <button onclick="actionFind()">Find</button>
+            <button onclick="Menu.mainMenuBar.actionFind()">Find</button>
         </div>
 
         <div id="replaceArea">
             <span>Replace text: </span>
             <input size="40" id="replaceText" />
-            <button onclick="actionReplace()">Replace</button>
+            <button onclick="Menu.mainMenuBar.actionReplace()">Replace</button>
         </div>
     </div>
 
