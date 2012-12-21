@@ -11,7 +11,7 @@ import fs = module("fs");
 import path = module("path");
 
 
-interface ListEntry {
+export interface ListEntry {
 	name: string;
 	path: string;
 	isFolder: bool;
@@ -74,7 +74,7 @@ export class FileTree {
 	}
 
 	private toggle(li:HTMLElement) {
-		console.log(li);
+		// console.log(li);
 		if (! li.className) {
 				if (this.onselect) {
 					this.onselect(li.dataset.path);

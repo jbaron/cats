@@ -3,6 +3,9 @@ module menu {
 
 import fs = module("fs");
 import path = module("path");
+import util = module("util");
+
+var inspect = util.inspect;
 
 function nop() {
   alert("Not yet implemented");
@@ -17,18 +20,58 @@ function createContextMenu() {
 	// Create an empty menu
 	var ctxmenu = new gui.Menu();
 
+/*
+getSignatureAtPosition(fileName: string, pos: number): SignatureInfo;
+        getDefinitionAtPosition(fileName: string, pos: number): DefinitionInfo;
+        getReferencesAtPosition(fileName: string, pos: number): ReferenceEntry[];
+        getOccurrencesAtPosition(fileName: string, pos: number): ReferenceEntry[];
+        getImplementorsAtPosition(fileName: string, pos: number): ReferenceEntry[];
+*/
+
 	// Add some items
-	ctxmenu.append(new gui.MenuItem({ label: 'Goto Declaration', click:nop }));
-	ctxmenu.append(new gui.MenuItem({ label: 'Item B', click: nop }));
-	ctxmenu.append(new gui.MenuItem({ type: 'separator',click: nop }));
-	ctxmenu.append(new gui.MenuItem({ label: 'Item C', click:nop }));
+	ctxmenu.append(new gui.MenuItem({ 
+		    label: 'Find Definition', 
+		    click: () => {getInfoAt("getDefinitionAtPosition")} 
+	}));
+
+	ctxmenu.append(new gui.MenuItem({ 
+		label: 'Get References', 
+		click: () => {getInfoAt("getReferencesAtPosition")} 
+	}));
+
+	ctxmenu.append(new gui.MenuItem({ 
+		label: 'Get Occurences', 
+		click: () => {getInfoAt("getOccurrencesAtPosition")}
+	}));
+
+	ctxmenu.append(new gui.MenuItem({ 
+		label: 'Get Implementors', 
+		click: () => {getInfoAt("getImplementorsAtPosition")}
+	}));
+	
 	return ctxmenu;
 }
 
+var lastEvent:MouseEvent;
+
+function getInfoAt(type:string) {
+	var cursor = cats.project.session.getCursorFromScreen(lastEvent.x,lastEvent.y);
+	var fileName = cats.project.session.name;
+	cats.project.iSense.perform("getInfoAtPosition",type, fileName, cursor, (err,data) => {
+		if (data) {
+			var str = inspect(data, false, 5);
+			document.getElementById("info").innerText = str;
+		}
+	});
+}
+
 var editorContextMenu = createContextMenu();
-document.getElementById("editor").addEventListener('contextmenu', function(ev:any) { 
+document.getElementById("editor").addEventListener('contextmenu', function(ev:any) { 			
   ev.preventDefault();   
-  editorContextMenu.popup(ev.x, ev.y);
+  if (cats.project.session.enableAutoComplete) {
+  	lastEvent = ev;
+  	editorContextMenu.popup(ev.x, ev.y);
+  }
   return false;
 });
 

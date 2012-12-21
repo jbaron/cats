@@ -20,9 +20,9 @@ class AutoCompleteView {
     private handler = new HashHandler();
     changeListener;
     active = false;
-    completions;
+    completions:Services.CompletionEntry[];
 
-    constructor(private editor) {
+    constructor(private editor:ACE.Editor) {
         this.init();
         this.initKeys();
         this.editor.container.appendChild(this.wrap);
@@ -52,8 +52,8 @@ class AutoCompleteView {
 
       // Get the text between cursor and start
       getInputText2() {
-          var cursor = this.editor.getCursorPosition();
-          var result = this.editor.getSession().getTokenAt(cursor.row,cursor.column);          
+          var pos = this.editor.getCursorPosition();
+          var result = this.editor.getSession().getTokenAt(pos.row,pos.column);          
           if (result && result.value) 
             return result.value.trim();
           else 
@@ -218,7 +218,7 @@ class AutoCompleteView {
         }
       };
 
-      // ToDO use plain DOM API instead of jquery and speedup, sincee this is slow
+      // ToDO use plain DOM API instead of jquery and speedup, since this is slow
       // for fast scrolling through large sets
       adjustPosition() {
         var elm, elmOuterHeight, newMargin, pos, preMargin, wrapHeight;

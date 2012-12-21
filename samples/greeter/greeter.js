@@ -7,7 +7,7 @@ var Greeter = (function () {
     };
     return Greeter;
 })();
-var greeter = new Greeter("world");
+var greeter = new Greeter("world !!!");
 var button = document.createElement('button');
 button.innerText = "Say Hello";
 button.onclick = function () {

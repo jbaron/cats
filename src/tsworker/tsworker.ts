@@ -29,7 +29,7 @@ declare interface Cursor {
 
 class TypeScriptHint {
 
-    private ls;
+    private ls:Services.ILanguageService;
     private typescriptLS : LiteHarness.TypeScriptLS;
 
     // Create a new TypeScript instance with projectDir as project home
@@ -153,7 +153,7 @@ class TypeScriptHint {
     }
 
     getFormattingEditsForRange(fileName, start, end) {
-        return this.ls.getFormattingEditsForRange(fileName, start, end , {});
+        return this.ls.getFormattingEditsForRange(fileName, start, end , new Services.FormatCodeOptions());
     }
 
 
@@ -211,7 +211,7 @@ class TypeScriptHint {
 
         // Determine the position
         var pos = lineMap[cursor.row + 1] + cursor.column;
-        console.log(pos);
+        // console.log(pos);
         return pos;
     } 
 
@@ -232,8 +232,12 @@ class TypeScriptHint {
         return "other";
     }
 
-   
-    
+    // generic wrapper for info at a certain position 
+    public getInfoAtPosition(method:string, filename:string, cursor:Cursor) {
+        var pos = this.getPositionFromCursor(filename,cursor);
+        var result = this.ls[method](filename, pos);
+        return result;
+    }
 
 	public autoComplete(cursor:Cursor, filename:string) : any {
         var pos = this.getPositionFromCursor(filename,cursor);

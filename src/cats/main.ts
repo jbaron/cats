@@ -4,6 +4,7 @@
 ///<reference path='ui/tabbar.ts'/>
 
 
+
 module cats {
 
 export var project:Project;
@@ -52,6 +53,7 @@ tabbar.setOptions(project.sessions);
 tabbar.setAspect("name", (session) => { return path.basename(session.name)});
 tabbar.setAspect("selected", (session) => { return session === cats.project.session});
 tabbar.setAspect("longname", (session) => { return session.name});
+// tabbar.setAspect("changed", (session) => { return session.changed});
 tabbar.onselect = (session) => cats.project.editFile(session.name); //TODO Fix to use real session
 
 tabbar.appendTo(document.getElementById("tabs"));

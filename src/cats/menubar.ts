@@ -11,6 +11,9 @@ var win = gui.Window.get();
 class Menubar {
 
 menubar;
+
+fontSizes = [10,12,14,16,18,20];
+
 themes = [
             {theme:"chrome",label:"Chrome"},
             {theme:"clouds",label:"Clouds"},
@@ -82,6 +85,7 @@ constructor() {
 
     var settings = new gui.Menu();
     settings.append(new gui.MenuItem({label: 'Theme', submenu: this.createThemeMenu() }));
+    settings.append(new gui.MenuItem({label: 'Font size', submenu: this.createFontSizeMenu() }));
     settings.append(new gui.MenuItem({label: 'Preferences', click: this.preferences }));
 
     var help = new gui.Menu();
@@ -114,7 +118,7 @@ showShortcuts() {
 }
 
 showAbout() {
-  alert("CATS version 0.5.1\nCode Assisitant for TypeScript\nCreated by JBaron");
+  alert("Code Assisitant for TypeScript\nversion 0.5.5\nCreated by JBaron");
 }
 
 closeAllProjects() {
@@ -197,8 +201,8 @@ openProject() {
 
 
 formatText() {
-  var script = cats.project.editor.session.getScript();
-  cats.project.iSense.perform("getFormattingEditsForRange",script.name,0,script.content.length,(err,result) => {
+  var session = cats.project.session;
+  cats.project.iSense.perform("getFormattingEditsForRange",session.name,0,session.getValue().length,(err,result) => {
       console.log(result);
   });
 }
@@ -223,7 +227,7 @@ runFile() {
       "page-cache": false
     }
   });
-  win2.reloadIgnoringCache()
+  // win2.reloadIgnoringCache()
 };
 
 
@@ -271,6 +275,20 @@ setThemeWrapper(theme) {
       cats.project.setTheme(theme);
   }
 }
+
+
+
+createFontSizeMenu() {
+  var menu = new gui.Menu();
+  this.fontSizes.forEach( (size:number) => {
+      menu.append(new gui.MenuItem({
+        label:size + "px",
+        click: () => {cats.project.editor.setFontSize(size + "px")}
+      }));
+    });
+  return menu;  
+}
+
 
 createThemeMenu() {
   var menu = new gui.Menu();

@@ -1,6 +1,6 @@
 {
     "theme": "clouds",
-    "fontSize": 14,
+    "fontSize": "14px",
     "main": "greeter.html",
     "sourcePath": null,
     "outputPath": null,

@@ -4,7 +4,9 @@
 ///<reference path='configuration.ts'/>
 ///<reference path='session.ts'/>
 ///<reference path='node.d.ts'/>
+///<reference path='ui/tooltip.ts'/>
 ///<reference path='ui/filetree.ts'/>
+///<reference path='ace.d.ts'/>
 
 declare var ace;
 declare var _canLog; // logging flag dynatree;
@@ -21,28 +23,31 @@ export class Project {
     // private ignoreChange = false;
     sessions:Session[] = [];
     session:Session;
-    projectDir;
-    editor:any;
+    projectDir:string;
+    editor:ACE.Editor;
     iSense:ISenseHandler;
-    config: Configuration;
+    config:Configuration;
+    toolTip:ui.ToolTip;
 
     private loadDefaultLib = true;
-    // private markedErrors = [];
-    autoCompleteView;
+    autoCompleteView:AutoCompleteView;
 
 
 // Set the project to a new directory and make sure 
 // we remove old artifacts.
 constructor(projectDir:string) {
     project = this;
+    this.toolTip = new ui.ToolTip();
     this.projectDir = path.resolve(projectDir);
     
     this.config = new Configuration(this.projectDir);
     this.config.load();
 
     this.editor = this.createEditor();
-    this.setTheme(this.config.config().theme);        
+    this.setTheme(this.config.config().theme); 
+    this.editor.setFontSize("14px");       
     this.autoCompleteView = new AutoCompleteView(this.editor); 
+    this.hideEditor();
     
     this.iSense = new ISenseHandler();
 
@@ -51,8 +56,6 @@ constructor(projectDir:string) {
       this.iSense.perform("addScript","lib.d.ts", libdts, true, null);
     }
 
-
-    // this.scanProjectDir();
     this.loadTypeScriptFiles("");
 
     // this.editor.getSession().getUndoManager().reset();    
@@ -109,6 +112,15 @@ autoComplete()  {
     }
 }
 
+
+showEditor() {
+  document.getElementById("editor").style.display = "block";
+}
+
+hideEditor() {
+  document.getElementById("editor").style.display = "none";
+}
+
 closeSession(name) {
   var session = this.getSession(name);
   if (session.changed) {
@@ -137,6 +149,17 @@ close() {
   });
 }
 
+private mouseMoveTimer;
+
+private onMouseMove(ev) {
+    this.toolTip.hide();
+    clearTimeout(this.mouseMoveTimer);
+    this.mouseMoveTimer = setTimeout(() => {
+        this.session.getScreenPos(ev.x, ev.y);
+
+    },100);
+}
+
 // Initialize the editor
 private createEditor() {
     var editor = ace.edit("editor");    
@@ -161,6 +184,11 @@ private createEditor() {
         originalTextInput.call(editor, text);
         if (text === ".") this.autoComplete();
     };
+
+    var elem  = <HTMLElement>document.getElementById("editor");
+    elem.onmousemove = this.onMouseMove.bind(this);
+    elem.onmouseout = () => {this.toolTip.hide()};
+
     return editor;
 }
 
@@ -174,6 +202,12 @@ editFile(name: string,content?:string) {
       this.sessions.push(session);
       this.editor.setSession(session.editSession);
       this.editor.moveCursorTo(0, 0);    
+
+      if (session.enableAutoComplete) {
+        this.iSense.perform("updateScript",name, content,(err,result) => {
+            session.setAnnotations(result);
+        });
+      }
 
       /* Tabbar stuff, should be removed
       var li = document.createElement("li");

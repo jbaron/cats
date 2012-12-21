@@ -1,5 +1,5 @@
-// Load the TSWorker and handles the communication witht the ISense Worker
-// This implementation uses a JSON-RPC style of communication
+// Load the TSWorker and handles the communication with the ISense web worker
+// This implementation uses a JSON-RPC message format for the communication.
 
 module cats {
 

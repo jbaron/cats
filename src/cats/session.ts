@@ -1,15 +1,17 @@
 ///<reference path='project.ts'/>
+///<reference path='../tsworker/typescript.d.ts'/>
 
 module cats {
 
 import path = module("path");
+// import TypeScript = module(TypeScript);
 
 var EditSession = ace.require("ace/edit_session").EditSession;
 var UndoManager = ace.require("ace/undomanager").UndoManager;
 
 export class Session {
 	
-	static MODES = {
+	private static MODES = {
 		".js" : "ace/mode/javascript",
 		".ts" : "ace/mode/typescript",
 		".html" : "ace/mode/html",
@@ -23,13 +25,11 @@ export class Session {
 	};
 
 	// The ACE EditSession object
-	editSession;
-
+	editSession:ACE.EditSession;
 
 	private updateSourceTimer;
 	enableAutoComplete = false;
-	iSense;
-
+	
 	// Is the worker out of sync with the source code
 	private pendingWorkerUpdate = false; 
 
@@ -46,14 +46,64 @@ export class Session {
 			this.enableAutoComplete = true; 
 		}
 
-		this.editSession.on("change", this.onChangeHandler.bind(this));
-		
-
+		this.editSession.on("change", this.onChangeHandler.bind(this));	
   		this.editSession.setUndoManager(new UndoManager());  		
 	}
 
 	getValue() {	
 		return this.editSession.getValue()
+	}
+
+	static convertMember(member) :string{
+		var result = member.prefix;
+		if (member.entries) {
+			for (var i=0;i<member.entries.length;i++) {
+				result += this.convertMember(member.entries[i]);
+			}		
+		} else {
+			result += member.text;
+		}
+		result += member.suffix;
+		return result;
+	}
+
+
+	getCursorFromScreen(x:number,y:number) {
+		var r = this.project.editor.renderer;
+        var canvasPos = r.rect || (r.rect = r.scroller.getBoundingClientRect());
+        var offset = (x + r.scrollLeft - canvasPos.left - r.$padding) / r.characterWidth;
+        var row = Math.floor((y + r.scrollTop - canvasPos.top) / r.lineHeight);
+        var col = Math.round(offset);
+
+        var screenPos = {row: row, column: col, side: offset - col > 0 ? 1 : -1};
+        var docPos = this.editSession.screenToDocumentPosition(screenPos.row, screenPos.column);
+        return docPos;
+	}
+
+	// Get the screen position based on the mouse location
+	getScreenPos(x:number,y:number) {
+		if (! this.enableAutoComplete) return;
+		var project = this.project;
+
+		var r = project.editor.renderer;
+        var canvasPos = r.rect || (r.rect = r.scroller.getBoundingClientRect());
+        var offset = (x + r.scrollLeft - canvasPos.left - r.$padding) / r.characterWidth;
+        var row = Math.floor((y + r.scrollTop - canvasPos.top) / r.lineHeight);
+        var col = Math.round(offset);
+
+        var screenPos = {row: row, column: col, side: offset - col > 0 ? 1 : -1};
+        var docPos = this.editSession.screenToDocumentPosition(screenPos.row, screenPos.column);
+        // console.log(JSON.stringify(docPos));
+        project.iSense.perform("getInfoAtPosition","getTypeAtPosition",this.name, docPos,         	
+        	(err,data:TypeScript.Services.TypeInfo) => {
+        		if (! data) return;
+        		var member = data.memberName;
+        		if (! member) return;
+
+        		var tip = Session.convertMember(member);
+        		project.toolTip.show(x,y,tip);	
+        		
+        	});
 	}
 
 	// Determine the edit mode based on the file extension
@@ -64,14 +114,15 @@ export class Session {
 	}
 
 	// Perform code autocompletion
-	autoComplete(cursor, view)  {    
+	autoComplete(cursor:ACE.Position, view:AutoCompleteView)  {    
 		if (! this.enableAutoComplete) return;
+		var editSession = this.editSession;
 
 	    // Any pending changes that are not yet send to the worker?
 	    if (this.pendingWorkerUpdate) {
-	            var source = this.editSession.getValue();
+	            var source = editSession.getValue();
 	            this.project.iSense.perform("updateScript",this.name, source,(err,result) => {
-	                this.editSession.setAnnotations(result);
+	                editSession.setAnnotations(result);
 	            }); 
 	            this.pendingWorkerUpdate = false; 
 	    };
@@ -99,8 +150,6 @@ export class Session {
 	          }
 	    },1000);  
 	};
-
 }
-
 
 }
