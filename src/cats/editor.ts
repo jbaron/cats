@@ -5,6 +5,7 @@ class Editor {
 	private aceEditor:ACE.Editor;
 	private toolTip:ui.ToolTip;
 	private autoCompleteView:AutoCompleteView;
+    public onAutoComplete;
 
 	// private rootElement
 
@@ -22,12 +23,12 @@ class Editor {
 
 
 show() {
-  rootElement.style.display = "block";
+  this.rootElement.style.display = "block";
 }
 
 
 hide() {
-  rootElement.style.display = "none";
+  this.rootElement.style.display = "none";
 }
 
 setTheme(theme:string) {
@@ -37,6 +38,17 @@ setTheme(theme:string) {
 
 addCommand(command:ACE.EditorCommand) {
 	this.aceEditor.commands.addCommands([command]);
+}
+
+bindToMouse(fn) {
+    this.rootElement.onmousemove = fn;
+    this.rootElement.onmouseout = () => {this.toolTip.hide()};
+}
+
+private autoComplete() {
+    if (this.onAutoComplete) {
+        this.onAutoComplete(this);
+    }
 }
 
 // Initialize the editor
@@ -64,7 +76,7 @@ private createEditor() {
         if (text === ".") this.autoComplete();
     };
 
-    var elem  = rootElement; // TODo find scroller child
+    var elem  = this.rootElement; // TODo find scroller child
     elem.onmousemove = this.onMouseMove.bind(this);
     elem.onmouseout = () => {this.toolTip.hide()};
 

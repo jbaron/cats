@@ -30,8 +30,8 @@ getSignatureAtPosition(fileName: string, pos: number): SignatureInfo;
 
 	// Add some items
 	ctxmenu.append(new gui.MenuItem({ 
-		    label: 'Find Definition', 
-		    click: () => {getInfoAt("getDefinitionAtPosition")} 
+		    label: 'Goto Declaration', 
+		    click: gotoDeclaration 
 	}));
 
 	ctxmenu.append(new gui.MenuItem({ 
@@ -54,13 +54,39 @@ getSignatureAtPosition(fileName: string, pos: number): SignatureInfo;
 
 var lastEvent:MouseEvent;
 
+function gotoDeclaration() {
+	var cursor = cats.project.session.getCursorFromScreen(lastEvent.x,lastEvent.y);
+	var fileName = cats.project.session.name;
+	cats.project.iSense.perform("getDefinitionAtPosition", fileName, cursor, (err,data) => {
+		console.log(data);
+		cats.project.editFile(data.unitName,null,data.startPos);
+	});
+}
+
+
+function cell(row,content) {
+	var td = row.insertCell(-1);
+	td.innerText = content;
+}
+
 function getInfoAt(type:string) {
 	var cursor = cats.project.session.getCursorFromScreen(lastEvent.x,lastEvent.y);
 	var fileName = cats.project.session.name;
+	$("#result").addClass("busy");
 	cats.project.iSense.perform("getInfoAtPosition",type, fileName, cursor, (err,data) => {
+		$("#result").removeClass("busy");
 		if (data) {
-			var str = inspect(data, false, 5);
-			document.getElementById("info").innerText = str;
+			console.log(data);	
+			document.getElementById("result").innerHTML = "";
+			var table = document.createElement("table");
+			data.forEach((result) => {
+				var row = table.insertRow(-1);
+				cell(row,result.ast.minChar);
+				cell(row,result.ast.limChar);
+				cell(row,result.ast.text);
+				cell(row,result.unitIndex);
+			});
+			document.getElementById("result").appendChild(table);
 		}
 	});
 }
@@ -132,7 +158,7 @@ var data = {
 	isFolder: true
 }
 
-document.getElementById("fileTree").addEventListener('contextmenu', function(ev:any) { 
+document.getElementById("filetree").addEventListener('contextmenu', function(ev:any) { 
   data.key = ev.srcElement.dataset.path;
   data.isFolder = ev.srcElement.dataset.isFolder;
   console.log(data.key);

@@ -6,7 +6,7 @@ class Greeter {
 	greet() {
 		return "Hello, " + this.greeting;
 	}
-}   
+}
 
 var greeter = new Greeter("world !!!");
 

@@ -68,6 +68,28 @@ class TypeScriptHint {
     }
 
 
+    getUnitName(index:number) : string {
+        return this.typescriptLS.scripts[index].name
+    }
+
+    getCursor(name:string,chars:number) : Cursor {
+        var tsCursor = this.typescriptLS.positionToLineCol(name,chars);
+        var result = {
+            row: tsCursor.line - 1,
+            column: tsCursor.col -1
+        };
+        return result;
+    }
+
+    getDefinitionAtPosition(fileName:string, pos:Cursor) {
+        var chars = this.getPositionFromCursor(fileName, pos);
+        var info = this.ls.getDefinitionAtPosition(fileName,chars); 
+        info["unitName"] = this.getUnitName(info.unitIndex);
+        info["startPos"] = this.getCursor(fileName, info.minChar);
+        info["endPos"] = this.getCursor(fileName, info.limChar);
+        return info;
+    }
+
     compile(options){
 
         var outfile = this.createWriter();
@@ -227,6 +249,7 @@ class TypeScriptHint {
         var memberMatch=/\.[0-9A-Za-z_]*$/;
         var typeMatch=/:[0-9A-Za-z_]*$/;
         var previousCode = source.substring(0,pos);
+        // console.log("previous code:" + previousCode);
         if (previousCode.match(memberMatch)) return "member";
         if (previousCode.match(typeMatch)) return "type";
         return "other";

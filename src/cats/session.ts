@@ -28,7 +28,7 @@ export class Session {
 	editSession:ACE.EditSession;
 
 	private updateSourceTimer;
-	enableAutoComplete = false;
+	enableAutoComplete = false; //TODO refactor to typeScriptMode 
 	
 	// Is the worker out of sync with the source code
 	private pendingWorkerUpdate = false; 

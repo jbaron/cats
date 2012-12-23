@@ -1,69 +1,74 @@
-<!doctype html>
+
 <html>
-  <head>
+<head>
+<title>CATS</title>
 
-    <meta charset="utf-8">
-    <title>CATS | TypeScript Editor</title>
-     
-    <script type="text/javascript" src="static/jquery/jquery-latest.js"></script>
-    <script type="text/javascript" src="static/jquery/jquery-ui-latest.js"></script>
-    <link rel="stylesheet" href="static/jquery/jquery-ui-themes/themes/base/jquery-ui.css">
+	<link type="text/css" rel="stylesheet" href="static/jquery/layout-default-latest.css">
 
-    <script type="text/javascript" src="static/jquery/jquery.layout-latest.js"></script>
-    <link rel="stylesheet" href="static/jquery/layout-default-latest.css">
-    <link rel="stylesheet" href="static/css/cats.css">
+	<script type="text/javascript" src="static/jquery/jquery-latest.js"></script>
+	<script type="text/javascript" src="static/jquery/jquery-ui-latest.js"></script>
+	<script type="text/javascript" src="static/jquery/jquery.layout-latest.js"></script>
 
+
+	<link rel="stylesheet" href="static/css/cats.css">
     <script src="static/ace-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 
-     <link href="static/jquery/skin/ui.dynatree.css" rel="stylesheet" type="text/css">
-     <script src="static/jquery/jquery.dynatree.js" type="text/javascript"></script>
 
-    <script type="text/javascript">
-      $(document).ready(function () {
-        $('body').layout({ 
-          applyDemoStyles: false, 
-          spacing_open: 3
-        });
-      });
-    </script>
+	<script type="text/javascript">
 
-  </head>
-  <body>
+	$(document).ready(function () {
 
-    <input style="display:none;" id="fileDialog" type="file" nwdirectory />    
+		// OUTER-LAYOUT
+		$('body').layout({
+			center__paneSelector:	"#center"
+		,	west__paneSelector:		"#navigator"
+		,	north__paneSelector:	"#toolbar"
+		,	south__paneSelector:	"#statusbar"
+		,	west__size:				.15
+		,	spacing_open:			8  // ALL panes
+		,	spacing_closed:			12 // ALL panes
+		,	north__maxSize:			25
+		,	south__maxSize:			25
 
-    <div class="ui-layout-center">
+			// MIDDLE-LAYOUT (child of outer-center-pane)
+		,	center__childOptions: {
+				center__paneSelector:	"#main"
+			,	east__paneSelector:		"#info"
+			,	south__paneSelector:	"#result"
+			,	east__size:				.20
+			,	south__size:			.20
+			,	spacing_open:			8  // ALL panes
+			,	spacing_closed:			12 // ALL panes
 
-      <div id="tabs"></div>
-      <div id="editor"></div>
+			}
+		});
 
-    </div>
-    
-    <div class="ui-layout-north">
-      <img id="logo" title="Code Assistant for TypeScript logo" src="static/img/logo.png" />
-      <h3>Code Assistant for TypeScript</h3>
-    </div>
+	});
 
-    <div class="ui-layout-south">
-        <div id="findArea">
-            <span>Find text: </span>
-            <input size="40" id="findText" />
-            <button onclick="Menu.mainMenuBar.actionFind()">Find</button>
-        </div>
+	</script>
 
-        <div id="replaceArea">
-            <span>Replace text: </span>
-            <input size="40" id="replaceText" />
-            <button onclick="Menu.mainMenuBar.actionReplace()">Replace</button>
-        </div>
-    </div>
 
-    <div class="ui-layout-east"><div id="info">Info</div></div>
-    
-    <div class="ui-layout-west">      
-        <div id="fileTree"></div>
-    </div>
-  
-     <script src="lib/main.js"></script>
-  </body>
+</head>
+
+<body class=eclipse>
+
+<div id=toolbar>Toolbar</div>
+
+<div id=statusbar>Statusbar</div>
+
+<div id=center>
+	<div id=main>
+		<div id="sessionbar"></div>
+		<div id="editor"></div>
+	</div>
+	<div id=info>Context Info</div>
+	<div id=result>Results</div>
+</div>
+
+<div id=navigator>
+	<div id=filetree></div>
+</div>
+<input style="display:none;" id="fileDialog" type="file" nwdirectory />    
+<script src="lib/main.js"></script>
+</body>
 </html>

@@ -60,6 +60,9 @@ export class FileTree {
 		var ul = document.createElement("ul");
 		list.forEach( (entry:ListEntry) => {
 			var li = <HTMLElement>document.createElement("li");
+			// var span = <HTMLElement>document.createElement("span");
+			// span.innerText = entry.name;
+			// li.appendChild(span);
 			li.innerText = entry.name;
 			li.dataset.path = entry.path;
 
@@ -73,9 +76,10 @@ export class FileTree {
 		return ul;
 	}
 
+
 	private toggle(li:HTMLElement) {
-		// console.log(li);
-		if (! li.className) {
+
+		if (! li.dataset.isFolder) {
 				if (this.onselect) {
 					this.onselect(li.dataset.path);
 				}
@@ -107,7 +111,7 @@ export class FileTree {
         });
 
 		entries.sort(sort);
-		console.log(entries);
+		// console.log(entries);
 
         var ul = this.render(entries);
         li.appendChild(ul);

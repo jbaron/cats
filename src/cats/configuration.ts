@@ -1,5 +1,5 @@
 /*
-var allOptions = {
+compiler_options = {
 	canCallDefinitionSignature: false,
 	codeGenTarget: 0,
 	controlFlow: false,
@@ -43,7 +43,23 @@ var allOptions = {
 }
 */
 
+/*
 
+var formatting_options = {
+        public IndentSize: number;
+        public TabSize: number;
+        public NewLineCharacter: string;
+        public ConvertTabsToSpaces: bool;
+        public InsertSpaceAfterCommaDelimiter: bool;
+        public InsertSpaceAfterSemicolonInForStatements: bool;
+        public InsertSpaceBeforeAndAfterBinaryOperators: bool;
+        public InsertSpaceAfterKeywordsInControlFlowStatements: bool;
+        public InsertSpaceAfterFunctionKeywordForAnonymousFunctions: bool;
+        public InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: bool;
+        public PlaceOpenBraceOnNewLineForFunctions: bool;
+        public PlaceOpenBraceOnNewLineForControlBlocks: bool;
+}
+*/
 
 function errorHandler(err,data) {
 	if (err) {
@@ -97,7 +113,7 @@ module cats {
 		loadDefault() {
 			this._config = {	
 				theme : "clouds",
-				fontSize: 14,
+				fontSize: "14px",
 				main: "index.html",
 				sourcePath : null, //If not set, the whole project directory is the source directory
 				outputPath: null,

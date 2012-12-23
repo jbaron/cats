@@ -1,6 +1,5 @@
 ///<reference path='autocompleteview.ts'/>
 ///<reference path='isensehandler.ts'/>
-///<reference path='treeviewer.ts'/>
 ///<reference path='configuration.ts'/>
 ///<reference path='session.ts'/>
 ///<reference path='node.d.ts'/>
@@ -8,8 +7,6 @@
 ///<reference path='ui/filetree.ts'/>
 ///<reference path='ace.d.ts'/>
 
-declare var ace;
-declare var _canLog; // logging flag dynatree;
 
 module cats {
 
@@ -112,7 +109,6 @@ autoComplete()  {
     }
 }
 
-
 showEditor() {
   document.getElementById("editor").style.display = "block";
 }
@@ -121,8 +117,8 @@ hideEditor() {
   document.getElementById("editor").style.display = "none";
 }
 
-closeSession(name) {
-  var session = this.getSession(name);
+// Close a single session
+closeSession(session:Session) {
   if (session.changed) {
     var c = confirm("Save " + session.name + " before closing ?");
     if (c) this.writeSession(session);
@@ -135,11 +131,12 @@ closeSession(name) {
   // Check if was the current session displayed
   if (this.session === session) {
     this.session === null;
-    $("#editor").hide();
+    this.hideEditor();
   }
   tabbar.refresh();
 }
 
+// Close all sessions and editor
 close() {
   this.sessions.forEach((session:Session) => {
     if (session.changed) {
@@ -147,11 +144,15 @@ close() {
         if (c != null) this.writeSession(session);
     };
   });
+  this.sessions.length = 0;
+  this.session = null;
+  this.hideEditor();
+  tabbar.refresh();
 }
 
 private mouseMoveTimer;
 
-private onMouseMove(ev) {
+private onMouseMove(ev:MouseEvent) {
     this.toolTip.hide();
     clearTimeout(this.mouseMoveTimer);
     this.mouseMoveTimer = setTimeout(() => {
@@ -193,7 +194,7 @@ private createEditor() {
 }
 
 
-editFile(name: string,content?:string) {
+editFile(name: string,content?:string, goto?:ACE.Position) {
   var session:Session = this.getSession(name);
   
   if (! session) {
@@ -201,34 +202,26 @@ editFile(name: string,content?:string) {
       session = new Session(this,name,content);
       this.sessions.push(session);
       this.editor.setSession(session.editSession);
-      this.editor.moveCursorTo(0, 0);    
+
+      if (goto) {
+        this.editor.moveCursorTo(goto.row, goto.column);
+      } else {
+        this.editor.moveCursorTo(0, 0);    
+      }
 
       if (session.enableAutoComplete) {
         this.iSense.perform("updateScript",name, content,(err,result) => {
-            session.setAnnotations(result);
+            session.editSession.setAnnotations(result);            
         });
       }
-
-      /* Tabbar stuff, should be removed
-      var li = document.createElement("li");
-      li.innerText = path.basename(name);
-      li.setAttribute("id","tab_" + name);  
-      li.setAttribute("title",name);  
-      document.getElementById("tabs").appendChild(li);
-      */
       
   } else {
       this.editor.setSession(session.editSession);
+      if (goto) this.editor.moveCursorTo(goto.row, goto.column);
   }
   this.session = session;
 
-  /*
-  $("#tabs li").removeClass("active");
-  document.getElementById("tab_" + name).className = "active";
-  document.getElementById("tabs").onclick = function(ev) {
-    console.log(ev);
-  } */
-  $("#editor").show();
+  this.showEditor();
   tabbar.refresh();
 }
 
@@ -253,7 +246,7 @@ readTextFile(name:string) :string {
 
 // Load all the script that are part of the project
 // For now use a synchronous call to load.
-// Also update the worker to have these scripts
+// Also update the worker to have these scripts already parsed.
 private loadTypeScriptFiles(directory) {
     var files = fs.readdirSync(this.getFullName(directory));
     files.forEach((file) =>{

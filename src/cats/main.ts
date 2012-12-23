@@ -35,17 +35,12 @@ var defaultProject = "./samples" + path.sep + "greeter";
 project = new cats.Project(getParameterByName("project") || defaultProject);
 
 var fileTree = new ui.FileTree(project.projectDir);
-fileTree.appendTo(document.getElementById("fileTree"));
+fileTree.appendTo(document.getElementById("filetree"));
 fileTree.onselect = (filePath) => {
     project.editFile(filePath);
 }; 
 
-$(document).ready(function () {
-        $('body').layout({ 
-          applyDemoStyles: false, 
-          spacing_open: 3
-        });
-});
+
 
 export var tabbar;
 tabbar = new ui.Tabbar();
@@ -56,7 +51,14 @@ tabbar.setAspect("longname", (session) => { return session.name});
 // tabbar.setAspect("changed", (session) => { return session.changed});
 tabbar.onselect = (session) => cats.project.editFile(session.name); //TODO Fix to use real session
 
-tabbar.appendTo(document.getElementById("tabs"));
+tabbar.appendTo(document.getElementById("sessionbar"));
+
+$(document).ready(function () {
+        $('body').layout({ 
+          applyDemoStyles: false, 
+          spacing_open: 8
+        });
+});
 
 
 var gui = require('nw.gui');

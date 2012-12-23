@@ -59,7 +59,7 @@ constructor() {
     file.append(new gui.MenuItem({ label: 'Save As ...', click: this.nop}));
     file.append(new gui.MenuItem({ label: 'Save All', click: this.nop}));
     file.append(new gui.MenuItem({ label: 'Close File', click: this.closeFile}));
-    file.append(new gui.MenuItem({ label: 'Close All Files', click: this.closeAllFile}));
+    file.append(new gui.MenuItem({ label: 'Close All Files', click: this.closeAllFiles}));
     file.append(new gui.MenuItem({ label: 'Close Project', click: this.closeProject}));
     file.append(new gui.MenuItem({ label: 'Close All Projects', click: this.closeAllProjects}));
 
@@ -136,14 +136,11 @@ newFile() {
 
 
 closeFile() {
-  cats.project.closeSession(cats.project.session.name);
+  cats.project.closeSession(cats.project.session);
 }
 
-closeAllFile() {
-  var sessions = cats.project.sessions;
-  sessions.forEach((session) => {
-          cats.project.closeSession(session.name);
-  })
+closeAllFiles() {
+  cats.project.close();
 }
 
 

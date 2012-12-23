@@ -1,8 +1,14 @@
 #logo {
-  height:50px;
+  height:20px;
   float: left;
-  margin: 5px;
+  margin: 2px;
 }
+
+h3 {
+  font-size: 20px;
+  margin: 0;
+}
+
 
 /*
 ::-webkit-scrollbar {
@@ -18,29 +24,99 @@
   Simple file tree styling
 ***************************************************************/
 
-#fileTree ul {
+#filetree ul {
   list-style: none;
   padding-left: 14px;
 }
 
-#fileTree li {
+#filetree li {
     font-size: 14px;
     line-height: 18px;
     cursor: pointer;
     margin-bottom: 2px;
 }
 
+#filetree li span:hover {
+  background-color: #dcdcdc;
+}
 
-#fileTree li.collapsed:before {
+#filetree li.collapsed:before {
   content: "+ ";
   margin-left: -15px;
   font-family: courier;
 }
 
-#fileTree li.opened:before {
+#filetree li.opened:before {
   content: "- ";
   margin-left: -15px;
   font-family: courier;
+}
+
+
+/***************************************************************
+          Eclipse theme
+****************************************************************/
+
+body.eclipse #result.busy {
+  background-image:url('../img/loader.gif');
+  background-repeat:no-repeat;
+  background-position:center; 
+}
+
+
+body.eclipse {
+  background-color: rgb(159, 159, 159);
+}
+
+body.eclipse #center {
+  background-color: transparent;
+  border: 0px;
+}
+
+body.eclipse #main, body.eclipse #toolbar {
+  background-color: #dcdcdc;
+}
+
+body.eclipse #sessionbar {
+  background-color: transparent;
+}
+
+body.eclipse #statusbar,  body.eclipse #toolbar{
+  background-color: transparent;
+  border: 0px;
+  min-height: 25px;
+  max-height: 25px;
+}
+
+
+body.eclipse .ui-layout-pane {
+  border: 1px solid rgb(159, 159, 159);
+  background-color: white;
+  color: black;
+  border-radius: 10px;
+}
+
+body.eclipse #sessionbar li:hover {
+    background:white;
+    border-radius: 5px;
+}
+
+body.eclipse #sessionbar li.active {
+  border: 1px solid;
+  border-radius: 5px;
+  margin-left: 5px;
+  cursor: default;
+  background-color: white;
+  text-decoration:none;
+}
+
+
+body.eclipse #result {
+    border: 1px solid rgb(159, 159, 159);
+}
+
+body.eclipse #result tr:nth-child(even) {
+    background-color: #dcdcdc;
 }
 
 
@@ -51,8 +127,22 @@
 body .ui-layout-pane {
   background: inherit;
   color: inherit;
-  padding: 2px;
+  padding: 0px;
+  border: 0px;
 }
+
+
+body .ui-layout-resizer  { /* all 'resizer-bars' */
+  background:   transparent;
+  border:     0px solid #BBB;
+  border-width: 0;
+}
+
+body .ui-layout-toggler {
+  background:   transparent;
+  border:     0px ;
+}
+
 
 #editorPane {
   padding: 0px;
@@ -64,7 +154,7 @@ Some basic settings for the ACE editor
 
 #editor { 
         position: absolute;
-        top: 30px; /* Make room for tabs */
+        top: 25px; /* Make room for tabs */
         right: 0;
         bottom: 0;
         left: 0;
@@ -75,34 +165,24 @@ Some basic settings for the ACE editor
 Tab section
 ************************************************************/
 
-#tabs ul {
+#sessionbar ul {
   padding: 0px;
   margin: 0px;
   list-style: none;
+  overflow-y: scroll;
+  height: 25px;
 }
 
-#tabs li:hover {
-    text-decoration:underline;
+#sessionbar li.changed:before {
+  content: "*";
 }
 
-#tabs li.active {
-  border: 1px solid;
-  margin-left: -1px;
-  cursor: default;
-  text-decoration:none;
-}
-
-#tabs li.changed:after {
-  content: " *";
-  font-size: 90%; 
-}
-
-#tabs li {
+#sessionbar li {
   float: left;
-  font-size: 80%;
+  font-size: 90%;
+  height: 25px;
   padding: 2px 5px 2px 2px;
-  margin: 0px 0px 0px 5px;  
-  border-right: 1px dotted;
+  margin-left: 5px;  
   cursor: pointer;
 }
 

@@ -37,7 +37,7 @@ module ACE {
 		getValue():string;
 		getDocument():Document;
 		setUndoManager(manager:UndoManager);
-		on: (eventname:string, handler:Function) => void;
+		on: (event:string, handler:Function) => void;
 		screenToDocumentPosition(x:number,y:number);
 		getLine(row:number):string;
 		removeListener(event:string, listener:Function);
@@ -65,9 +65,11 @@ module ACE {
 		execCommand(command:string);
 		getSession():EditSession;
 		setTheme(theme:string);
-		moveCursorTo(x:number, y:number);
-		setFontSize(fontSize: string);
+		moveCursorTo(row:number, column:number);
+		setFontSize(cssSize: string);
 	}
 
 
 }
+
+declare var ace;
