@@ -18,7 +18,12 @@ module ACE {
         exec:Function;
 	}
 
-	interface Range {}
+	interface Range {
+		startRow:number;
+		startColumn:number;
+		endRow:number;
+		endColumn:number;
+	}
 
 	interface UndoManager {
 		undo(dontSelect?: bool);
@@ -36,6 +41,7 @@ module ACE {
 		getUndoManager():UndoManager;
 		getValue():string;
 		getDocument():Document;
+		setMode(mode:string);
 		setUndoManager(manager:UndoManager);
 		on: (event:string, handler:Function) => void;
 		screenToDocumentPosition(x:number,y:number);
@@ -56,6 +62,7 @@ module ACE {
 		session:EditSession;
 		renderer;
 		keyBinding;
+        onTextInput:Function;
 		remove(direction:string);
 		insert(text:string);
 		container: HTMLElement;

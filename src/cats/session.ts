@@ -50,7 +50,7 @@ export class Session {
   		this.editSession.setUndoManager(new UndoManager());  		
 	}
 
-	getValue() {	
+	getValue():string {	
 		return this.editSession.getValue()
 	}
 
@@ -68,32 +68,42 @@ export class Session {
 	}
 
 
-	getCursorFromScreen(x:number,y:number) {
-		var r = this.project.editor.renderer;
-        var canvasPos = r.rect || (r.rect = r.scroller.getBoundingClientRect());
-        var offset = (x + r.scrollLeft - canvasPos.left - r.$padding) / r.characterWidth;
-        var row = Math.floor((y + r.scrollTop - canvasPos.top) / r.lineHeight);
-        var col = Math.round(offset);
 
-        var screenPos = {row: row, column: col, side: offset - col > 0 ? 1 : -1};
-        var docPos = this.editSession.screenToDocumentPosition(screenPos.row, screenPos.column);
+	getPositionFromScreenOffset(x:number,y:number) : ACE.Position {
+		var r = this.project.editor.renderer;
+        var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
+
+        // Quickfix for strange issue        
+        var correction = r.scrollTop?7:0;
+
+        var row = Math.floor((y + r.scrollTop -correction) / r.lineHeight);
+        var col = Math.round(offset);
+        // console.log(JSON.stringify([x,y,r.scrollLeft,r.scrollTop,r.lineHeight]));
+        var docPos = this.editSession.screenToDocumentPosition(row, col);
+        // console.log(JSON.stringify(docPos));
         return docPos;
 	}
 
-	// Get the screen position based on the mouse location
-	getScreenPos(x:number,y:number) {
-		if (! this.enableAutoComplete) return;
-		var project = this.project;
-
-		var r = project.editor.renderer;
+	getPositionFromScreen(x:number,y:number) : ACE.Position {
+		var r = this.project.editor.renderer;
         var canvasPos = r.rect || (r.rect = r.scroller.getBoundingClientRect());
+        // console.log(canvasPos.left);
         var offset = (x + r.scrollLeft - canvasPos.left - r.$padding) / r.characterWidth;
         var row = Math.floor((y + r.scrollTop - canvasPos.top) / r.lineHeight);
         var col = Math.round(offset);
 
-        var screenPos = {row: row, column: col, side: offset - col > 0 ? 1 : -1};
-        var docPos = this.editSession.screenToDocumentPosition(screenPos.row, screenPos.column);
+        var docPos = this.editSession.screenToDocumentPosition(row, col);
         // console.log(JSON.stringify(docPos));
+        return docPos;
+	}
+
+	// Screen location
+	showInfoAt(ev:MouseEvent) {
+		if (! this.enableAutoComplete) return;
+
+		var docPos = this.getPositionFromScreenOffset(ev.offsetX,ev.offsetY);
+		var project = this.project;
+
         project.iSense.perform("getInfoAtPosition","getTypeAtPosition",this.name, docPos,         	
         	(err,data:TypeScript.Services.TypeInfo) => {
         		if (! data) return;
@@ -101,7 +111,7 @@ export class Session {
         		if (! member) return;
 
         		var tip = Session.convertMember(member);
-        		project.toolTip.show(x,y,tip);	
+        		project.toolTip.show(ev.x,ev.y,tip);	
         		
         	});
 	}

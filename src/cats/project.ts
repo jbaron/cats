@@ -2,6 +2,7 @@
 ///<reference path='isensehandler.ts'/>
 ///<reference path='configuration.ts'/>
 ///<reference path='session.ts'/>
+///<reference path='editorcontextmenu.ts'/>
 ///<reference path='node.d.ts'/>
 ///<reference path='ui/tooltip.ts'/>
 ///<reference path='ui/filetree.ts'/>
@@ -25,10 +26,10 @@ export class Project {
     iSense:ISenseHandler;
     config:Configuration;
     toolTip:ui.ToolTip;
-
+    private mouseMoveTimer;
     private loadDefaultLib = true;
     autoCompleteView:AutoCompleteView;
-
+    editorContextMenu: Menu.EditorContextMenu;
 
 // Set the project to a new directory and make sure 
 // we remove old artifacts.
@@ -57,6 +58,10 @@ constructor(projectDir:string) {
 
     // this.editor.getSession().getUndoManager().reset();    
     this.assimilate();        
+
+    this.editorContextMenu = new Menu.EditorContextMenu(this);
+    // this.editorContextMenu.bindTo(<HTMLElement>document.getElementsByClassName("ace_scroller")[0]);
+    this.editorContextMenu.bindTo(<HTMLElement>document.getElementById("editor"));
 }
 
 
@@ -150,20 +155,22 @@ close() {
   tabbar.refresh();
 }
 
-private mouseMoveTimer;
+
+
 
 private onMouseMove(ev:MouseEvent) {
     this.toolTip.hide();
     clearTimeout(this.mouseMoveTimer);
     this.mouseMoveTimer = setTimeout(() => {
-        this.session.getScreenPos(ev.x, ev.y);
-
-    },100);
+        // this.session.showInfoAt(ev.x, ev.y);
+        this.session.showInfoAt(ev);
+    },200);
 }
 
+
 // Initialize the editor
-private createEditor() {
-    var editor = ace.edit("editor");    
+private createEditor():ACE.Editor {
+    var editor:ACE.Editor = ace.edit("editor");    
     editor.getSession().setMode("ace/mode/typescript");
 
     editor.commands.addCommands([
@@ -193,7 +200,6 @@ private createEditor() {
     return editor;
 }
 
-
 editFile(name: string,content?:string, goto?:ACE.Position) {
   var session:Session = this.getSession(name);
   
@@ -220,7 +226,7 @@ editFile(name: string,content?:string, goto?:ACE.Position) {
       if (goto) this.editor.moveCursorTo(goto.row, goto.column);
   }
   this.session = session;
-
+  
   this.showEditor();
   tabbar.refresh();
 }

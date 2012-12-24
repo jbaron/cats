@@ -11,7 +11,7 @@ class Editor {
 
 	constructor(private rootElement:HTMLElement) {
 
-		this.aceEditor = createEditor();
+		this.aceEditor = this.createEditor();
         this.aceEditor.setFontSize("14px");
         this.hide();
 
@@ -50,6 +50,9 @@ private autoComplete() {
         this.onAutoComplete(this);
     }
 }
+
+private saveFile() {}
+private onMouseMove() {}
 
 // Initialize the editor
 private createEditor() {

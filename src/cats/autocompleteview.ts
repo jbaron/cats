@@ -41,7 +41,7 @@ class AutoCompleteView {
         var cursor = this.editor.getCursorPosition();
         // console.log(cursor.column);
         var text = this.editor.session.getLine(cursor.row).slice(0, cursor.column+1);
-        // console.log(text);
+        console.log("input text:" + text);
         var matches = text.match(/[a-zA-Z_0-9\$]*$/);
         if (matches && matches[0]) 
           return matches[0];
@@ -64,11 +64,11 @@ class AutoCompleteView {
         var text = this.getInputText(); // .toLowerCase();
         if (! text) return this.completions;
 
-        console.log("token: " + text);
-        if (text === ".") return this.completions;
+        console.log("filter: " + text);
+        // if (text === ".") return this.completions;
 
         var result = this.completions.filter(function(entry){
-                    return entry.name.indexOf(text) === 0 ;
+                    return (entry.name.indexOf(text) === 0) ;
         });
         return result;
       }
@@ -126,11 +126,11 @@ class AutoCompleteView {
       }
 
       private render() {
+          this.listElement.innerHTML="";
           var infos = this.filter();
 
             if (infos.length > 0){
-                this.listElement.innerHTML="";
-                
+                                
                 var html = '';
                 // TODO use template
                 for(var n in infos) {
@@ -152,11 +152,12 @@ class AutoCompleteView {
       showCompletions(completions){
             if ( this.active) return;
             this.completions = completions;
+            console.log("Received completions: " + completions.length);
             var cursor = this.editor.getCursorPosition();
             var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
-            this.setPosition(coords);
-            this.show();            
+            this.setPosition(coords);                      
             this.render();
+            this.show();  
         };
 
 

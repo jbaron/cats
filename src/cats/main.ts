@@ -1,5 +1,5 @@
 ///<reference path='menubar.ts'/>
-///<reference path='contextmenu.ts'/>
+///<reference path='filecontextmenu.ts'/>
 ///<reference path='project.ts'/>
 ///<reference path='ui/tabbar.ts'/>
 
@@ -64,8 +64,7 @@ $(document).ready(function () {
 var gui = require('nw.gui');
 var win = gui.Window.get();
 
-win.on("close", function(ev) {
-  console.log(ev);
+win.on("close", function() {
   project.close();
   if (win != null)
       win.close(true);

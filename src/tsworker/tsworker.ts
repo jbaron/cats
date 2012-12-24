@@ -1,5 +1,7 @@
 // Licensed under the Apache License, Version 2.0. 
 ///<reference path='./harness.ts'/>
+///<reference path='../cats/ace.d.ts'/>
+
 
 importScripts("typescript.js")
 
@@ -8,24 +10,18 @@ module CATS {
 
 var outputFiles = {};
 
-
 var console = {
     log : function(str) {
         postMessage(str,null);
     }
 }
 
-function caseInsensitive(a, b) {
+// Case insensitive sorting
+function caseInsensitiveSort(a:{name:string;}, b:{name:string;}) {
     if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
     if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
     return 0;
 }
-
-declare interface Cursor {
-    column: number;
-    row: number;
-}
-
 
 class TypeScriptHint {
 
@@ -67,12 +63,13 @@ class TypeScriptHint {
         return result;
     }
 
-
+    // Get the name of a script based on its index
     getUnitName(index:number) : string {
         return this.typescriptLS.scripts[index].name
     }
 
-    getCursor(name:string,chars:number) : Cursor {
+    // Convert a TS offset to ACE position
+    getCursor(name:string,chars:number) : ACE.Position {
         var tsCursor = this.typescriptLS.positionToLineCol(name,chars);
         var result = {
             row: tsCursor.line - 1,
@@ -81,12 +78,15 @@ class TypeScriptHint {
         return result;
     }
 
-    getDefinitionAtPosition(fileName:string, pos:Cursor) {
+    getDefinitionAtPosition(fileName:string, pos:ACE.Position) {
         var chars = this.getPositionFromCursor(fileName, pos);
-        var info = this.ls.getDefinitionAtPosition(fileName,chars); 
-        info["unitName"] = this.getUnitName(info.unitIndex);
-        info["startPos"] = this.getCursor(fileName, info.minChar);
-        info["endPos"] = this.getCursor(fileName, info.limChar);
+        var info = this.ls.getDefinitionAtPosition(fileName,chars);
+        if (info) { 
+            var unitName = this.getUnitName(info.unitIndex);
+            info["unitName"] = unitName;
+            info["startPos"] = this.getCursor(unitName, info.minChar);
+            info["endPos"] = this.getCursor(unitName, info.limChar);
+        }
         return info;
     }
 
@@ -95,6 +95,7 @@ class TypeScriptHint {
         var outfile = this.createWriter();
         var outerr = this.createWriter();
 
+        // TODO recursive mixin
         var compOptions = new TypeScript.CompilationSettings();
         for (var i in options) {
             compOptions[i] = options[i];
@@ -216,7 +217,21 @@ class TypeScriptHint {
         return result;
     }
 
-    // Get the position based on the coordinates
+    // Get an ACE Range from TS minChars and limChars
+    getRange(script:string, minChar:number,limChar:number) :ACE.Range {
+        var startLC = this.typescriptLS.positionToLineCol(script, minChar);
+        var endLC = this.typescriptLS.positionToLineCol(script, limChar);
+        var result = {
+            startRow : startLC.line -1,
+            startColumn : startLC.col -1,
+            endRow:endLC.line -1,
+            endColumn:endLC.col -1
+        };
+        return result;
+    }
+
+
+    // Get the chars based position on the coordinates
     private getPosition(fileName:string, coord) : number{
         var script = this.ls.getScriptAST(fileName);
         var lineMap = script.locationInfo.lineMap;  
@@ -226,8 +241,8 @@ class TypeScriptHint {
         return pos;
     }
 
-     // Get the position based on the coordinates
-    private getPositionFromCursor(fileName:string, cursor:Cursor) : number{
+     // Get the chars offset based on the ACE position
+    private getPositionFromCursor(fileName:string, cursor:ACE.Position) : number{
         var script = this.ls.getScriptAST(fileName);
         var lineMap = script.locationInfo.lineMap;  
 
@@ -239,41 +254,53 @@ class TypeScriptHint {
 
 
     // Get the position
-    public getTypeAtPosition(fileName: string, coord) {
+    public getTypeAtPosition(fileName: string, coord) : Services.TypeInfo {
         var pos = this.getPosition(fileName,coord);
         return this.ls.getTypeAtPosition(fileName,pos);
     }
 
+
     // Determine type of autocompletion
-    private determineAutoCompleteType(source:string, pos:number) : string {
-        var memberMatch=/\.[0-9A-Za-z_]*$/;
-        var typeMatch=/:[0-9A-Za-z_]*$/;
+    private determineAutoCompleteType(source:string, pos:number)  {
+        var identifyerMatch=/[0-9A-Za-z_\$]*$/;
         var previousCode = source.substring(0,pos);
-        // console.log("previous code:" + previousCode);
-        if (previousCode.match(memberMatch)) return "member";
-        if (previousCode.match(typeMatch)) return "type";
-        return "other";
+
+        var match = previousCode.match(identifyerMatch);
+        var newPos = pos;
+        var memberMode = false;
+        if (match && match[0])  newPos = pos - match[0].length;
+        if (source[newPos-1] === '.') memberMode = true;
+
+        var result = {
+            pos: newPos,
+            memberMode:memberMode
+        }
+
+        // console.log("Autocompletion determine: " + JSON.stringify(result));
+        return result;
     }
 
     // generic wrapper for info at a certain position 
-    public getInfoAtPosition(method:string, filename:string, cursor:Cursor) {
+    public getInfoAtPosition(method:string, filename:string, cursor:ACE.Position) {
         var pos = this.getPositionFromCursor(filename,cursor);
         var result = this.ls[method](filename, pos);
         return result;
     }
 
-	public autoComplete(cursor:Cursor, filename:string) : any {
+	public autoComplete(cursor:ACE.Position, filename:string) : any {
         var pos = this.getPositionFromCursor(filename,cursor);
         var memberMode = false;
         var source = this.getScriptContent(filename);
         var type = this.determineAutoCompleteType(source,pos);
+        /*
         if (type === "member") {
             memberMode = true;
         }
+        */
         // Lets find out what autocompletion there is possible		
-        var completions =  this.ls.getCompletionsAtPosition(filename, pos, memberMode);
+        var completions =  this.ls.getCompletionsAtPosition(filename, type.pos, type.memberMode);
         
-        completions.entries.sort(caseInsensitive); // Sort case insensitive
+        completions.entries.sort(caseInsensitiveSort); // Sort case insensitive
         return completions;
 
 	}
