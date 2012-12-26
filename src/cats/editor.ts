@@ -5,7 +5,7 @@ class Editor {
 	private aceEditor:ACE.Editor;
 	private toolTip:ui.ToolTip;
 	private autoCompleteView:AutoCompleteView;
-    public onAutoComplete;
+    public onAutoComplete:Function;
 
 	// private rootElement
 

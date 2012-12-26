@@ -1,9 +1,11 @@
 ///<reference path='project.ts'/>
-declare var process;
+///<reference path='node-webkit.d.ts'/>
 
 module Menu {
 
-var gui = require('nw.gui');
+// var gui = require('nw.gui');
+import gui = module('nw.gui');
+
 var win = gui.Window.get();
 
 // This is the class that creates the main menubar and has actions that are linked to the 
@@ -66,14 +68,15 @@ constructor() {
     var edit = new gui.Menu();
     edit.append(new gui.MenuItem({label: 'Undo',click: this.editorCommand("undo")}));
     edit.append(new gui.MenuItem({label: 'Redo',click: this.editorCommand("redo")}));
-
-    edit.append(new gui.MenuItem({label: 'Find',click: this.enableFind}));
-    edit.append(new gui.MenuItem({label: 'Replace',click: this.enableReplace}));
-    edit.append(new gui.MenuItem({label: 'Format code',click: this.formatText}));
     edit.append(new gui.MenuItem({type: "separator"}));
     edit.append(new gui.MenuItem({label: 'Cut',click: this.editorCommand("cut")}));
     edit.append(new gui.MenuItem({label: 'Paste',click: this.editorCommand("paste")}));
     edit.append(new gui.MenuItem({label: 'Copy',click: this.editorCommand("copy") }));
+    edit.append(new gui.MenuItem({type: "separator"}));
+    edit.append(new gui.MenuItem({label: 'Find/Replace...',click: this.enableFind}));
+   
+    var source = new gui.Menu();
+    source.append(new gui.MenuItem({label: 'Format code',click: this.formatText}));
 
     var refactor = new gui.Menu();
     refactor.append(new gui.MenuItem({label: 'Rename', click: this.nop }));
@@ -83,10 +86,10 @@ constructor() {
     run.append(new gui.MenuItem({label: 'Compile All', click: this.compileAll }));
     run.append(new gui.MenuItem({label: 'Debug main', click: this.nop }));
 
-    var settings = new gui.Menu();
-    settings.append(new gui.MenuItem({label: 'Theme', submenu: this.createThemeMenu() }));
-    settings.append(new gui.MenuItem({label: 'Font size', submenu: this.createFontSizeMenu() }));
-    settings.append(new gui.MenuItem({label: 'Preferences', click: this.preferences }));
+    var window = new gui.Menu();
+    window.append(new gui.MenuItem({label: 'Theme', submenu: this.createThemeMenu() }));
+    window.append(new gui.MenuItem({label: 'Font size', submenu: this.createFontSizeMenu() }));
+    window.append(new gui.MenuItem({label: 'Preferences', click: this.preferences }));
 
     var help = new gui.Menu();
     help.append(new gui.MenuItem({label: 'Keyboard shortcuts', click: this.showShortcuts }));    
@@ -97,13 +100,13 @@ constructor() {
 
     menubar.append(new gui.MenuItem({ label: 'File', submenu: file}));
     menubar.append(new gui.MenuItem({ label: 'Edit', submenu: edit}));
+    menubar.append(new gui.MenuItem({ label: 'Source', submenu: source}));
     menubar.append(new gui.MenuItem({ label: 'Refactor', submenu: refactor}));    
     menubar.append(new gui.MenuItem({ label: 'Run', submenu: run}));    
-    menubar.append(new gui.MenuItem({ label: 'Settings', submenu: settings}));
+    menubar.append(new gui.MenuItem({ label: 'Window', submenu: window}));
     menubar.append(new gui.MenuItem({ label: 'Help', submenu: help}));    
     win.menu = menubar;
     this.menubar = menubar;
-    console.log("created main menubar");
 }
 
 editorCommand(command:string) {
@@ -245,7 +248,7 @@ redoChange() {
 
 
 enableFind() {
-  document.getElementById("findArea").style.display = "block";  
+  window.open('static/html/findreplace.html', '_blank'); 
 }
 
 
@@ -316,3 +319,6 @@ export var mainMenuBar;
 mainMenuBar = new Menubar();  
 
 }
+
+
+global.actionFind = Menu.mainMenuBar.actionFind; 

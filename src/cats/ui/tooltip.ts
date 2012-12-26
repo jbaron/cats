@@ -31,7 +31,8 @@ export class ToolTip {
         var st = tooltipNode.style;
         st.position = "fixed";
         st.display = "none";
-        st.background = "lightyellow";
+        st.background = "#ffffca";
+        st.color = "#000023";
         st.borderRadius = "";
         st.border = "1px solid gray";
         st.padding = "1px";

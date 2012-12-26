@@ -57,31 +57,21 @@ h3 {
           Eclipse theme
 ****************************************************************/
 
-body.eclipse #result.busy {
-  background-image:url('../img/loader.gif');
-  background-repeat:no-repeat;
-  background-position:center; 
+
+body {
+  background-color: rgba(100, 100, 100, 0.3);
 }
 
-
-body.eclipse {
-  background-color: rgb(159, 159, 159);
-}
-
-body.eclipse #center {
+body #center {
   background-color: transparent;
   border: 0px;
 }
 
-body.eclipse #main, body.eclipse #toolbar {
-  background-color: #dcdcdc;
+#sessionbar {
+  background-color: rgba(100,100,100,0.2);
 }
 
-body.eclipse #sessionbar {
-  background-color: transparent;
-}
-
-body.eclipse #statusbar,  body.eclipse #toolbar{
+#statusbar, #toolbar{
   background-color: transparent;
   border: 0px;
   min-height: 25px;
@@ -89,35 +79,36 @@ body.eclipse #statusbar,  body.eclipse #toolbar{
 }
 
 
-body.eclipse .ui-layout-pane {
-  border: 1px solid rgb(159, 159, 159);
+body .ui-layout-pane {
+  border: 1px solid rgba(0, 0, 0, 0.4);
   background-color: white;
-  color: black;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
-body.eclipse #sessionbar li:hover {
-    background:white;
+#sessionbar li:hover {
+    background: rgba(200, 200, 200, 0.5);
     border-radius: 5px;
 }
 
-body.eclipse #sessionbar li.active {
-  border: 1px solid;
+#sessionbar li.active {
+  border: 1px solid rgba(100,100,100,0.5);
   border-radius: 5px;
-  margin-left: 5px;
   cursor: default;
-  background-color: white;
+  background-color: rgba(200, 200, 200, 0.5);
   text-decoration:none;
 }
 
 
-body.eclipse #result {
-    border: 1px solid rgb(159, 159, 159);
-}
-
-body.eclipse #result tr:nth-child(even) {
+#result tr:nth-child(even) {
     background-color: #dcdcdc;
 }
+
+#result.busy {
+  background-image:url('../img/loader.gif');
+  background-repeat:no-repeat;
+  background-position:center; 
+}
+
 
 
 /************************************************************** 
@@ -125,10 +116,7 @@ body.eclipse #result tr:nth-child(even) {
 ***************************************************************/
 
 body .ui-layout-pane {
-  background: inherit;
-  color: inherit;
   padding: 0px;
-  border: 0px;
 }
 
 
@@ -141,11 +129,6 @@ body .ui-layout-resizer  { /* all 'resizer-bars' */
 body .ui-layout-toggler {
   background:   transparent;
   border:     0px ;
-}
-
-
-#editorPane {
-  padding: 0px;
 }
 
 /************************************************************* 
@@ -182,7 +165,7 @@ Tab section
   font-size: 90%;
   height: 25px;
   padding: 2px 5px 2px 2px;
-  margin-left: 5px;  
+  margin-right: 5px;  
   cursor: pointer;
 }
 

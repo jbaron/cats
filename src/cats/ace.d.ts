@@ -26,6 +26,7 @@ module ACE {
 	}
 
 	interface UndoManager {
+		new();
 		undo(dontSelect?: bool);
 		redo(dontSelect?:bool): Range;
 		reset():void;
@@ -38,6 +39,7 @@ module ACE {
 	}
 
 	interface EditSession {
+		new(content:string, mode:string);
 		getUndoManager():UndoManager;
 		getValue():string;
 		getDocument():Document;
@@ -72,6 +74,7 @@ module ACE {
 		execCommand(command:string);
 		getSession():EditSession;
 		setTheme(theme:string);
+		getTheme():string;
 		moveCursorTo(row:number, column:number);
 		setFontSize(cssSize: string);
 	}

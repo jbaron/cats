@@ -16,13 +16,20 @@ import path = module("path");
 
 
 export class Project {
-    // The name of the file that is currently being edited
-    // filename:string;
-    // private ignoreChange = false;
+    
+    // The sessions that are open
     sessions:Session[] = [];
+
+    // The current session that is being edited
     session:Session;
+
+    // The home directory of the project
     projectDir:string;
+
+    // The singleton Editor instance
     editor:ACE.Editor;
+
+    // The singleton TSWorker handler instance
     iSense:ISenseHandler;
     config:Configuration;
     toolTip:ui.ToolTip;
@@ -43,7 +50,7 @@ constructor(projectDir:string) {
 
     this.editor = this.createEditor();
     this.setTheme(this.config.config().theme); 
-    this.editor.setFontSize("14px");       
+    this.editor.setFontSize("16px");       
     this.autoCompleteView = new AutoCompleteView(this.editor); 
     this.hideEditor();
     
@@ -67,13 +74,16 @@ constructor(projectDir:string) {
 
 // Get the color of ace editor and use it to style the rest
 private assimilate() {
+  
   // Use a timeout to make usre the editor has updated its style
   setTimeout( function() {
-      var elem = $(".ace_gutter");
+      var isDark =  $(".ace_dark").length > 0;
+      var fg = isDark ? "white" : "black";
+      var elem = $(".ace_scroller");
       var bg = elem.css("background-color");
-      var fg = elem.css("color");      
-      $("body").css("background-color",bg);
-      $("body").css("color",fg);
+      // var fg = elem.css("color");      
+      $("html, #main, #navigator, #info, #result").css("background-color",bg);
+      $("html").css("color",fg);
       $(".autocomplete").css("background-color",bg);
       $(".autocomplete").css("color",fg);
       $("input").css("background-color",fg);
@@ -250,9 +260,8 @@ readTextFile(name:string) :string {
     return content;
 }
 
-// Load all the script that are part of the project
+// Load all the script that are part of the project into the tsworker
 // For now use a synchronous call to load.
-// Also update the worker to have these scripts already parsed.
 private loadTypeScriptFiles(directory) {
     var files = fs.readdirSync(this.getFullName(directory));
     files.forEach((file) =>{
@@ -263,7 +272,7 @@ private loadTypeScriptFiles(directory) {
           if (ext === ".ts") {
               var content = this.readTextFile(fullName);
               this.iSense.perform("updateScript",fullName,content,() => {});
-              console.log("Loaded " + fullName);
+              console.log("Found TypeScript file: " + fullName);
           }
       }
       if(stats.isDirectory()) {

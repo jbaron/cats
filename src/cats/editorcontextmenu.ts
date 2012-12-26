@@ -1,6 +1,6 @@
 module Menu {
 
-var gui = require('nw.gui');
+import gui = module('nw.gui');
 var win = gui.Window.get();
 
 

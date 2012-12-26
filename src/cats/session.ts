@@ -6,20 +6,24 @@ module cats {
 import path = module("path");
 // import TypeScript = module(TypeScript);
 
-var EditSession = ace.require("ace/edit_session").EditSession;
-var UndoManager = ace.require("ace/undomanager").UndoManager;
+var EditSession:ACE.EditSession = ace.require("ace/edit_session").EditSession;
+var UndoManager:ACE.UndoManager = ace.require("ace/undomanager").UndoManager;
 
 export class Session {
 	
 	private static MODES = {
 		".js" : "ace/mode/javascript",
 		".ts" : "ace/mode/typescript",
+		".xhtml" : "ace/mode/html",
+		".xhtm" : "ace/mode/html",
 		".html" : "ace/mode/html",
 		".htm" : "ace/mode/html",
 		".css" : "ace/mode/css",
-		".less" : "ace/mode/css",
+		".less" : "ace/mode/less",
+		".md" : "ace/mode/markdown",
 		".svg" : "ace/mode/svg",
 		".yaml" : "ace/mode/yaml",
+		".yml" : "ace/mode/yaml",
 		".xml" : "ace/mode/xml",
 		".json" : "ace/mode/json"
 	};
