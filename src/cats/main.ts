@@ -45,9 +45,10 @@ fileTree.onselect = (filePath) => {
 export var tabbar;
 tabbar = new ui.Tabbar();
 tabbar.setOptions(project.sessions);
-tabbar.setAspect("name", (session) => { return path.basename(session.name)});
-tabbar.setAspect("selected", (session) => { return session === cats.project.session});
-tabbar.setAspect("longname", (session) => { return session.name});
+tabbar.setAspect("name", (session:Session) => { return path.basename(session.name)});
+tabbar.setAspect("selected", (session:Session) => { return session === cats.project.session});
+tabbar.setAspect("longname", (session:Session) => { return session.name});
+tabbar.setAspect("changed", (session:Session) => { return session.changed});
 // tabbar.setAspect("changed", (session) => { return session.changed});
 tabbar.onselect = (session) => cats.project.editFile(session.name); //TODO Fix to use real session
 

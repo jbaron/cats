@@ -38,7 +38,14 @@ export class Session {
 	private pendingWorkerUpdate = false; 
 
 	// Has the code been changed without saving yet
-	changed = false;
+	private _changed = false;
+	get changed() : bool { return this._changed;}
+	set changed(value:bool) {
+		if (this._changed !== value) {
+			this._changed = value;
+			tabbar.refresh();
+		}
+	}
 
 	constructor(private project:Project,public name:string,content:string) {
 		console.log("Creating new session for file " + name + " with content length " + content.length);
@@ -148,6 +155,7 @@ export class Session {
 
 	onChangeHandler(event) {
 		this.changed = true;
+		
 		if (! this.enableAutoComplete) return;
 		
 	    this.pendingWorkerUpdate = true;

@@ -8,7 +8,29 @@ import gui = module('nw.gui');
 
 var win = gui.Window.get();
 
-// This is the class that creates the main menubar and has actions that are linked to the 
+
+function showErrors(errors:string[]) {
+    
+    var table = <HTMLTableElement>document.createElement("table");
+    
+    errors.forEach( (error:string) => {      
+      var match = /^(.*)\(([0-9]*),([0-9]*)\):(.*)$/g;
+      var parts = match.exec(error);
+      if (! parts) {
+        console.error("Couldn't parse error:" + error);
+        return;
+      }
+      var row:any = table.insertRow(-1);
+      for (var i=1;i<parts.length;i++) {
+        row.insertCell(-1).innerText = parts[i];
+      }
+    });
+
+    document.getElementById("result").innerHTML = "";
+    document.getElementById("result").appendChild(table);
+}
+
+// This class creates the main menubar and has the actions that are linked to the 
 // menubar.
 class Menubar {
 
@@ -166,14 +188,24 @@ showProcess() {
   alert(display);
 }
 
+
 compileAll() {
-  var path = require("path");
+
   // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
   var options = cats.project.config.config().compiler;
+  $("#result").addClass("busy");
   cats.project.iSense.perform("compile", options, (err,data) => {
+  $("#result").removeClass("busy");
     if (err) {
-      console.error(err);
+      console.error(err.stack);
+      var msg = err.stack.split("\n")[0];
+      showErrors([msg]);
       alert("Error during compiling " + err);
+      return;
+    }
+
+    if (data.error) {
+      showErrors(data.error.split("\n"));
       return;
     }
     var sources = data.source
@@ -235,7 +267,6 @@ nop() {
   alert("Not yet implemented");
 };  
 
-
 undoChange() {
   var man = cats.project.editor.getSession().getUndoManager();
   man.undo();
@@ -246,17 +277,14 @@ redoChange() {
   man.redo();
 }
 
-
 enableFind() {
   window.open('static/html/findreplace.html', '_blank'); 
 }
-
 
 actionFind() {
     var input = <HTMLInputElement>document.getElementById("findText");
     cats.project.editor.find(input.value,{},true);
 }
-
 
 actionReplace() {
     var findText = <HTMLInputElement>document.getElementById("findText");
@@ -267,16 +295,11 @@ actionReplace() {
     cats.project.editor.replace(replaceText.value,options);
 }
 
-
-
-
 setThemeWrapper(theme) {
   return function setTheme() {
       cats.project.setTheme(theme);
   }
 }
-
-
 
 createFontSizeMenu() {
   var menu = new gui.Menu();

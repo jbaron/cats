@@ -1,13 +1,3 @@
-#logo {
-  height:20px;
-  float: left;
-  margin: 2px;
-}
-
-h3 {
-  font-size: 20px;
-  margin: 0;
-}
 
 
 /*
@@ -98,9 +88,22 @@ body .ui-layout-pane {
   text-decoration:none;
 }
 
+/***************************************************************
+      result tables 
+****************************************************************/
 
-#result tr:nth-child(even) {
-    background-color: #dcdcdc;
+#result table {
+  border-collapse:collapse;
+  width: 100%;
+}
+
+#result table tr:nth-child(even) {
+  background-color: rgba(100,100,100,0.2);
+}
+
+#result table, #result td, #result th
+{
+  border:1px solid rgba(100,100,100,0.2);
 }
 
 #result.busy {

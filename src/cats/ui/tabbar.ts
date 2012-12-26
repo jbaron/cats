@@ -80,12 +80,13 @@ export class Tabbar extends SingleSelector {
                 optionElem.className = "active";
              }                     
 
-             /*
+             
              var changed = this.getAspect("changed",option);
              if (changed === true) {
                 optionElem.className += " changed";
              }
 
+             /*
              var closeButton = document.createElement("span");
              closeButton.innerHTML = "X";
              optionElem.appendChild(closeButton);
