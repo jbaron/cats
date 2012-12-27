@@ -30,22 +30,22 @@
         <section id="main-content">
           <h1>Introduction</h1>
 
-<p>CATS is an IDE for the TypeScript developer. It stands for Code Assistant for TypeScript. CATS is opensource and runs on Linux, Windows and OSX. CATS itself is written in TypeScript.</p>
+<p>CATS is an IDE for the TypeScript developer. It stands for Code Assistant for TypeScript. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. CATS itself is written in TypeScript and even being developed with CATS.</p>
 
-<p>Although not yet feature complete, it is getting there. Right now CATS already has built-in suppor
-t for the following features:</p>
+<p>Although not yet feature complete, it is getting there. Right now CATS already has built-in support for the following features:</p>
 
 <ul>
-<li><p>Code completion (just type a dot or Ctrl-Space to invoke it).</p></li>
-<li><p>Syntax highlighting (and not only for TypeScript).</p></li>
-<li><p>Validation of the source code (running in the background) informing you of compiler warnings and errors.</p></li>
-<li><p>Various editing features like folding, indentation (see also help =&gt; keyboard shortcuts to see a list).</p></li>
-<li><p>Compilation, both to a single file or to multiple files.</p></li>
-<li><p>Running the code from the IDE.</p></li>
+<li><p>TypeScript code completion (just type a dot or Ctrl-Space to invoke it).</p></li>
+<li><p>TypeScript compilation to JavaScript.</p></li>
+<li><p>Syntax highlighting for many languages including TypeScript.</p></li>
+<li><p>Validation of the TypeScript source code while you are typing.</p></li>
+<li><p>JavaScript JSHint support.</p></li>
+<li><p>The normal editing features you expect of a mature editor, like folding, indentation (see also help =&gt; keyboard shortcuts to see a list).</p></li>
+<li><p>Running your application from within IDE and using the WebKit debugger.</p></li>
 <li><p>Theme support:</p></li>
-</ul><p><img src="https://raw.github.com/jbaron/cats/master/artifacts/themes.jpg" height="250px" width="850px"></p>
+</ul><p><img src="https://raw.github.com/jbaron/cats/master/artifacts/themes.png" height="220px" width="850px"></p>
 
-<p>It is strongly encouraged to first make a backup before using CATS on your project since the software is still considered to be of alpha quality. </p>
+<p>It is recommended to first make a backup before using CATS on your project since the software is still considered to be of alpha quality. </p>
 
 <h1>Installation &amp; Running it</h1>
 
@@ -55,15 +55,10 @@ t for the following features:</p>
 <li>
 <p>Download the CATS from Github: </p>
 
-<pre><code>        git clone https://github.com/jbaron/cats.git
+<pre><code>git clone https://github.com/jbaron/cats.git
 </code></pre>
 </li>
-<li>
-<p>Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at:</p>
-
-<pre><code>        https://github.com/rogerwang/node-webkit
-</code></pre>
-</li>
+<li><p>Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at: <a href="https://github.com/rogerwang/node-webkit">Node-Webkit</a></p></li>
 <li><p>Go to the cats directory and type: /path_to_node_webkit/nw ./</p></li>
 </ol><p>By default the "greeter" project will be loaded. In the samples directory there are several other projects you can try out. Of course when you open a new project, you can also open a directory that contains your own project.</p>
 
@@ -75,22 +70,19 @@ t for the following features:</p>
 
 <h1>Bugs and Issues</h1>
 
-<p>In case you encounter an issue, you can open a ticket on Github. Also feature requests can be entered here:</p>
-
-<pre><code>          https://github.com/jbaron/cats/issues
-</code></pre>
+<p>In case you encounter an issue, you can open a ticket on Github. Also feature requests can be entered here: <a href="https://github.com/jbaron/cats/issues">Github issue tracker</a></p>
 
 <h1>Building from source</h1>
 
-<p>There is no need to compile CATS yourself, since all the compiled files are already included. But if you want to play aorund with it, here are the steps:</p>
+<p>There is normally no need to compile CATS yourself, since all the compiled files are already included. But if you want to play around with it, here are the steps:</p>
 
 <ol>
 <li><p>Make sure you have installed TypeScript 0.8.1 or later</p></li>
 <li><p>Go to the cats directory</p></li>
 <li>
-<p>The following will compile the required worker.js file:</p>
+<p>The following will compile the required tsworker.js file:</p>
 
-<pre><code> tsc @build
+<pre><code>tsc @build
 </code></pre>
 </li>
 <li>
@@ -99,19 +91,21 @@ t for the following features:</p>
 <pre><code>tsc @build2
 </code></pre>
 </li>
-</ol><p>That is all there is to it. The lib file should now have an updated main.js and worker.js file and you are ready to run CATS editor.</p>
+</ol><p>That is all there is to it. The lib file should now have an updated main.js and tsworker.js file and you are ready to run CATS editor.</p>
 
 <h1>Couldn't have done it without ....</h1>
 
-<p>Some of the main components that are being used by CATS:</p>
+<p>Some of the main 3rd party components that we have used within CATS and couldn't have done without:</p>
 
 <ul>
-<li>ACE, an embeddable code editor written in JavaScript.</li>
-<li>Typescipt 0.8.1 (of course).</li>
-<li>Node-webkit. This is a great initiative of Intel to allow Node libraries to be used within a web page. We use this to read and write local files without the need for a server component.</li>
+<li><p>TypeScript (of course), developed by Microsoft.</p></li>
+<li><p>ACE, an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.</p></li>
+<li><p>Node-webkit. This is a great initiative from Intel to allow Node libraries to be used within a web page. We use this to read and write local files without the need for a server-side component.</p></li>
 </ul><h1>Todo</h1>
 
-<p>See the TODO.md file for details.</p>
+<p>The todo list items are tracked as enhancement request on GitHub. You can check them out at:</p>
+
+<p><a href="https://github.com/jbaron/cats/issues?labels=enhancement&amp;page=1&amp;state=open">ToDo List</a></p>
         </section>
 
         <aside id="sidebar">
