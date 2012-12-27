@@ -3,9 +3,7 @@ module Menu {
 
 import fs = module("fs");
 import path = module("path");
-import util = module("util");
 
-var inspect = util.inspect;
 
 function nop() {
   alert("Not yet implemented");

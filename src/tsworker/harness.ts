@@ -1,4 +1,4 @@
-///<reference path='typescript.d.ts' />
+///<reference path='../typings/typescript.d.ts' />
 
 // This is based on the harness.ts file from TypeScript (80% identical)
 // Major difference is that this module uses real language services API and not the Shim.
@@ -7,7 +7,7 @@
 importScripts("typescript.js")
 
 
-module LiteHarness {
+module TSWorker {
    
     export class ScriptInfo {
         public version: number;

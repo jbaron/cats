@@ -1,5 +1,5 @@
 ///<reference path='project.ts'/>
-///<reference path='../tsworker/typescript.d.ts'/>
+///<reference path='../typings/typescript.d.ts'/>
 
 module cats {
 
@@ -78,8 +78,6 @@ export class Session {
 		return result;
 	}
 
-
-
 	getPositionFromScreenOffset(x:number,y:number) : ACE.Position {
 		var r = this.project.editor.renderer;
         var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
@@ -116,7 +114,7 @@ export class Session {
 		var project = this.project;
 
         project.iSense.perform("getInfoAtPosition","getTypeAtPosition",this.name, docPos,         	
-        	(err,data:TypeScript.Services.TypeInfo) => {
+        	(err,data:Services.TypeInfo) => {
         		if (! data) return;
         		var member = data.memberName;
         		if (! member) return;

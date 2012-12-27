@@ -1,5 +1,5 @@
 ///<reference path='project.ts'/>
-///<reference path='node-webkit.d.ts'/>
+///<reference path='../typings/node-webkit.d.ts'/>
 
 module Menu {
 
@@ -8,11 +8,23 @@ import gui = module('nw.gui');
 
 var win = gui.Window.get();
 
+function openParts(parts) {
+    var fileName = parts[1];
+    var pos = {
+        row: parts[2] -1,
+        column: parts[3] -1
+    }
+    cats.project.editFile(fileName,null,pos);
+}
+
 
 function showErrors(errors:string[]) {
     
     var table = <HTMLTableElement>document.createElement("table");
-    
+    // var table = <any>document.createElement("table");
+
+
+
     errors.forEach( (error:string) => {      
       var match = /^(.*)\(([0-9]*),([0-9]*)\):(.*)$/g;
       var parts = match.exec(error);
@@ -21,6 +33,11 @@ function showErrors(errors:string[]) {
         return;
       }
       var row:any = table.insertRow(-1);
+      row["_error"]= parts;
+      row.onclick = function(ev:MouseEvent){
+        openParts(this["_error"]);
+      };
+
       for (var i=1;i<parts.length;i++) {
         row.insertCell(-1).innerText = parts[i];
       }
@@ -143,7 +160,7 @@ showShortcuts() {
 }
 
 showAbout() {
-  alert("Code Assisitant for TypeScript\nversion 0.5.5\nCreated by JBaron");
+  alert("Code Assisitant for TypeScript\nversion 0.6.8\nCreated by JBaron");
 }
 
 closeAllProjects() {
@@ -198,7 +215,7 @@ compileAll() {
   $("#result").removeClass("busy");
     if (err) {
       console.error(err.stack);
-      var msg = err.stack.split("\n")[0];
+      var msg = err.stack.substring(13).split("\n")[0];
       showErrors([msg]);
       alert("Error during compiling " + err);
       return;
@@ -208,6 +225,8 @@ compileAll() {
       showErrors(data.error.split("\n"));
       return;
     }
+
+    document.getElementById("result").innerText = "Successfully generated " + Object.keys(data.source).length + " file(s).";
     var sources = data.source
     for (var name in sources) {
         cats.project.writeTextFile(name,sources[name]);

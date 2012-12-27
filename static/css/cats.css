@@ -112,7 +112,10 @@ body .ui-layout-pane {
   background-position:center; 
 }
 
-
+#result table tr:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 /************************************************************** 
   Overwrite default layout settings

@@ -1,6 +1,6 @@
 Introduction
 ============
-CATS is an IDE for the TypeScript developer. It stands for Code Assistant for TypeScript. CATS is opensource software and runs on Linux, Windows and OSX. CATS itself is written in TypeScript.
+CATS is an IDE for the TypeScript developer. It stands for Code Assistant for TypeScript. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. CATS itself is written in TypeScript and even being developed with CATS.
 
 Although not yet feature complete, it is getting there. Right now CATS already has built-in support for the following features:
 
@@ -10,19 +10,19 @@ Although not yet feature complete, it is getting there. Right now CATS already h
 
 - Syntax highlighting for many languages including TypeScript.
 
-- Validation of TypeScript source code while you are typing.
+- Validation of the TypeScript source code while you are typing.
 
 - JavaScript JSHint support.
 
 - The normal editing features you expect of a mature editor, like folding, indentation (see also help => keyboard shortcuts to see a list).
 
-- Running your web application from within IDE.
+- Running your application from within IDE and using the WebKit debugger.
 
 - Theme support:
 
-<img src="https://raw.github.com/jbaron/cats/master/artifacts/themes.jpg" height="250px" width="850px" />
+<img src="https://raw.github.com/jbaron/cats/master/artifacts/themes.png" height="220px" width="850px" />
 
-It is strongly encouraged to first make a backup before using CATS on your project since the software is still considered to be of alpha quality. 
+It is recommended to first make a backup before using CATS on your project since the software is still considered to be of alpha quality. 
 
 Installation & Running it
 =========================
@@ -54,21 +54,20 @@ In case you encounter an issue, you can open a ticket on Github. Also feature re
 
 Building from source
 =====================
-There is normally no need to compile CATS yourself, since all the compiled files are already included. But if you want to play aorund with it, here are the steps:
+There is normally no need to compile CATS yourself, since all the compiled files are already included. But if you want to play around with it, here are the steps:
 
 1. Make sure you have installed TypeScript 0.8.1 or later
 
 2. Go to the cats directory
 
-3. The following will compile the required worker.js file:
+3. The following will compile the required tsworker.js file:
 
         tsc @build
 
 4. Now the only thing left is to compile the main.js file: 
 
-		tsc @build2
+        tsc @build2
    
-
 That is all there is to it. The lib file should now have an updated main.js and tsworker.js file and you are ready to run CATS editor.
 
 
@@ -80,9 +79,13 @@ Some of the main 3rd party components that we have used within CATS and couldn't
 
 - ACE, an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.
 
-- Node-webkit. This is a great initiative from Intel to allow Node libraries to be used within a web page. We use this to read and write local files without the need for a server component.
+- Node-webkit. This is a great initiative from Intel to allow Node libraries to be used within a web page. We use this to read and write local files without the need for a server-side component.
 
 
 Todo
-=====
-See the TODO.md file for details.
+====
+The todo list items are tracked as enhancement request on GitHub. You can check them out at:
+
+[ToDo List](https://github.com/jbaron/cats/issues?labels=enhancement&page=1&state=open)
+
+

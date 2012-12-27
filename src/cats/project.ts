@@ -3,10 +3,10 @@
 ///<reference path='configuration.ts'/>
 ///<reference path='session.ts'/>
 ///<reference path='editorcontextmenu.ts'/>
-///<reference path='node.d.ts'/>
+///<reference path='../typings/node.d.ts'/>
 ///<reference path='ui/tooltip.ts'/>
 ///<reference path='ui/filetree.ts'/>
-///<reference path='ace.d.ts'/>
+///<reference path='../typings/ace.d.ts'/>
 
 
 module cats {
@@ -126,6 +126,7 @@ autoComplete()  {
 
 showEditor() {
   document.getElementById("editor").style.display = "block";
+  this.editor.focus();
 }
 
 hideEditor() {
@@ -262,7 +263,7 @@ readTextFile(name:string) :string {
 
 // Load all the script that are part of the project into the tsworker
 // For now use a synchronous call to load.
-private loadTypeScriptFiles(directory) {
+private loadTypeScriptFiles(directory:string) {
     var files = fs.readdirSync(this.getFullName(directory));
     files.forEach((file) =>{
       var fullName = path.join(directory,file); 

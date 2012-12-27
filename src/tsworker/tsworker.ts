@@ -1,12 +1,12 @@
 // Licensed under the Apache License, Version 2.0. 
-///<reference path='./harness.ts'/>
-///<reference path='../cats/ace.d.ts'/>
+///<reference path='harness.ts'/>
+///<reference path='../typings/ace.d.ts'/>
 
 
 importScripts("typescript.js")
 
 
-module CATS {
+module TSWorker {
 
 var outputFiles = {};
 
@@ -26,16 +26,16 @@ function caseInsensitiveSort(a:{name:string;}, b:{name:string;}) {
 class TypeScriptHint {
 
     private ls:Services.ILanguageService;
-    private typescriptLS : LiteHarness.TypeScriptLS;
+    private typescriptLS : TypeScriptLS;
 
     // Create a new TypeScript instance with projectDir as project home
     constructor() {
-        this.typescriptLS = new LiteHarness.TypeScriptLS();
+        this.typescriptLS = new TypeScriptLS();
         this.ls = this.typescriptLS.getLanguageService();
     }
 
     reset123() {
-        this.typescriptLS = new LiteHarness.TypeScriptLS();
+        this.typescriptLS = new TypeScriptLS();
         this.ls = this.typescriptLS.getLanguageService();
     }
 

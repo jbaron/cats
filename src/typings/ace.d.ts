@@ -60,6 +60,7 @@ module ACE {
 
 	interface Editor {
 		find(value:string,options,something);
+		focus();
 		replace(value:string,options);
 		session:EditSession;
 		renderer;

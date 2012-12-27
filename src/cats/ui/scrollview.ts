@@ -3,9 +3,10 @@ class ScrollView {
 	
 	options;
 
-	pos=0
+	pos=0;
 	max = 10;
 	selected:HTMLElement;
+    rootElement:HTMLElement;
 
 	constructor() {
 		this.rootElement = document.createElement("ol");
@@ -14,11 +15,11 @@ class ScrollView {
 
 
 	next() {
-		if (pos === this.options.length) return;
-		pos++;
-		var focus = this.selected.nextSibling;
+		if (this.pos === this.options.length) return;
+		this.pos++;
+		var focus = <HTMLElement>this.selected.nextSibling;
 		if (! focus) {
-			focus = this.renderOption(pos,true);
+			focus = this.renderOption(this.pos,true);
 			this.rootElement.removeChild(this.rootElement.children[0]);
 		} 
 		
@@ -28,15 +29,13 @@ class ScrollView {
 	}
 
 	prev() {
-		if (pos === 0) return;
-		
-		pos--;
-
+		if (this.pos === 0) return;		
+		this.pos--;
 	}
 
 	private renderOption(id,selected=false) {
 		var result = document.createElement("li");
-		this.root.appendChild(result);
+		this.rootElement.appendChild(result);
 		result.innerText= this.options[id];
 		return result;
 
@@ -45,7 +44,7 @@ class ScrollView {
 	render() {
 		var max = Math.min(this.max,this.options.length);
 		for (var i =0;i<max;i++) {
-			this.renderOption(id,i===0);
+			// this.renderOption(id,i===0);
 		}
 	}
 
