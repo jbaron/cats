@@ -6,14 +6,14 @@ class Cell {
     hasHit: bool;
     element: HTMLElement;
 
-    constructor (public row: number, public column: number) {
+    constructor(public row: number, public column: number) {
         this.element = $("<div class='cell notBombed'></div>")[0];
     }
 
     // Parse a cell location of the format "row,column"
     static parseCellLocation(pos: string) {
         var indices: string[] = pos.split(",");
-        return {'row': parseInt(indices[0]), 'column': parseInt(indices[1])};
+        return { 'row': parseInt(indices[0]), 'column': parseInt(indices[1]) };
     }
 
     // Return the cell location of the format "row,column"
@@ -29,7 +29,7 @@ class Ship {
     hits = 0;
     element: HTMLElement;
 
-    constructor (public size: number) { 
+    constructor(public size: number) {
         this.element = $("<div class='ship'></div>")[0];
     }
 
@@ -92,7 +92,7 @@ class Board {
 
     private positioningEnabled: bool;    // Set to true when the player can position the ships
 
-    constructor (public element: HTMLElement, playerBoard: bool = true) {
+    constructor(public element: HTMLElement, playerBoard: bool = true) {
         this.positioningEnabled = playerBoard;
         this.cells = [];
         this.ships = [];
@@ -136,7 +136,7 @@ class Board {
                     // Reduce size slightly to avoid overlap issues blocking the last cell
                     grid: [referenceCell.width() * 0.99 + 2, referenceCell.height() * 0.99 + 2],
                     cursor: 'crosshair'
-                }).click( (evt: JQueryEventObject) => {
+                }).click((evt: JQueryEventObject) => {
                     if (this.positioningEnabled) {
                         var shipIndex: number = $(evt.target).data("shipIndex");
                         this.ships[shipIndex].flipShip();
@@ -163,7 +163,7 @@ class Board {
         ships.draggable("option", "disabled", !val);
         cells.droppable("option", "disabled", !val);
     }
-    
+
     static getRandomPosition() {
         return {
             "row": Math.floor(Math.random() * 10),
@@ -232,10 +232,10 @@ class Board {
             allCells = allCells.concat(this.ships[i].getCellsCovered());
         }
         allCells.sort();
-        var dups = allCells.some(function (val, idx, arr) { return val === arr[idx + 1]; });
+        var dups = allCells.some(function(val, idx, arr) { return val === arr[idx + 1]; });
 
         // See if any ship cells are off the board
-        var outOfRange = allCells.some(function (val: string) {
+        var outOfRange = allCells.some(function(val: string) {
             var pos = Cell.parseCellLocation(val);
             return !(pos.column >= 0 && pos.column <= 9 && pos.row >= 0 && pos.row <= 9);
         });
@@ -277,12 +277,12 @@ class Board {
     }
 
     private allShipsSunk() {
-        return this.ships.every(function (val) { return val.isSunk(); });
+        return this.ships.every(function(val) { return val.isSunk(); });
     }
 }
 
 class Game {
-    static gameState = {begin: 0, computerTurn: 1, playerTurn: 2, finished: 3};
+    static gameState = { begin: 0, computerTurn: 1, playerTurn: 2, finished: 3 };
     static msgs = {
         gameStart: "Drag your ships to the desired location on your board (on the right), then bomb a square on the left board to start the game!",
         invalidPositions: "All ships must be in valid positions before the game can begin.",
@@ -299,7 +299,7 @@ class Game {
     playerBoard: Board;
     computerBoard: Board;
 
-    constructor () {
+    constructor() {
         this.updateStatus(Game.msgs.gameStart);
         this.playerBoard = new Board($("#playerBoard")[0]);
         this.computerBoard = new Board($("#computerBoard")[0], false);
@@ -365,7 +365,8 @@ class Game {
     private computersTurn() {
         this.computerBoard.playerTurn = false;
         this.state = Game.gameState.computerTurn;
-        setTimeout(() => { this.playerBoard.chooseMove();
+        setTimeout(() => {
+            this.playerBoard.chooseMove();
         }, 250);
     }
 
@@ -382,9 +383,9 @@ class Game {
     }
 
     private updateStatus(msg: string) {
-        $("#status").slideUp('fast', function () {  // Slide out the old text
-                    $(this).text(msg).slideDown('fast');  // Then slide in the new text
-                });
+        $("#status").slideUp('fast', function() {  // Slide out the old text
+            $(this).text(msg).slideDown('fast');  // Then slide in the new text
+        });
     }
 }
 

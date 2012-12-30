@@ -5,7 +5,6 @@
 */
 
 declare var $;
-declare var ace;
 
 var HashHandler = ace.require('ace/keyboard/hash_handler').HashHandler;
 
@@ -13,8 +12,8 @@ var HashHandler = ace.require('ace/keyboard/hash_handler').HashHandler;
 // the key events
 class AutoCompleteView {
     
-    static selectedClassName = 'autocomplete_selected';
-    static className = 'autocomplete';
+    private static selectedClassName = 'autocomplete_selected';
+    private static className = 'autocomplete';
     wrap:HTMLElement;
     listElement:HTMLElement;
     private handler = new HashHandler();
@@ -22,7 +21,7 @@ class AutoCompleteView {
     active = false;
     completions:Services.CompletionEntry[];
 
-    constructor(private editor:ACE.Editor) {
+    constructor(private editor:Ace.Editor) {
         this.init();
         this.initKeys();
         this.editor.container.appendChild(this.wrap);
@@ -37,7 +36,7 @@ class AutoCompleteView {
       };
 
       
-      getInputText() {  
+      getInputText():string {  
         var cursor = this.editor.getCursorPosition();
         // console.log(cursor.column);
         var text = this.editor.session.getLine(cursor.row).slice(0, cursor.column+1);
@@ -51,7 +50,7 @@ class AutoCompleteView {
     
 
       // Get the text between cursor and start
-      getInputText2() {
+      getInputText2():string {
           var pos = this.editor.getCursorPosition();
           var result = this.editor.getSession().getTokenAt(pos.row,pos.column);          
           if (result && result.value) 

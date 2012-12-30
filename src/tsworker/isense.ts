@@ -23,8 +23,9 @@ function caseInsensitiveSort(a:{name:string;}, b:{name:string;}) {
     return 0;
 }
 
-class TypeScriptHint {
+class ISense {
 
+    private maxErrors = 10;
     private ls:Services.ILanguageService;
     private typescriptLS : TypeScriptLS;
 
@@ -34,7 +35,7 @@ class TypeScriptHint {
         this.ls = this.typescriptLS.getLanguageService();
     }
 
-    reset123() {
+    reset() {
         this.typescriptLS = new TypeScriptLS();
         this.ls = this.typescriptLS.getLanguageService();
     }
@@ -68,8 +69,8 @@ class TypeScriptHint {
         return this.typescriptLS.scripts[index].name
     }
 
-    // Convert a TS offset to ACE position
-    getCursor(name:string,chars:number) : ACE.Position {
+    // Convert a TS offset to Ace position
+    getCursor(name:string,chars:number) : Ace.Position {
         var tsCursor = this.typescriptLS.positionToLineCol(name,chars);
         var result = {
             row: tsCursor.line - 1,
@@ -78,7 +79,7 @@ class TypeScriptHint {
         return result;
     }
 
-    getDefinitionAtPosition(fileName:string, pos:ACE.Position) {
+    getDefinitionAtPosition(fileName:string, pos:Ace.Position) {
         var chars = this.getPositionFromCursor(fileName, pos);
         var info = this.ls.getDefinitionAtPosition(fileName,chars);
         if (info) { 
@@ -175,8 +176,25 @@ class TypeScriptHint {
         }        
     }
 
-    getFormattingEditsForRange(fileName, start, end) {
-        return this.ls.getFormattingEditsForRange(fileName, start, end , new Services.FormatCodeOptions());
+
+    splice(str,start,max,replacement) {
+        return str.substring(0,start)+replacement+str.substring(max);
+    }
+
+
+
+    getFormattedTextForRange(fileName, start, end) {
+        var options = new Services.FormatCodeOptions();
+        options.NewLineCharacter = "\n";
+        var edits = this.ls.getFormattingEditsForRange(fileName, start, end , options);
+        var result = this.getScriptContent(fileName);
+        var offset = 0;
+        for (var i=0;i<edits.length;i++) {
+            var edit = edits[i];
+            result = this.splice(result,edit.minChar+offset, edit.limChar+offset,edit.text);
+            offset += edit.text.length - (edit.limChar - edit.minChar) ;
+        }
+        return result;
     }
 
 
@@ -191,34 +209,37 @@ class TypeScriptHint {
         this.typescriptLS.addScript(name, source,resident);
     }
 
-    // updated the content of a script
-    updateScript(fileName:string,src:string,errors=true) {
-        this.typescriptLS.updateScript(fileName, src, false);
-        if (! errors) {
-            return;
-        }
-        // this.ls = this.typescriptLS.getLanguageService();
-        var errors = this.ls.getScriptErrors(fileName,10);
-        var script = this.ls.getScriptAST(fileName);
-        
-        var result = [];
 
-        errors.forEach((error:TypeScript.ErrorEntry) => {
-                var coord = TypeScript.getLineColumnFromPosition(script, error.minChar);
-                var resultEntry = {
-                    row:coord.line-1,
-                    column:coord.col-1,
-                    type:"error",
-                    text:error.message,
-                    raw: error.message
-                };
-                result.push(resultEntry);
-        });
-        return result;
+    // Get the know errors in a script
+    getErrors(fileName:string) {
+        var result = [];
+        var errors = this.ls.getScriptErrors(fileName,this.maxErrors);
+        if (errors.length) {
+            var script = this.ls.getScriptAST(fileName);
+            
+            errors.forEach((error:TypeScript.ErrorEntry) => {
+                    var coord = TypeScript.getLineColumnFromPosition(script, error.minChar);
+                    var resultEntry = {
+                        row:coord.line-1,
+                        column:coord.col-1,
+                        type:"error",
+                        text:error.message,
+                        raw: error.message
+                    };
+                    result.push(resultEntry);
+            });
+        }
+        return result; 
     }
 
-    // Get an ACE Range from TS minChars and limChars
-    getRange(script:string, minChar:number,limChar:number) :ACE.Range {
+    // updated the content of a script
+    updateScript(fileName:string,src:string,getErrors=true) {
+        this.typescriptLS.updateScript(fileName, src, false);
+        if (getErrors) return this.getErrors(fileName);
+    }
+
+    // Get an Ace Range from TS minChars and limChars
+    getRange(script:string, minChar:number,limChar:number) :Ace.Range {
         var startLC = this.typescriptLS.positionToLineCol(script, minChar);
         var endLC = this.typescriptLS.positionToLineCol(script, limChar);
         var result = {
@@ -241,8 +262,8 @@ class TypeScriptHint {
         return pos;
     }
 
-     // Get the chars offset based on the ACE position
-    private getPositionFromCursor(fileName:string, cursor:ACE.Position) : number{
+     // Get the chars offset based on the Ace position
+    private getPositionFromCursor(fileName:string, cursor:Ace.Position) : number{
         var script = this.ls.getScriptAST(fileName);
         var lineMap = script.locationInfo.lineMap;  
 
@@ -281,13 +302,13 @@ class TypeScriptHint {
     }
 
     // generic wrapper for info at a certain position 
-    public getInfoAtPosition(method:string, filename:string, cursor:ACE.Position) {
+    public getInfoAtPosition(method:string, filename:string, cursor:Ace.Position) {
         var pos = this.getPositionFromCursor(filename,cursor);
         var result = this.ls[method](filename, pos);
         return result;
     }
 
-	public autoComplete(cursor:ACE.Position, filename:string) : any {
+	public autoComplete(cursor:Ace.Position, filename:string) : any {
         var pos = this.getPositionFromCursor(filename,cursor);
         var memberMode = false;
         var source = this.getScriptContent(filename);
@@ -306,7 +327,7 @@ class TypeScriptHint {
 	}
 }
 
-var tsh = new TypeScriptHint();
+var tsh = new ISense();
 
 addEventListener('message', function(e) {
   var msg = e.data;

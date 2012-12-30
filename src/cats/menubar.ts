@@ -1,9 +1,9 @@
 ///<reference path='project.ts'/>
+///<reference path='ui/grid.ts'/>
 ///<reference path='../typings/node-webkit.d.ts'/>
 
 module Menu {
 
-// var gui = require('nw.gui');
 import gui = module('nw.gui');
 
 var win = gui.Window.get();
@@ -17,13 +17,26 @@ function openParts(parts) {
     cats.project.editFile(fileName,null,pos);
 }
 
+var errorTable = ["Description", "Resource", "Path", "Position" , "Type"];
+
+// TODO i18n
+function createHeader(table:HTMLTableElement, headers: string[]) {
+  var head = <HTMLTableElement>table.createTHead();
+  var row = head.insertRow(-1);
+  headers.forEach((header) => {
+    var th = document.createElement("th");
+    th.innerText = header;
+    row.appendChild(th);
+  });
+}
 
 function showErrors(errors:string[]) {
     
     var table = <HTMLTableElement>document.createElement("table");
-    // var table = <any>document.createElement("table");
+    createHeader(table,errorTable);
 
-
+    var tbody = <HTMLTableElement>document.createElement("tbody");
+    table.appendChild(tbody); 
 
     errors.forEach( (error:string) => {      
       var match = /^(.*)\(([0-9]*),([0-9]*)\):(.*)$/g;
@@ -32,7 +45,7 @@ function showErrors(errors:string[]) {
         console.error("Couldn't parse error:" + error);
         return;
       }
-      var row:any = table.insertRow(-1);
+      var row:any = tbody.insertRow(-1);
       row["_error"]= parts;
       row.onclick = function(ev:MouseEvent){
         openParts(this["_error"]);
@@ -89,40 +102,57 @@ themes = [
 ];
 
 
-
 constructor() {
     var menubar = new gui.Menu({ type: 'menubar' });
     
-    var file = new gui.Menu();
-    file.append(new gui.MenuItem({ label: 'Open Project...', click: this.openProject}));
+    var file = new gui.Menu();    
     file.append(new gui.MenuItem({ label: 'New File', click: this.newFile}));
-    file.append(new gui.MenuItem({ label: 'Save (Ctrl+S)', click: this.editorCommand("save")}));
+    file.append(new gui.MenuItem({type: "separator"}));
+    file.append(this.editorCommand("save"));
     file.append(new gui.MenuItem({ label: 'Save As ...', click: this.nop}));
     file.append(new gui.MenuItem({ label: 'Save All', click: this.nop}));
+    file.append(new gui.MenuItem({type: "separator"}));
     file.append(new gui.MenuItem({ label: 'Close File', click: this.closeFile}));
     file.append(new gui.MenuItem({ label: 'Close All Files', click: this.closeAllFiles}));
-    file.append(new gui.MenuItem({ label: 'Close Project', click: this.closeProject}));
-    file.append(new gui.MenuItem({ label: 'Close All Projects', click: this.closeAllProjects}));
+    file.append(new gui.MenuItem({type: "separator"}));
+    file.append(new gui.MenuItem({ label: 'Exit', click: this.closeAllProjects}));
 
     var edit = new gui.Menu();
-    edit.append(new gui.MenuItem({label: 'Undo',click: this.editorCommand("undo")}));
-    edit.append(new gui.MenuItem({label: 'Redo',click: this.editorCommand("redo")}));
+    edit.append(this.editorCommand("undo"));
+    edit.append(this.editorCommand("redo"));
     edit.append(new gui.MenuItem({type: "separator"}));
-    edit.append(new gui.MenuItem({label: 'Cut',click: this.editorCommand("cut")}));
-    edit.append(new gui.MenuItem({label: 'Paste',click: this.editorCommand("paste")}));
-    edit.append(new gui.MenuItem({label: 'Copy',click: this.editorCommand("copy") }));
+    edit.append(this.editorCommand("cut"));
+    edit.append(this.editorCommand("copy"));
+    edit.append(this.editorCommand("paste"));
     edit.append(new gui.MenuItem({type: "separator"}));
-    edit.append(new gui.MenuItem({label: 'Find/Replace...',click: this.enableFind}));
-   
+    edit.append(this.editorCommand("find"));
+    edit.append(this.editorCommand("findnext"));
+    edit.append(this.editorCommand("findprevious"));
+    edit.append(this.editorCommand("replace"));
+    edit.append(this.editorCommand("replaceall"));
+    edit.append(new gui.MenuItem({label: 'Find/Replace...',click: this.nop}));
+    edit.append(new gui.MenuItem({type: "separator"}));
+    edit.append(this.editorCommand("togglerecording"));
+    edit.append(this.editorCommand("replaymacro"));
+
     var source = new gui.Menu();
+    source.append(this.editorCommand("togglecomment"));
+    source.append(this.editorCommand("indent"));
+    source.append(this.editorCommand("outdent"));
     source.append(new gui.MenuItem({label: 'Format code',click: this.formatText}));
 
     var refactor = new gui.Menu();
     refactor.append(new gui.MenuItem({label: 'Rename', click: this.nop }));
 
+    var proj = new gui.Menu();
+    proj.append(new gui.MenuItem({ label: 'Open Project...', click: this.openProject}));
+    proj.append(new gui.MenuItem({ label: 'Close Project', click: this.closeProject}));
+    proj.append(new gui.MenuItem({type: "separator"}));
+    proj.append(new gui.MenuItem({label: 'Build Project', click: this.compileAll }));
+
+
     var run = new gui.Menu();
     run.append(new gui.MenuItem({label: 'Run main', click: this.runFile }));
-    run.append(new gui.MenuItem({label: 'Compile All', click: this.compileAll }));
     run.append(new gui.MenuItem({label: 'Debug main', click: this.nop }));
 
     var window = new gui.Menu();
@@ -134,13 +164,14 @@ constructor() {
     help.append(new gui.MenuItem({label: 'Keyboard shortcuts', click: this.showShortcuts }));    
     help.append(new gui.MenuItem({label: 'Process Info', click: this.showProcess }));
     help.append(new gui.MenuItem({label: 'Developers tools', click: this.showDevTools }));
-    help.append(new gui.MenuItem({label: 'About', click: this.showAbout }));
+    help.append(new gui.MenuItem({label: 'About CATS', click: this.showAbout }));
 
 
     menubar.append(new gui.MenuItem({ label: 'File', submenu: file}));
     menubar.append(new gui.MenuItem({ label: 'Edit', submenu: edit}));
     menubar.append(new gui.MenuItem({ label: 'Source', submenu: source}));
     menubar.append(new gui.MenuItem({ label: 'Refactor', submenu: refactor}));    
+    menubar.append(new gui.MenuItem({ label: 'Project', submenu: proj}));        
     menubar.append(new gui.MenuItem({ label: 'Run', submenu: run}));    
     menubar.append(new gui.MenuItem({ label: 'Window', submenu: window}));
     menubar.append(new gui.MenuItem({ label: 'Help', submenu: help}));    
@@ -148,12 +179,30 @@ constructor() {
     this.menubar = menubar;
 }
 
-editorCommand(command:string) {
-  return function() {
-    cats.project.editor.execCommand(command);
-  }
+
+// TODO i18n
+getLabelForCommand(commandName: string) {
+  var label = commandName[0].toUpperCase() + commandName.slice(1);
+  var platform = cats.project.editor.commands.platform;
+  var command = cats.project.editor.commands.byName[commandName];
+
+  var tabs = 5 - Math.floor((label.length / 4) - 0.01); 
+   label = label + "\t\t\t\t\t\t".substring(0,tabs);
+  if (command && command.bindKey) {
+    var key = command.bindKey[platform] ;
+    if (key) label += key ;
+  } 
+  return label;  
 }
 
+editorCommand(commandName: string ) {
+  var label = this.getLabelForCommand(commandName);
+  var item = new gui.MenuItem({
+      label: label,
+      click: function() {cats.project.editor.execCommand(commandName);}
+  });
+  return item;
+}
 
 showShortcuts() {
   window.open('static/html/keyboard_shortcuts.html', '_blank'); 
@@ -253,8 +302,8 @@ openProject() {
 
 formatText() {
   var session = cats.project.session;
-  cats.project.iSense.perform("getFormattingEditsForRange",session.name,0,session.getValue().length,(err,result) => {
-      console.log(result);
+  cats.project.iSense.perform("getFormattedTextForRange",session.name,0,session.getValue().length,(err,result) => {
+      if (! err) cats.project.session.editSession.setValue(result);
   });
 }
 
@@ -358,9 +407,12 @@ enableReplace() {
 }
 
 export var mainMenuBar;
-mainMenuBar = new Menubar();  
+export function createMenuBar() {
+  mainMenuBar = new Menubar();    
+}
+
 
 }
 
 
-global.actionFind = Menu.mainMenuBar.actionFind; 
+// global.actionFind = Menu.mainMenuBar.actionFind; 

@@ -27,7 +27,7 @@ export class Project {
     projectDir:string;
 
     // The singleton Editor instance
-    editor:ACE.Editor;
+    editor:Ace.Editor;
 
     // The singleton TSWorker handler instance
     iSense:ISenseHandler;
@@ -180,20 +180,26 @@ private onMouseMove(ev:MouseEvent) {
 
 
 // Initialize the editor
-private createEditor():ACE.Editor {
-    var editor:ACE.Editor = ace.edit("editor");    
+private createEditor():Ace.Editor {
+    var editor:Ace.Editor = ace.edit("editor");    
     editor.getSession().setMode("ace/mode/typescript");
 
     editor.commands.addCommands([
     {
         name:"autoComplete",
-        bindKey:"Ctrl-Space",
+        bindKey:{
+          mac: "Command-Space",
+          win: "Ctrl-Space"
+        },
         exec:this.autoComplete.bind(this)
     },
 
     {
         name:"save",
-        bindKey:"Ctrl-s",
+        bindKey:{
+          mac:"Command-s",
+          win:"Ctrl-s"
+        },
         exec:this.saveFile.bind(this)
     }
     ]);
@@ -211,7 +217,7 @@ private createEditor():ACE.Editor {
     return editor;
 }
 
-editFile(name: string,content?:string, goto?:ACE.Position) {
+editFile(name: string,content?:string, goto?:Ace.Position) {
   var session:Session = this.getSession(name);
   
   if (! session) {
@@ -234,6 +240,9 @@ editFile(name: string,content?:string, goto?:ACE.Position) {
       
   } else {
       this.editor.setSession(session.editSession);
+      this.iSense.perform("getErrors",name,(err,result) => {
+            session.editSession.setAnnotations(result);            
+      });
       if (goto) this.editor.moveCursorTo(goto.row, goto.column);
   }
   this.session = session;

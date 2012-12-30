@@ -59,7 +59,7 @@ bindTo(elem:HTMLElement) {
 }
 
 
-getCursor(): ACE.Position {
+getCursor(): Ace.Position {
 	return cats.project.editor.getCursorPosition();
 	return cats.project.session.getPositionFromScreenOffset(this.lastEvent.offsetX,this.lastEvent.offsetY);
 }

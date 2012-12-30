@@ -6,8 +6,8 @@ module cats {
 import path = module("path");
 // import TypeScript = module(TypeScript);
 
-var EditSession:ACE.EditSession = ace.require("ace/edit_session").EditSession;
-var UndoManager:ACE.UndoManager = ace.require("ace/undomanager").UndoManager;
+var EditSession:Ace.EditSession = ace.require("ace/edit_session").EditSession;
+var UndoManager:Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
 
 export class Session {
 	
@@ -28,8 +28,8 @@ export class Session {
 		".json" : "ace/mode/json"
 	};
 
-	// The ACE EditSession object
-	editSession:ACE.EditSession;
+	// The Ace EditSession object
+	editSession:Ace.EditSession;
 
 	private updateSourceTimer;
 	enableAutoComplete = false; //TODO refactor to typeScriptMode 
@@ -78,7 +78,7 @@ export class Session {
 		return result;
 	}
 
-	getPositionFromScreenOffset(x:number,y:number) : ACE.Position {
+	getPositionFromScreenOffset(x:number,y:number) : Ace.Position {
 		var r = this.project.editor.renderer;
         var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
 
@@ -93,7 +93,7 @@ export class Session {
         return docPos;
 	}
 
-	getPositionFromScreen(x:number,y:number) : ACE.Position {
+	getPositionFromScreen(x:number,y:number) : Ace.Position {
 		var r = this.project.editor.renderer;
         var canvasPos = r.rect || (r.rect = r.scroller.getBoundingClientRect());
         // console.log(canvasPos.left);
@@ -133,7 +133,7 @@ export class Session {
 	}
 
 	// Perform code autocompletion
-	autoComplete(cursor:ACE.Position, view:AutoCompleteView)  {    
+	autoComplete(cursor:Ace.Position, view:AutoCompleteView)  {    
 		if (! this.enableAutoComplete) return;
 		var editSession = this.editSession;
 

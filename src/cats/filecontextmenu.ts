@@ -9,7 +9,7 @@ function nop() {
   alert("Not yet implemented");
 };  
 
-var gui = require('nw.gui');
+import gui = module('nw.gui');
 var win = gui.Window.get();
 
 function createFileContextMenu() {

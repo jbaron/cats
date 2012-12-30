@@ -34,6 +34,9 @@ var defaultProject = "./samples" + path.sep + "greeter";
 
 project = new cats.Project(getParameterByName("project") || defaultProject);
 
+Menu.createMenuBar();
+
+
 var fileTree = new ui.FileTree(project.projectDir);
 fileTree.appendTo(document.getElementById("filetree"));
 fileTree.onselect = (filePath) => {

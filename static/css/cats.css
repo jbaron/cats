@@ -16,30 +16,25 @@
 
 #filetree ul {
   list-style: none;
-  padding-left: 14px;
+  padding-left: 1em;
 }
 
 #filetree li {
     font-size: 14px;
-    line-height: 18px;
+    line-height: 1.5em;
     cursor: pointer;
-    margin-bottom: 2px;
-}
-
-#filetree li span:hover {
-  background-color: #dcdcdc;
 }
 
 #filetree li.collapsed:before {
-  content: "+ ";
-  margin-left: -15px;
-  font-family: courier;
+  content: "+";
+  margin-left: -1em;
+  padding-right: 0.3em;
 }
 
 #filetree li.opened:before {
-  content: "- ";
-  margin-left: -15px;
-  font-family: courier;
+  content: "-";
+  margin-left: -1em;
+  padding-right: 0.3em;
 }
 
 
@@ -112,7 +107,7 @@ body .ui-layout-pane {
   background-position:center; 
 }
 
-#result table tr:hover {
+#result table tbody tr:hover {
   text-decoration: underline;
   cursor: pointer;
 }

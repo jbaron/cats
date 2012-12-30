@@ -1,2 +1,2 @@
 --out lib/tsworker.js
-src/tsworker/tsworker.ts
+src/tsworker/isense.ts

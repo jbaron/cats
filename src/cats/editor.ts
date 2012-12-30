@@ -2,7 +2,7 @@
 module cats {
 
 class Editor {
-	private aceEditor:ACE.Editor;
+	private aceEditor:Ace.Editor;
 	private toolTip:ui.ToolTip;
 	private autoCompleteView:AutoCompleteView;
     public onAutoComplete:Function;
@@ -15,10 +15,8 @@ class Editor {
         this.aceEditor.setFontSize("14px");
         this.hide();
 
-
         this.toolTip = new ui.ToolTip();
         this.autoCompleteView = new AutoCompleteView(this.aceEditor);
-
 	}
 
 
@@ -36,7 +34,7 @@ setTheme(theme:string) {
 }
 
 
-addCommand(command:ACE.EditorCommand) {
+addCommand(command:Ace.EditorCommand) {
 	this.aceEditor.commands.addCommands([command]);
 }
 
@@ -56,7 +54,7 @@ private onMouseMove() {}
 
 // Initialize the editor
 private createEditor() {
-    var editor:ACE.Editor = ace.edit(this.rootElement);    
+    var editor:Ace.Editor = ace.edit(this.rootElement);    
     // editor.getSession().setMode("ace/mode/typescript");
 
     editor.commands.addCommands([

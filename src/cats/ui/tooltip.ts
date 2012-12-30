@@ -24,7 +24,7 @@ export class ToolTip {
         this.element.style.display = "none";
     }
 
-    // Copied from ACE kitchen-sinck demo
+    // Copied from Ace kitchen-sinck demo
     private createElement() {
         var tooltipNode = <HTMLElement>document.createElement("div");
         document.documentElement.appendChild(tooltipNode);

@@ -1,21 +1,31 @@
 // Right now only defined what CATS is actually using
 
-module ACE {
+module Ace {
 
-	interface CommandList {
-		addCommands(commands:EditorCommand[]);
+	interface EditorCommand {
+		name:string;
+        bindKey:any;
+        exec:Function;
 	}
 
+	interface CommandManager {
+		byName;
+		commands;
+		addCommands(commands:EditorCommand[]);
+		addCommand(command:EditorCommand);
+		platform: string; // win or mac
+	}
+
+	interface Annotation {
+		 row: number;
+         column: number;
+         text: string;
+         type: string;
+	}
 
 	interface Document {
 		getAllLines(): string[];
 		getLines(firstRow:number, lastRow:number) : string[];
-	}
-
-	interface EditorCommand {
-		name:string;
-        bindKey:string;
-        exec:Function;
 	}
 
 	interface Range {
@@ -51,6 +61,7 @@ module ACE {
 		removeListener(event:string, listener:Function);
 		removeAllListeners(event:string);
 		getTokenAt(row:number, column:number): TokenInfo;	
+		setAnnotations(annotations:Annotation[]);
 	}
 
 	interface Position {
@@ -66,10 +77,11 @@ module ACE {
 		renderer;
 		keyBinding;
         onTextInput:Function;
+        getSelectionRange(): Range;
 		remove(direction:string);
 		insert(text:string);
 		container: HTMLElement;
-		commands:CommandList;
+		commands:CommandManager;
 		setSession(session:EditSession);
 		getCursorPosition():Position;
 		execCommand(command:string);
