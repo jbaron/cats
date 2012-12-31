@@ -61,7 +61,7 @@ bindTo(elem:HTMLElement) {
 
 getCursor(): Ace.Position {
 	return cats.project.editor.getCursorPosition();
-	return cats.project.session.getPositionFromScreenOffset(this.lastEvent.offsetX,this.lastEvent.offsetY);
+	// return cats.project.session.getPositionFromScreenOffset(this.lastEvent.offsetX,this.lastEvent.offsetY);
 }
 
 gotoDeclaration() {
@@ -80,17 +80,22 @@ getInfoAt(type:string) {
 	cats.project.iSense.perform("getInfoAtPosition",type, fileName, cursor, (err,data) => {
 		$("#result").removeClass("busy");
 		if (data) {
-			console.log(data);	
 			document.getElementById("result").innerHTML = "";
-			var table = document.createElement("table");
+			var grid = new cats.ui.Grid();
+			grid.setColumns(["description","resource","row","column"]);
+			
+			var rows =[];
 			data.forEach((result) => {
-				var row = table.insertRow(-1);
-				cell(row,result.ast.minChar);
-				cell(row,result.ast.limChar);
-				cell(row,result.ast.text);
-				cell(row,result.unitIndex);
+				rows.push({
+					description:result.description,
+					resource:result.script,
+					row:result.range.startRow,
+					column:result.range.startColumn
+				});
 			});
-			document.getElementById("result").appendChild(table);
+			grid.setRows(rows);
+			grid.render();
+			grid.appendTo(document.getElementById("result"));			
 		}
 	});
 }

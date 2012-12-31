@@ -8,16 +8,6 @@ import gui = module('nw.gui');
 
 var win = gui.Window.get();
 
-function openParts(parts) {
-    var fileName = parts[1];
-    var pos = {
-        row: parts[2] -1,
-        column: parts[3] -1
-    }
-    cats.project.editFile(fileName,null,pos);
-}
-
-var errorTable = ["Description", "Resource", "Path", "Position" , "Type"];
 
 // TODO i18n
 function createHeader(table:HTMLTableElement, headers: string[]) {
@@ -32,11 +22,9 @@ function createHeader(table:HTMLTableElement, headers: string[]) {
 
 function showErrors(errors:string[]) {
     
-    var table = <HTMLTableElement>document.createElement("table");
-    createHeader(table,errorTable);
-
-    var tbody = <HTMLTableElement>document.createElement("tbody");
-    table.appendChild(tbody); 
+    var grid = new cats.ui.Grid();
+    grid.setColumns(["description","resource","row","column","type"]);
+    var rows = [];
 
     errors.forEach( (error:string) => {      
       var match = /^(.*)\(([0-9]*),([0-9]*)\):(.*)$/g;
@@ -45,19 +33,25 @@ function showErrors(errors:string[]) {
         console.error("Couldn't parse error:" + error);
         return;
       }
-      var row:any = tbody.insertRow(-1);
-      row["_error"]= parts;
-      row.onclick = function(ev:MouseEvent){
-        openParts(this["_error"]);
-      };
-
-      for (var i=1;i<parts.length;i++) {
-        row.insertCell(-1).innerText = parts[i];
-      }
+      rows.push ({
+        description: parts[4],
+        resource: parts[1],
+        row: parseInt(parts[2],10),
+        column: parseInt(parts[3]+1,10),
+        type: "TypeScript error"
+      });
     });
 
-    document.getElementById("result").innerHTML = "";
-    document.getElementById("result").appendChild(table);
+    grid.setRows(rows);
+    grid.onselect = function(data){
+        cats.project.editFile(data.resource,null,{row:data.row-1, column:data.column-1});
+    };
+
+    grid.render();
+
+    var result = document.getElementById("result");
+    result.innerHTML = "";
+    grid.appendTo(result);
 }
 
 // This class creates the main menubar and has the actions that are linked to the 
@@ -234,8 +228,6 @@ closeAllFiles() {
   cats.project.close();
 }
 
-
-
 closeProject() {
   window.close();
 }
@@ -253,7 +245,6 @@ showProcess() {
   display += "\nworking directory: " + process.cwd();
   alert(display);
 }
-
 
 compileAll() {
 
@@ -379,7 +370,6 @@ createFontSizeMenu() {
     });
   return menu;  
 }
-
 
 createThemeMenu() {
   var menu = new gui.Menu();

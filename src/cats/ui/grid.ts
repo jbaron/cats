@@ -1,10 +1,12 @@
 module cats.ui {
 
 // Simple grid
-class Grid  {
+export class Grid  {
 
 	private rootElement:HTMLTableElement;
 	private columns:string[];
+	private rows:any[];
+
 	onselect:Function;
 
 	constructor() {
@@ -15,8 +17,8 @@ class Grid  {
 		this.columns = columns;
 	}
 
-	render() {
-
+	setRows(rows:any[]) {
+		this.rows = rows;
 	}
 
 	// todo i18n
@@ -54,7 +56,7 @@ class Grid  {
       };
 	}
 
-	showRows(rows:any[]) {
+	render() {
     
 	    var table = this.rootElement;
 	    table.innerHTML = "";
@@ -63,7 +65,7 @@ class Grid  {
 	    var tbody = <HTMLTableElement>document.createElement("tbody");
 	    table.appendChild(tbody); 
 
-	    rows.forEach( (row) => {      
+	    this.rows.forEach( (row) => {      
 	    	this.createRow(tbody,row);
 	    });
 	}

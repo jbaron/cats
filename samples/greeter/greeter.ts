@@ -17,4 +17,3 @@ button.onclick = function() {
 }
 
 document.body.appendChild(button)
-

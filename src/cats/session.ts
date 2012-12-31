@@ -113,7 +113,7 @@ export class Session {
 		var docPos = this.getPositionFromScreenOffset(ev.offsetX,ev.offsetY);
 		var project = this.project;
 
-        project.iSense.perform("getInfoAtPosition","getTypeAtPosition",this.name, docPos,         	
+        project.iSense.perform("getTypeAtPosition",this.name, docPos,         	
         	(err,data:Services.TypeInfo) => {
         		if (! data) return;
         		var member = data.memberName;

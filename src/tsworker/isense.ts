@@ -91,6 +91,29 @@ class ISense {
         return info;
     }
 
+
+    structureErrors(errorStr:string) {
+      var errors = errorStr.split("\n"); 
+      var result = [];
+      errors.forEach( (error:string) => {      
+          var match = /^(.*)\(([0-9]*),([0-9]*)\):(.*)$/g;
+          var parts = match.exec(error);
+          if (! parts) {
+            console.log("Couldn't parse error:" + error);
+            return;
+           }
+           result.push({
+                descr : parts[2],
+                resource: parts[1],
+                position: parts[3],
+                type:"error"
+            });
+
+      });
+      return result;
+
+    }
+
     compile(options){
 
         var outfile = this.createWriter();
@@ -122,6 +145,9 @@ class ISense {
         }
 
         // compiler.emitToOutfile(outfile);
+
+        // var error = this.structureErrors(outerr.Get());
+
         return {
             source: resultSource, // outfile.Get(),
             error: outerr.Get()
@@ -276,7 +302,7 @@ class ISense {
 
     // Get the position
     public getTypeAtPosition(fileName: string, coord) : Services.TypeInfo {
-        var pos = this.getPosition(fileName,coord);
+        var pos = this.getPositionFromCursor(fileName,coord);
         return this.ls.getTypeAtPosition(fileName,pos);
     }
 
@@ -301,10 +327,28 @@ class ISense {
         return result;
     }
 
+    private getLine(scriptName:string,minChar: number, limChar:number) {
+        var content = this.getScriptContent(scriptName);
+        var min = Math.max(minChar-10, 0);
+        var max = Math.min(limChar+10, content.length);
+        return content.substring(min,max);
+    }
+
     // generic wrapper for info at a certain position 
     public getInfoAtPosition(method:string, filename:string, cursor:Ace.Position) {
         var pos = this.getPositionFromCursor(filename,cursor);
-        var result = this.ls[method](filename, pos);
+        var result = [];
+        var entries:Services.ReferenceEntry[] = this.ls[method](filename, pos);
+        for (var i=0;i<entries.length;i++) {
+            var ref = entries[i];
+            var name = this.typescriptLS.scripts[ref.unitIndex].name;
+            result.push({
+                script : name,
+                range : this.getRange(name, ref.ast.minChar,ref.ast.limChar),
+                description: this.getLine(name,ref.ast.minChar,ref.ast.limChar)
+            }); 
+        }
+                
         return result;
     }
 
