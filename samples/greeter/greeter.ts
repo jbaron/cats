@@ -13,7 +13,7 @@ var greeter = new Greeter("world");
 var button = document.createElement('button')
 button.innerText = "Say Hello"
 button.onclick = function() {
-    alert(greeter.greet())
+    alert(greeter.greet());
 }
 
-document.body.appendChild(button)
+document.body.appendChild(button);

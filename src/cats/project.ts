@@ -243,7 +243,10 @@ editFile(name: string,content?:string, goto?:Ace.Position) {
       this.iSense.perform("getErrors",name,(err,result) => {
             session.editSession.setAnnotations(result);            
       });
-      if (goto) this.editor.moveCursorTo(goto.row, goto.column);
+      if (goto) {
+        this.editor.moveCursorTo(goto.row, goto.column);
+        this.editor.clearSelection();
+      }
   }
   this.session = session;
   

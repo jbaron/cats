@@ -125,33 +125,43 @@ class ISense {
             compOptions[i] = options[i];
         } 
 
+        try {
+            var compiler = new TypeScript.TypeScriptCompiler(outerr, new TypeScript.NullLogger(), compOptions);
+            var scripts = this.typescriptLS.scripts;
+            scripts.forEach( (script) =>{
+                compiler.addUnit(script.content, script.name, false);
+            })
+            
+            outputFiles = {};
+            compiler.typeCheck();
+            
+            // compiler.emit(false, function (name) {});
+            // public emit(createFile: (path: string, useUTF8?: bool) => ITextWriter): void;
 
-        var compiler = new TypeScript.TypeScriptCompiler(outerr, new TypeScript.NullLogger(), compOptions);
-        var scripts = this.typescriptLS.scripts;
-        scripts.forEach( (script) =>{
-            compiler.addUnit(script.content, script.name, false);
-        })
-        
-        outputFiles = {};
-        compiler.typeCheck();
-        
-        // compiler.emit(false, function (name) {});
-        // public emit(createFile: (path: string, useUTF8?: bool) => ITextWriter): void;
+            compiler.emit(this.createVirtualFiles);
+            var resultSource = {}
+            for ( var file in outputFiles) {
+                resultSource[file] = outputFiles[file].Get();
+            }
 
-        compiler.emit(this.createVirtualFiles);
-        var resultSource = {}
-        for ( var file in outputFiles) {
-            resultSource[file] = outputFiles[file].Get();
-        }
+            // compiler.emitToOutfile(outfile);
+            // var error = this.structureErrors(outerr.Get());
 
-        // compiler.emitToOutfile(outfile);
+            return {
+                source: resultSource, // outfile.Get(),
+                error: outerr.Get()
+            };
 
-        // var error = this.structureErrors(outerr.Get());
-
-        return {
-            source: resultSource, // outfile.Get(),
-            error: outerr.Get()
-        } 
+        } catch(err) {
+            var msg = err.stack;
+            var prefix = "SyntaxError: ";
+            if (msg.indexOf(prefix) === 0) {
+                return {
+                    error: msg.substring(prefix.length)
+                };
+            }
+            throw err;    
+        }     
     }
 
 
@@ -329,9 +339,9 @@ class ISense {
 
     private getLine(scriptName:string,minChar: number, limChar:number) {
         var content = this.getScriptContent(scriptName);
-        var min = Math.max(minChar-10, 0);
-        var max = Math.min(limChar+10, content.length);
-        return content.substring(min,max);
+        var min = content.substring(0,minChar).lastIndexOf("\n");
+        var max = content.substring(limChar).indexOf("\n");        
+        return content.substring(min+1,limChar + max);
     }
 
     // generic wrapper for info at a certain position 
@@ -347,8 +357,7 @@ class ISense {
                 range : this.getRange(name, ref.ast.minChar,ref.ast.limChar),
                 description: this.getLine(name,ref.ast.minChar,ref.ast.limChar)
             }); 
-        }
-                
+        }               
         return result;
     }
 
@@ -367,7 +376,6 @@ class ISense {
         
         completions.entries.sort(caseInsensitiveSort); // Sort case insensitive
         return completions;
-
 	}
 }
 

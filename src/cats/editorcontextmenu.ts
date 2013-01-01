@@ -4,10 +4,43 @@ import gui = module('nw.gui');
 var win = gui.Window.get();
 
 
+function getCursor(): Ace.Position {
+	return cats.project.editor.getCursorPosition();
+	// return cats.project.session.getPositionFromScreenOffset(this.lastEvent.offsetX,this.lastEvent.offsetY);
+}
 
-private cell(row,content) {
-	var td = row.insertCell(-1);
-	td.innerText = content;
+export function gotoDeclaration() {
+	var cursor = getCursor();
+	var fileName = cats.project.session.name;
+	cats.project.iSense.perform("getDefinitionAtPosition", fileName, cursor, (err,data) => {
+		if (data && data.unitName)
+			cats.project.editFile(data.unitName,null,data.startPos);
+	});
+}
+
+function rangeToPosition(range:Ace.Range) : string {
+	return (range.startRow+1) + ":" + (range.startColumn+1);
+}
+
+export function getInfoAt(type:string) {
+	var cursor = getCursor();
+	var fileName = cats.project.session.name;
+	$("#result").addClass("busy");
+	cats.project.iSense.perform("getInfoAtPosition",type, fileName, cursor, (err,data) => {
+		$("#result").removeClass("busy");
+		if (data) {
+			document.getElementById("result").innerHTML = "";
+			var grid = new cats.ui.Grid();
+			grid.setColumns(["description","script","position"]);
+			grid.setRows(data);
+			grid.setAspect("position", (row) => {return rangeToPosition(row.range)});
+			grid.render();
+			grid.appendTo(document.getElementById("result"));
+			grid.onselect = (data) => {
+				cats.project.editFile(data.script,null,{row:data.range.startRow,column:data.range.startColumn});
+			};			
+		}
+	});
 }
 
 
@@ -23,22 +56,22 @@ constructor(private project:cats.Project) {
 	// Add the items
 	this.ctxmenu.append(new gui.MenuItem({ 
 		    label: 'Goto Declaration', 
-		    click: () => { this.gotoDeclaration()} 
-	}));
+		    click: gotoDeclaration 
+	})); 
 
 	this.ctxmenu.append(new gui.MenuItem({ 
 		label: 'Get References', 
-		click: () => {this.getInfoAt("getReferencesAtPosition")} 
+		click: () => { getInfoAt("getReferencesAtPosition")} 
 	}));
 
 	this.ctxmenu.append(new gui.MenuItem({ 
 		label: 'Get Occurences', 
-		click: () => {this.getInfoAt("getOccurrencesAtPosition")}
+		click: () => { getInfoAt("getOccurrencesAtPosition")}
 	}));
 
 	this.ctxmenu.append(new gui.MenuItem({ 
 		label: 'Get Implementors', 
-		click: () => {this.getInfoAt("getImplementorsAtPosition")}
+		click: () => { getInfoAt("getImplementorsAtPosition")}
 	}));
 	
 }
@@ -57,61 +90,6 @@ bindTo(elem:HTMLElement) {
 	    return false;
   	};
 }
-
-
-getCursor(): Ace.Position {
-	return cats.project.editor.getCursorPosition();
-	// return cats.project.session.getPositionFromScreenOffset(this.lastEvent.offsetX,this.lastEvent.offsetY);
-}
-
-gotoDeclaration() {
-	var cursor = this.getCursor();
-	var fileName = cats.project.session.name;
-	cats.project.iSense.perform("getDefinitionAtPosition", fileName, cursor, (err,data) => {
-		if (data && data.unitName)
-			cats.project.editFile(data.unitName,null,data.startPos);
-	});
-}
-
-getInfoAt(type:string) {
-	var cursor = this.getCursor();
-	var fileName = cats.project.session.name;
-	$("#result").addClass("busy");
-	cats.project.iSense.perform("getInfoAtPosition",type, fileName, cursor, (err,data) => {
-		$("#result").removeClass("busy");
-		if (data) {
-			document.getElementById("result").innerHTML = "";
-			var grid = new cats.ui.Grid();
-			grid.setColumns(["description","resource","row","column"]);
-			
-			var rows =[];
-			data.forEach((result) => {
-				rows.push({
-					description:result.description,
-					resource:result.script,
-					row:result.range.startRow,
-					column:result.range.startColumn
-				});
-			});
-			grid.setRows(rows);
-			grid.render();
-			grid.appendTo(document.getElementById("result"));			
-		}
-	});
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
 

@@ -20,31 +20,43 @@ function createHeader(table:HTMLTableElement, headers: string[]) {
   });
 }
 
-function showErrors(errors:string[]) {
-    
-    var grid = new cats.ui.Grid();
-    grid.setColumns(["description","resource","row","column","type"]);
-    var rows = [];
 
-    errors.forEach( (error:string) => {      
+// Quick hack to convert TS compiler output into something more usefull
+function errorStringToStructure(errStr:string) {
+  var result = [];
+  var errors = errStr.split("\n");
+  errors.forEach( (error:string) => {      
+      error = error.trim();
+      if (! error) return;
+
       var match = /^(.*)\(([0-9]*),([0-9]*)\):(.*)$/g;
-      var parts = match.exec(error);
+      var parts = <string[]><any>match.exec(error);
       if (! parts) {
         console.error("Couldn't parse error:" + error);
         return;
       }
-      rows.push ({
+      result.push ({
         description: parts[4],
-        resource: parts[1],
-        row: parseInt(parts[2],10),
-        column: parseInt(parts[3]+1,10),
-        type: "TypeScript error"
+        resource: parts[1].trim(),
+        row: parseInt(parts[2],10)-1,
+        column: parseInt(parts[3],10)-1
       });
     });
+    return result;
+}
 
-    grid.setRows(rows);
+
+function showErrors(errStr) {
+    
+    var errors = errorStringToStructure(errStr);
+
+    var grid = new cats.ui.Grid();
+    grid.setColumns(["description","resource","position"]);
+    grid.setAspect("position",(data) => {return (data.row + 1) +":" + (data.column + 1)});
+
+    grid.setRows(errors);
     grid.onselect = function(data){
-        cats.project.editFile(data.resource,null,{row:data.row-1, column:data.column-1});
+        cats.project.editFile(data.resource,null,{row:data.row, column:data.column});
     };
 
     grid.render();
@@ -138,12 +150,18 @@ constructor() {
     var refactor = new gui.Menu();
     refactor.append(new gui.MenuItem({label: 'Rename', click: this.nop }));
 
+    
+    var navigate = new gui.Menu();
+    navigate.append(new gui.MenuItem({label: 'Open Declaration', click: gotoDeclaration }));
+    navigate.append(new gui.MenuItem({label: 'Find References', click: () => { getInfoAt("getReferencesAtPosition")} }));
+    navigate.append(new gui.MenuItem({label: 'Find Occurences', click: () => { getInfoAt("getOccurrencesAtPosition")} }));
+    navigate.append(new gui.MenuItem({label: 'Find Implementors', click: () => { getInfoAt("getImplementorsAtPosition")} }));
+
     var proj = new gui.Menu();
     proj.append(new gui.MenuItem({ label: 'Open Project...', click: this.openProject}));
     proj.append(new gui.MenuItem({ label: 'Close Project', click: this.closeProject}));
     proj.append(new gui.MenuItem({type: "separator"}));
     proj.append(new gui.MenuItem({label: 'Build Project', click: this.compileAll }));
-
 
     var run = new gui.Menu();
     run.append(new gui.MenuItem({label: 'Run main', click: this.runFile }));
@@ -160,11 +178,11 @@ constructor() {
     help.append(new gui.MenuItem({label: 'Developers tools', click: this.showDevTools }));
     help.append(new gui.MenuItem({label: 'About CATS', click: this.showAbout }));
 
-
     menubar.append(new gui.MenuItem({ label: 'File', submenu: file}));
     menubar.append(new gui.MenuItem({ label: 'Edit', submenu: edit}));
     menubar.append(new gui.MenuItem({ label: 'Source', submenu: source}));
-    menubar.append(new gui.MenuItem({ label: 'Refactor', submenu: refactor}));    
+    menubar.append(new gui.MenuItem({ label: 'Refactor', submenu: refactor}));
+    menubar.append(new gui.MenuItem({ label: 'Navigate', submenu: navigate}));        
     menubar.append(new gui.MenuItem({ label: 'Project', submenu: proj}));        
     menubar.append(new gui.MenuItem({ label: 'Run', submenu: run}));    
     menubar.append(new gui.MenuItem({ label: 'Window', submenu: window}));
@@ -252,19 +270,11 @@ compileAll() {
   var options = cats.project.config.config().compiler;
   $("#result").addClass("busy");
   cats.project.iSense.perform("compile", options, (err,data) => {
-  $("#result").removeClass("busy");
-    if (err) {
-      console.error(err.stack);
-      var msg = err.stack.substring(13).split("\n")[0];
-      showErrors([msg]);
-      alert("Error during compiling " + err);
-      return;
-    }
-
+    $("#result").removeClass("busy");
     if (data.error) {
-      showErrors(data.error.split("\n"));
+      showErrors(data.error);
       return;
-    }
+    } 
 
     document.getElementById("result").innerText = "Successfully generated " + Object.keys(data.source).length + " file(s).";
     var sources = data.source

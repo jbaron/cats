@@ -76,6 +76,7 @@ module Ace {
 		session:EditSession;
 		renderer;
 		keyBinding;
+		clearSelection();
         onTextInput:Function;
         getSelectionRange(): Range;
 		remove(direction:string);

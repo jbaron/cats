@@ -90,6 +90,7 @@ body .ui-layout-pane {
 #result table {
   border-collapse:collapse;
   width: 100%;
+  text-align: left;
 }
 
 #result table tr:nth-child(even) {
