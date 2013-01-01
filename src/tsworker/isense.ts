@@ -329,9 +329,9 @@ class ISense {
 
     private getLine(scriptName:string,minChar: number, limChar:number) {
         var content = this.getScriptContent(scriptName);
-        var min = Math.max(minChar-10, 0);
-        var max = Math.min(limChar+10, content.length);
-        return content.substring(min,max);
+        var min = content.substring(0,minChar).lastIndexOf("\n");
+        var max = content.substring(limChar).indexOf("\n");        
+        return content.substring(min+1,limChar + max);
     }
 
     // generic wrapper for info at a certain position 

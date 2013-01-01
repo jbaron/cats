@@ -73,6 +73,10 @@ gotoDeclaration() {
 	});
 }
 
+static RangeToPosition(range) {
+	return (range.startRow+1) + ":" + (range.startColumn+1);
+}
+
 getInfoAt(type:string) {
 	var cursor = this.getCursor();
 	var fileName = cats.project.session.name;
@@ -82,20 +86,14 @@ getInfoAt(type:string) {
 		if (data) {
 			document.getElementById("result").innerHTML = "";
 			var grid = new cats.ui.Grid();
-			grid.setColumns(["description","resource","row","column"]);
-			
-			var rows =[];
-			data.forEach((result) => {
-				rows.push({
-					description:result.description,
-					resource:result.script,
-					row:result.range.startRow,
-					column:result.range.startColumn
-				});
-			});
-			grid.setRows(rows);
+			grid.setColumns(["description","script","position"]);
+			grid.setRows(data);
+			grid.setAspect("position", (row) => {return EditorContextMenu.RangeToPosition(row.range)});
 			grid.render();
-			grid.appendTo(document.getElementById("result"));			
+			grid.appendTo(document.getElementById("result"));
+			grid.onselect = (data) => {
+				cats.project.editFile(data.script,null,{row:data.range.startRow,column:data.range.startColumn});
+			};			
 		}
 	});
 }

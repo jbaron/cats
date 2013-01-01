@@ -1,11 +1,18 @@
 module cats.ui {
 
+export interface AspectHandler {
+	(row,aspectName?:string) : string;
+}
+
 // Simple grid
 export class Grid  {
 
 	private rootElement:HTMLTableElement;
 	private columns:string[];
 	private rows:any[];
+	private aspects = {};
+
+	defaultHandler = (row,name:string) => { return row[name];};
 
 	onselect:Function;
 
@@ -21,8 +28,18 @@ export class Grid  {
 		this.rows = rows;
 	}
 
+	setAspect(aspect:string,handler:AspectHandler) {
+		this.aspects[aspect] = handler;
+	}
+
+	private getValue(row,columnName:string) :string {
+		var fn = this.aspects[columnName] || this.defaultHandler;
+		return fn(row,columnName);
+	}
+
+
 	// todo i18n
-	getLabel(headerName: string) {
+	private getLabel(headerName: string) {
 		return headerName;
 	}
 
@@ -44,8 +61,7 @@ export class Grid  {
 	private createRow(parent:HTMLTableElement, rowData) {
 		var row = <HTMLTableRowElement>parent.insertRow(-1);
 		this.columns.forEach((column) => {
-			var data = rowData[column];
-			row.insertCell(-1).innerText = data || ""; 
+			row.insertCell(-1).innerText = this.getValue(rowData,column); 
 		});
 		row["_value"] = rowData;
 		var self = this;
