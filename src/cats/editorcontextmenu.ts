@@ -80,8 +80,6 @@ module Menu {
         // Bind this context menu to an HTML element
         bindTo(elem: HTMLElement) {
 
-            // session.on('contextmenu', (ev:any) => {       
-            // elem.addEventListener('contextmenu', (ev:any) => {       
             elem.oncontextmenu = (ev: any) => {
                 ev.preventDefault();
                 if (this.editor.activeSession.typeScriptMode) {

@@ -3,14 +3,11 @@ module Menu {
 
     import fs = module("fs");
     import path = module("path");
-
+    import gui = module('nw.gui');
 
     function nop() {
         alert("Not yet implemented");
     };
-
-    import gui = module('nw.gui');
-    var win = gui.Window.get();
 
     function createFileContextMenu() {
         // Create an empty menu

@@ -115,10 +115,11 @@ module Menu {
             file.append(new gui.MenuItem({ type: "separator" }));
             file.append(this.editorCommand("save"));
             file.append(new gui.MenuItem({ label: 'Save As ...', click: this.nop }));
-            file.append(new gui.MenuItem({ label: 'Save All', click: this.nop }));
+            file.append(new gui.MenuItem({ label: 'Save All', click: this.saveAll }));
             file.append(new gui.MenuItem({ type: "separator" }));
             file.append(new gui.MenuItem({ label: 'Close File', click: this.closeFile }));
             file.append(new gui.MenuItem({ label: 'Close All Files', click: this.closeAllFiles }));
+            file.append(new gui.MenuItem({ label: 'Close Other Files', click: this.closeOtherFiles }));
             file.append(new gui.MenuItem({ type: "separator" }));
             file.append(new gui.MenuItem({ label: 'Exit', click: this.closeAllProjects }));
 
@@ -244,6 +245,18 @@ module Menu {
             cats.mainEditor.closeAllSessions();
         }
 
+        closeOtherFiles() {
+            // Make a copy of sessions
+            var sessions = cats.mainEditor.sessions.slice(0);
+            var activeSession = cats.mainEditor.activeSession;
+            for (var i=0;i<sessions.length;i++) {
+                var session = sessions[i];
+                if (session !== activeSession) {
+                    cats.mainEditor.closeSession(session);
+                }
+            }
+        }
+
         closeProject() {
             window.close();
         }
@@ -304,6 +317,16 @@ module Menu {
                 if (!err) session.setValue(result);
             });
         }
+
+
+        saveAll() {
+            var sessions = cats.mainEditor.sessions; 
+            for (var i=0;i<sessions.length;i++) {
+                var session = sessions[i];
+                if (session.changed) session.persist();
+            }
+        }
+
 
         saveFile() {
             cats.mainEditor.aceEditor.execCommand("save");

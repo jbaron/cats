@@ -37,10 +37,9 @@ class AutoCompleteView {
 
 
     getInputText(): string {
-        var cursor = this.editor.getCursorPosition();
-        // console.log(cursor.column);
-        var text = this.editor.session.getLine(cursor.row).slice(0, cursor.column + 1);
-        console.log("input text:" + text);
+        var cursor = this.editor.getCursorPosition();        
+        var text = this.editor.session.getLine(cursor.row).slice(0, cursor.column);
+        // console.log("input text:" + text);
         var matches = text.match(/[a-zA-Z_0-9\$]*$/);
         if (matches && matches[0])
             return matches[0];
@@ -63,7 +62,7 @@ class AutoCompleteView {
         var text = this.getInputText(); // .toLowerCase();
         if (!text) return this.completions;
 
-        console.log("filter: " + text);
+        // console.log("filter: " + text);
         // if (text === ".") return this.completions;
 
         var result = this.completions.filter(function(entry) {
@@ -121,7 +120,9 @@ class AutoCompleteView {
             this.hide();
             return;
         }
-        this.render();
+        // hack to get the cursor updated before we render
+        // TODO find out how to force update without a timer delay
+        setTimeout(() => {this.render()},0);
     }
 
     private render() {

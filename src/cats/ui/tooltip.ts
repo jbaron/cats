@@ -8,7 +8,6 @@ export class ToolTip {
     constructor() {    
         this.element = this.createElement();
     };
-
     
     show(x:number, y:number, tip:string) {
         this.element.innerText = tip;

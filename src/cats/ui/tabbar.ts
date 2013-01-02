@@ -3,61 +3,28 @@ module cats.ui {
 
 
 
-export class SingleSelector {
+export class AspectWidget {
 
-    options = [];
     private aspects = {};
-    selected;
-    public onselect: Function;
+    defaultHandler = (data,name:string) => { return data[name];};
 
-    addOption(obj) {
-        this.options.push({value:obj});
-    }
-
-    setOptions(arr:any[]) {
-        this.options = arr;
-        // [];
-        // arr.forEach( (option) => this.addOption(option));        
-    }
-
+   
     setAspect(name,aspect) {
-        this.aspects[name] = aspect
+        this.aspects[name] = aspect;
     }
 
-    getAspect(name, obj) {
-        var aspect = this.aspects[name];
-        if (aspect == null) {
-            return obj[name];
-        } else {
-            if (typeof(aspect) === "function") return aspect(obj);
-            return obj[aspect];
-        }
-    }
-
-    select(obj,notify=false) {
-        this.selected = obj;
-    }
-
-    removeOption(obj) {
-        this.options.forEach(option => {
-            // TODO
-        });
-    }
-
-    refresh() {}
-
+    getValue(data,name:string)  {
+		var fn = this.aspects[name] || this.defaultHandler;
+		return fn(data,name);
+	}
 
 }
 
-export class Tabbar extends SingleSelector {
+export class Tabbar extends AspectWidget {
 
-    private static instances = {};
-    private static counter = 0;
     private root : HTMLElement;
-    private static nr:number = 0;
     onselect:(option)=> void;
-    private counter = 0;
-    public aspect;
+    options = [];
 
     constructor() {
         super();
@@ -70,18 +37,17 @@ export class Tabbar extends SingleSelector {
         this.options.forEach( (option) => {
              var optionElem = document.createElement("li");
              optionElem["_value"] = option;
-             optionElem.innerText = this.getAspect("name",option);
+             optionElem.innerText = this.getValue(option,"name");
 
-             var longName = this.getAspect("longname",option);
+             var longName = this.getValue(option,"longname");
              if (longName) optionElem.setAttribute("title",longName);
 
-             var selected = this.getAspect("selected",option);
+             var selected = this.getValue(option,"selected");
              if (selected === true) {
                 optionElem.className = "active";
              }                     
-
-             
-             var changed = this.getAspect("changed",option);
+            
+             var changed = this.getValue(option,"changed");
              if (changed === true) {
                 optionElem.className += " changed";
              }
@@ -92,7 +58,6 @@ export class Tabbar extends SingleSelector {
              optionElem.appendChild(closeButton);
 
             */
-
              this.root.appendChild(optionElem);
         });
     }
@@ -101,15 +66,18 @@ export class Tabbar extends SingleSelector {
         this.render();
     }
 
+    setOptions(arr:any[]) {
+        this.options = arr;
+    }
+
     appendTo(elem:HTMLElement) {
-        this.render()
+        this.render();
         elem.appendChild(this.root);
     }
 
-
+/*
     select(obj,notify=false) { 
-        super.select(obj);
-
+        
         this.options.forEach(option => {
                 if (option.value === this.selected) { 
                         option.elem.className = "active";
@@ -118,6 +86,7 @@ export class Tabbar extends SingleSelector {
                 }
         });           
     }
+*/
 
     private getSelectedOption(ev) {
         var elem = ev.srcElement;
@@ -133,24 +102,6 @@ export class Tabbar extends SingleSelector {
    
 }
 
-
-function test() {
-    var users = [
-        {name:"john", age:12},
-        {name:"peter", age:15},
-        {name:"marry", age:18},
-    ]
-
-    var tb = new Tabbar();
-    tb.setOptions(users);
-    
-
-
-
-    tb.onselect = (user) => {
-        alert("User selected");
-    };
-}
 
 
 }

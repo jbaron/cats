@@ -4,7 +4,6 @@
 module cats {
 
     import path = module("path");
-    // import TypeScript = module(TypeScript);
 
     var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
     var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
@@ -27,6 +26,8 @@ module cats {
             ".xml": "ace/mode/xml",
             ".json": "ace/mode/json"
         };
+        
+        private static DEFAULT_MODE = "ace/mode/text";
 
         // The Ace EditSession object
         editSession: Ace.EditSession;
@@ -46,7 +47,6 @@ module cats {
                 tabbar.refresh();
             }
         }
-
 
         constructor(public project: Project, public name: string, content: string) {
             console.log("Creating new session for file " + name + " with content length " + content.length);
@@ -99,22 +99,7 @@ module cats {
 
             var row = Math.floor((y + r.scrollTop - correction) / r.lineHeight);
             var col = Math.round(offset);
-            // console.log(JSON.stringify([x,y,r.scrollLeft,r.scrollTop,r.lineHeight]));
             var docPos = this.editSession.screenToDocumentPosition(row, col);
-            // console.log(JSON.stringify(docPos));
-            return docPos;
-        }
-
-        getPositionFromScreen(x: number, y: number): Ace.Position {
-            var r = cats.mainEditor.aceEditor.renderer;
-            var canvasPos = r.rect || (r.rect = r.scroller.getBoundingClientRect());
-            // console.log(canvasPos.left);
-            var offset = (x + r.scrollLeft - canvasPos.left - r.$padding) / r.characterWidth;
-            var row = Math.floor((y + r.scrollTop - canvasPos.top) / r.lineHeight);
-            var col = Math.round(offset);
-
-            var docPos = this.editSession.screenToDocumentPosition(row, col);
-            // console.log(JSON.stringify(docPos));
             return docPos;
         }
 
@@ -134,14 +119,12 @@ module cats {
                     var tip = Session.convertMember(member);
                     // Bug in TS, need to prefix with cats.
                     cats.mainEditor.toolTip.show(ev.x, ev.y, tip);
-
                 });
         }
 
         // Determine the edit mode based on the file extension
         private getMode(ext: string): string {
-            var result = Session.MODES[ext];
-            if (!result) result = "ace/mode/text";
+            var result = Session.MODES[ext] || Session.DEFAULT_MODE;
             return result;
         }
 
@@ -164,12 +147,13 @@ module cats {
             });
         }
 
-        onChangeHandler(event) {
+        private onChangeHandler(event) {
             this.changed = true;
 
             if (!this.typeScriptMode) return;
 
             this.pendingWorkerUpdate = true;
+            
             clearTimeout(this.updateSourceTimer);
 
             this.updateSourceTimer = setTimeout(() => {

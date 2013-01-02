@@ -1,9 +1,5 @@
 ///<reference path='../cats/node.d.ts' />
 
-declare interface HTMLElement {
-	dataset:any;
-}
-
 
 module cats.ui {
 
@@ -64,11 +60,10 @@ export class FileTree {
 			// span.innerText = entry.name;
 			// li.appendChild(span);
 			li.innerText = entry.name;
-			li.dataset.path = entry.path;
+			li["_value"] = entry;
 
 			if (entry.isFolder) {
 				li.className = FileTree.COLLAPSED;
-				li.dataset.isFolder = true;				
 			}
 
 			ul.appendChild(li);
@@ -78,10 +73,10 @@ export class FileTree {
 
 
 	private toggle(li:HTMLElement) {
-
-		if (! li.dataset.isFolder) {
+        var entry = li["_value"];
+		if (! entry.isFolder) {
 				if (this.onselect) {
-					this.onselect(li.dataset.path);
+					this.onselect(entry.path);
 				}
 				return;
 		}
@@ -92,7 +87,7 @@ export class FileTree {
 			return;
 		}
 		li.className = FileTree.OPENED;
-		var dir = li.dataset.path;
+		var dir = entry.path;
 		var fullDirName = path.join(this.rootDir,dir);
 		var files = fs.readdirSync(fullDirName);
 
