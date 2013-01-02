@@ -52,6 +52,7 @@ module Ace {
 		new(content:string, mode:string);
 		getUndoManager():UndoManager;
 		getValue():string;
+        setValue(value:string);
 		getDocument():Document;
 		setMode(mode:string);
 		setUndoManager(manager:UndoManager);

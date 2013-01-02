@@ -2,11 +2,11 @@
 ///<reference path='filecontextmenu.ts'/>
 ///<reference path='project.ts'/>
 ///<reference path='ui/tabbar.ts'/>
-
-
+///<reference path='editor.ts'/>
 
 module cats {
 
+export var mainEditor:cats.Editor;
 export var project:Project;
 import fs = module("fs");
 import path = module("path");
@@ -22,20 +22,18 @@ function getParameterByName(name) {
     return decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-
 function getParamByName(name:string) {
   var querystring = require("querystring");
   var params = querystring.parse(window.location.search);
   return params[name];
 }
 
-
 var defaultProject = "./samples" + path.sep + "greeter";
 
 project = new cats.Project(getParameterByName("project") || defaultProject);
+mainEditor = new Editor(document.getElementById("editor"));
 
 Menu.createMenuBar();
-
 
 var fileTree = new ui.FileTree(project.projectDir);
 fileTree.appendTo(document.getElementById("filetree"));
@@ -43,16 +41,13 @@ fileTree.onselect = (filePath) => {
     project.editFile(filePath);
 }; 
 
-
-
 export var tabbar;
 tabbar = new ui.Tabbar();
-tabbar.setOptions(project.sessions);
+tabbar.setOptions(mainEditor.sessions);
 tabbar.setAspect("name", (session:Session) => { return path.basename(session.name)});
-tabbar.setAspect("selected", (session:Session) => { return session === cats.project.session});
+tabbar.setAspect("selected", (session:Session) => { return session === cats.mainEditor.activeSession});
 tabbar.setAspect("longname", (session:Session) => { return session.name});
 tabbar.setAspect("changed", (session:Session) => { return session.changed});
-// tabbar.setAspect("changed", (session) => { return session.changed});
 tabbar.onselect = (session) => cats.project.editFile(session.name); //TODO Fix to use real session
 
 tabbar.appendTo(document.getElementById("sessionbar"));
@@ -64,12 +59,11 @@ $(document).ready(function () {
         });
 });
 
-
 var gui = require('nw.gui');
 var win = gui.Window.get();
 
 win.on("close", function() {
-  project.close();
+  mainEditor.closeAllSessions();
   if (win != null)
       win.close(true);
     this.close(true);
