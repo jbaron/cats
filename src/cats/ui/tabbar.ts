@@ -30,6 +30,7 @@ export class Tabbar extends AspectWidget {
         super();
         this.root = <HTMLElement>document.createElement("ul");        
         this.root.onclick = this.onClickHandler.bind(this);
+        this.root.className = "tabbar";
     }
 
     private render() {

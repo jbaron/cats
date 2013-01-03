@@ -22,7 +22,7 @@ module cats {
 
             this.aceEditor = this.createEditor();
             this.aceEditor.setFontSize("16px");
-            this.setTheme("eclipse");
+            this.setTheme("cats");
             this.hide();
 
             this.toolTip = new ui.ToolTip();

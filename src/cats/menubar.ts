@@ -80,6 +80,7 @@ module Menu {
                     { theme: "dawn", label: "Dawn" },
                     { theme: "dreamweaver", label: "Dreamweaver" },
                     { theme: "eclipse", label: "Eclipse" },
+                    { theme: "cats", label: "CATS" },
                     { theme: "github", label: "GitHub" },
                     { theme: "solarized_light", label: "Solarized Light" },
                     { theme: "textmate", label: "TextMate" },

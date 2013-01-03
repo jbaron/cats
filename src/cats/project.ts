@@ -242,18 +242,23 @@ module cats {
         private loadTypeScriptFiles(directory: string) {
             var files = fs.readdirSync(this.getFullName(directory));
             files.forEach((file) =>{
-                var fullName = path.join(directory, file);
-                var stats = fs.statSync(this.getFullName(fullName));
-                if (stats.isFile()) {
-                    var ext = path.extname(file);
-                    if (ext === ".ts") {
-                        var content = this.readTextFile(fullName);
-                        this.iSense.perform("updateScript", fullName, content, () => { });
-                        console.log("Found TypeScript file: " + fullName);
+                try {
+                    var fullName = path.join(directory, file);
+                    var stats = fs.statSync(this.getFullName(fullName));
+                    if (stats.isFile()) {
+                        var ext = path.extname(file);
+                        if (ext === ".ts") {
+                            var content = this.readTextFile(fullName);
+                            this.iSense.perform("updateScript", fullName, content, () => { });
+                            console.log("Found TypeScript file: " + fullName);
+                        }
                     }
-                }
-                if (stats.isDirectory()) {
-                    this.loadTypeScriptFiles(fullName);
+                    if (stats.isDirectory()) {
+                        this.loadTypeScriptFiles(fullName);
+                    }
+                } catch (err) {
+                    console.log("Got error while handling file " + fullName);
+                    console.error(err);
                 }
             });
         }

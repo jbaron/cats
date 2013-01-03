@@ -17,7 +17,7 @@ export class Grid  {
 	onselect:Function;
 
 	constructor() {
-		this.rootElement = <HTMLTableElement>document.createElement("table");
+		this.rootElement = <HTMLTableElement>document.createElement("table");		
 	}
 
 	setColumns(columns: string[]) {

@@ -94,15 +94,19 @@ export class FileTree {
 		var entries:ListEntry[] = [];
 
 		files.forEach( file => {
-
-			var pathName = path.join(dir,file);
-			var fullName = path.join(this.rootDir,pathName);
-
-            entries.push({
-                name: file,
-                path: pathName,
-                isFolder: fs.statSync(fullName).isDirectory()
-            });
+            try {
+    			var pathName = path.join(dir,file);
+    			var fullName = path.join(this.rootDir,pathName);
+    
+                entries.push({
+                    name: file,
+                    path: pathName,
+                    isFolder: fs.statSync(fullName).isDirectory()
+                });
+            } catch(err) {
+                console.log("Got error while handling file " + fullName);
+                console.error(err);
+            }
         });
 
 		entries.sort(sort);

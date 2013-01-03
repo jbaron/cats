@@ -52,6 +52,19 @@ module cats {
 
     tabbar.appendTo(document.getElementById("sessionbar"));
 
+
+    var navbar = new ui.Tabbar();
+    navbar.setOptions([{
+        name: "Files",
+        selected: true,
+    },
+    {
+        name: "Outline",
+        selected: false
+        
+    }]);
+    navbar.appendTo(document.getElementById("navigationbar"));
+
     $(document).ready(function() {
         $('body').layout({
             applyDemoStyles: false,
