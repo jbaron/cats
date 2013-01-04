@@ -23,18 +23,47 @@ export class AspectWidget {
 export class Tabbar extends AspectWidget {
 
     private root : HTMLElement;
+    private ul: HTMLElement;
+    private select: HTMLElement;
+
     onselect:(option)=> void;
     options = [];
 
     constructor() {
         super();
-        this.root = <HTMLElement>document.createElement("ul");        
-        this.root.onclick = this.onClickHandler.bind(this);
+        this.root = <HTMLElement>document.createElement("div");
+        this.ul = <HTMLElement>document.createElement("ul");
+        this.select = <HTMLElement>document.createElement("select");
+        this.ul.onclick = this.onClickHandler.bind(this);
+        this.select.onchange = (ev) => this.onChangeHandler(ev);
+        this.select.style.display = "none";
+        this.root.appendChild(this.ul);
+        this.root.appendChild(this.select);
         this.root.className = "tabbar";
+        this.ul.className = "tabbar";
+
+    }
+
+
+    private renderDropDown() {
+        this.select.style.display = "block";
+        this.select.innerHTML = "";
+        this.options.forEach( (option) => {
+            var optionElem = <HTMLOptionElement>document.createElement("option");
+            optionElem.innerText = this.getValue(option,"name");
+            var selected = this.getValue(option,"selected");
+            if (selected === true) {
+                optionElem.selected = true;
+                // optionElem.setAttribute("selected","selected");
+             }
+            optionElem["_value"] = option;
+            this.select.appendChild(optionElem);
+        });
+
     }
 
     private render() {
-        this.root.innerHTML="";
+        this.ul.innerHTML="";
         this.options.forEach( (option) => {
              var optionElem = document.createElement("li");
              optionElem["_value"] = option;
@@ -59,13 +88,25 @@ export class Tabbar extends AspectWidget {
              optionElem.appendChild(closeButton);
 
             */
-             this.root.appendChild(optionElem);
+             this.ul.appendChild(optionElem);
         });
+        // console.log("Overflow: " + this.isOverflowed());
+        if (this.isOverflowed()) { 
+            this.renderDropDown();
+        } else {
+            this.select.style.display = "none";
+        }
     }
 
     refresh() {
         this.render();
     }
+
+    private isOverflowed():bool{
+        var element = this.ul;
+        return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
+    }
+
 
     setOptions(arr:any[]) {
         this.options = arr;
@@ -99,6 +140,15 @@ export class Tabbar extends AspectWidget {
             var option = this.getSelectedOption(ev);
             this.onselect(option);
         }
+    }
+
+    private onChangeHandler(ev) {
+        if (this.onselect) {
+             var sel = ev.srcElement;
+             var option = sel.options[sel.selectedIndex];
+             var value = option["_value"];
+             this.onselect(value);
+        }            
     }
    
 }

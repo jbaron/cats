@@ -168,7 +168,7 @@ Tab section
   padding: 0px;
   margin: 0px;
   list-style: none;
-  overflow-y: scroll;
+  overflow: hidden;
   height: 100%;
 }
 
@@ -176,10 +176,18 @@ ul.tabbar li.changed:before {
   content: "*";
 }
 
+.tabbar select {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20px;
+}
+
 ul.tabbar li {
   float: left;
   font-size: 90%;
   height: 25px;
+  box-sizing: border-box;
   padding: 2px 5px 2px 2px;
   margin-right: 5px;  
   cursor: pointer;
@@ -192,7 +200,9 @@ ul.tabbar li:hover {
 
 ul.tabbar li.active {
   border: 1px solid rgba(100,100,100,0.5);
-  border-radius: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom: 0px;
   cursor: default;
   background-color: rgba(200, 200, 200, 0.5);
   text-decoration:none;

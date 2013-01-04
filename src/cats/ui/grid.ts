@@ -1,7 +1,7 @@
 module cats.ui {
 
 export interface AspectHandler {
-	(row,aspectName?:string) : string;
+	(row,aspectName?:string);
 }
 
 // Simple grid
