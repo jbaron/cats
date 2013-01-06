@@ -275,7 +275,7 @@ class ISense {
     }
 
     // Get an Ace Range from TS minChars and limChars
-    getRange(script:string, minChar:number,limChar:number) :Ace.Range {
+    getRange(script:string, minChar:number,limChar:number)  {
         var startLC = this.typescriptLS.positionToLineCol(script, minChar);
         var endLC = this.typescriptLS.positionToLineCol(script, limChar);
         var result = {

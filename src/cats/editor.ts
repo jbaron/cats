@@ -140,6 +140,8 @@ module cats {
             this.toolTip.hide();
             var session = this.activeSession;
             clearTimeout(this.mouseMoveTimer);
+            var elem = <HTMLElement>ev.srcElement;
+            if (elem.className !== "ace_content") return;
             this.mouseMoveTimer = setTimeout(() => {
                 session.showInfoAt(ev);
             }, 500);

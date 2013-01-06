@@ -32,6 +32,7 @@ export class FileTree {
 
 	private rootElem: HTMLElement;
 	public onselect: (path:string) => void;
+	public oncontextmenu : (path:string) => void; //TODO implement
 
 	constructor(private rootDir:string) {
 		var list:ListEntry[] = [{

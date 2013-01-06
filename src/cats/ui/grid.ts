@@ -17,7 +17,12 @@ export class Grid  {
 	onselect:Function;
 
 	constructor() {
-		this.rootElement = <HTMLTableElement>document.createElement("table");		
+		this.rootElement = <HTMLTableElement>document.createElement("table");
+        this.rootElement["__grid"] = this;
+	}
+
+	static getGridFromElement(elem:HTMLElement) {
+		return elem["__grid"];
 	}
 
 	setColumns(columns: string[]) {
@@ -26,6 +31,10 @@ export class Grid  {
 
 	setRows(rows:any[]) {
 		this.rows = rows;
+	}
+    
+    getRows() {
+		return this.rows;
 	}
 
 	setAspect(aspect:string,handler:AspectHandler) {

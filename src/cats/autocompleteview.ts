@@ -1,7 +1,7 @@
 /**
   This class is "inspired" by the ace typescript playground project.
   Especially the way popup is drawn and focused. 
-  @TODO create less HTML and 
+  @TODO create less HTML and separate UI and logic
 */
 
 declare var $;
@@ -92,7 +92,6 @@ class AutoCompleteView {
         // this.handler.bindKeys(AutoCompleteView.KeyBinding);
 
     }
-
 
     show() {
         this.editor.keyBinding.addKeyboardHandler(this.handler);

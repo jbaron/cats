@@ -1,13 +1,13 @@
-var Greeter = (function () {
-    function Greeter(message) {
+var Groeter = (function () {
+    function Groeter(message) {
         this.greeting = message;
     }
-    Greeter.prototype.greet = function () {
-        return "Hello, " + this.greeting;
+    Groeter.prototype.greet = function () {
+        return "Hello " + this.greeting;
     };
-    return Greeter;
+    return Groeter;
 })();
-var greeter = new Greeter("world");
+var greeter = new Groeter("world");
 var button = document.createElement('button');
 button.innerText = "Say Hello";
 button.onclick = function () {

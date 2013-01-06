@@ -6,7 +6,7 @@
 
 module cats {
 
-    export var mainEditor: cats.Editor;
+    export var mainEditor: Editor;
     export var project: Project;
     import fs = module("fs");
     import path = module("path");
@@ -30,7 +30,7 @@ module cats {
 
     var defaultProject = "./samples" + path.sep + "greeter";
 
-    project = new cats.Project(getParameterByName("project") || defaultProject);
+    project = new Project(getParameterByName("project") || defaultProject);
     mainEditor = new Editor(document.getElementById("editor"));
 
     Menu.createMenuBar();

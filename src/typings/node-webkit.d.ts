@@ -34,14 +34,15 @@ declare module "nw.gui" {
 	}
 
 	interface IWindow {
-		get();
 		menu:Menu;
-		showDevTools();
-		open(url:string, options);
+		showDevTools();		
 	}
 
 	declare var MenuItem:MenuItem;
 	declare var Menu:Menu
-	declare var Window:IWindow;
+	declare var Window: { 
+        get() : IWindow; 
+        open(url:string, options):IWindow;
+    };
 	declare var App;
 }

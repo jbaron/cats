@@ -12,7 +12,22 @@ class ScrollView {
 		this.rootElement = document.createElement("ol");
 	}
 
+    getAspect(data,name) :string{
+        return "";
+    }
 
+    filter(text:string) {
+        if (!text) return this.options;
+
+        // console.log("filter: " + text);
+        // if (text === ".") return this.completions;
+
+        var result = this.options.filter(function(entry) {
+            var name = this.getAspect(entry,"name");
+            return (name.indexOf(text) === 0);
+        });
+        return result;
+    }
 
 	next() {
 		if (this.pos === this.options.length) return;

@@ -29,6 +29,7 @@ module Ace {
 	}
 
 	interface Range {
+		new(startRow,startColumn,endRow,endColumn);
 		startRow:number;
 		startColumn:number;
 		endRow:number;
@@ -63,6 +64,7 @@ module Ace {
 		removeAllListeners(event:string);
 		getTokenAt(row:number, column:number): TokenInfo;	
 		setAnnotations(annotations:Annotation[]);
+		replace(range:Range,newText:string);
 	}
 
 	interface Position {

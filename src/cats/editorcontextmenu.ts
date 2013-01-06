@@ -25,10 +25,10 @@ module Menu {
     export function getInfoAt(type: string) {
         var cursor = getCursor();
         var session = cats.mainEditor.activeSession;
-
-        $("#result").addClass("busy");
+        var resultElem = document.getElementById("result");
+        $(resultElem).addClass("busy");
         session.project.iSense.perform("getInfoAtPosition", type, session.name, cursor, (err, data) => {
-            $("#result").removeClass("busy");
+            $(resultElem).removeClass("busy");
             if (data) {
                 document.getElementById("result").innerHTML = "";
                 var grid = new cats.ui.Grid();
@@ -36,7 +36,7 @@ module Menu {
                 grid.setRows(data);
                 grid.setAspect("position", (row) => { return rangeToPosition(row.range) });
                 grid.render();
-                grid.appendTo(document.getElementById("result"));
+                grid.appendTo(resultElem);
                 grid.onselect = (data) => {
                     session.project.editFile(data.script, null, { row: data.range.startRow, column: data.range.startColumn });
                 };

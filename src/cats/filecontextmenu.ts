@@ -66,9 +66,9 @@ module Menu {
     }
 
     document.getElementById("filetree").addEventListener('contextmenu', function(ev: any) {
-        data.key = ev.srcElement.dataset.path;
-        data.isFolder = ev.srcElement.dataset.isFolder;
-        console.log(data.key);
+        data.key = ev.srcElement["_value"].path;
+        data.isFolder = ev.srcElement["_value"].isFolder;
+        // console.log(data.key);
         ev.preventDefault();
         fileContextMenu.popup(ev.x, ev.y);
         return false;

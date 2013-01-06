@@ -1,0 +1,48 @@
+{
+"file.new" : "New File"	
+"file.save" : "Save",
+"file.saveall" : "Save All",
+"file.saveas" : "Save As...",
+
+"file.close" : "Close",
+"file.closeall" : "Close All",
+"file.closeothers": "Close Others"
+
+"edit.undo" : "Undo",
+"edit.redo" : "Redo",
+"edit.indent" : "Indent",
+"edit.outdent" : "Outdent",
+"edit.cut" : "Cut",
+"edit.past" : "Past",
+"edit.copy" : "Copy",
+"edit.format" : "Format",
+"edit.togglecomment" : "Toggle Comment",
+
+"search.find" : "Find",
+"search.findnext" : "Find Next",
+"search.findprev" : "Find Previous",
+"search.replace" : "Replace",
+"search.replaceall" : "Replace All",
+
+"help.about" : "About CATS",
+"help.keys" : "Keyboard shorcuts",
+"help.info" : "Process Info",
+"help.tools" : "Developer Tools",
+
+"msg.compiled.ok" : "Compiled succesfully",
+
+"project.run" : "Run",
+"project.debug" : "Debug",
+"project.build" : "Build",
+"project.open" : "Open Project...",
+"project.close" : "Close Project",
+
+"result.description" : "Description",
+"result.resource" : "Resource",
+"result.position" : "Position"
+
+
+
+
+
+}

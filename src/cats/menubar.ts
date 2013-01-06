@@ -5,6 +5,7 @@
 module Menu {
 
     import gui = module('nw.gui');
+    var Range: Ace.Range = ace.require("ace/range").Range;
 
     var win = gui.Window.get();
 
@@ -44,6 +45,30 @@ module Menu {
         return result;
     }
 
+
+    function refactorRename() {        
+        var table = <HTMLElement>document.querySelector("#result table");
+        var grid = cats.ui.Grid.getGridFromElement(table);
+        var newName = prompt("Enter new name");
+        if (! newName) return;
+        var rows = grid.getRows();
+        var i = rows.length;
+        while (i--) {
+            var data = rows[i];
+            var session = cats.mainEditor.getSession(data.script,cats.project);
+            if (! session) {
+                session = cats.project.editFile(data.script);
+            }
+            // console.log(session.name);
+            var r = data.range;
+            var range:Ace.Range = new Range(r.startRow, r.startColumn,r.endRow,r.endColumn);
+            session.editSession.replace(range,newName);
+        }
+        
+    }
+
+
+  
 
     function showErrors(errStr) {
 
@@ -149,7 +174,7 @@ module Menu {
             source.append(new gui.MenuItem({ label: 'Format code', click: this.formatText }));
 
             var refactor = new gui.Menu();
-            refactor.append(new gui.MenuItem({ label: 'Rename', click: this.nop }));
+            refactor.append(new gui.MenuItem({ label: 'Rename', click: refactorRename }));
 
             var navigate = new gui.Menu();
             navigate.append(new gui.MenuItem({ label: 'Open Declaration', click: gotoDeclaration }));
@@ -207,12 +232,27 @@ module Menu {
             return label;
         }
 
+
+        icons = {
+            undo: "undo_edit.gif",
+            redo: "redo_edit.gif",
+            copy: "copy_edit.gif",
+            paste: "paste_edit.gif",
+            cut: "cut_edit.gif",
+            indent: "shift_r_edit.gif",
+            outdent: "shift_l_edit.gif"
+        }
+
         editorCommand(commandName: string) {
             var label = this.getLabelForCommand(commandName);
             var item = new gui.MenuItem({
                 label: label,
                 click: function() { cats.mainEditor.aceEditor.execCommand(commandName); }
             });
+            var iconName = this.icons[commandName];
+            if (iconName) {
+                item.icon = "static/img/" + iconName;
+            }
             return item;
         }
 

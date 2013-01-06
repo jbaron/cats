@@ -12,6 +12,21 @@
 }
 
 
+#navigationbar li {
+  background-repeat: no-repeat;
+  padding-left: 20px;
+  background-position: 1px 3px;
+}
+
+#navigationbar li:first-child {
+  background-image: url("../img/filenav_nav.gif");
+}
+
+#navigationbar li:nth-child(2) {
+  background-image: url("../img/outline_co.gif");
+}
+
+
 /************************************************************** 
   Simple file tree styling
 ***************************************************************/
@@ -164,7 +179,7 @@ Some basic settings for the ACE editor
 Tab section
 ************************************************************/
 
- ul.tabbar {
+ .tabbar ul {
   padding: 0px;
   margin: 0px;
   list-style: none;
@@ -172,7 +187,7 @@ Tab section
   height: 100%;
 }
 
-ul.tabbar li.changed:before {
+.tabbar li.changed:before {
   content: "*";
 }
 
@@ -183,7 +198,7 @@ ul.tabbar li.changed:before {
   width: 20px;
 }
 
-ul.tabbar li {
+.tabbar li {
   float: left;
   font-size: 90%;
   height: 25px;
@@ -193,23 +208,16 @@ ul.tabbar li {
   cursor: pointer;
 }
 
-ul.tabbar li:hover {
-    background: rgba(200, 200, 200, 0.5);
-    border-radius: 5px;
-}
-
-ul.tabbar li.active {
+.tabbar li.active, .tabbar li:hover {
   border: 1px solid rgba(100,100,100,0.5);
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   border-bottom: 0px;
-  cursor: default;
-  background-color: rgba(200, 200, 200, 0.5);
+  background-color: rgba(250, 250, 250, 0.5);
   text-decoration:none;
   margin-top: -1px;
   margin-left: -1px;
 }
-
 
 /*********************************************************
 Auto complete styling
@@ -247,7 +255,7 @@ Auto complete styling
 }
 
 .autocomplete .kind-method{
-    background: url('../img/type_method.png') no-repeat; 
+    background: url('../img/methpub_obj.gif') no-repeat; 
 }
 
 .autocomplete .kind-method:after{
@@ -255,27 +263,27 @@ Auto complete styling
 }
 
 .autocomplete .kind-interface{
-    background: url('../img/type_interface.png') no-repeat; 
+    background: url('../img/int_obj.gif') no-repeat; 
 }
 
 .autocomplete .kind-enum{
-    background: url('../img/type_enum.png') no-repeat; 
+    background: url('../img/enum_obj.gif') no-repeat; 
 }
 
 .autocomplete .kind-class{
-    background: url('../img/type_class.png') no-repeat; 
+    background: url('../img/class_obj.gif') no-repeat; 
 }
 
 .autocomplete .kind-module{
-    background: url('../img/type_module.png') no-repeat; 
+    background: url('../img/package_obj.png') no-repeat; 
 }
 
 .autocomplete .kind-variable {
-  background: url('../img/type_var.png') no-repeat; 
+  background: url('../img/genericvariable_obj.gif') no-repeat; 
 }
 
  .autocomplete .kind-property {
-    background: url('../img/type_prop.png') no-repeat; 
+    background: url('../img/property_obj.gif') no-repeat; 
 }
 
 .autocomplete .kind-keyword {
