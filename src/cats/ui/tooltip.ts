@@ -1,5 +1,5 @@
 
-module cats.ui {
+module Cats.UI {
 
 export class ToolTip {
 

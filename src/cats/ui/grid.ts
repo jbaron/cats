@@ -1,4 +1,4 @@
-module cats.ui {
+module Cats.UI {
 
 export interface AspectHandler {
 	(row,aspectName?:string);
@@ -37,7 +37,7 @@ export class Grid  {
 		return this.rows;
 	}
 
-	setAspect(aspect:string,handler:AspectHandler) {
+	setAspect(aspect:string,handler /*:AspectHandler BUG in TS */) {
 		this.aspects[aspect] = handler;
 	}
 

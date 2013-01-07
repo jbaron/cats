@@ -1,5 +1,5 @@
 
-module cats.ui {
+module Cats.UI {
 
 
 
@@ -68,18 +68,24 @@ export class Tabbar extends AspectWidget {
              var optionElem = document.createElement("li");
              optionElem["_value"] = option;
              optionElem.innerText = this.getValue(option,"name");
+             optionElem.className = "tab"
 
              var longName = this.getValue(option,"longname");
              if (longName) optionElem.setAttribute("title",longName);
 
              var selected = this.getValue(option,"selected");
              if (selected === true) {
-                optionElem.className = "active";
+                optionElem.className += " active";
              }                     
             
              var changed = this.getValue(option,"changed");
              if (changed === true) {
                 optionElem.className += " changed";
+             }
+
+             var decorator = this.getValue(option,"decorator");
+             if (decorator) {
+                optionElem.className += " " + decorator;
              }
 
              /*

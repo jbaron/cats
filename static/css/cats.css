@@ -1,29 +1,18 @@
 
-
+/************************************************************** 
+  Lets make the scrollbars look a little nicer
+***************************************************************/
 
 ::-webkit-scrollbar {
   background-color: rgba(100,100,100,0.2);
   width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: rgba(100,100,100,0.5);
   width: 10px;
-}
-
-
-#navigationbar li {
-  background-repeat: no-repeat;
-  padding-left: 20px;
-  background-position: 1px 3px;
-}
-
-#navigationbar li:first-child {
-  background-image: url("../img/filenav_nav.gif");
-}
-
-#navigationbar li:nth-child(2) {
-  background-image: url("../img/outline_co.gif");
+  height: 10px;
 }
 
 
@@ -35,6 +24,7 @@
   width: 100%;
   height: 95%;
   overflow: auto;
+  padding: 4px;
 }
 
 #filetree ul {
@@ -62,7 +52,7 @@
 
 
 /***************************************************************
-          Eclipse theme
+   Style for layout
 ****************************************************************/
 
 table {
@@ -158,12 +148,17 @@ body .ui-layout-toggler {
   border:     0px ;
 }
 
-#navigator {
+#navigator, #info, #result {
   overflow: hidden;
 }
 
+#searchresults, #errorresults {
+  overflow: auto;
+  height: 100%;
+}
+
 /************************************************************* 
-Some basic settings for the ACE editor 
+ Some very basic default settings for the ACE editor 
 **************************************************************/
 
 #editor { 
@@ -174,6 +169,7 @@ Some basic settings for the ACE editor
         left: 0;
         font-size: 16px;
 }
+
 
 /***********************************************************
 Tab section
@@ -218,6 +214,42 @@ Tab section
   margin-top: -1px;
   margin-left: -1px;
 }
+
+.tabbar li.active {
+  background-repeat: no-repeat;
+  padding-left: 20px;
+  background-position: 1px 3px;
+  background-image: url("../img/main_tab.gif");
+}
+
+.tabbar [class*=" icon-"] {
+/* #navigationbar li, #infobar li, #resultbar li { */
+  background-repeat: no-repeat;
+  padding-left: 20px;
+  background-position: 1px 3px;
+}
+
+.tabbar li.icon-tasks {
+  background-image: url("../img/tasks_tsk.gif");
+}
+
+.tabbar li.icon-errors {
+  background-image: url("../img/errorwarning_tab.gif");
+}
+
+.tabbar li.icon-search {
+  background-image: url("../img/search_ref_obj.gif");
+}
+
+.tabbar li.icon-files {
+  background-image: url("../img/filenav_nav.gif");
+}
+
+.tabbar li.icon-outline {
+  background-image: url("../img/outline_co.gif");
+}
+
+
 
 /*********************************************************
 Auto complete styling
@@ -290,23 +322,23 @@ Auto complete styling
     background: url('../img/type_keyword.png') no-repeat; 
 }
 
-.autocomplete  .type{
+.autocomplete .type {
     padding-left:10px;
     color:blue;
     background: white;
     visibility:hidden;
 }
 
-.autocomplete_selected{
+.autocomplete_selected {
    background-color: #eee;
    color: #222;
 }
 
-.autocomplete_selected .name{
+.autocomplete_selected .name {
     font-weight:bold;
 }
 
-.autocomplete_selected .type{
+.autocomplete_selected .type {
     visibility:visible;    
 }    
 

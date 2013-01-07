@@ -5,7 +5,7 @@ module Cats.Commands {
 
     // Just wrap the Ace command.
     function editorCommand(commandName: string) {
-        return function() { cats.mainEditor.aceEditor.execCommand(commandName); }
+        return function() { Cats.mainEditor.aceEditor.execCommand(commandName); }
     }
 
     export class EditorCommands {

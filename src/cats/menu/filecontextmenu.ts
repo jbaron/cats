@@ -1,5 +1,5 @@
 
-module Menu {
+module Cats.Menu {
 
     import fs = module("fs");
     import path = module("path");
@@ -19,13 +19,12 @@ module Menu {
         return ctxmenu;
     }
 
-    var fileContextMenu = createFileContextMenu();
 
 
     function deleteFile() {
         var sure = confirm("Delete " + data.key);
         if (sure) {
-            var fullName = cats.project.getFullName(data.key);
+            var fullName = Cats.project.getFullName(data.key);
             fs.unlinkSync(fullName);
         }
     }
@@ -42,7 +41,7 @@ module Menu {
         var name = prompt("Enter new file name ");
         if (name == null) return;
         var fullName = path.join(basedir, name);
-        cats.project.writeTextFile(fullName, "");
+        Cats.project.writeTextFile(fullName, "");
     }
 
 
@@ -51,7 +50,7 @@ module Menu {
         if (name == null) return;
         var c = confirm("Going to rename " + data.key + " into " + name);
         if (c) {
-            var root = cats.project.projectDir;
+            var root = Cats.project.projectDir;
             try {
                 fs.renameSync(path.join(root, data.key), path.join(root, name));
             } catch (err) {
@@ -64,6 +63,8 @@ module Menu {
         key: "",
         isFolder: true
     }
+
+    var fileContextMenu = createFileContextMenu();
 
     document.getElementById("filetree").addEventListener('contextmenu', function(ev: any) {
         data.key = ev.srcElement["_value"].path;

@@ -1,8 +1,5 @@
-///<reference path='project.ts'/>
-///<reference path='ui/grid.ts'/>
-///<reference path='../typings/node-webkit.d.ts'/>
 
-module Menu {
+module Cats.Menu {
 
     import gui = module('nw.gui');
     var Range: Ace.Range = ace.require("ace/range").Range;
@@ -47,17 +44,17 @@ module Menu {
 
 
     function refactorRename() {        
-        var table = <HTMLElement>document.querySelector("#result table");
-        var grid = cats.ui.Grid.getGridFromElement(table);
+        var table = <HTMLElement>document.querySelector("#searchresults table");
+        var grid = Cats.UI.Grid.getGridFromElement(table);
         var newName = prompt("Enter new name");
         if (! newName) return;
         var rows = grid.getRows();
         var i = rows.length;
         while (i--) {
             var data = rows[i];
-            var session = cats.mainEditor.getSession(data.script,cats.project);
+            var session = Cats.mainEditor.getSession(data.script,Cats.project);
             if (! session) {
-                session = cats.project.editFile(data.script);
+                session = Cats.project.editFile(data.script);
             }
             // console.log(session.name);
             var r = data.range;
@@ -74,18 +71,18 @@ module Menu {
 
         var errors = errorStringToStructure(errStr);
 
-        var grid = new cats.ui.Grid();
+        var grid = new Cats.UI.Grid();
         grid.setColumns(["description", "resource", "position"]);
         grid.setAspect("position", (data) => { return (data.row + 1) + ":" + (data.column + 1) });
 
         grid.setRows(errors);
         grid.onselect = function(data) {
-            cats.project.editFile(data.resource, null, { row: data.row, column: data.column });
+            Cats.project.editFile(data.resource, null, { row: data.row, column: data.column });
         };
 
         grid.render();
 
-        var result = document.getElementById("result");
+        var result = document.getElementById("errorresults");
         result.innerHTML = "";
         grid.appendTo(result);
     }
@@ -220,8 +217,8 @@ module Menu {
         // TODO i18n
         getLabelForCommand(commandName: string) {
             var label = commandName[0].toUpperCase() + commandName.slice(1);
-            var platform = cats.mainEditor.aceEditor.commands.platform;
-            var command = cats.mainEditor.aceEditor.commands.byName[commandName];
+            var platform = Cats.mainEditor.aceEditor.commands.platform;
+            var command = Cats.mainEditor.aceEditor.commands.byName[commandName];
 
             var tabs = 5 - Math.floor((label.length / 4) - 0.01);
             label = label + "\t\t\t\t\t\t".substring(0, tabs);
@@ -247,7 +244,7 @@ module Menu {
             var label = this.getLabelForCommand(commandName);
             var item = new gui.MenuItem({
                 label: label,
-                click: function() { cats.mainEditor.aceEditor.execCommand(commandName); }
+                click: function() { Cats.mainEditor.aceEditor.execCommand(commandName); }
             });
             var iconName = this.icons[commandName];
             if (iconName) {
@@ -257,7 +254,7 @@ module Menu {
         }
 
         showShortcuts() {
-            window.open('static/html/keyboard_shortcuts.html', '_blank');
+            window.open('keyboard_shortcuts.html', '_blank');
         }
 
         showAbout() {
@@ -274,26 +271,26 @@ module Menu {
         }
 
         newFile() {
-            cats.project.editFile("untitled", "");
+            Cats.project.editFile("untitled", "");
         }
 
 
         closeFile() {
-            cats.mainEditor.closeSession(cats.mainEditor.activeSession);
+            Cats.mainEditor.closeSession(Cats.mainEditor.activeSession);
         }
 
         closeAllFiles() {
-            cats.mainEditor.closeAllSessions();
+            Cats.mainEditor.closeAllSessions();
         }
 
         closeOtherFiles() {
             // Make a copy of sessions
-            var sessions = cats.mainEditor.sessions.slice(0);
-            var activeSession = cats.mainEditor.activeSession;
+            var sessions = Cats.mainEditor.sessions.slice(0);
+            var activeSession = Cats.mainEditor.activeSession;
             for (var i=0;i<sessions.length;i++) {
                 var session = sessions[i];
                 if (session !== activeSession) {
-                    cats.mainEditor.closeSession(session);
+                    Cats.mainEditor.closeSession(session);
                 }
             }
         }
@@ -318,27 +315,27 @@ module Menu {
 
         compileAll() {
             // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
-            var options = cats.project.config.config().compiler;
+            var options = Cats.project.config.config().compiler;
             $("#result").addClass("busy");
-            cats.project.iSense.perform("compile", options, (err, data) => {
+            Cats.project.iSense.perform("compile", options, (err, data) => {
                 $("#result").removeClass("busy");
                 if (data.error) {
                     showErrors(data.error);
                     return;
                 }
 
-                document.getElementById("result").innerText = "Successfully generated " + Object.keys(data.source).length + " file(s).";
+                document.getElementById("errorresults").innerText = "Successfully generated " + Object.keys(data.source).length + " file(s).";
                 var sources = data.source
                 for (var name in sources) {
-                    cats.project.writeTextFile(name, sources[name]);
+                    Cats.project.writeTextFile(name, sources[name]);
                 }
             });
         }
 
         preferences() {
-            var content = cats.project.config.stringify();
-            var name = cats.Configuration.NAME;
-            cats.project.editFile(name, content);
+            var content = Cats.project.config.stringify();
+            var name = Cats.Configuration.NAME;
+            Cats.project.editFile(name, content);
         }
 
         openProject() {
@@ -353,7 +350,7 @@ module Menu {
 
 
         formatText() {
-            var session = cats.mainEditor.activeSession;
+            var session = Cats.mainEditor.activeSession;
             session.project.iSense.perform("getFormattedTextForRange", session.name, 0, session.getValue().length, (err, result) => {
                 if (!err) session.setValue(result);
             });
@@ -361,7 +358,7 @@ module Menu {
 
 
         saveAll() {
-            var sessions = cats.mainEditor.sessions; 
+            var sessions = Cats.mainEditor.sessions; 
             for (var i=0;i<sessions.length;i++) {
                 var session = sessions[i];
                 if (session.changed) session.persist();
@@ -370,18 +367,18 @@ module Menu {
 
 
         saveFile() {
-            cats.mainEditor.aceEditor.execCommand("save");
+            Cats.mainEditor.aceEditor.execCommand("save");
         }
 
         runFile() {
             var path = require("path");
 
-            var main = cats.project.config.config().main;
+            var main = Cats.project.config.config().main;
             if (!main) {
                 alert("Please specify the main html file to run in the project settings.");
                 return;
             }
-            var startPage = "file://" + cats.project.getFullName(main);
+            var startPage = "file://" + Cats.project.getFullName(main);
             console.log("Opening file: " + startPage);
             var win2 = gui.Window.open(startPage, {
                 toolbar: true,
@@ -408,12 +405,12 @@ module Menu {
             //}
 
         enableFind() {
-            window.open('static/html/findreplace.html', '_blank');
+            window.open('findreplace.html', '_blank');
         }
 
         actionFind() {
             var input = <HTMLInputElement>document.getElementById("findText");
-            cats.mainEditor.aceEditor.find(input.value, {}, true);
+            Cats.mainEditor.aceEditor.find(input.value, {}, true);
         }
 
         actionReplace() {
@@ -422,12 +419,12 @@ module Menu {
             var options = {
                 needle: findText.value
             };
-            cats.mainEditor.aceEditor.replace(replaceText.value, options);
+            Cats.mainEditor.aceEditor.replace(replaceText.value, options);
         }
 
         setThemeWrapper(theme) {
             return function setTheme() {
-                cats.mainEditor.setTheme(theme);
+                Cats.mainEditor.setTheme(theme);
             }
         }
 
@@ -436,7 +433,7 @@ module Menu {
             this.fontSizes.forEach((size: number) => {
                 menu.append(new gui.MenuItem({
                     label: size + "px",
-                    click: () => { cats.mainEditor.aceEditor.setFontSize(size + "px") }
+                    click: () => { Cats.mainEditor.aceEditor.setFontSize(size + "px") }
                 }));
             });
             return menu;

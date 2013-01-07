@@ -1,15 +1,15 @@
-///<reference path='autocompleteview.ts'/>
+
 ///<reference path='isensehandler.ts'/>
 ///<reference path='configuration.ts'/>
 ///<reference path='session.ts'/>
-///<reference path='editorcontextmenu.ts'/>
+///<reference path='menu/editorcontextmenu.ts'/>
 ///<reference path='../typings/node.d.ts'/>
 ///<reference path='ui/tooltip.ts'/>
 ///<reference path='ui/filetree.ts'/>
 ///<reference path='../typings/ace.d.ts'/>
 
 
-module cats {
+module Cats {
 
     import fs = module("fs");
     import path = module("path");

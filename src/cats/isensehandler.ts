@@ -1,7 +1,7 @@
 // Load the TSWorker and handles the communication with the ISense web worker
 // This implementation uses a JSON-RPC message format for the communication.
 
-module cats {
+module Cats {
 
 export class ISenseHandler {
 
@@ -11,7 +11,7 @@ export class ISenseHandler {
 
     constructor() {
         // Lets create a new worker
-        this.worker = new Worker("./lib/tsworker.js");
+        this.worker = new Worker("../lib/tsworker.js");
         this.init();
     }
 

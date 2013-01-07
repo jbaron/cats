@@ -68,7 +68,7 @@ function errorHandler(err,data) {
 	}
 }
 
-module cats {
+module Cats {
 	
 	import fs = module("fs");
 	import path = module("path");

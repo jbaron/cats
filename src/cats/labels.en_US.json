@@ -1,12 +1,12 @@
 {
-"file.new" : "New File"	
+"file.new" : "New File",	
 "file.save" : "Save",
 "file.saveall" : "Save All",
 "file.saveas" : "Save As...",
 
 "file.close" : "Close",
 "file.closeall" : "Close All",
-"file.closeothers": "Close Others"
+"file.closeothers": "Close Others",
 
 "edit.undo" : "Undo",
 "edit.redo" : "Redo",

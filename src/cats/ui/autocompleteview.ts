@@ -4,13 +4,16 @@
   @TODO create less HTML and separate UI and logic
 */
 
-declare var $;
 
+
+module Cats.UI {
+
+declare var $;
 var HashHandler = ace.require('ace/keyboard/hash_handler').HashHandler;
 
 // This class takes care of the autocomplete popup and deals with 
 // the key events
-class AutoCompleteView {
+export class AutoCompleteView {
 
     private static selectedClassName = 'autocomplete_selected';
     private static className = 'autocomplete';
@@ -240,5 +243,7 @@ class AutoCompleteView {
             }
         }
     };
+
+}
 
 }

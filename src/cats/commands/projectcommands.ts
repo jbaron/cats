@@ -23,12 +23,12 @@ module Cats.Commands {
    function runFile() {
             var path = require("path");
 
-            var main = cats.project.config.config().main;
+            var main = Cats.project.config.config().main;
             if (!main) {
                 alert("Please specify the main html file to run in the project settings.");
                 return;
             }
-            var startPage = "file://" + cats.project.getFullName(main);
+            var startPage = "file://" + Cats.project.getFullName(main);
             console.log("Opening file: " + startPage);
             var win2 = gui.Window.open(startPage, {
                 toolbar: true,

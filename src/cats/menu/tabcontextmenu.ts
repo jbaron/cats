@@ -1,4 +1,4 @@
-module Menu {
+module Cats.Menu {
 
     import gui = module('nw.gui');
     var win = gui.Window.get();
@@ -18,7 +18,7 @@ module Menu {
         private ctxmenu;
         private lastEvent: MouseEvent;
 
-        constructor(private editor: cats.Editor) {
+        constructor(private editor: Cats.Editor) {
             // Create a new menu
             this.ctxmenu = new gui.Menu();
 

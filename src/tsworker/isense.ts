@@ -6,7 +6,7 @@
 importScripts("typescript.js")
 
 
-module TSWorker {
+module Cats.TSWorker {
 
 var outputFiles = {};
 

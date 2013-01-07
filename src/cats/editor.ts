@@ -1,11 +1,12 @@
 ///<reference path='session.ts'/>
+declare var $;
 
-module cats {
+module Cats {
 
     export class Editor {
         public aceEditor: Ace.Editor;
-        private toolTip: ui.ToolTip;
-        private autoCompleteView: AutoCompleteView;
+        private toolTip: UI.ToolTip;
+        private autoCompleteView: UI.AutoCompleteView;
         public onAutoComplete: Function;
         private mouseMoveTimer: number;
 
@@ -15,7 +16,7 @@ module cats {
         // The current session that is being edited
         public activeSession: Session;
 
-        private editorContextMenu: Menu.EditorContextMenu;
+        private editorContextMenu: Cats.Menu.EditorContextMenu;
 
         // private rootElement
         constructor(private rootElement: HTMLElement) {
@@ -25,10 +26,10 @@ module cats {
             this.setTheme("cats");
             this.hide();
 
-            this.toolTip = new ui.ToolTip();
-            this.autoCompleteView = new AutoCompleteView(this.aceEditor);
+            this.toolTip = new UI.ToolTip();
+            this.autoCompleteView = new UI.AutoCompleteView(this.aceEditor);
 
-            this.editorContextMenu = new Menu.EditorContextMenu(this);
+            this.editorContextMenu = new Cats.Menu.EditorContextMenu(this);
             this.editorContextMenu.bindTo(rootElement);
         }
 

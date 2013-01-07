@@ -1,17 +1,17 @@
-module Menu {
+module Cats.Menu {
 
     import gui = module('nw.gui');
     var win = gui.Window.get();
 
 
     function getCursor(): Ace.Position {
-        return cats.mainEditor.aceEditor.getCursorPosition();
-        // return cats.project.session.getPositionFromScreenOffset(this.lastEvent.offsetX,this.lastEvent.offsetY);
+        return Cats.mainEditor.aceEditor.getCursorPosition();
+        // return Cats.project.session.getPositionFromScreenOffset(this.lastEvent.offsetX,this.lastEvent.offsetY);
     }
 
     export function gotoDeclaration() {
         var cursor = getCursor();
-        var session = cats.mainEditor.activeSession;
+        var session = Cats.mainEditor.activeSession;
         session.project.iSense.perform("getDefinitionAtPosition", session.name, cursor, (err, data) => {
             if (data && data.unitName)
                 session.project.editFile(data.unitName, null, data.startPos);
@@ -24,19 +24,20 @@ module Menu {
 
     export function getInfoAt(type: string) {
         var cursor = getCursor();
-        var session = cats.mainEditor.activeSession;
+        var session = Cats.mainEditor.activeSession;
         var resultElem = document.getElementById("result");
         $(resultElem).addClass("busy");
         session.project.iSense.perform("getInfoAtPosition", type, session.name, cursor, (err, data) => {
             $(resultElem).removeClass("busy");
             if (data) {
-                document.getElementById("result").innerHTML = "";
-                var grid = new cats.ui.Grid();
+                var searchResultsElem = document.getElementById("searchresults");
+                searchResultsElem.innerHTML = "";
+                var grid = new Cats.UI.Grid();
                 grid.setColumns(["description", "script", "position"]);
                 grid.setRows(data);
                 grid.setAspect("position", (row) => { return rangeToPosition(row.range) });
                 grid.render();
-                grid.appendTo(resultElem);
+                grid.appendTo(searchResultsElem);
                 grid.onselect = (data) => {
                     session.project.editFile(data.script, null, { row: data.range.startRow, column: data.range.startColumn });
                 };
@@ -50,7 +51,7 @@ module Menu {
         private ctxmenu;
         private lastEvent: MouseEvent;
 
-        constructor(private editor: cats.Editor) {
+        constructor(private editor: Cats.Editor) {
             // Create a new menu
             this.ctxmenu = new gui.Menu();
 

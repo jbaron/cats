@@ -7,7 +7,7 @@
 importScripts("typescript.js")
 
 
-module TSWorker {
+module Cats.TSWorker {
    
     export class ScriptInfo {
         public version: number;

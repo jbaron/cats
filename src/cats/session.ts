@@ -1,7 +1,7 @@
 ///<reference path='project.ts'/>
 ///<reference path='../typings/typescript.d.ts'/>
 
-module cats {
+module Cats {
 
     import path = module("path");
 
@@ -90,7 +90,7 @@ module cats {
         }
 
         getPositionFromScreenOffset(x: number, y: number): Ace.Position {
-            var r = cats.mainEditor.aceEditor.renderer;
+            var r = Cats.mainEditor.aceEditor.renderer;
             // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
             var offset = (x - r.$padding) / r.characterWidth;
 
@@ -118,7 +118,7 @@ module cats {
 
                     var tip = Session.convertMember(member);
                     // Bug in TS, need to prefix with cats.
-                    cats.mainEditor.toolTip.show(ev.x, ev.y, tip);
+                    Cats.mainEditor.toolTip.show(ev.x, ev.y, tip);
                 });
         }
 
@@ -129,7 +129,7 @@ module cats {
         }
 
         // Perform code autocompletion
-        autoComplete(cursor: Ace.Position, view: AutoCompleteView) {
+        autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
             if (!this.typeScriptMode) return;
             var editSession = this.editSession;
 

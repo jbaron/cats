@@ -1,10 +1,15 @@
-///<reference path='menubar.ts'/>
-///<reference path='filecontextmenu.ts'/>
+///<reference path='menu/menubar.ts'/>
+///<reference path='menu/filecontextmenu.ts'/>
+///<reference path='ui/autocompleteview.ts'/>
 ///<reference path='project.ts'/>
 ///<reference path='ui/tabbar.ts'/>
 ///<reference path='editor.ts'/>
+///<reference path='../typings/node-webkit.d.ts'/>
+///<reference path='ui/grid.ts'/>
+///<reference path='project.ts'/>
+///<reference path='../typings/typescript.d.ts'/>
 
-module cats {
+module Cats {
 
     export var mainEditor: Editor;
     export var project: Project;
@@ -22,48 +27,89 @@ module cats {
             return decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
-    function getParamByName(name: string) {
-        var querystring = require("querystring");
-        var params = querystring.parse(window.location.search);
-        return params[name];
-    }
-
     var defaultProject = "./samples" + path.sep + "greeter";
 
     project = new Project(getParameterByName("project") || defaultProject);
     mainEditor = new Editor(document.getElementById("editor"));
 
-    Menu.createMenuBar();
+    function initFileTree() {
+        var fileTree = new UI.FileTree(project.projectDir);
+        fileTree.appendTo(document.getElementById("filetree"));
+        fileTree.onselect = (filePath) => {
+            project.editFile(filePath);
+        };
+    }
 
-    var fileTree = new ui.FileTree(project.projectDir);
-    fileTree.appendTo(document.getElementById("filetree"));
-    fileTree.onselect = (filePath) => {
-        project.editFile(filePath);
-    };
 
     export var tabbar;
-    tabbar = new ui.Tabbar();
-    tabbar.setOptions(mainEditor.sessions);
-    tabbar.setAspect("name", (session: Session) => { return path.basename(session.name) });
-    tabbar.setAspect("selected", (session: Session) => { return session === cats.mainEditor.activeSession });
-    tabbar.setAspect("longname", (session: Session) => { return session.name });
-    tabbar.setAspect("changed", (session: Session) => { return session.changed });
-    tabbar.onselect = (session) => cats.project.editFile(session.name); //TODO Fix to use real session
+    function initTabBar() {
 
-    tabbar.appendTo(document.getElementById("sessionbar"));
+        tabbar = new UI.Tabbar();
+        tabbar.setOptions(mainEditor.sessions);
+        tabbar.setAspect("name", (session: Session) => { return path.basename(session.name) });
+        tabbar.setAspect("selected", (session: Session) => { return session === Cats.mainEditor.activeSession });
+        tabbar.setAspect("longname", (session: Session) => { return session.name });
+        tabbar.setAspect("changed", (session: Session) => { return session.changed });
+        tabbar.onselect = (session) => Cats.project.editFile(session.name); //TODO Fix to use real session
 
+        tabbar.appendTo(document.getElementById("sessionbar"));
+    }
 
-    var navbar = new ui.Tabbar();
-    navbar.setOptions([{
-        name: "Files",
-        selected: true,
-    },
-    {
-        name: "Outline",
-        selected: false
-        
-    }]);
-    navbar.appendTo(document.getElementById("navigationbar"));
+    function initNavBar() {
+        var navbar = new UI.Tabbar();
+        navbar.setOptions([
+        { name: "Files", selected: true, decorator: "icon-files" },
+        { name: "Outline", selected: false, decorator: "icon-outline" }
+        ]);
+        navbar.appendTo(document.getElementById("navigationbar"));
+    }
+
+    function initInfoBar() {
+        var infobar = new UI.Tabbar();
+        infobar.setOptions([
+            { name: "Task List", selected: true, decorator: "icon-tasks" }
+        ]);
+        infobar.appendTo(document.getElementById("infobar"));
+    }
+
+    function initResultBar() {
+        var resultbar = new UI.Tabbar();
+        var resultbaroptions = [{
+            name: "Errors",
+            selected: true,
+            decorator: "icon-errors",
+            element: document.getElementById("errorresults")
+        }, {
+            name: "Search",
+            selected: false,
+            decorator: "icon-search",
+            element: document.getElementById("searchresults")
+        }
+        ];
+        resultbar.setOptions(resultbaroptions);
+        resultbar.setAspect("selected", function(data, name) {
+            if (data.selected) {
+                data.element.style.display = "block";
+                return true;
+            } else {
+                data.element.style.display = "none";
+                return false;
+            }
+        });
+        resultbar.onselect = (option) => {
+            resultbaroptions.forEach((o) => o.selected = false);
+            option.selected = true;
+            resultbar.refresh();
+        };
+        resultbar.appendTo(document.getElementById("resultbar"));
+    }
+
+    Cats.Menu.createMenuBar();
+    initFileTree();
+    initTabBar();
+    initNavBar();
+    initInfoBar();    
+    initResultBar();
 
     $(document).ready(function() {
         $('body').layout({

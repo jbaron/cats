@@ -3,25 +3,25 @@
 module Cats.Commands {
 
     function newFile() {
-        cats.project.editFile("untitled", "");
+        Cats.project.editFile("untitled", "");
     }
 
     function closeFile() {
-        cats.mainEditor.closeSession(cats.mainEditor.activeSession);
+        Cats.mainEditor.closeSession(Cats.mainEditor.activeSession);
     }
 
     function closeAllFiles() {
-        cats.mainEditor.closeAllSessions();
+        Cats.mainEditor.closeAllSessions();
     }
 
     function closeOtherFiles() {
         // Make a copy of sessions
-        var sessions = cats.mainEditor.sessions.slice(0);
-        var activeSession = cats.mainEditor.activeSession;
+        var sessions = Cats.mainEditor.sessions.slice(0);
+        var activeSession = Cats.mainEditor.activeSession;
         for (var i = 0; i < sessions.length; i++) {
             var session = sessions[i];
             if (session !== activeSession) {
-                cats.mainEditor.closeSession(session);
+                Cats.mainEditor.closeSession(session);
             }
         }
     }

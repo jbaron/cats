@@ -1,7 +1,7 @@
 ///<reference path='../cats/node.d.ts' />
 
 
-module cats.ui {
+module Cats.UI {
 
 import fs = module("fs");
 import path = module("path");
