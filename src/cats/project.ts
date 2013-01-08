@@ -1,12 +1,13 @@
 
 ///<reference path='isensehandler.ts'/>
-///<reference path='configuration.ts'/>
+///<reference path='configloader.ts'/>
 ///<reference path='session.ts'/>
-///<reference path='menu/editorcontextmenu.ts'/>
 ///<reference path='../typings/node.d.ts'/>
 ///<reference path='ui/tooltip.ts'/>
 ///<reference path='ui/filetree.ts'/>
 ///<reference path='../typings/ace.d.ts'/>
+
+
 
 
 module Cats {
@@ -21,7 +22,7 @@ module Cats {
 
         // The singleton TSWorker handler instance
         iSense: ISenseHandler;
-        config: Configuration;
+        config:any;
         private loadDefaultLib = true;
 
         // Set the project to a new directory and make sure 
@@ -30,14 +31,14 @@ module Cats {
             project = this;
             this.projectDir = path.resolve(projectDir);
 
-            this.config = new Configuration(this.projectDir);
-            this.config.load();
+            this.config = new ConfigLoader(this.projectDir).load();
 
             this.iSense = new ISenseHandler();
 
-            if (this.loadDefaultLib) {
+            if (this.config.compiler.useDefaultLib) {
                 var libdts = fs.readFileSync("typings/lib.d.ts", "utf8");
-                this.iSense.perform("addScript", "lib.d.ts", libdts, true, null);
+                var fullName = path.join(process.cwd(),"typings/lib.d.ts" );
+                this.iSense.perform("addScript", fullName, libdts, true, null);
             }
 
             this.loadTypeScriptFiles("");
@@ -80,6 +81,7 @@ module Cats {
         }
 
         getFullName(name: string): string {
+            if (name.charAt(0) === path.sep) return name;
             return path.join(this.projectDir, name);
         }
 

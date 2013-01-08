@@ -23,7 +23,7 @@ module Cats.Commands {
    function runFile() {
             var path = require("path");
 
-            var main = Cats.project.config.config().main;
+            var main = Cats.project.config.main;
             if (!main) {
                 alert("Please specify the main html file to run in the project settings.");
                 return;

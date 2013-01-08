@@ -184,6 +184,7 @@ module Cats.Menu {
             proj.append(new gui.MenuItem({ label: 'Close Project', click: this.closeProject }));
             proj.append(new gui.MenuItem({ type: "separator" }));
             proj.append(new gui.MenuItem({ label: 'Build Project', click: this.compileAll }));
+            proj.append(new gui.MenuItem({ label: 'Properties', click: this.preferences }));
 
             var run = new gui.Menu();
             run.append(new gui.MenuItem({ label: 'Run main', click: this.runFile }));
@@ -192,7 +193,7 @@ module Cats.Menu {
             var window = new gui.Menu();
             window.append(new gui.MenuItem({ label: 'Theme', submenu: this.createThemeMenu() }));
             window.append(new gui.MenuItem({ label: 'Font size', submenu: this.createFontSizeMenu() }));
-            window.append(new gui.MenuItem({ label: 'Preferences', click: this.preferences }));
+            
 
             var help = new gui.Menu();
             help.append(new gui.MenuItem({ label: 'Keyboard shortcuts', click: this.showShortcuts }));
@@ -315,7 +316,7 @@ module Cats.Menu {
 
         compileAll() {
             // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
-            var options = Cats.project.config.config().compiler;
+            var options = Cats.project.config.compiler;
             $("#result").addClass("busy");
             Cats.project.iSense.perform("compile", options, (err, data) => {
                 $("#result").removeClass("busy");
@@ -333,8 +334,8 @@ module Cats.Menu {
         }
 
         preferences() {
-            var content = Cats.project.config.stringify();
-            var name = Cats.Configuration.NAME;
+            var content = JSON.stringify(Cats.project.config, null, 4);
+            var name = Cats.ConfigLoader.NAME;
             Cats.project.editFile(name, content);
         }
 
@@ -373,7 +374,7 @@ module Cats.Menu {
         runFile() {
             var path = require("path");
 
-            var main = Cats.project.config.config().main;
+            var main = Cats.project.config.main;
             if (!main) {
                 alert("Please specify the main html file to run in the project settings.");
                 return;

@@ -1,6 +1,6 @@
 ///<reference path='menu/menubar.ts'/>
 ///<reference path='menu/filecontextmenu.ts'/>
-///<reference path='ui/autocompleteview.ts'/>
+
 ///<reference path='project.ts'/>
 ///<reference path='ui/tabbar.ts'/>
 ///<reference path='editor.ts'/>
@@ -104,28 +104,33 @@ module Cats {
         resultbar.appendTo(document.getElementById("resultbar"));
     }
 
-    Cats.Menu.createMenuBar();
-    initFileTree();
-    initTabBar();
-    initNavBar();
-    initInfoBar();    
-    initResultBar();
+
+  Cats.Menu.createMenuBar();
+        initFileTree();
+        initTabBar();
+        initNavBar();
+        initInfoBar();    
+        initResultBar();
 
     $(document).ready(function() {
+        
         $('body').layout({
             applyDemoStyles: false,
             spacing_open: 8
         });
+
     });
 
-    var gui = require('nw.gui');
-    var win = gui.Window.get();
+        var gui = require('nw.gui');
+        var win = gui.Window.get();
 
-    win.on("close", function() {
+        win.on("close", function() {
         mainEditor.closeAllSessions();
-        if (win != null)
-            win.close(true);
+        if (win != null) win.close(true);
         this.close(true);
-    });
+        });
+
+
+
 
 }

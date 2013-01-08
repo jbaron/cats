@@ -1,6 +1,4 @@
 {
-    "theme": "clouds",
-    "fontSize": "14px",
     "main": "greeter.html",
     "sourcePath": null,
     "outputPath": null,

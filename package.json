@@ -1,9 +1,10 @@
 {
   "name": "CATS",
-  "main": "/static/index.html",
+  "main": "static/index.html",
   "description" : "TypeScript Editor",
   "version" : "0.6.8",
   "window": { 
+     "icon":"static/img/logo.png",	
      "toolbar": false,  
      "position": "center",
      "width": 800,

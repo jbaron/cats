@@ -1,4 +1,7 @@
 ///<reference path='session.ts'/>
+///<reference path='menu/editorcontextmenu.ts'/>
+///<reference path='ui/autocompleteview.ts'/>
+
 declare var $;
 
 module Cats {

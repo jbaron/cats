@@ -73,13 +73,13 @@ module Cats {
 	import fs = module("fs");
 	import path = module("path");
 
-	export class Configuration {
+	export class ConfigLoader {
 
 		static NAME = ".settings" + path.sep + "config.json";
 		private _config;
 
 		constructor(projectRoot:string) {
-			var fileName = path.join(projectRoot,Configuration.NAME);
+			var fileName = path.join(projectRoot,ConfigLoader.NAME);
 			var dir:string = path.dirname(fileName);
 			fs.exists(dir, (exists) => {
 					if (! exists) {
@@ -89,31 +89,25 @@ module Cats {
 			});	
 		}
 
-		load() {
+		load():any {
 			try {
-				var content = project.readTextFile(Configuration.NAME);
-				this._config = JSON.parse(content);
+				var content = project.readTextFile(ConfigLoader.NAME);
+				this._config = JSON.parse(content);                
 			} catch (err) {
 				console.log("Couldn't load project configuration, loading defaults");
 				this.loadDefault();
+                
 			}
+            return this._config;
 		}
 
 		config() {
 			return this._config;
 		}
 
-		stringify() {
-			var result = JSON.stringify(this._config, null, 4);
-			return result;
-		}
-
-
-
+	
 		loadDefault() {
 			this._config = {	
-				theme : "clouds",
-				fontSize: "14px",
 				main: "index.html",
 				sourcePath : null, //If not set, the whole project directory is the source directory
 				outputPath: null,

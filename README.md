@@ -1,6 +1,6 @@
 Introduction
 ============
-CATS is an IDE for the TypeScript developer. CATS is an abbreviation and it stands for Code Assistant for TypeScript. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. CATS itself is written in TypeScript and even being developed with CATS as its main IDE.
+CATS is an IDE for the TypeScript developer. CATS is the abbreviation for Code Assistant for TypeScript. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. CATS itself is written in TypeScript and even being developed with CATS as its main IDE. 
 
 Although not yet feature complete, it is getting there. Right now CATS already has built-in support for the following features:
 
@@ -49,6 +49,11 @@ Configuration
 CATS will look for a file in the project directory called: ".settings/config.json". If found, CATS will use the values configured in this file, otherwise it will use sensible default values.
 
 You can edit this file (or the default values if you don't have this file yet) from the main menu.
+
+
+Goals
+=====
+One of the main goals of CATS is to make the developer that is used to IDE's like Eclipse, NetBeans, Visual Studio or IntelliJ, feel right at home. So the same support you got from your IDE when you developed in Java or C#, is now available for TypeScript/JavaScript.
 
 
 Bugs and Issues
