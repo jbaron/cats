@@ -41,6 +41,7 @@ module Cats.Menu {
                 grid.onselect = (data) => {
                     session.project.editFile(data.script, null, { row: data.range.startRow, column: data.range.startColumn });
                 };
+                
             }
         });
     }

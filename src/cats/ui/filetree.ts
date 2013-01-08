@@ -29,6 +29,7 @@ export class FileTree {
 
 	private static COLLAPSED = "collapsed";
 	private static OPENED = "opened";
+    private openFolders = [];
 
 	private rootElem: HTMLElement;
 	public onselect: (path:string) => void;
@@ -46,8 +47,6 @@ export class FileTree {
 					this.toggle(<HTMLElement>ev.srcElement);
 		}
 	}
-
-
 
 	appendTo(elem:HTMLElement) {
 		elem.appendChild(this.rootElem);

@@ -24,7 +24,7 @@ export class Tabbar extends AspectWidget {
 
     private root : HTMLElement;
     private ul: HTMLElement;
-    private select: HTMLElement;
+    private selectElem: HTMLElement;
 
     onselect:(option)=> void;
     options = [];
@@ -33,21 +33,19 @@ export class Tabbar extends AspectWidget {
         super();
         this.root = <HTMLElement>document.createElement("div");
         this.ul = <HTMLElement>document.createElement("ul");
-        this.select = <HTMLElement>document.createElement("select");
+        this.selectElem = <HTMLElement>document.createElement("select");
         this.ul.onclick = this.onClickHandler.bind(this);
-        this.select.onchange = (ev) => this.onChangeHandler(ev);
-        this.select.style.display = "none";
+        this.selectElem.onchange = (ev) => this.onChangeHandler(ev);
+        this.selectElem.style.display = "none";
         this.root.appendChild(this.ul);
-        this.root.appendChild(this.select);
+        this.root.appendChild(this.selectElem);
         this.root.className = "tabbar";
         this.ul.className = "tabbar";
-
     }
 
-
     private renderDropDown() {
-        this.select.style.display = "block";
-        this.select.innerHTML = "";
+        this.selectElem.style.display = "block";
+        this.selectElem.innerHTML = "";
         this.options.forEach( (option) => {
             var optionElem = <HTMLOptionElement>document.createElement("option");
             optionElem.innerText = this.getValue(option,"name");
@@ -57,7 +55,7 @@ export class Tabbar extends AspectWidget {
                 // optionElem.setAttribute("selected","selected");
              }
             optionElem["_value"] = option;
-            this.select.appendChild(optionElem);
+            this.selectElem.appendChild(optionElem);
         });
 
     }
@@ -100,7 +98,7 @@ export class Tabbar extends AspectWidget {
         if (this.isOverflowed()) { 
             this.renderDropDown();
         } else {
-            this.select.style.display = "none";
+            this.selectElem.style.display = "none";
         }
     }
 
@@ -123,18 +121,13 @@ export class Tabbar extends AspectWidget {
         elem.appendChild(this.root);
     }
 
-/*
-    select(obj,notify=false) { 
-        
-        this.options.forEach(option => {
-                if (option.value === this.selected) { 
-                        option.elem.className = "active";
-                 } else {                       
-                        option.elem.className = "";
-                }
-        });           
+
+    selectOption(option) { 
+        if (this.onselect) this.onselect(option);         
     }
-*/
+
+
+
 
     private getSelectedOption(ev) {
         var elem = ev.srcElement;

@@ -8,8 +8,6 @@
 ///<reference path='../typings/ace.d.ts'/>
 
 
-
-
 module Cats {
 
     import fs = module("fs");
@@ -30,8 +28,24 @@ module Cats {
         constructor(projectDir: string) {
             project = this;
             this.projectDir = path.resolve(projectDir);
+            this.init();
+           
+        }
 
-            this.config = new ConfigLoader(this.projectDir).load();
+
+         private initFileTree() {
+            document.getElementById("filetree").innerHTML = "";
+            var fileTree = new UI.FileTree(this.projectDir);
+            fileTree.appendTo(document.getElementById("filetree"));
+            fileTree.onselect = (filePath) => {
+                this.editFile(filePath);
+            };
+        }
+
+
+        private init() {
+            this.initFileTree();
+             this.config = new ConfigLoader(this.projectDir).load();
 
             this.iSense = new ISenseHandler();
 
@@ -44,6 +58,7 @@ module Cats {
             this.loadTypeScriptFiles("");
 
         }
+
 
 
       

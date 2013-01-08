@@ -32,15 +32,6 @@ module Cats {
     project = new Project(getParameterByName("project") || defaultProject);
     mainEditor = new Editor(document.getElementById("editor"));
 
-    function initFileTree() {
-        var fileTree = new UI.FileTree(project.projectDir);
-        fileTree.appendTo(document.getElementById("filetree"));
-        fileTree.onselect = (filePath) => {
-            project.editFile(filePath);
-        };
-    }
-
-
     export var tabbar;
     function initTabBar() {
 
@@ -106,7 +97,6 @@ module Cats {
 
 
   Cats.Menu.createMenuBar();
-        initFileTree();
         initTabBar();
         initNavBar();
         initInfoBar();    
