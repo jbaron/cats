@@ -29,7 +29,14 @@ module Cats {
 
     var defaultProject = "./samples" + path.sep + "greeter";
 
-    project = new Project(getParameterByName("project") || defaultProject);
+    import gui = module('nw.gui');
+    var args = gui.App.argv;
+    if (args) {
+        console.log("Going to load provided project: " + args);
+        project = new Project(args);
+    } else {
+        project = new Project(getParameterByName("project") || defaultProject);
+    }
     mainEditor = new Editor(document.getElementById("editor"));
 
     export var tabbar;
@@ -111,9 +118,8 @@ module Cats {
 
     });
 
-        var gui = require('nw.gui');
+     
         var win = gui.Window.get();
-
         win.on("close", function() {
         mainEditor.closeAllSessions();
         if (win != null) win.close(true);

@@ -20,24 +20,7 @@ module Cats.Commands {
    }
 
 
-   function runFile() {
-            var path = require("path");
-
-            var main = Cats.project.config.main;
-            if (!main) {
-                alert("Please specify the main html file to run in the project settings.");
-                return;
-            }
-            var startPage = "file://" + Cats.project.getFullName(main);
-            console.log("Opening file: " + startPage);
-            var win2 = gui.Window.open(startPage, {
-                toolbar: true,
-                webkit: {
-                    "page-cache": false
-                }
-            });
-            // win2.reloadIgnoringCache()
-        };
+  
 
 
 

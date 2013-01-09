@@ -52,6 +52,36 @@ module Cats {
                 this.aceEditor.clearSelection();
             }
             this.aceEditor.focus();
+            
+            if (session.typeScriptMode) {
+                session.project.iSense.perform("getOutliningRegions",session.name,(err,data) => {
+                    console.log(data);
+                    document.getElementById("outlinenav").innerHTML="";
+                    var outliner = new Cats.UI.TreeView();
+                    outliner.setAspect("children", (parent) => {
+                        var name = parent ? parent.qualifyer : "";
+                        var kind = parent ? parent.kind : "";
+                        var result = [];
+                        for (var i=0;i<data.length;i++) {
+                            var o = data[i];
+                            if ((o.containerKind === kind) && (o.containerName===name)) {
+                                var fullName = o.name;
+                                if (name) fullName = name + "." + fullName;
+                                result.push({
+                                    name: o.name,
+                                    qualifyer : fullName,
+                                    kind: o.kind,
+                                    isFolder: true
+                                })
+                            }
+                        }
+                        return result;
+                    });
+                    outliner.appendTo(document.getElementById("outlinenav"));
+                    outliner.refresh();
+                });
+            }
+            
         }
 
         moveCursorTo(pos: Ace.Position = { column: 0, row: 0 }) {

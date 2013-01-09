@@ -22,10 +22,47 @@ function sort(a:ListEntry,b:ListEntry) {
     return 0;
 }
 
+class AspectWidget {
+
+    private aspects = {};
+    defaultHandler = (data,name:string) => { return data[name];};
+
+   
+    setAspect(name,aspect) {
+        this.aspects[name] = aspect;
+    }
+
+    getValue(data,name:string)  {
+    	var fn = this.aspects[name] || this.defaultHandler;
+		return fn(data,name);
+	}
+
+}
+
+
 // Created a file tree view based on a directory.
 // Very simple and fast implementation that refreshes a directory
 // every time you open it.
-export class FileTree {
+export class TreeView  {
+
+  private aspects = {};
+    defaultHandler = (data,name:string) => { return data[name];};
+
+   
+    setAspect(name,aspect) {
+        this.aspects[name] = aspect;
+    }
+
+    getValue(data,name:string)  {
+        var fn = this.aspects[name] || this.defaultHandler;
+		return fn(data,name);
+	}
+
+
+
+
+
+
 
 	private static COLLAPSED = "collapsed";
 	private static OPENED = "opened";
@@ -35,35 +72,42 @@ export class FileTree {
 	public onselect: (path:string) => void;
 	public oncontextmenu : (path:string) => void; //TODO implement
 
-	constructor(private rootDir:string) {
-		var list:ListEntry[] = [{
-				name : path.basename(rootDir),
-				path : "",
-				isFolder: true
-		}];
-		this.rootElem = this.render(list);
+	constructor() {
+       // super();
+        
+		this.rootElem = document.createElement("div");
+        this.rootElem.className = "treeview";
+        
 	    this.rootElem.onclick = (ev) => {
 					ev.stopPropagation();
-					this.toggle(<HTMLElement>ev.srcElement);
+					this.handleClick(<HTMLElement>ev.srcElement);
 		}
 	}
+
+    public refresh() {
+        this.rootElem.innerHTML = "";
+        var elem = this.render(this.getValue(null,"children"));
+        this.rootElem.appendChild(elem);        
+    }
+
 
 	appendTo(elem:HTMLElement) {
 		elem.appendChild(this.rootElem);
 	}
 
-	private render(list:ListEntry[]) : HTMLElement {
+	private render(list) : HTMLElement {
 		var ul = document.createElement("ul");
-		list.forEach( (entry:ListEntry) => {
+		list.forEach( (entry) => {
 			var li = <HTMLElement>document.createElement("li");
 			// var span = <HTMLElement>document.createElement("span");
 			// span.innerText = entry.name;
 			// li.appendChild(span);
-			li.innerText = entry.name;
+
+			li.innerText = this.getValue(entry,"name");
 			li["_value"] = entry;
 
-			if (entry.isFolder) {
-				li.className = FileTree.COLLAPSED;
+			if (this.getValue(entry, "isFolder")) {
+				li.className = TreeView.COLLAPSED;
 			}
 
 			ul.appendChild(li);
@@ -72,7 +116,7 @@ export class FileTree {
 	}
 
 
-	private toggle(li:HTMLElement) {
+	private handleClick(li:HTMLElement) {
         var entry = li["_value"];
 		if (! entry.isFolder) {
 				if (this.onselect) {
@@ -81,36 +125,14 @@ export class FileTree {
 				return;
 		}
 
-		if (li.className === FileTree.OPENED) {
-			li.className = FileTree.COLLAPSED;			
+		if (li.className === TreeView.OPENED) {
+			li.className = TreeView.COLLAPSED;			
 			li.removeChild(li.childNodes[1]);
 			return;
 		}
-		li.className = FileTree.OPENED;
-		var dir = entry.path;
-		var fullDirName = path.join(this.rootDir,dir);
-		var files = fs.readdirSync(fullDirName);
-
-		var entries:ListEntry[] = [];
-
-		files.forEach( file => {
-            try {
-    			var pathName = path.join(dir,file);
-    			var fullName = path.join(this.rootDir,pathName);
-    
-                entries.push({
-                    name: file,
-                    path: pathName,
-                    isFolder: fs.statSync(fullName).isDirectory()
-                });
-            } catch(err) {
-                console.log("Got error while handling file " + fullName);
-                console.error(err);
-            }
-        });
-
-		entries.sort(sort);
-		// console.log(entries);
+		li.className = TreeView.OPENED;
+		var entries =  this.getValue(entry,"children");
+		// entries.sort(sort);
 
         var ul = this.render(entries);
         li.appendChild(ul);

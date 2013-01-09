@@ -21,7 +21,6 @@
 ***************************************************************/
 
 #fileTree {
-  width: 100%;
   height: 95%;
   overflow: auto;
   padding: 4px;
@@ -268,10 +267,6 @@ Auto complete styling
     width:400px;
     margin:0px;
     padding:2px;
-}
-
-.autocomplete li:hover{
-
 }
 
 .autocomplete li{

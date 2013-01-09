@@ -5,7 +5,6 @@
 
 importScripts("typescript.js")
 
-
 module Cats.TSWorker {
 
 var outputFiles = {};
@@ -66,7 +65,7 @@ class ISense {
 
     // Get the name of a script based on its index
     getUnitName(index:number) : string {
-        return this.typescriptLS.scripts[index].name
+        return this.typescriptLS.scripts[index].name;
     }
 
     // Convert a TS offset to Ace position
@@ -219,7 +218,7 @@ class ISense {
 
 
 
-    getFormattedTextForRange(fileName, start, end) {
+    getFormattedTextForRange(fileName:string, start:number, end:number) {
         var options = new Services.FormatCodeOptions();
         options.NewLineCharacter = "\n";
         var edits = this.ls.getFormattingEditsForRange(fileName, start, end , options);
@@ -343,6 +342,19 @@ class ISense {
         var max = content.substring(limChar).indexOf("\n");        
         return content.substring(min+1,limChar + max);
     }
+
+
+    public getOutliningRegions(fileName: string) {
+        var results : Services.NavigateToItem[] = this.ls.getOutliningRegions(fileName);
+        for (var i=0;i<results.length;i++) {
+            var result = results[i];
+            var fileName = this.getUnitName(result.unitIndex);
+            result["range"] = this.getRange(fileName,result.minChar,result.limChar);
+            result["unitName"] = fileName;
+        }
+        return results;
+    }
+
 
     // generic wrapper for info at a certain position 
     public getInfoAtPosition(method:string, filename:string, cursor:Ace.Position) {

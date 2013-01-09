@@ -184,7 +184,9 @@ module Cats.Menu {
             proj.append(new gui.MenuItem({ label: 'Close Project', click: this.closeProject }));
             proj.append(new gui.MenuItem({ type: "separator" }));
             proj.append(new gui.MenuItem({ label: 'Build Project', click: this.compileAll }));
+            proj.append(new gui.MenuItem({ label: 'Refresh Project', click: this.refreshProject }));
             proj.append(new gui.MenuItem({ label: 'Properties', click: this.preferences }));
+
 
             var run = new gui.Menu();
             run.append(new gui.MenuItem({ label: 'Run main', click: this.runFile }));
@@ -339,6 +341,11 @@ module Cats.Menu {
             Cats.project.editFile(name, content);
         }
 
+
+        refreshProject() {
+            project.refresh();
+        }
+
         openProject() {
             var chooser: any = document.getElementById('fileDialog');
             chooser.onchange = function(evt) {
@@ -372,14 +379,12 @@ module Cats.Menu {
         }
 
         runFile() {
-            var path = require("path");
-
             var main = Cats.project.config.main;
             if (!main) {
                 alert("Please specify the main html file to run in the project settings.");
                 return;
             }
-            var startPage = "file://" + Cats.project.getFullName(main);
+            var startPage = Cats.project.getStartURL();
             console.log("Opening file: " + startPage);
             var win2 = gui.Window.open(startPage, {
                 toolbar: true,

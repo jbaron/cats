@@ -23,9 +23,8 @@ module Cats.Menu {
 
     function deleteFile() {
         var sure = confirm("Delete " + data.key);
-        if (sure) {
-            var fullName = Cats.project.getFullName(data.key);
-            fs.unlinkSync(fullName);
+        if (sure) {            
+            fs.unlinkSync(data.key);
         }
     }
 

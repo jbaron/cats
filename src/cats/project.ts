@@ -6,7 +6,7 @@
 ///<reference path='ui/tooltip.ts'/>
 ///<reference path='ui/filetree.ts'/>
 ///<reference path='../typings/ace.d.ts'/>
-
+///<reference path='directoryreader.ts'/>
 
 module Cats {
 
@@ -17,6 +17,7 @@ module Cats {
 
         // The home directory of the project
         projectDir: string;
+        name: string;
 
         // The singleton TSWorker handler instance
         iSense: ISenseHandler;
@@ -26,26 +27,41 @@ module Cats {
         // Set the project to a new directory and make sure 
         // we remove old artifacts.
         constructor(projectDir: string) {
-            project = this;
+            project = this;            
             this.projectDir = path.resolve(projectDir);
-            this.init();
-           
+            this.name = path.basename(this.projectDir);
+            this.refresh();           
         }
-
 
          private initFileTree() {
             document.getElementById("filetree").innerHTML = "";
-            var fileTree = new UI.FileTree(this.projectDir);
+            var fileTree = new Cats.UI.TreeView();
+            var dirReader = new DirectoryReader();
+
+            fileTree.setAspect("children", (parent) => {
+                if (parent == null) {
+                    return [{name:this.name, isFolder:true, path:this.projectDir}];
+                }
+
+                return dirReader.read(parent);
+            
+            });
+                        
             fileTree.appendTo(document.getElementById("filetree"));
+            fileTree.refresh();
+            
             fileTree.onselect = (filePath) => {
                 this.editFile(filePath);
             };
         }
 
-
-        private init() {
+        /**
+         *  Refreshes the project and loads required artifacts
+         *  again from the filesystem to be fully in sync
+         */
+        refresh() {
             this.initFileTree();
-             this.config = new ConfigLoader(this.projectDir).load();
+            this.config = new ConfigLoader(this.projectDir).load();
 
             this.iSense = new ISenseHandler();
 
@@ -55,13 +71,14 @@ module Cats {
                 this.iSense.perform("addScript", fullName, libdts, true, null);
             }
 
-            this.loadTypeScriptFiles("");
+            var srcPaths = [].concat(this.config.sourcePath); 
+            srcPaths.forEach( (srcPath:string) => {
+                var fullPath = path.join(this.projectDir,srcPath);
+                this.loadTypeScriptFiles(fullPath);
+            });
 
         }
 
-
-
-      
         editFile(name: string, content?: string, goto?: Ace.Position) :Session {
             var session: Session = mainEditor.getSession(name, this);
 
@@ -95,13 +112,14 @@ module Cats {
             return session;
         }
 
-        getFullName(name: string): string {
-            if (name.charAt(0) === path.sep) return name;
-            return path.join(this.projectDir, name);
+        getStartURL() {
+            var url = path.join(this.projectDir, this.config.main);
+            return "file://" + url;
         }
+        
 
         writeTextFile(name: string, value: string): void {
-            fs.writeFileSync(this.getFullName(name), value, "utf8");
+            fs.writeFileSync(name, value, "utf8");
         }
 
         writeSession(session: Session): void {
@@ -118,7 +136,7 @@ module Cats {
 
         readTextFile(name: string): string {
             if (name === "untitled") return "";
-            var data = fs.readFileSync(this.getFullName(name), "utf8");
+            var data = fs.readFileSync(name, "utf8");
             var content = data.replace(/\r\n?/g, "\n");
             return content;
         }
@@ -126,11 +144,11 @@ module Cats {
         // Load all the script that are part of the project into the tsworker
         // For now use a synchronous call to load.
         private loadTypeScriptFiles(directory: string) {
-            var files = fs.readdirSync(this.getFullName(directory));
+            var files = fs.readdirSync(directory);
             files.forEach((file) =>{
                 try {
                     var fullName = path.join(directory, file);
-                    var stats = fs.statSync(this.getFullName(fullName));
+                    var stats = fs.statSync(fullName);
                     if (stats.isFile()) {
                         var ext = path.extname(file);
                         if (ext === ".ts") {

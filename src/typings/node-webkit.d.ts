@@ -35,7 +35,9 @@ declare module "nw.gui" {
 
 	interface IWindow {
 		menu:Menu;
-		showDevTools();		
+		showDevTools();	
+        on(event:string,handler:Function);
+        close(force:bool);
 	}
 
 	declare var MenuItem:MenuItem;
@@ -44,5 +46,9 @@ declare module "nw.gui" {
         get() : IWindow; 
         open(url:string, options):IWindow;
     };
-	declare var App;
+	declare var App : {
+        argv: any;  
+        closeAllWindows();
+        quit();
+	}
 }
