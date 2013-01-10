@@ -110,11 +110,17 @@ export class TreeView  {
 				li.className = TreeView.COLLAPSED;
 			}
 
+            this.decorate(li);
 			ul.appendChild(li);
 		})
 		return ul;
 	}
 
+    private decorate(li:HTMLElement) {
+        var entry = li["_value"];
+        var decorator = this.getValue(entry, "decorator");
+        if (decorator) li.className += " " + decorator;
+    }
 
 	private handleClick(li:HTMLElement) {
         var entry = li["_value"];
@@ -125,12 +131,14 @@ export class TreeView  {
 				return;
 		}
 
-		if (li.className === TreeView.OPENED) {
-			li.className = TreeView.COLLAPSED;			
+		if ($(li).hasClass(TreeView.OPENED)) {
+			li.className = TreeView.COLLAPSED;
+            this.decorate(li);
 			li.removeChild(li.childNodes[1]);
 			return;
 		}
 		li.className = TreeView.OPENED;
+        this.decorate(li);
 		var entries =  this.getValue(entry,"children");
 		// entries.sort(sort);
 

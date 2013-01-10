@@ -73,14 +73,19 @@ module Cats {
 	import fs = module("fs");
 	import path = module("path");
 
+    /**
+     *  Loads the configuration for a project. If not found it  
+     *  returns a number of sensible defaults.
+     */
 	export class ConfigLoader {
 
 		static NAME = ".settings" + path.sep + "config.json";
 		private _config;
+        private fileName;
 
 		constructor(projectRoot:string) {
-			var fileName = path.join(projectRoot,ConfigLoader.NAME);
-			var dir:string = path.dirname(fileName);
+			this.fileName = path.join(projectRoot,ConfigLoader.NAME);
+			var dir:string = path.dirname(this.fileName);
 			fs.exists(dir, (exists) => {
 					if (! exists) {
 						fs.mkdirSync(dir); //Should be called only once.
@@ -91,12 +96,11 @@ module Cats {
 
 		load():any {
 			try {
-				var content = project.readTextFile(ConfigLoader.NAME);
+				var content = Cats.project.readTextFile(this.fileName);
 				this._config = JSON.parse(content);                
 			} catch (err) {
 				console.log("Couldn't load project configuration, loading defaults");
-				this.loadDefault();
-                
+				this.loadDefault();                
 			}
             return this._config;
 		}

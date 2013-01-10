@@ -69,6 +69,7 @@ module Cats {
                                 if (name) fullName = name + "." + fullName;
                                 result.push({
                                     name: o.name,
+                                    decorator: "icon-" + o.kind,
                                     qualifyer : fullName,
                                     kind: o.kind,
                                     isFolder: true

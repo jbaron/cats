@@ -33,6 +33,11 @@ module Cats {
             this.refresh();           
         }
 
+
+        getConfigFileName() {
+            return path.join(this.projectDir, ConfigLoader.NAME);
+        }    
+
          private initFileTree() {
             document.getElementById("filetree").innerHTML = "";
             var fileTree = new Cats.UI.TreeView();
@@ -40,7 +45,12 @@ module Cats {
 
             fileTree.setAspect("children", (parent) => {
                 if (parent == null) {
-                    return [{name:this.name, isFolder:true, path:this.projectDir}];
+                    return [{
+                        name:this.name, 
+                        isFolder:true, 
+                        path:this.projectDir,
+                        decorator:"icon-folder"
+                    }];
                 }
 
                 return dirReader.read(parent);
@@ -62,7 +72,7 @@ module Cats {
         refresh() {
             this.initFileTree();
             this.config = new ConfigLoader(this.projectDir).load();
-
+            
             this.iSense = new ISenseHandler();
 
             if (this.config.compiler.useDefaultLib) {

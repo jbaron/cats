@@ -137,8 +137,8 @@ export class AutoCompleteView {
             // TODO use template
             for (var n in infos) {
                 var info = infos[n];
-                var kindClass = "kind-" + info.kind;
-                var name = '<span class="name ' + kindClass + '">' + info.name + '</span>';
+                var decorator = "icon-" + info.kind;
+                var name = '<span class="name ' + decorator + '">' + info.name + '</span>';
                 var type = "";
                 if (info.name !== info.type) {
                     type = '<span class="type">' + info.type + '</span>';

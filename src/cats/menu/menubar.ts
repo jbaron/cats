@@ -336,9 +336,8 @@ module Cats.Menu {
         }
 
         preferences() {
-            var content = JSON.stringify(Cats.project.config, null, 4);
-            var name = Cats.ConfigLoader.NAME;
-            Cats.project.editFile(name, content);
+            var content = JSON.stringify(Cats.project.config, null, 4);            
+            Cats.project.editFile(Cats.project.getConfigFileName(), content);
         }
 
 

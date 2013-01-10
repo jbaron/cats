@@ -43,11 +43,13 @@ export class DirectoryReader {
 		files.forEach( file => {
             try {
     			var pathName = path.join(dir.path,file);
-    
+                var isFolder = fs.statSync(pathName).isDirectory();
+
                 entries.push({
                     name: file,
                     path: pathName,
-                    isFolder: fs.statSync(pathName).isDirectory()
+                    isFolder: isFolder,
+                    decorator: isFolder? "icon-folder" : "icon-file"
                 });
             } catch(err) {
                 console.log("Got error while handling file " + pathName);

@@ -27,14 +27,15 @@ module Cats {
             return decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
-    var defaultProject = "./samples" + path.sep + "greeter";
-
+    
     import gui = module('nw.gui');
     var args = gui.App.argv;
-    if (args) {
+    if (args && (args.length > 0)) {
+        console.log(args);
         console.log("Going to load provided project: " + args);
-        project = new Project(args);
+        project = new Project(args[0]);
     } else {
+        var defaultProject = path.join(process.cwd(), "samples","greeter");
         project = new Project(getParameterByName("project") || defaultProject);
     }
     mainEditor = new Editor(document.getElementById("editor"));
@@ -56,10 +57,24 @@ module Cats {
     function initNavBar() {
         var navbar = new UI.Tabbar();
         navbar.setOptions([
-        { name: "Files", selected: true, decorator: "icon-files" },
-        { name: "Outline", selected: false, decorator: "icon-outline" }
+            { name: "Files", 
+                selected: true, 
+                decorator: "icon-files", 
+                elem:document.getElementById("filetree")
+            },
+        { 
+            name: "Outline", 
+            selected: false, 
+            decorator: "icon-outline", 
+            elem: document.getElementById("outlinenav")
+        }
         ]);
         navbar.appendTo(document.getElementById("navigationbar"));
+        navbar.onselect= (item) => {
+            document.getElementById("filetree").style.display = "none";
+            document.getElementById("outlinenav").style.display = "none"; 
+            item.elem.style.display = "block";
+        };
     }
 
     function initInfoBar() {
@@ -103,21 +118,13 @@ module Cats {
     }
 
 
-  Cats.Menu.createMenuBar();
-        initTabBar();
-        initNavBar();
-        initInfoBar();    
-        initResultBar();
+    Cats.Menu.createMenuBar();
+    initTabBar();
+    initNavBar();
+    initInfoBar();    
+    initResultBar();
 
-    $(document).ready(function() {
-        
-        $('body').layout({
-            applyDemoStyles: false,
-            spacing_open: 8
-        });
-
-    });
-
+   
      
         var win = gui.Window.get();
         win.on("close", function() {

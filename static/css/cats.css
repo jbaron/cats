@@ -1,3 +1,12 @@
+#startupscreen {
+  background: url("../img/startup.png") no-repeat;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  background-size: 100% 100%;
+}
+
 
 /************************************************************** 
   Lets make the scrollbars look a little nicer
@@ -20,33 +29,34 @@
   Simple file tree styling
 ***************************************************************/
 
-#fileTree {
+.treeview {
   height: 95%;
   overflow: auto;
   padding: 4px;
 }
 
-#filetree ul {
+.treeview ul {
   list-style: none;
   padding-left: 1em;
   margin: 0px;
 }
 
-#filetree li {
+.treeview li {
     line-height: 1.5em;
     cursor: pointer;
+    padding-left: 1.3em;
 }
 
-#filetree li.collapsed:before {
+.treeview li.collapsed:before {
   content: "+";
-  margin-left: -1em;
-  padding-right: 0.3em;
+  margin-left: -2em;
+  padding-right: 1.6em;
 }
 
-#filetree li.opened:before {
+.treeview li.opened:before {
   content: "-";
-  margin-left: -1em;
-  padding-right: 0.3em;
+  margin-left: -2em;
+  padding-right: 1.6em;
 }
 
 
@@ -277,44 +287,12 @@ Auto complete styling
     list-style: none;
 }
 
-.autocomplete .name {
+.autocomplete [class*=" icon-"]  {
     padding-left: 20px;
 }
 
-.autocomplete .kind-method{
-    background: url('../img/methpub_obj.gif') no-repeat; 
-}
-
-.autocomplete .kind-method:after{
+.autocomplete .icon-method:after{
     content: "()";
-}
-
-.autocomplete .kind-interface{
-    background: url('../img/int_obj.gif') no-repeat; 
-}
-
-.autocomplete .kind-enum{
-    background: url('../img/enum_obj.gif') no-repeat; 
-}
-
-.autocomplete .kind-class{
-    background: url('../img/class_obj.gif') no-repeat; 
-}
-
-.autocomplete .kind-module{
-    background: url('../img/package_obj.png') no-repeat; 
-}
-
-.autocomplete .kind-variable {
-  background: url('../img/genericvariable_obj.gif') no-repeat; 
-}
-
- .autocomplete .kind-property {
-    background: url('../img/property_obj.gif') no-repeat; 
-}
-
-.autocomplete .kind-keyword {
-    background: url('../img/type_keyword.png') no-repeat; 
 }
 
 .autocomplete .type {
@@ -336,6 +314,55 @@ Auto complete styling
 .autocomplete_selected .type {
     visibility:visible;    
 }    
+
+
+/***********************************************************************
+  Icons
+************************************************************************/
+
+.icon-method{
+    background: url('../img/methpub_obj.gif') no-repeat; 
+}
+
+
+.icon-interface{
+    background: url('../img/int_obj.gif') no-repeat; 
+}
+
+.icon-enum{
+    background: url('../img/enum_obj.gif') no-repeat; 
+}
+
+.icon-class{
+    background: url('../img/class_obj.gif') no-repeat; 
+}
+
+.icon-module{
+    background: url('../img/package_obj.png') no-repeat; 
+}
+
+.icon-variable {
+  background: url('../img/genericvariable_obj.gif') no-repeat; 
+}
+
+.icon-property {
+    background: url('../img/property_obj.gif') no-repeat; 
+}
+
+.icon-keyword {
+    background: url('../img/type_keyword.png') no-repeat; 
+}
+
+.icon-file {
+    background: url('../img/file_obj.gif') no-repeat; 
+}
+
+.icon-folder {
+    background: url('../img/fldr_obj.gif') no-repeat; 
+}
+
+
+
 
 /*******************************************************************        
   Find Area styling

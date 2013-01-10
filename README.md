@@ -4,21 +4,21 @@ CATS is an IDE for the TypeScript developer. CATS is the abbreviation for Code A
 
 Although not yet feature complete, it is getting there. Right now CATS already has built-in support for the following features:
 
-- TypeScript code completion (just type a dot or Ctrl-Space to invoke it).
+- Intelligent code editor with support for syntax highlighting and code completion.
+
+- Fast and lightweight, so ti even runs fine on older hardware. 
+
+- Support for refactoring and smart navigation support. 
 
 - TypeScript compilation to JavaScript.
 
-- Syntax highlighting for many languages including TypeScript.
-
-- Validation of the TypeScript source code while you are typing.
+- Validation of the source code while you are typing.
 
 - JavaScript JSHint support.
 
-- Context sensitive navigation, like goto declarations.
-
 - Normal editing features you expect of a mature editor, like folding, indentation (see also help => keyboard shortcuts to see a list).
 
-- Running your application from within IDE and using the WebKit debugger.
+- Running your application from within IDE and using the WebKit debugger to debug.
 
 - Theming:
 
@@ -41,7 +41,9 @@ To install CATS, just follow these steps:
 
         /path_to_node_webkit/nw ./
 
-By default the "greeter" project will be loaded. In the samples directory there are several other projects you can try out. Of course when you open a new project, you can also open a directory that contains your own project.
+By default the "greeter" project will be loaded. In the samples directory there are several other projects you can try out. Of course when you open a new project, you can also open a directory that contains your own project. When you want to start CATS with a specific project, you can pass the project directory as a command line parameter:
+
+		/path_to_node_webkit/nw ./ <path_to_project>
    
 
 Configuration
