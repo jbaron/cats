@@ -1,6 +1,5 @@
 module Cats.Menu {
 
-    import gui = module('nw.gui');
     var win = gui.Window.get();
 
 
@@ -30,7 +29,7 @@ module Cats.Menu {
         session.project.iSense.perform("getInfoAtPosition", type, session.name, cursor, (err, data) => {
             $(resultElem).removeClass("busy");
             if (data) {
-                var searchResultsElem = document.getElementById("searchresults");
+                var searchResultsElem = Cats.IDE.searchResult;
                 searchResultsElem.innerHTML = "";
                 var grid = new Cats.UI.Grid();
                 grid.setColumns(["description", "script", "position"]);

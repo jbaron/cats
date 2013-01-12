@@ -1,10 +1,6 @@
-///<reference path='../cats/node.d.ts' />
-
 
 module Cats{
 
-import fs = module("fs");
-import path = module("path");
 
 
 export interface ListEntry {

@@ -4,16 +4,14 @@
 // Major difference is that this module uses real language services API and not the Shim.
 // Licensed under the Apache License, Version 2.0. 
 
-importScripts("typescript.js")
-
 
 module Cats.TSWorker {
-   
+
     export class ScriptInfo {
         public version: number;
         public editRanges: { length: number; editRange: TypeScript.ScriptEditRange; }[] = [];
 
-        constructor (public name: string, public content: string, public isResident: bool, public maxScriptVersions: number) {
+        constructor(public name: string, public content: string, public isResident: bool, public maxScriptVersions: number) {
             this.version = 1;
         }
 
@@ -32,8 +30,8 @@ module Cats.TSWorker {
             this.content = prefix + middle + suffix;
 
             // Store edit range + new length of script
-            this.editRanges.push({ 
-                length: this.content.length, 
+            this.editRanges.push({
+                length: this.content.length,
                 editRange: new TypeScript.ScriptEditRange(minChar, limChar, (limChar - minChar) + newText.length)
             });
 
@@ -69,6 +67,7 @@ module Cats.TSWorker {
 
     export class TypeScriptLS implements Services.ILanguageServiceHost {
         private ls: Services.ILanguageService = null;
+        private compilationSettings:TypeScript.CompilationSettings = null;
 
         public scripts: ScriptInfo[] = [];
         public maxScriptVersions = 100;
@@ -86,11 +85,11 @@ module Cats.TSWorker {
                     return;
                 }
             }
-            
+
             this.addScript(name, content, isResident);
         }
 
-        public editScript(name: string, minChar: number, limChar:number, newText:string) {
+        public editScript(name: string, minChar: number, limChar: number, newText: string) {
             for (var i = 0; i < this.scripts.length; i++) {
                 if (this.scripts[i].name == name) {
                     this.scripts[i].editContent(minChar, limChar, newText);
@@ -98,7 +97,7 @@ module Cats.TSWorker {
                 }
             }
 
-            throw new Error("No script with name '" + name +"'");
+            throw new Error("No script with name '" + name + "'");
         }
 
         public getScriptContent(scriptIndex: number): string {
@@ -123,8 +122,12 @@ module Cats.TSWorker {
         // ILanguageServiceHost implementation
         //
 
-        public getCompilationSettings(): TypeScript.CompilationSettings  {
-            return null; // i.e. default settings
+        public getCompilationSettings(): TypeScript.CompilationSettings {
+            return this.compilationSettings; 
+        }
+
+        public setCompilationSettings(value: TypeScript.CompilationSettings) {
+            this.compilationSettings = value;
         }
 
         public getScriptCount(): number {
@@ -151,7 +154,7 @@ module Cats.TSWorker {
             return this.scripts[scriptIndex].version;
         }
 
-        public getScriptEditRangeSinceVersion(scriptIndex: number, scriptVersion: number): TypeScript.ScriptEditRange  {
+        public getScriptEditRangeSinceVersion(scriptIndex: number, scriptVersion: number): TypeScript.ScriptEditRange {
             var range = this.scripts[scriptIndex].getEditRangeSinceVersion(scriptVersion);
             return range;
         }
@@ -171,15 +174,15 @@ module Cats.TSWorker {
         //
         public parseSourceText(fileName: string, sourceText: TypeScript.ISourceText): TypeScript.Script {
             var parser = new TypeScript.Parser();
-            parser.setErrorRecovery(null, -1, -1);
+            // parser.setErrorRecovery(null, -1, -1);
             parser.errorCallback = (a, b, c, d) => {
-                console.log("Error: %s %s %s %s",a ,b, c, d);
+                console.log("Error: %s %s %s %s", a, b, c, d);
             };
 
             var script = parser.parse(sourceText, fileName, 0);
             return script;
         }
-      
+
 
         //
         // line and column are 1-based
@@ -231,7 +234,7 @@ module Cats.TSWorker {
                 return result;
             }
 
-            var temp = mapEdits(edits).sort(function (a, b) {
+            var temp = mapEdits(edits).sort(function(a, b) {
                 var result = a.edit.minChar - b.edit.minChar;
                 if (result == 0)
                     result = a.index - b.index;

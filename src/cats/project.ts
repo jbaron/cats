@@ -2,16 +2,15 @@
 ///<reference path='isensehandler.ts'/>
 ///<reference path='configloader.ts'/>
 ///<reference path='session.ts'/>
-///<reference path='../typings/node.d.ts'/>
 ///<reference path='ui/tooltip.ts'/>
 ///<reference path='ui/filetree.ts'/>
 ///<reference path='../typings/ace.d.ts'/>
 ///<reference path='directoryreader.ts'/>
 
+
 module Cats {
 
-    import fs = module("fs");
-    import path = module("path");
+
 
     export class Project {
 
@@ -34,16 +33,16 @@ module Cats {
         }
 
 
-        getConfigFileName() {
+        getConfigFileName():string {
             return path.join(this.projectDir, ConfigLoader.NAME);
         }    
 
          private initFileTree() {
-            document.getElementById("filetree").innerHTML = "";
+            IDE.fileNavigation.innerHTML = "";
             var fileTree = new Cats.UI.TreeView();
             var dirReader = new DirectoryReader();
 
-            fileTree.setAspect("children", (parent) => {
+            fileTree.setAspect("children", (parent:ListEntry):ListEntry[] => {
                 if (parent == null) {
                     return [{
                         name:this.name, 
@@ -57,7 +56,7 @@ module Cats {
             
             });
                         
-            fileTree.appendTo(document.getElementById("filetree"));
+            fileTree.appendTo(IDE.fileNavigation);
             fileTree.refresh();
             
             fileTree.onselect = (filePath) => {
@@ -74,6 +73,7 @@ module Cats {
             this.config = new ConfigLoader(this.projectDir).load();
             
             this.iSense = new ISenseHandler();
+            this.iSense.perform("setCompilationSettings",this.config.compiler,null);
 
             if (this.config.compiler.useDefaultLib) {
                 var libdts = fs.readFileSync("typings/lib.d.ts", "utf8");
@@ -122,17 +122,17 @@ module Cats {
             return session;
         }
 
-        getStartURL() {
+        getStartURL():string {
             var url = path.join(this.projectDir, this.config.main);
             return "file://" + url;
         }
         
 
-        writeTextFile(name: string, value: string): void {
+        writeTextFile(name: string, value: string) {
             fs.writeFileSync(name, value, "utf8");
         }
 
-        writeSession(session: Session): void {
+        writeSession(session: Session) {
             if (session.name === "untitled") {
                 session.name = prompt("Please enter the file name") || "untitled";
             }

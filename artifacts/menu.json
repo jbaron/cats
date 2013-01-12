@@ -1,0 +1,55 @@
+[
+    { 
+        "label":"file",
+        "items": ["newFile","===","saveFile","saveAsFile","saveAllFile","===","closeFile","closeAllFiles","closeOtherFiles"]
+    },    
+
+    {
+        "label":"window",
+        "items": [
+            {"label":"fontSize",
+             "items":[
+                {"label":"12px","cmd":"setFontSize"},
+                {"label":"12px","cmd":"setFontSize"},
+                {"label":"12px","cmd":"setFontSize"},
+                {"label":"12px","cmd":"setFontSize"}
+            ]
+            
+            }    
+            
+            
+        ]
+        
+        
+    },
+    
+    { 
+        "label":"edit",
+        "items": [
+            {"cmd" : "undo"},
+            {"cmd" : "redo"},
+            "seperator",
+            {"cmd" : "cut"},
+            {"cmd" : "copy"},
+            {"cmd" : "paste"},
+            "seperator",
+            {"cmd" : "closeFile"},
+            {"cmd" : "closeAllFiles"},
+            {"cmd" : "closeOtherllFiles"}
+        ]                 
+    },    
+
+
+
+
+    {
+        "label" : "theme",
+        "items" : [
+            {"label": "CATS", "cmd" : "setTheme" , "param" : "CATS"}    
+        ]
+  
+        
+    }
+    
+    
+]

@@ -1,6 +1,6 @@
 // This module abstracts the native IO form the rest. Right now supports node (node-webkit).
 
-import path = module("path");
+var path = require("path");
 
 // Some commonly used filesystem functions
 export var fs = {

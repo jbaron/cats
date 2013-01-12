@@ -2,7 +2,7 @@
 
 module Cats.Commands {
 
-    var gui = require("gui");
+  
 
   function openProject() {
             var chooser: any = document.getElementById('fileDialog');

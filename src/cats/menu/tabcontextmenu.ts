@@ -1,12 +1,9 @@
 module Cats.Menu {
 
-    import gui = module('nw.gui');
     var win = gui.Window.get();
-
 
     function getTab() {
     }
-
 
     function nop() {
         alert("not yet implemented");

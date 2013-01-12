@@ -2,8 +2,7 @@
 ///<reference path='harness.ts'/>
 ///<reference path='../typings/ace.d.ts'/>
 
-
-importScripts("typescript.js")
+importScripts("../static/js/typescript.js")
 
 module Cats.TSWorker {
 
@@ -51,7 +50,7 @@ class ISense {
     }
 
 
-    createVirtualFiles(path:string,useUTF8?:bool):ITextWriter {        
+    createVirtualFiles(path:string,useUTF8?:bool) {        
         var output = "";
         var result = {
             Write: function (s) { output  += s; },
@@ -91,29 +90,51 @@ class ISense {
     }
 
 
-    structureErrors(errorStr:string) {
-      var errors = errorStr.split("\n"); 
-      var result = [];
-      errors.forEach( (error:string) => {      
-          var match = /^(.*)\(([0-9]*),([0-9]*)\):(.*)$/g;
-          var parts = match.exec(error);
-          if (! parts) {
-            console.log("Couldn't parse error:" + error);
-            return;
-           }
-           result.push({
-                descr : parts[2],
-                resource: parts[1],
-                position: parts[3],
-                type:"error"
-            });
-
-      });
-      return result;
-
+    private convertErrors(errors:TypeScript.ErrorEntry[]) {
+        errors.forEach((error) => {
+            var scriptName = this.getUnitName(error.unitIndex);
+            var r = this.getRange(scriptName,error.minChar,error.limChar);
+            error["range"] = r;
+            error["scriptName"] = scriptName;
+        });
+        return errors;
     }
 
-    compile(options){
+
+    compile(options) {
+        var scripts = this.typescriptLS.scripts;
+        var result = {}
+        scripts.forEach( (script) =>{
+                var files = this.ls.getEmitOutput(script.name);
+                files.forEach((file) => {
+                    result[file.name] = file.text;
+                });
+        })
+        
+        var errors = this.ls.getErrors(this.maxErrors)
+        
+        return {
+                source: result,
+                error: this.convertErrors(errors)
+        };        
+    }
+
+    setCompilationSettings(options) {
+        return;
+        // ToDO figure out why this doesn't work
+        var compOptions = new TypeScript.CompilationSettings();
+        
+        // Do a quick mixin
+        for (var i in options) {
+            compOptions[i] = options[i];
+        }
+        
+        this.typescriptLS.setCompilationSettings(compOptions);
+    }
+
+
+/*
+    compile_old(options){
 
         var outfile = this.createWriter();
         var outerr = this.createWriter();
@@ -163,7 +184,7 @@ class ISense {
         }     
     }
 
-
+*/
 
 
     // Get the filenames of the scripts
@@ -254,6 +275,7 @@ class ISense {
             
             errors.forEach((error:TypeScript.ErrorEntry) => {
                     var coord = TypeScript.getLineColumnFromPosition(script, error.minChar);
+
                     var resultEntry = {
                         row:coord.line-1,
                         column:coord.col-1,
@@ -394,7 +416,7 @@ class ISense {
 var tsh = new ISense();
 
 addEventListener('message', function(e) {
-  var msg = e.data;
+  var msg = e["data"];
 
   var method = msg.method;
   var id = msg.id;

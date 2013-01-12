@@ -3,9 +3,6 @@
 
 module Cats.UI {
 
-import fs = module("fs");
-import path = module("path");
-
 
 export interface ListEntry {
 	name: string;
@@ -80,7 +77,11 @@ export class TreeView  {
         
 	    this.rootElem.onclick = (ev) => {
 					ev.stopPropagation();
-					this.handleClick(<HTMLElement>ev.srcElement);
+                    var elem = <HTMLElement>ev.srcElement;
+                    if (elem.tagName.toLowerCase() === "span") {
+                        elem = <HTMLElement>elem.parentNode;
+                    }
+					this.handleClick(elem);
 		}
 	}
 
@@ -99,11 +100,11 @@ export class TreeView  {
 		var ul = document.createElement("ul");
 		list.forEach( (entry) => {
 			var li = <HTMLElement>document.createElement("li");
-			// var span = <HTMLElement>document.createElement("span");
-			// span.innerText = entry.name;
-			// li.appendChild(span);
+			var span = <HTMLElement>document.createElement("span");
+			span.innerText = this.getValue(entry,"name");
+			li.appendChild(span);
 
-			li.innerText = this.getValue(entry,"name");
+			// li.innerText = this.getValue(entry,"name");
 			li["_value"] = entry;
 
 			if (this.getValue(entry, "isFolder")) {
@@ -120,6 +121,13 @@ export class TreeView  {
         var entry = li["_value"];
         var decorator = this.getValue(entry, "decorator");
         if (decorator) li.className += " " + decorator;
+    }
+
+    static getValueFromElement(elem:HTMLElement) {
+    	if (elem.tagName.toLowerCase() === "span") {
+            elem = <HTMLElement>elem.parentNode;
+        }
+        return elem["_value"];
     }
 
 	private handleClick(li:HTMLElement) {

@@ -7,7 +7,6 @@
   background-size: 100% 100%;
 }
 
-
 /************************************************************** 
   Lets make the scrollbars look a little nicer
 ***************************************************************/
@@ -37,7 +36,7 @@
 
 .treeview ul {
   list-style: none;
-  padding-left: 1em;
+  padding-left: 0.5em;
   margin: 0px;
 }
 
@@ -47,16 +46,22 @@
     padding-left: 1.3em;
 }
 
+.treeview li span:hover{
+    font-weight: bold;
+}
+
 .treeview li.collapsed:before {
   content: "+";
   margin-left: -2em;
-  padding-right: 1.6em;
+  padding-right: 1.5em;
+  font-family: monospace;
 }
 
 .treeview li.opened:before {
   content: "-";
   margin-left: -2em;
-  padding-right: 1.6em;
+  padding-right: 1.5em;
+  font-family: monospace;  
 }
 
 
@@ -110,7 +115,7 @@ body .ui-layout-pane {
 
 
 #result thead {
-    background-color: rgba(100,100,200,0.2);
+    background-color: rgba(100,100,200,0.1);
 }
 
 #result td, #result th {
@@ -118,12 +123,12 @@ body .ui-layout-pane {
 }
 
 #result table tr:nth-child(even) {
-  background-color: rgba(100,100,100,0.2);
+  background-color: rgba(100,100,100,0.1);
 }
 
 #result table, #result td, #result th
 {
-  border:1px solid rgba(100,100,100,0.2);
+  border:1px solid rgba(100,100,100,0.1);
 }
 
 #result.busy {
@@ -320,8 +325,16 @@ Auto complete styling
   Icons
 ************************************************************************/
 
-.icon-method{
+.icon-method, .icon-function {
     background: url('../img/methpub_obj.gif') no-repeat; 
+}
+
+.icon-constructor {
+  background: url('../img/constr_ovr.gif') no-repeat;
+}
+
+.icon-module{
+    background: url('../img/package_obj.gif') no-repeat; 
 }
 
 
@@ -335,10 +348,6 @@ Auto complete styling
 
 .icon-class{
     background: url('../img/class_obj.gif') no-repeat; 
-}
-
-.icon-module{
-    background: url('../img/package_obj.png') no-repeat; 
 }
 
 .icon-variable {

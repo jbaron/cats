@@ -1,21 +1,20 @@
+///<reference path='bootstrap.ts'/>
+///<reference path='ide.ts'/>
 ///<reference path='menu/menubar.ts'/>
 ///<reference path='menu/filecontextmenu.ts'/>
-
 ///<reference path='project.ts'/>
 ///<reference path='ui/tabbar.ts'/>
+///<reference path='ui/elemtabadapter.ts'/>
 ///<reference path='editor.ts'/>
 ///<reference path='../typings/node-webkit.d.ts'/>
 ///<reference path='ui/grid.ts'/>
-///<reference path='project.ts'/>
 ///<reference path='../typings/typescript.d.ts'/>
 
 module Cats {
-
+    
     export var mainEditor: Editor;
     export var project: Project;
-    import fs = module("fs");
-    import path = module("path");
-
+   
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regexS = "[\\?&]" + name + "=([^&#]*)";
@@ -28,17 +27,17 @@ module Cats {
     }
 
     
-    import gui = module('nw.gui');
-    var args = gui.App.argv;
-    if (args && (args.length > 0)) {
-        console.log(args);
-        console.log("Going to load provided project: " + args);
-        project = new Project(args[0]);
-    } else {
-        var defaultProject = path.join(process.cwd(), "samples","greeter");
-        project = new Project(getParameterByName("project") || defaultProject);
-    }
-    mainEditor = new Editor(document.getElementById("editor"));
+    var projectName = getParameterByName("project");
+    if (! projectName) {
+        var args = gui.App.argv;
+        if (args && (args.length > 0)) 
+            projectName = args[0];
+        else
+            projectName = path.join(process.cwd(), "samples","greeter");            
+    } 
+    
+    project = new Project(projectName);
+    mainEditor = new Editor(IDE.editor);
 
     export var tabbar;
     function initTabBar() {
@@ -51,25 +50,33 @@ module Cats {
         tabbar.setAspect("changed", (session: Session) => { return session.changed });
         tabbar.onselect = (session) => Cats.project.editFile(session.name); //TODO Fix to use real session
 
-        tabbar.appendTo(document.getElementById("sessionbar"));
+        tabbar.appendTo(IDE.sessionBar);
     }
 
     function initNavBar() {
         var navbar = new UI.Tabbar();
+        
+        var t = new UI.ElemTabAdapter(navbar,[IDE.fileNavigation,IDE.outlineNavigation], IDE.fileNavigation);
+        t.setAspect(IDE.fileNavigation,"decorator","icon-files");
+        t.setAspect(IDE.outlineNavigation,"decorator","icon-outline");
+        navbar.appendTo(IDE.navigationBar);
+        return;
+ 
+        // new UI.ElemTabAdapter(navbar,[IDE.fileNavigation,IDE.])
         navbar.setOptions([
             { name: "Files", 
                 selected: true, 
                 decorator: "icon-files", 
-                elem:document.getElementById("filetree")
+                elem: IDE.fileNavigation
             },
         { 
             name: "Outline", 
             selected: false, 
             decorator: "icon-outline", 
-            elem: document.getElementById("outlinenav")
+            elem: IDE.outlineNavigation
         }
         ]);
-        navbar.appendTo(document.getElementById("navigationbar"));
+        navbar.appendTo(IDE.navigationBar);
         navbar.onselect= (item) => {
             document.getElementById("filetree").style.display = "none";
             document.getElementById("outlinenav").style.display = "none"; 
@@ -82,11 +89,18 @@ module Cats {
         infobar.setOptions([
             { name: "Task List", selected: true, decorator: "icon-tasks" }
         ]);
-        infobar.appendTo(document.getElementById("infobar"));
+        infobar.appendTo(IDE.taskBar);
     }
+
 
     function initResultBar() {
         var resultbar = new UI.Tabbar();
+        var t = new UI.ElemTabAdapter(resultbar,[IDE.compilationResult,IDE.searchResult],IDE.compilationResult);
+        t.setAspect(IDE.compilationResult,"decorator","icon-errors");
+        t.setAspect(IDE.searchResult,"decorator","icon-search");
+        resultbar.appendTo(IDE.resultBar);
+        return;
+        
         var resultbaroptions = [{
             name: "Errors",
             selected: true,
@@ -114,7 +128,7 @@ module Cats {
             option.selected = true;
             resultbar.refresh();
         };
-        resultbar.appendTo(document.getElementById("resultbar"));
+        resultbar.appendTo(IDE.resultBar);
     }
 
 

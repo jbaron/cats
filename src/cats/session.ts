@@ -3,7 +3,7 @@
 
 module Cats {
 
-    import path = module("path");
+    
 
     var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
     var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;

@@ -61,6 +61,7 @@ var formatting_options = {
 }
 */
 
+
 function errorHandler(err,data) {
 	if (err) {
 		console.log(err);
@@ -69,19 +70,40 @@ function errorHandler(err,data) {
 }
 
 module Cats {
-	
-	import fs = module("fs");
-	import path = module("path");
+    
+    /*
+    interface Config {
+        
+				main: string;
+				sourcePath : string;
+				outputPath: string;
 
+				compiler : {
+					useDefaultLib: bool;
+					outputMany: bool;
+					outputFileName: string;
+					emitComments: bool;
+					generateDeclarationFiles: bool;
+					mapSourceFiles: bool;
+        			codeGenTarget: number;
+        			moduleGenTarget: number;
+				};
+				minify: bool;
+			};
+    }
+
+	*/
+    
     /**
      *  Loads the configuration for a project. If not found it  
      *  returns a number of sensible defaults.
      */
 	export class ConfigLoader {
 
-		static NAME = ".settings" + path.sep + "config.json";
+		static NAME = ".settings" + path.sep + "config.json"; 
+		// static NAME = ".settings" + "/" + "config.json"; // work around
 		private _config;
-        private fileName;
+        private fileName:string;
 
 		constructor(projectRoot:string) {
 			this.fileName = path.join(projectRoot,ConfigLoader.NAME);
@@ -113,13 +135,12 @@ module Cats {
 		loadDefault() {
 			this._config = {	
 				main: "index.html",
-				sourcePath : null, //If not set, the whole project directory is the source directory
+				sourcePath : null, //If not set, the whole project directory is searched for source files
 				outputPath: null,
 
 				compiler : {
 					useDefaultLib: true,
-					outputMany: true,
-					outputFileName: "main.js",
+					outputOption: null,
 					emitComments: false,
 					generateDeclarationFiles: false,
 					mapSourceFiles: false,
@@ -132,5 +153,5 @@ module Cats {
 		}
 
 	}
-
-}
+    
+ }

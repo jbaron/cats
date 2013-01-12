@@ -1,8 +1,6 @@
 // This module contains all the global commands pertaining to the help functionality
 module Cats.Commands {
 
-    import gui = module('nw.gui');
-
     function showShortcuts() {
         window.open('static/html/keyboard_shortcuts.html', '_blank');
     }

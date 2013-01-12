@@ -1,9 +1,6 @@
 
 module Cats.Menu {
 
-    import fs = module("fs");
-    import path = module("path");
-    import gui = module('nw.gui');
 
     function nop() {
         alert("Not yet implemented");
@@ -65,9 +62,10 @@ module Cats.Menu {
 
     var fileContextMenu = createFileContextMenu();
 
-    document.getElementById("filetree").addEventListener('contextmenu', function(ev: any) {
-        data.key = ev.srcElement["_value"].path;
-        data.isFolder = ev.srcElement["_value"].isFolder;
+    IDE.fileNavigation.addEventListener('contextmenu', function(ev: any) {
+        var d = UI.TreeView.getValueFromElement(ev.srcElement);
+        data.key = d.path;
+        data.isFolder = d.isFolder;
         // console.log(data.key);
         ev.preventDefault();
         fileContextMenu.popup(ev.x, ev.y);

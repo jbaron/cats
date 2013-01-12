@@ -1,7 +1,8 @@
 
 module Cats.Menu {
 
-    import gui = module('nw.gui');
+    export var IDE = Cats.IDE;
+
     var Range: Ace.Range = ace.require("ace/range").Range;
 
     var win = gui.Window.get();
@@ -66,6 +67,26 @@ module Cats.Menu {
 
 
   
+  
+    function showErrors2(errors:any[]) {
+        
+
+        var grid = new Cats.UI.Grid();
+        grid.setColumns(["message", "scriptName", "position"]);
+        grid.setAspect("position", (data) => { return (data.range.startRow + 1) + ":" + (data.range.startColumn + 1) });
+
+        grid.setRows(errors);
+        grid.onselect = function(data) {
+            Cats.project.editFile(data.scriptName, null, { row: data.range.startRow, column: data.range.startColumn });
+        };
+
+        grid.render();
+
+        var result = IDE.compilationResult;
+        result.innerHTML = "";
+        grid.appendTo(result);
+    }
+  
 
     function showErrors(errStr) {
 
@@ -82,7 +103,7 @@ module Cats.Menu {
 
         grid.render();
 
-        var result = document.getElementById("errorresults");
+        var result = Cats.IDE.compilationResult;
         result.innerHTML = "";
         grid.appendTo(result);
     }
@@ -322,12 +343,13 @@ module Cats.Menu {
             $("#result").addClass("busy");
             Cats.project.iSense.perform("compile", options, (err, data) => {
                 $("#result").removeClass("busy");
-                if (data.error) {
-                    showErrors(data.error);
+                if (data.error && (data.error.length > 0)) {
+                    console.log(data.error);
+                    showErrors2(data.error);
                     return;
                 }
 
-                document.getElementById("errorresults").innerText = "Successfully generated " + Object.keys(data.source).length + " file(s).";
+                Cats.IDE.compilationResult.innerText = "Successfully generated " + Object.keys(data.source).length + " file(s).";
                 var sources = data.source
                 for (var name in sources) {
                     Cats.project.writeTextFile(name, sources[name]);
@@ -340,7 +362,6 @@ module Cats.Menu {
             Cats.project.editFile(Cats.project.getConfigFileName(), content);
         }
 
-
         refreshProject() {
             project.refresh();
         }
@@ -350,6 +371,7 @@ module Cats.Menu {
             chooser.onchange = function(evt) {
                 console.log(this.value);
                 var param = encodeURIComponent(this.value)
+                this.value = ""; // Make sure the change event goes off next tome
                 window.open('index.html?project=' + param, '_blank');
             };
             chooser.click();

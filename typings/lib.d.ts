@@ -6252,7 +6252,7 @@ interface IDBObjectStore {
     deleteIndex(indexName: string): void;
     index(name: string): IDBIndex;
     get(key: any): IDBRequest;
-    delet(key: any): IDBRequest;
+    delete(key: any): IDBRequest;
 }
 declare var IDBObjectStore: {
     prototype: IDBObjectStore;

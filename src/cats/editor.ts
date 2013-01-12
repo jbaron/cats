@@ -1,14 +1,23 @@
 ///<reference path='session.ts'/>
 ///<reference path='menu/editorcontextmenu.ts'/>
 ///<reference path='ui/autocompleteview.ts'/>
+///<reference path='session.ts'/>
 
 declare var $;
 
 module Cats {
 
+    interface OutlineTreeElement {
+        name:string;
+        decorator: string;
+        qualifyer : string;
+        kind: string;
+        isFolder:bool;
+    }
+
     export class Editor {
         public aceEditor: Ace.Editor;
-        private toolTip: UI.ToolTip;
+        public toolTip: UI.ToolTip;
         private autoCompleteView: UI.AutoCompleteView;
         public onAutoComplete: Function;
         private mouseMoveTimer: number;
@@ -27,7 +36,7 @@ module Cats {
             this.aceEditor = this.createEditor();
             this.aceEditor.setFontSize("16px");
             this.setTheme("cats");
-            this.hide();
+            this.hide();        
 
             this.toolTip = new UI.ToolTip();
             this.autoCompleteView = new UI.AutoCompleteView(this.aceEditor);
@@ -56,12 +65,12 @@ module Cats {
             if (session.typeScriptMode) {
                 session.project.iSense.perform("getOutliningRegions",session.name,(err,data) => {
                     console.log(data);
-                    document.getElementById("outlinenav").innerHTML="";
+                    Cats.IDE.outlineNavigation.innerHTML="";
                     var outliner = new Cats.UI.TreeView();
-                    outliner.setAspect("children", (parent) => {
+                    outliner.setAspect("children", (parent:OutlineTreeElement):OutlineTreeElement[] => {
                         var name = parent ? parent.qualifyer : "";
                         var kind = parent ? parent.kind : "";
-                        var result = [];
+                        var result:OutlineTreeElement[] = [];
                         for (var i=0;i<data.length;i++) {
                             var o = data[i];
                             if ((o.containerKind === kind) && (o.containerName===name)) {
@@ -72,13 +81,13 @@ module Cats {
                                     decorator: "icon-" + o.kind,
                                     qualifyer : fullName,
                                     kind: o.kind,
-                                    isFolder: true
+                                    isFolder: ! (o.kind === "method" || o.kind === "constructor" || o.kind === "function")
                                 })
                             }
                         }
                         return result;
                     });
-                    outliner.appendTo(document.getElementById("outlinenav"));
+                    outliner.appendTo(Cats.IDE.outlineNavigation);
                     outliner.refresh();
                 });
             }
@@ -121,7 +130,7 @@ module Cats {
         }
 
         // Close a single session
-        closeSession(session) {
+        closeSession(session:Session) {
             if (session.changed) {
                 var c = confirm("Save " + session.name + " before closing ?");
                 if (c) session.persist();
@@ -169,7 +178,6 @@ module Cats {
                 this.activeSession.autoComplete(cursor, this.autoCompleteView);
             }
         }
-
 
         private onMouseMove(ev: MouseEvent) {
             this.toolTip.hide();
