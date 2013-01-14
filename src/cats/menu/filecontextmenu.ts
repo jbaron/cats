@@ -2,10 +2,6 @@
 module Cats.Menu {
 
 
-    function nop() {
-        alert("Not yet implemented");
-    };
-
     function createFileContextMenu() {
         // Create an empty menu
         var ctxmenu = new gui.Menu();
@@ -19,7 +15,8 @@ module Cats.Menu {
 
 
     function deleteFile() {
-        var sure = confirm("Delete " + data.key);
+        var basename = path.basename(data.key);
+        var sure = confirm("Delete " + basename);
         if (sure) {            
             fs.unlinkSync(data.key);
         }
@@ -42,13 +39,14 @@ module Cats.Menu {
 
 
     function rename() {
-        var name = prompt("Enter new name", data.key);
+        var dirname = path.dirname(data.key);
+        var basename = path.basename(data.key);
+        var name = prompt("Enter new name", basename);
         if (name == null) return;
-        var c = confirm("Going to rename " + data.key + " into " + name);
-        if (c) {
-            var root = Cats.project.projectDir;
+        var c = confirm("Going to rename " + basename + " into " + name);
+        if (c) {        
             try {
-                fs.renameSync(path.join(root, data.key), path.join(root, name));
+                fs.renameSync(data.key, path.join(dirname, name));
             } catch (err) {
                 alert(err);
             }

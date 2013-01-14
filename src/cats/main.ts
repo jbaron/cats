@@ -1,4 +1,5 @@
 ///<reference path='bootstrap.ts'/>
+///<reference path='commands/commander.ts'/>
 ///<reference path='ide.ts'/>
 ///<reference path='menu/menubar.ts'/>
 ///<reference path='menu/filecontextmenu.ts'/>
@@ -60,28 +61,6 @@ module Cats {
         t.setAspect(IDE.fileNavigation,"decorator","icon-files");
         t.setAspect(IDE.outlineNavigation,"decorator","icon-outline");
         navbar.appendTo(IDE.navigationBar);
-        return;
- 
-        // new UI.ElemTabAdapter(navbar,[IDE.fileNavigation,IDE.])
-        navbar.setOptions([
-            { name: "Files", 
-                selected: true, 
-                decorator: "icon-files", 
-                elem: IDE.fileNavigation
-            },
-        { 
-            name: "Outline", 
-            selected: false, 
-            decorator: "icon-outline", 
-            elem: IDE.outlineNavigation
-        }
-        ]);
-        navbar.appendTo(IDE.navigationBar);
-        navbar.onselect= (item) => {
-            document.getElementById("filetree").style.display = "none";
-            document.getElementById("outlinenav").style.display = "none"; 
-            item.elem.style.display = "block";
-        };
     }
 
     function initInfoBar() {
@@ -99,45 +78,15 @@ module Cats {
         t.setAspect(IDE.compilationResult,"decorator","icon-errors");
         t.setAspect(IDE.searchResult,"decorator","icon-search");
         resultbar.appendTo(IDE.resultBar);
-        return;
-        
-        var resultbaroptions = [{
-            name: "Errors",
-            selected: true,
-            decorator: "icon-errors",
-            element: document.getElementById("errorresults")
-        }, {
-            name: "Search",
-            selected: false,
-            decorator: "icon-search",
-            element: document.getElementById("searchresults")
-        }
-        ];
-        resultbar.setOptions(resultbaroptions);
-        resultbar.setAspect("selected", function(data, name) {
-            if (data.selected) {
-                data.element.style.display = "block";
-                return true;
-            } else {
-                data.element.style.display = "none";
-                return false;
-            }
-        });
-        resultbar.onselect = (option) => {
-            resultbaroptions.forEach((o) => o.selected = false);
-            option.selected = true;
-            resultbar.refresh();
-        };
-        resultbar.appendTo(IDE.resultBar);
     }
 
-
+    Cats.Commands.init();
     Cats.Menu.createMenuBar();
     initTabBar();
     initNavBar();
     initInfoBar();    
     initResultBar();
-
+    mainEditor.init();
    
      
         var win = gui.Window.get();

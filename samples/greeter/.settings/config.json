@@ -4,11 +4,10 @@
     "outputPath": null,
     "compiler": {
         "useDefaultLib": true,
-        "outputMany": true,
-        "outputFileName": "greeter.js",
         "emitComments": false,
         "generateDeclarationFiles": false,
         "mapSourceFiles": false,
+        "outputOption" : "",
         "codeGenTarget": 1,
         "moduleGenTarget": 0
     },

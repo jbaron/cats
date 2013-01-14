@@ -1,5 +1,5 @@
 {
-    "main": "index.html",
+    "main": "static/index.html",
     "sourcePath": "src",
     "outputPath": null,
     "compiler": {

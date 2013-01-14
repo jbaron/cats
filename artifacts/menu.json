@@ -1,7 +1,10 @@
 [
     { 
-        "label":"file",
-        "items": ["newFile","===","saveFile","saveAsFile","saveAllFile","===","closeFile","closeAllFiles","closeOtherFiles"]
+        "label":"menu.file",
+        "items": ["cmd.file.new","===",
+                  "cmd.file.save","cmd.file.saveAs","cmd.file.saveAll","===",
+                  "cmd.file.close","cmd.file.closeAll","cmd.file.closeOther"
+                 ]
     },    
 
     {

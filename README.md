@@ -6,9 +6,9 @@ Although not yet feature complete, it is getting there. Right now CATS already h
 
 - Intelligent code editor with support for syntax highlighting and code completion.
 
-- Fast and lightweight, so ti even runs fine on older hardware. 
+- Fast and lightweight, so it runs fine on older hardware. 
 
-- Support for refactoring and smart navigation support. 
+- Support for refactoring and smart navigation. 
 
 - TypeScript compilation to JavaScript.
 
@@ -16,7 +16,7 @@ Although not yet feature complete, it is getting there. Right now CATS already h
 
 - JavaScript JSHint support.
 
-- Normal editing features you expect of a mature editor, like folding, indentation (see also help => keyboard shortcuts to see a list).
+- Normal editing features you expect of an editor, like folding, indentation (see also help => keyboard shortcuts to see a list).
 
 - Running your application from within IDE and using the WebKit debugger to debug.
 
@@ -95,7 +95,7 @@ Some of the main 3rd party components that we have used within CATS and couldn't
 
 Todo
 ====
-The todo list items are tracked as enhancement request on GitHub. You can check them out at:
+The todo list items are tracked as enhancement requests on GitHub. You can check them out at:
 
 [ToDo List](https://github.com/jbaron/cats/issues?labels=enhancement&page=1&state=open)
 

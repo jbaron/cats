@@ -120,7 +120,7 @@ class ISense {
     }
 
     setCompilationSettings(options) {
-        return;
+        // return;
         // ToDO figure out why this doesn't work
         var compOptions = new TypeScript.CompilationSettings();
         

@@ -8,11 +8,11 @@ declare var $;
 module Cats {
 
     interface OutlineTreeElement {
-        name:string;
+        name: string;
         decorator: string;
-        qualifyer : string;
+        qualifyer: string;
         kind: string;
-        isFolder:bool;
+        isFolder: bool;
     }
 
     export class Editor {
@@ -36,15 +36,19 @@ module Cats {
             this.aceEditor = this.createEditor();
             this.aceEditor.setFontSize("16px");
             this.setTheme("cats");
-            this.hide();        
+            this.hide();
 
+            
+        }
+
+        init() {
             this.toolTip = new UI.ToolTip();
             this.autoCompleteView = new UI.AutoCompleteView(this.aceEditor);
 
             this.editorContextMenu = new Cats.Menu.EditorContextMenu(this);
-            this.editorContextMenu.bindTo(rootElement);
+            this.editorContextMenu.bindTo(this.rootElement);
+            
         }
-
 
         getSession(name: string, project: Project): Session {
             for (var i = 0; i < this.sessions.length; i++) {
@@ -53,7 +57,20 @@ module Cats {
             }
         }
 
+
+        
+
         setSession(session: Session, pos?: Ace.Position) {
+            // Optimize if we don't really load a new session
+            if (this.activeSession === session) {
+                if (pos) {
+                    this.moveCursorTo(pos);
+                    this.aceEditor.clearSelection();
+                }
+                return;
+            }
+            
+            
             this.activeSession = session;
             this.aceEditor.setSession(session.editSession);
             if (pos) {
@@ -61,37 +78,43 @@ module Cats {
                 this.aceEditor.clearSelection();
             }
             this.aceEditor.focus();
-            
+
             if (session.typeScriptMode) {
-                session.project.iSense.perform("getOutliningRegions",session.name,(err,data) => {
+                session.project.iSense.perform("getOutliningRegions", session.name, (err, data) => {
                     console.log(data);
-                    Cats.IDE.outlineNavigation.innerHTML="";
+                    Cats.IDE.outlineNavigation.innerHTML = "";
                     var outliner = new Cats.UI.TreeView();
-                    outliner.setAspect("children", (parent:OutlineTreeElement):OutlineTreeElement[] => {
+                    outliner.setAspect("children", (parent: OutlineTreeElement): OutlineTreeElement[] => {
                         var name = parent ? parent.qualifyer : "";
                         var kind = parent ? parent.kind : "";
-                        var result:OutlineTreeElement[] = [];
-                        for (var i=0;i<data.length;i++) {
+                        var result: OutlineTreeElement[] = [];
+                        for (var i = 0; i < data.length; i++) {
                             var o = data[i];
-                            if ((o.containerKind === kind) && (o.containerName===name)) {
+                            if ((o.containerKind === kind) && (o.containerName === name)) {
                                 var fullName = o.name;
                                 if (name) fullName = name + "." + fullName;
                                 result.push({
                                     name: o.name,
                                     decorator: "icon-" + o.kind,
-                                    qualifyer : fullName,
+                                    qualifyer: fullName,
                                     kind: o.kind,
-                                    isFolder: ! (o.kind === "method" || o.kind === "constructor" || o.kind === "function")
+                                    outline:o,
+                                    isFolder: !(o.kind === "method" || o.kind === "constructor" || o.kind === "function")
                                 })
                             }
                         }
                         return result;
                     });
                     outliner.appendTo(Cats.IDE.outlineNavigation);
+                    outliner.onselect = (value) => {
+                        var data = value.outline;
+                        Cats.project.editFile(data.unitName, null, { row: data.range.startRow, column: data.range.startColumn });
+                    };
+
                     outliner.refresh();
                 });
             }
-            
+
         }
 
         moveCursorTo(pos: Ace.Position = { column: 0, row: 0 }) {
@@ -130,7 +153,7 @@ module Cats {
         }
 
         // Close a single session
-        closeSession(session:Session) {
+        closeSession(session: Session) {
             if (session.changed) {
                 var c = confirm("Save " + session.name + " before closing ?");
                 if (c) session.persist();

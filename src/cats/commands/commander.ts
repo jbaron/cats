@@ -1,43 +1,129 @@
+
+///<reference path='helpcommands.ts'/>
+///<reference path='filecommands.ts'/>
+///<reference path='projectcommands.ts'/>
+///<reference path='idecommands.ts'/>
+///<reference path='refactorcommands.ts'/>
+///<reference path='navigatecommands.ts'/>
+
 module Cats.Commands {
+
+    export enum CMDS {
+        help_devTools,
+        help_shortcuts,
+        help_processInfo,
+        help_about,
+        
+        file_new,
+        file_open,
+        file_close,
+        file_closeOther,
+        file_closeAll,
+        file_save,
+        file_saveAs,
+        file_saveAll,
+        
+        edit_undo,
+        edit_redo,
+        edit_cut,
+        edit_copy,
+        edit_paste,
+        edit_find,
+        edit_findNext,
+        edit_findPrev,
+        edit_replace,
+        edit_replaceAll,
+        edit_toggleMacroRecording,
+        edit_playMacro,
+        
+        edit_toggleComments,
+        edit_indent,
+        edit_outdent,
+        
+        source_format,
+        source_openDeclaration,
+        source_findRef,
+        source_findDecl,
+        
+        project_open,
+        project_close,
+        project_build,
+        project_run,
+        project_debug,
+        project_refresh,
+        project_properties,
+        
+        navigate_references,
+        navigate_occurences,
+        navigate_implementors,
+        navigate_declaration,
+        
+        refactor_rename,
+        
+        ide_quit,
+        ide_theme,
+        ide_fontSize,
+        
+        
+    }
 
 
 	export interface Command {
-		name:string;
-		label: string;
-		command: ()=>void;
-		icon: string;
-		shortcuts: string;
+		name:CMDS;
+		label?: string;
+		command: Function;
+		icon?: string;
+		shortcut?: string;
 	};
 
-    function getLabel(name:string):string { return ""}
-    function getIcon(name:string) :string{return ""}
-    function getShortcuts(name:string) :string{return ""}
-
-	private commands = {};
+ 
+	private commands:Command[] = [];
     private commandList:Command[] =[];
 
-	export function register(name:string, command:()=>void)  {
-		var cmd = {
-			name:name,
-			command:command,
-			icon:getIcon(name),
-			label:getLabel(name),
-			shortcuts:getShortcuts(name)
-		}
 
-		commands[name] = cmd;
-        commandList.push(cmd);
+    function nop() {
+        alert("Not yet implemented");
+    }
+
+	export function register(command:Command)  {       
+        if (! command.command) command.command = nop;
+		commands[command.name] = command;
+        commandList.push(command);
 	}
+
+    export function getMenuCommand(name,label?, ...params:any[]) {
+        var cmd = commands[name];
+        if (! cmd) {
+            console.error("No implementation available for command " + name);
+            return new gui.MenuItem({label:"Unknow command"});
+        }
+        var click = cmd.command;
+        if (params.length > 0) {
+            // lets generate a closure
+            click = function() { cmd.command.apply(this,params); }
+        }
+        var item:any = {
+            label: label || cmd.label,
+            click: click
+        };
+        if (cmd.shortcut) item.label += " [" + cmd.shortcut + "]";
+        if (cmd.icon) item.icon = cmd.icon;
+                
+        return new gui.MenuItem(item);
+    }
 
 	export function get(name:string) :Command {
 		return commands[name];
 	}
 
 	export function init() {
-		EditorCommands.init(register);
-		FileCommands.init(register);
+	//	EditorCommands.init(register);
+	    FileCommands.init(register);
 		HelpCommands.init(register);
-		ProjectCommands.init(register);
+	    ProjectCommands.init(register);
+        IdeCommands.init(register);
+        RefactorCommands.init(register);
+        NavigateCommands.init(register);
 	}
 
 

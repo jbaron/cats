@@ -2,7 +2,7 @@
 module Cats.Commands {
 
     function showShortcuts() {
-        window.open('static/html/keyboard_shortcuts.html', '_blank');
+        window.open('keyboard_shortcuts.html', '_blank');
     }
 
     function showAbout() {
@@ -13,10 +13,21 @@ module Cats.Commands {
         gui.Window.get().showDevTools();
     }
 
+    function showProcess() {
+            var mem = process.memoryUsage();
+            var display = "memory used: " + mem.heapUsed;
+            display += "\nmemory total: " + mem.heapTotal;
+            display += "\nplatform: " + process.platform;
+            display += "\nworking directory: " + process.cwd();
+            alert(display);
+    }
 
     export class HelpCommands {
         static init(registry) {
-            registry("help.about", showAbout);
+            registry({name:CMDS.help_about, label:"About", command:showAbout});
+            registry({name:CMDS.help_devTools, label:"Developer Tools", command:showDevTools});
+            registry({name:CMDS.help_shortcuts, label:"Shortcuts", command:showShortcuts});
+            registry({name:CMDS.help_processInfo, label:"Process Info", command: showProcess});
         }
 
     }

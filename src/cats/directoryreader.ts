@@ -18,11 +18,13 @@ function sort(a:ListEntry,b:ListEntry) {
     return 0;
 }
 
-// Created a file tree view based on a directory.
-// Very simple and fast implementation that refreshes a directory
-// every time you open it.
+/**
+ * Reads a directory and returns an array
+ * of files and direct sub directories. 
+ */ 
 export class DirectoryReader {
 
+    ignore:string[]=["^\."];
 
 	constructor() {
 		

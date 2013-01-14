@@ -10,8 +10,6 @@
 
 module Cats {
 
-
-
     export class Project {
 
         // The home directory of the project
@@ -21,7 +19,7 @@ module Cats {
         // The singleton TSWorker handler instance
         iSense: ISenseHandler;
         config:any;
-        private loadDefaultLib = true;
+
 
         // Set the project to a new directory and make sure 
         // we remove old artifacts.
@@ -59,8 +57,8 @@ module Cats {
             fileTree.appendTo(IDE.fileNavigation);
             fileTree.refresh();
             
-            fileTree.onselect = (filePath) => {
-                this.editFile(filePath);
+            fileTree.onselect = (entry) => {
+                if (! entry.isFolder) this.editFile(entry.path);
             };
         }
 
@@ -129,6 +127,9 @@ module Cats {
         
 
         writeTextFile(name: string, value: string) {
+            if (name.charAt(0) !== path.sep) {
+                name = path.join(this.projectDir,name);
+            }
             fs.writeFileSync(name, value, "utf8");
         }
 
