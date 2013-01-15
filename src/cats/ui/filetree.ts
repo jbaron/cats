@@ -120,21 +120,22 @@ module Cats.UI {
         }
 
         private handleClick(li: HTMLElement) {
-            var entry = li["_value"];
- 
+
             if ($(li).hasClass(TreeView.OPENED)) {
                 li.className = TreeView.COLLAPSED;
                 this.decorate(li);
                 li.removeChild(li.childNodes[1]);
                 return;
             }
-            li.className = TreeView.OPENED;
-            this.decorate(li);
-            var entries = this.getValue(entry, "children");
-
-
-            var ul = this.render(entries);
-            li.appendChild(ul);
+            
+            if ($(li).hasClass(TreeView.COLLAPSED)) {
+                li.className = TreeView.OPENED;
+                this.decorate(li);
+                var entry = li["_value"];
+                var entries = this.getValue(entry, "children");
+                var ul = this.render(entries);
+                li.appendChild(ul);
+            }
         }
 
 

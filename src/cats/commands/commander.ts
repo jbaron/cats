@@ -81,6 +81,10 @@ module Cats.Commands {
     private commandList:Command[] =[];
 
 
+    export function getAllCommands() {
+        return commands;
+    }
+
     function nop() {
         alert("Not yet implemented");
     }

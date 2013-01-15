@@ -71,6 +71,20 @@ module Cats {
         infobar.appendTo(IDE.taskBar);
     }
 
+    function initToolBar() {
+        var t = IDE.toolBar;
+        var cmd = Cats.Commands.getAllCommands();
+        cmd.forEach((cmd) => {
+            if (cmd.icon) {
+                var button = <HTMLElement>document.createElement("button");
+                button.style.backgroundImage = "url(../" + cmd.icon + ")";
+                button.title = cmd.label;
+                button.onclick = <any>cmd.command;
+                t.appendChild(button);
+            }
+        });
+    }
+
 
     function initResultBar() {
         var resultbar = new UI.Tabbar();
@@ -86,6 +100,7 @@ module Cats {
     initNavBar();
     initInfoBar();    
     initResultBar();
+    initToolBar();
     mainEditor.init();
    
      

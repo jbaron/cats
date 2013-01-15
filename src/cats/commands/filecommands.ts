@@ -42,8 +42,8 @@ module Cats.Commands {
         static init(registry: (cmd: Command) => void ) {
             registry({ name: CMDS.file_new, label: "New File", command: newFile });
             registry({ name: CMDS.file_close, label: "Close File", command: closeFile });
-            registry({ name: CMDS.file_closeOther, label: "Close Other File", command: closeOtherFiles });
-            registry({ name: CMDS.file_closeAll, label: "Close All File", command: closeAllFiles });
+            registry({ name: CMDS.file_closeOther, label: "Close Other Files", command: closeOtherFiles });
+            registry({ name: CMDS.file_closeAll, label: "Close All Files", command: closeAllFiles });
             registry({ name: CMDS.file_save, label: "Save File", icon:"static/img/save_edit.gif", command: saveFile });
             registry({ name: CMDS.file_saveAll, label: "Save All", icon:"static/img/saveall_edit.gif",command: saveAll });
             registry({ name: CMDS.file_saveAs, label: "Save As...", icon:"static/img/saveas_edit.gif", command: null });

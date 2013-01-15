@@ -78,6 +78,8 @@ module Cats {
                 this.aceEditor.clearSelection();
             }
             this.aceEditor.focus();
+            
+            document.getElementById("sessionmode").innerText = path.basename(session.mode);
 
             if (session.typeScriptMode) {
                 session.project.iSense.perform("getOutliningRegions", session.name, (err, data) => {

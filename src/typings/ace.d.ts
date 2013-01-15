@@ -56,6 +56,7 @@ module Ace {
         setValue(value:string);
 		getDocument():Document;
 		setMode(mode:string);
+        getMode():any;
 		setUndoManager(manager:UndoManager);
 		on: (event:string, handler:Function) => void;
 		screenToDocumentPosition(x:number,y:number);

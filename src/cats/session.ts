@@ -37,6 +37,7 @@ module Cats {
 
         // Is the worker out of sync with the source code
         private pendingWorkerUpdate = false;
+        public mode: string;
 
         // Has the code been changed without saving yet
         private _changed = false;
@@ -52,7 +53,8 @@ module Cats {
             console.log("Creating new session for file " + name + " with content length " + content.length);
             var ext = path.extname(name);
 
-            this.editSession = new EditSession(content, this.getMode(ext));
+            this.mode = this.determineMode(ext);
+            this.editSession = new EditSession(content, this.mode);
 
             if (ext === ".ts") {
                 this.typeScriptMode = true;
@@ -123,7 +125,7 @@ module Cats {
         }
 
         // Determine the edit mode based on the file extension
-        private getMode(ext: string): string {
+        private determineMode(ext: string): string {
             var result = Session.MODES[ext] || Session.DEFAULT_MODE;
             return result;
         }
