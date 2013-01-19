@@ -7,13 +7,6 @@ declare var $;
 
 module Cats {
 
-    interface OutlineTreeElement {
-        name: string;
-        decorator: string;
-        qualifyer: string;
-        kind: string;
-        isFolder: bool;
-    }
 
     export class Editor {
         public aceEditor: Ace.Editor;
@@ -36,9 +29,7 @@ module Cats {
             this.aceEditor = this.createEditor();
             this.aceEditor.setFontSize("16px");
             this.setTheme("cats");
-            this.hide();
-
-            
+            this.hide();            
         }
 
         init() {
@@ -56,12 +47,14 @@ module Cats {
                 if ((session.name === name) && (project === session.project)) return session;
             }
         }
-
-
-        
-
+    
+        addSession(session:Session) {
+            this.sessions.push(session);
+            session.update();
+        }
+    
         setSession(session: Session, pos?: Ace.Position) {
-            // Optimize if we don't really load a new session
+            
             if (this.activeSession === session) {
                 if (pos) {
                     this.moveCursorTo(pos);
@@ -78,45 +71,11 @@ module Cats {
                 this.aceEditor.clearSelection();
             }
             this.aceEditor.focus();
-            
-            document.getElementById("sessionmode").innerText = path.basename(session.mode);
-
-            if (session.typeScriptMode) {
-                session.project.iSense.perform("getOutliningRegions", session.name, (err, data) => {
-                    console.log(data);
-                    Cats.IDE.outlineNavigation.innerHTML = "";
-                    var outliner = new Cats.UI.TreeView();
-                    outliner.setAspect("children", (parent: OutlineTreeElement): OutlineTreeElement[] => {
-                        var name = parent ? parent.qualifyer : "";
-                        var kind = parent ? parent.kind : "";
-                        var result: OutlineTreeElement[] = [];
-                        for (var i = 0; i < data.length; i++) {
-                            var o = data[i];
-                            if ((o.containerKind === kind) && (o.containerName === name)) {
-                                var fullName = o.name;
-                                if (name) fullName = name + "." + fullName;
-                                result.push({
-                                    name: o.name,
-                                    decorator: "icon-" + o.kind,
-                                    qualifyer: fullName,
-                                    kind: o.kind,
-                                    outline:o,
-                                    isFolder: !(o.kind === "method" || o.kind === "constructor" || o.kind === "function")
-                                })
-                            }
-                        }
-                        return result;
-                    });
-                    outliner.appendTo(Cats.IDE.outlineNavigation);
-                    outliner.onselect = (value) => {
-                        var data = value.outline;
-                        Cats.project.editFile(data.unitName, null, { row: data.range.startRow, column: data.range.startColumn });
-                    };
-
-                    outliner.refresh();
-                });
-            }
-
+            session.showErrors();
+            tabbar.refresh();
+            EventBus.emit(Event.editModeChanged,session.mode);
+            EventBus.emit(Event.activeSessionChanged,session);
+         
         }
 
         moveCursorTo(pos: Ace.Position = { column: 0, row: 0 }) {
@@ -168,6 +127,7 @@ module Cats {
             // Check if was the current session displayed
             if (this.activeSession === session) {
                 this.activeSession === null;
+                EventBus.emit(Event.activeSessionChanged,null,session);
                 mainEditor.hide();
             }
             tabbar.refresh();
@@ -187,7 +147,6 @@ module Cats {
             tabbar.refresh();
         }
 
-
         addCommand(command: Ace.EditorCommand) {
             this.aceEditor.commands.addCommand(command);
         }
@@ -198,10 +157,10 @@ module Cats {
         }
 
         autoComplete() {
-            if (this.activeSession.typeScriptMode) {
+            // if (this.activeSession.mode === "typescript") {
                 var cursor = this.aceEditor.getCursorPosition();
                 this.activeSession.autoComplete(cursor, this.autoCompleteView);
-            }
+            // }                        
         }
 
         private onMouseMove(ev: MouseEvent) {
@@ -216,7 +175,7 @@ module Cats {
         }
 
         // Initialize the editor
-        private createEditor() {
+        private createEditor():Ace.Editor {
             var editor: Ace.Editor = ace.edit(this.rootElement);
 
             editor.commands.addCommands([

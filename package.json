@@ -2,12 +2,13 @@
   "name": "CATS",
   "main": "static/index.html",
   "description" : "TypeScript Editor",
-  "version" : "0.6.8",
+  "chromium-args": "--js-flags=--harmony",
+  "version" : "0.6.9",
   "window": { 
      "icon":"static/img/logo.png",	
      "toolbar": false,  
      "position": "center",
-     "width": 800,
-     "height": 600
+     "width": 1000,
+     "height": 800
   }
 }

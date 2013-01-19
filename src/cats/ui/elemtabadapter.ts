@@ -10,15 +10,13 @@ export class ElemTabAdapter {
     constructor(private tab:Cats.UI.Tabbar, private elems:HTMLElement[], selected?:HTMLElement ) {
         tab.setOptions(this.convert(elems));
         if (selected) this.onSelect(this.getTab(selected));
-        tab.onselect = (elem:Tab) => this.onSelect(elem); 
+        tab.onselect = (elem:Tab) => this.onSelect(elem);        
     };
-
 
     setAspect(elem:HTMLElement,name:string,value) {
         var tab = this.getTab(elem);
         if (tab) tab[name] = value;
     }
-
 
     private getTab(elem: HTMLElement):Tab {
         var options = this.tab.options;

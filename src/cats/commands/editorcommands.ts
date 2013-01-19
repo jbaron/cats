@@ -10,7 +10,22 @@ module Cats.Commands {
     }
 
 
- // TODO i18n
+ // Perform code autocompletion
+     function autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
+         var session = Cats.mainEditor.activeSession;
+                     
+            if (session.mode !== "typescript") return;
+            session.update();
+
+
+            session.project.iSense.perform("autoComplete", cursor, session.name, (err, completes) => {
+                if (completes != null) view.showCompletions(completes.entries);
+            });
+        }
+
+
+
+    // TODO i18n
     function getShortcut(commandName: string) {
         var platform = Cats.mainEditor.aceEditor.commands.platform;
         var command = Cats.mainEditor.aceEditor.commands.byName[commandName];
@@ -19,64 +34,72 @@ module Cats.Commands {
             var key = command.bindKey[platform];
             return key;
         }
-        
+
         return null;
     }
 
 
     // TODO i18n
-    function getLabelForCommand(commandName: string) {
-        var label = commandName[0].toUpperCase() + commandName.slice(1);
+    function addShortcut(label, commandName: string) {
+        var result = label;
         var platform = Cats.mainEditor.aceEditor.commands.platform;
         var command = Cats.mainEditor.aceEditor.commands.byName[commandName];
 
-        var tabs = 5 - Math.floor((label.length / 4) - 0.01);
-        label = label + "\t\t\t\t\t\t".substring(0, tabs);
         if (command && command.bindKey) {
+            var tabs = 5 - Math.floor((result.length / 4) - 0.01);
+            result = result + "\t\t\t\t\t\t".substring(0, tabs);
             var key = command.bindKey[platform];
-            if (key) label += key;
+            if (key) result += key;
         }
-        return label;
+        return result;
     }
-
-
-    var icons = {
-        undo: "undo_edit.gif",
-        redo: "redo_edit.gif",
-        copy: "copy_edit.gif",
-        paste: "paste_edit.gif",
-        cut: "cut_edit.gif",
-        indent: "shift_r_edit.gif",
-        outdent: "shift_l_edit.gif"
-    }
-
-    function editorCommand2(commandName: string) {
-        var label = this.getLabelForCommand(commandName);
-        var item = new gui.MenuItem({
-            label: label,
-            click: function() { Cats.mainEditor.aceEditor.execCommand(commandName); }
-        });
-        var iconName = this.icons[commandName];
-        if (iconName) {
-            item.icon = "static/img/" + iconName;
-        }
-        return item;
-    }
-
 
     export class EditorCommands {
-        static init(registry) {
-            registry({ name: CMDS.edit_undo, label: "undo", command: editorCommand("undo") });
-            
-            registry("edit.undo", editorCommand("undo"));
-            registry("edit.redo", editorCommand("redo"));
-            
-            
-            
-            
+
+
+        static init(registry:(cmd:Command)=>void) {
+
+            var editorCommands: any[] = [
+               { id: Cats.Commands.CMDS.edit_undo, label: "Undo", icon: "undo_edit.gif" },
+               { id: Cats.Commands.CMDS.edit_redo, label: "Redo", icon: "redo_edit.gif" },
+        
+               { id: Cats.Commands.CMDS.edit_indent, label: "indent", icon: "shift_r_edit.gif" },
+               { id: Cats.Commands.CMDS.edit_outdent, label: "outdent", icon: "shift_l_edit.gif" },
+        
+               { id: Cats.Commands.CMDS.edit_cut, label: "cut", icon: "cut_edit.gif" },
+               { id: Cats.Commands.CMDS.edit_copy, label: "copy", icon: "copy_edit.gif" },
+               { id: Cats.Commands.CMDS.edit_paste, label: "paste", icon: "paste_edit.gif" },
+        
+               { id: Cats.Commands.CMDS.edit_find, label: "Find", cmd: "find" },
+               { id: Cats.Commands.CMDS.edit_findNext, label: "Find Next", cmd: "findnext" },
+               { id: Cats.Commands.CMDS.edit_findPrev, label: "Find Previous", cmd: "findprevious" },
+               { id: Cats.Commands.CMDS.edit_replace, label: "Replace", cmd: "replace" },
+               { id: Cats.Commands.CMDS.edit_replaceAll, label: "Replace All", cmd: "replaceall" },
+        
+               { id: Cats.Commands.CMDS.edit_toggleComment, label: "Toggle Comment", cmd: "togglecomment" },
+               { id: Cats.Commands.CMDS.edit_toggleRecording, label: "Start/stop Recording", cmd: "togglerecording" },
+               { id: Cats.Commands.CMDS.edit_replayMacro, label: "Playback Macro", cmd: "replaymacro" }
+            ];
+
+
+
+            editorCommands.forEach((config) => {
+                if (!config.cmd) config.cmd = config.label.toLowerCase();
+                var label = addShortcut(config.label, config.cmd);
+                var item:Command = {
+                    name: config.id,
+                    label: label,
+                    shortcut: getShortcut(config.cmd),
+                    command: editorCommand(config.cmd),
+                }
+                if (config.icon) item.icon = "static/img/" + config.icon;
+                registry(item);
+            });
         }
 
     }
+
+
 
 
 }

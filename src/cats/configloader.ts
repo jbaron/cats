@@ -100,17 +100,17 @@ module Cats {
      */
 	export class ConfigLoader {
 
-		static NAME = ".settings" + path.sep + "config.json"; 
-		// static NAME = ".settings" + "/" + "config.json"; // work around
+		// static NAME = ".settings" + PATH.sep + "config.json"; 
+		static NAME = ".settings" + "/" + "config.json"; // work around
 		private _config;
         private fileName:string;
 
 		constructor(projectRoot:string) {
-			this.fileName = path.join(projectRoot,ConfigLoader.NAME);
-			var dir:string = path.dirname(this.fileName);
-			fs.exists(dir, (exists) => {
+			this.fileName = PATH.join(projectRoot,ConfigLoader.NAME);
+			var dir:string = PATH.dirname(this.fileName);
+			FS.exists(dir, (exists) => {
 					if (! exists) {
-						fs.mkdirSync(dir); //Should be called only once.
+						FS.mkdirSync(dir); //Should be called only once.
 						console.log("created .setting directory");
 					}
 			});	

@@ -290,9 +290,9 @@ class ISense {
     }
 
     // updated the content of a script
-    updateScript(fileName:string,src:string,getErrors=true) {
+    updateScript(fileName:string,src:string) {
         this.typescriptLS.updateScript(fileName, src, false);
-        if (getErrors) return this.getErrors(fileName);
+        // if (getErrors) return this.getErrors(fileName);
     }
 
     // Get an Ace Range from TS minChars and limChars

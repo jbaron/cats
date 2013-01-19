@@ -4,7 +4,7 @@
     "outputPath": null,
     "compiler": {
         "useDefaultLib": true,
-        "outputMany": true,
+        "outputOption": "tmp",
         "outputFileName": "main.js",
         "emitComments": false,
         "generateDeclarationFiles": false,

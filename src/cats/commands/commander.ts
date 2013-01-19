@@ -5,6 +5,7 @@
 ///<reference path='idecommands.ts'/>
 ///<reference path='refactorcommands.ts'/>
 ///<reference path='navigatecommands.ts'/>
+///<reference path='editorcommands.ts'/>
 
 module Cats.Commands {
 
@@ -33,10 +34,10 @@ module Cats.Commands {
         edit_findPrev,
         edit_replace,
         edit_replaceAll,
-        edit_toggleMacroRecording,
-        edit_playMacro,
+        edit_toggleRecording,
+        edit_replayMacro,
         
-        edit_toggleComments,
+        edit_toggleComment,
         edit_indent,
         edit_outdent,
         
@@ -121,7 +122,7 @@ module Cats.Commands {
 	}
 
 	export function init() {
-	//	EditorCommands.init(register);
+		EditorCommands.init(register);
 	    FileCommands.init(register);
 		HelpCommands.init(register);
 	    ProjectCommands.init(register);

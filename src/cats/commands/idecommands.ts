@@ -19,7 +19,7 @@ module Cats.Commands {
     }
 
     export class IdeCommands {
-        static init(registry) {
+        static init(registry:(cmd:Command)=>void) {
             registry({ name: CMDS.ide_quit, label: "Quit", command: quit });
             registry({ name: CMDS.ide_theme, label: "Theme", command: setTheme });
             registry({ name: CMDS.ide_fontSize, label: "Font Size", command: setFontSize });

@@ -3,37 +3,35 @@
 
 module Cats {
 
-    
-
     var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
     var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
 
     export class Session {
 
         private static MODES = {
-            ".js": "ace/mode/javascript",
-            ".ts": "ace/mode/typescript",
-            ".xhtml": "ace/mode/html",
-            ".xhtm": "ace/mode/html",
-            ".html": "ace/mode/html",
-            ".htm": "ace/mode/html",
-            ".css": "ace/mode/css",
-            ".less": "ace/mode/less",
-            ".md": "ace/mode/markdown",
-            ".svg": "ace/mode/svg",
-            ".yaml": "ace/mode/yaml",
-            ".yml": "ace/mode/yaml",
-            ".xml": "ace/mode/xml",
-            ".json": "ace/mode/json"
+            ".js": "javascript",
+            ".ts": "typescript",
+            ".xhtml": "html",
+            ".xhtm": "html",
+            ".html": "html",
+            ".htm": "html",
+            ".css": "css",
+            ".less": "less",
+            ".md": "markdown",
+            ".svg": "svg",
+            ".yaml": "yaml",
+            ".yml": "yaml",
+            ".xml": "xml",
+            ".json": "json"
         };
+    
         
-        private static DEFAULT_MODE = "ace/mode/text";
+        private static DEFAULT_MODE = "text";
 
         // The Ace EditSession object
         editSession: Ace.EditSession;
 
         private updateSourceTimer;
-        typeScriptMode = false; //is this a typescript session
 
         // Is the worker out of sync with the source code
         private pendingWorkerUpdate = false;
@@ -51,14 +49,12 @@ module Cats {
 
         constructor(public project: Project, public name: string, content: string) {
             console.log("Creating new session for file " + name + " with content length " + content.length);
-            var ext = path.extname(name);
+            var ext = PATH.extname(name);
 
             this.mode = this.determineMode(ext);
-            this.editSession = new EditSession(content, this.mode);
+            this.editSession = new EditSession(content,"ace/mode/" + this.mode);
 
-            if (ext === ".ts") {
-                this.typeScriptMode = true;
-            }
+          
 
             this.editSession.on("change", this.onChangeHandler.bind(this));
             this.editSession.setUndoManager(new UndoManager());
@@ -66,7 +62,7 @@ module Cats {
 
         persist() {
             this.project.writeSession(this);
-            tabbar.refresh();
+            this.changed = false;
         }
 
         getValue(): string {
@@ -107,12 +103,12 @@ module Cats {
 
         // Screen location
         showInfoAt(ev: MouseEvent) {
-            if (!this.typeScriptMode) return;
+            if (this.mode !== "typescript") return;
 
             var docPos = this.getPositionFromScreenOffset(ev.offsetX, ev.offsetY);
             var project = this.project;
 
-            project.iSense.perform("getTypeAtPosition", this.name, docPos,
+            this.project.iSense.perform("getTypeAtPosition", this.name, docPos,
                 (err, data: Services.TypeInfo) => {
                     if (!data) return;
                     var member = data.memberName;
@@ -130,19 +126,57 @@ module Cats {
             return result;
         }
 
-        // Perform code autocompletion
-        autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
-            if (!this.typeScriptMode) return;
+        // Perform code autocompletion for JS
+        autoCompleteJS(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
             var editSession = this.editSession;
 
             // Any pending changes that are not yet send to the worker?
             if (this.pendingWorkerUpdate) {
                 var source = editSession.getValue();
-                this.project.iSense.perform("updateScript", this.name, source, (err, result) => {
-                    editSession.setAnnotations(result);
+                this.project.JSSense.perform("updateScript", this.name, source, (err, result) => {
+                    // editSession.setAnnotations(result);
                 });
                 this.pendingWorkerUpdate = false;
             };
+
+            this.project.JSSense.perform("autoComplete", cursor, this.name, (err, completes) => {
+                if (completes != null) view.showCompletions(completes.entries);
+            });
+        }
+
+        showErrors() {
+            if (this.mode === "typescript") {
+                var self = this; // BUG in TS
+                this.project.iSense.perform("getErrors", this.name, (err, result) => {
+                        self.editSession.setAnnotations(result);
+                });
+            }
+        }
+
+        /**
+         * Make sure the session updated any pending chnages to the worker.
+         * 
+         */
+        update() {
+           if (this.mode === "typescript") {
+                var source = this.editSession.getValue();                
+                this.project.iSense.perform("updateScript", this.name, source, null);
+                this.pendingWorkerUpdate = false;
+            }; 
+        }
+
+        // Perform code autocompletion
+        autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
+            if (this.mode === "javascript") {
+                this.autoCompleteJS(cursor, view);
+                return;
+            }
+            
+            if (this.mode !== "typescript") return;
+            var editSession = this.editSession;
+
+            // Any pending changes that are not yet send to the worker?
+            this.update();
 
             this.project.iSense.perform("autoComplete", cursor, this.name, (err, completes) => {
                 if (completes != null) view.showCompletions(completes.entries);
@@ -151,21 +185,16 @@ module Cats {
 
         private onChangeHandler(event) {
             this.changed = true;
-
-            if (!this.typeScriptMode) return;
-
             this.pendingWorkerUpdate = true;
-            
+
+            if (this.mode !== "typescript") return;
+                        
             clearTimeout(this.updateSourceTimer);
 
             this.updateSourceTimer = setTimeout(() => {
                 if (this.pendingWorkerUpdate) {
-                    console.log("updating source code for file " + this.name);
-                    var source = this.editSession.getValue();
-                    this.project.iSense.perform("updateScript", this.name, source, (err, result) => {
-                        this.editSession.setAnnotations(result);
-                    });
-                    this.pendingWorkerUpdate = false; // Already make sure we know a change has been send.
+                    this.update();
+                    this.showErrors();
                 }
             }, 1000);
         };

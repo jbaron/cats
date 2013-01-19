@@ -57,7 +57,7 @@ module Cats.Commands {
 
 
     export class NavigateCommands {
-        static init(registry) {
+        static init(registry:(cmd:Command)=>void) {
             
             registry({name:CMDS.navigate_references, label:"Find References", command:findReferences});
             registry({name:CMDS.navigate_implementors, label:"Find Implementations", command:findImplementors});

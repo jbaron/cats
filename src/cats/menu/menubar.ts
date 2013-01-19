@@ -71,27 +71,29 @@ module Cats.Menu {
             file.append(getCmd(CMDS.ide_quit));
 
             var edit = new gui.Menu();
-            edit.append(this.editorCommand("undo"));
-            edit.append(this.editorCommand("redo"));
+            // edit.append(this.editorCommand("undo"));
+            edit.append(getCmd(CMDS.edit_undo));
+            edit.append(getCmd(CMDS.edit_redo));
             edit.append(new gui.MenuItem({ type: "separator" }));
-            edit.append(this.editorCommand("cut"));
-            edit.append(this.editorCommand("copy"));
-            edit.append(this.editorCommand("paste"));
+            edit.append(getCmd(CMDS.edit_cut));
+            edit.append(getCmd(CMDS.edit_copy));
+            edit.append(getCmd(CMDS.edit_paste));
             edit.append(new gui.MenuItem({ type: "separator" }));
-            edit.append(this.editorCommand("find"));
-            edit.append(this.editorCommand("findnext"));
-            edit.append(this.editorCommand("findprevious"));
-            edit.append(this.editorCommand("replace"));
-            edit.append(this.editorCommand("replaceall"));
-            edit.append(new gui.MenuItem({ label: 'Find/Replace...', click: this.nop }));
+            edit.append(getCmd(CMDS.edit_find));
+            edit.append(getCmd(CMDS.edit_findNext));
+            edit.append(getCmd(CMDS.edit_findPrev));
+            edit.append(getCmd(CMDS.edit_replace));
+            edit.append(getCmd(CMDS.edit_replaceAll));
+            
             edit.append(new gui.MenuItem({ type: "separator" }));
-            edit.append(this.editorCommand("togglerecording"));
-            edit.append(this.editorCommand("replaymacro"));
+            edit.append(getCmd(CMDS.edit_toggleRecording));
+            edit.append(getCmd(CMDS.edit_replayMacro));
+
 
             var source = new gui.Menu();
-            source.append(this.editorCommand("togglecomment"));
-            source.append(this.editorCommand("indent"));
-            source.append(this.editorCommand("outdent"));
+            source.append(getCmd(CMDS.edit_toggleComment));
+            source.append(getCmd(CMDS.edit_indent));
+            source.append(getCmd(CMDS.edit_outdent));
             source.append(new gui.MenuItem({ label: 'Format code', click: this.formatText }));
 
             var refactor = new gui.Menu();
@@ -159,36 +161,12 @@ module Cats.Menu {
             label = label + "\t\t\t\t\t\t".substring(0, tabs);
             if (command && command.bindKey) {
                 var key = command.bindKey[platform];
-                if (key) label += key;
+                if (key) label += key ;
             }
             return label;
         }
 
 
-        icons = {
-            undo: "undo_edit.gif",
-            redo: "redo_edit.gif",
-            copy: "copy_edit.gif",
-            paste: "paste_edit.gif",
-            cut: "cut_edit.gif",
-            indent: "shift_r_edit.gif",
-            outdent: "shift_l_edit.gif"
-        }
-
-        editorCommand(commandName: string) {
-            var label = this.getLabelForCommand(commandName);
-            var item = new gui.MenuItem({
-                label: label,
-                click: function() { Cats.mainEditor.aceEditor.execCommand(commandName); }
-            });
-            var iconName = this.icons[commandName];
-            if (iconName) {
-                item.icon = "static/img/" + iconName;
-            }
-            return item;
-        }
-
- 
         
      
         formatText() {

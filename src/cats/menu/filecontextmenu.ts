@@ -15,10 +15,10 @@ module Cats.Menu {
 
 
     function deleteFile() {
-        var basename = path.basename(data.key);
+        var basename = PATH.basename(data.key);
         var sure = confirm("Delete " + basename);
         if (sure) {            
-            fs.unlinkSync(data.key);
+            FS.unlinkSync(data.key);
         }
     }
 
@@ -28,25 +28,25 @@ module Cats.Menu {
         if (data.isFolder) {
             basedir = data.key
         } else {
-            basedir = path.dirname(data.key);
+            basedir = PATH.dirname(data.key);
         }
 
         var name = prompt("Enter new file name ");
         if (name == null) return;
-        var fullName = path.join(basedir, name);
+        var fullName = PATH.join(basedir, name);
         Cats.project.writeTextFile(fullName, "");
     }
 
 
     function rename() {
-        var dirname = path.dirname(data.key);
-        var basename = path.basename(data.key);
+        var dirname = PATH.dirname(data.key);
+        var basename = PATH.basename(data.key);
         var name = prompt("Enter new name", basename);
         if (name == null) return;
         var c = confirm("Going to rename " + basename + " into " + name);
         if (c) {        
             try {
-                fs.renameSync(data.key, path.join(dirname, name));
+                FS.renameSync(data.key, PATH.join(dirname, name));
             } catch (err) {
                 alert(err);
             }

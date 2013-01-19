@@ -27,7 +27,7 @@ var Range: Ace.Range = ace.require("ace/range").Range;
 
 
     export class RefactorCommands {
-        static init(registry) {
+        static init(registry:(cmd:Command)=>void) {
             registry({ name: CMDS.refactor_rename, label: "Rename", command: rename });
         }
 

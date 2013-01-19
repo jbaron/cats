@@ -55,7 +55,6 @@ module Cats.UI {
         public oncontextmenu: (path: string) => void; //TODO implement
 
         constructor() {
-            // super();
 
             this.rootElem = document.createElement("div");
             this.rootElem.className = "treeview";
@@ -71,8 +70,13 @@ module Cats.UI {
                 } else {
                     this.handleClick(elem);
                 }
-            }
+           }
+            
         }
+ 
+
+            
+        
 
         public refresh() {
             this.rootElem.innerHTML = "";

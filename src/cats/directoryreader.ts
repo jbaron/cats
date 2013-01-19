@@ -30,18 +30,16 @@ export class DirectoryReader {
 		
 	}
 
-
-
 	read(dir:ListEntry) :ListEntry[] {       
 
-		var files = fs.readdirSync(dir.path);
+		var files = FS.readdirSync(dir.path);
 
 		var entries:ListEntry[] = [];
 
 		files.forEach( file => {
             try {
-    			var pathName = path.join(dir.path,file);
-                var isFolder = fs.statSync(pathName).isDirectory();
+    			var pathName = PATH.join(dir.path,file);
+                var isFolder = FS.statSync(pathName).isDirectory();
 
                 entries.push({
                     name: file,
@@ -56,7 +54,7 @@ export class DirectoryReader {
         });
 
 		entries.sort(sort);
-		console.log(entries);
+		// console.log(entries);
 
         return entries;
 	} 

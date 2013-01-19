@@ -1,4 +1,8 @@
+var PATH=require("path");
+var FS=require("fs");
 ///<reference path='bootstrap.ts'/>
+///<reference path='ui/widget.ts'/>
+///<reference path='eventbus.ts'/>
 ///<reference path='commands/commander.ts'/>
 ///<reference path='ide.ts'/>
 ///<reference path='menu/menubar.ts'/>
@@ -12,10 +16,11 @@
 ///<reference path='../typings/typescript.d.ts'/>
 
 module Cats {
-    
+
     export var mainEditor: Editor;
     export var project: Project;
-   
+    export var tabbar: UI.Tabbar;
+
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regexS = "[\\?&]" + name + "=([^&#]*)";
@@ -27,39 +32,39 @@ module Cats {
             return decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
-    
+
     var projectName = getParameterByName("project");
-    if (! projectName) {
+    if (!projectName) {
         var args = gui.App.argv;
-        if (args && (args.length > 0)) 
+        if (args && (args.length > 0))
             projectName = args[0];
         else
-            projectName = path.join(process.cwd(), "samples","greeter");            
-    } 
-    
+            projectName = PATH.join(process.cwd(), "samples", "greeter");
+    }
+
     project = new Project(projectName);
     mainEditor = new Editor(IDE.editor);
 
-    export var tabbar;
+
     function initTabBar() {
 
         tabbar = new UI.Tabbar();
         tabbar.setOptions(mainEditor.sessions);
-        tabbar.setAspect("name", (session: Session) => { return path.basename(session.name) });
+        tabbar.setAspect("name", (session: Session) => { return PATH.basename(session.name) });
         tabbar.setAspect("selected", (session: Session) => { return session === Cats.mainEditor.activeSession });
         tabbar.setAspect("longname", (session: Session) => { return session.name });
         tabbar.setAspect("changed", (session: Session) => { return session.changed });
-        tabbar.onselect = (session) => Cats.project.editFile(session.name); //TODO Fix to use real session
-
+        // tabbar.onselect = (session) => Cats.project.editFile(session.name); //TODO Fix to use real session
+        tabbar.onselect = (session) => Cats.mainEditor.setSession(session); //TODO Fix to use real session
         tabbar.appendTo(IDE.sessionBar);
     }
 
     function initNavBar() {
         var navbar = new UI.Tabbar();
-        
-        var t = new UI.ElemTabAdapter(navbar,[IDE.fileNavigation,IDE.outlineNavigation], IDE.fileNavigation);
-        t.setAspect(IDE.fileNavigation,"decorator","icon-files");
-        t.setAspect(IDE.outlineNavigation,"decorator","icon-outline");
+
+        var t = new UI.ElemTabAdapter(navbar, [IDE.fileNavigation, IDE.outlineNavigation], IDE.fileNavigation);
+        t.setAspect(IDE.fileNavigation, "decorator", "icon-files");
+        t.setAspect(IDE.outlineNavigation, "decorator", "icon-outline");
         navbar.appendTo(IDE.navigationBar);
     }
 
@@ -85,31 +90,95 @@ module Cats {
         });
     }
 
+    interface OutlineTreeElement {
+        name: string;
+        decorator: string;
+        qualifyer: string;
+        kind: string;
+        isFolder: bool;
+    }
+
+    function handleOutlineEvent(session) {
+        session.project.iSense.perform("getOutliningRegions", session.name, (err, data) => {
+            // console.log(data);
+            Cats.IDE.outlineNavigation.innerHTML = "";
+            var outliner = new Cats.UI.TreeView();
+            outliner.setAspect("children", (parent: OutlineTreeElement): OutlineTreeElement[] => {
+                var name = parent ? parent.qualifyer : "";
+                var kind = parent ? parent.kind : "";
+                var result: OutlineTreeElement[] = [];
+                for (var i = 0; i < data.length; i++) {
+                    var o = data[i];
+                    if ((o.containerKind === kind) && (o.containerName === name)) {
+                        var fullName = o.name;
+                        if (name) fullName = name + "." + fullName;
+                        result.push({
+                            name: o.name,
+                            decorator: "icon-" + o.kind,
+                            qualifyer: fullName,
+                            kind: o.kind,
+                            outline: o,
+                            isFolder: !(o.kind === "method" || o.kind === "constructor" || o.kind === "function")
+                        })
+                    }
+                }
+                return result;
+            });
+            outliner.appendTo(Cats.IDE.outlineNavigation);
+            outliner.onselect = (value) => {
+                var data = value.outline;
+                Cats.project.editFile(data.unitName, null, { row: data.range.startRow, column: data.range.startColumn });
+            };
+
+            outliner.refresh();
+        });
+
+    }
+
+    function initOutlineView() {
+        EventBus.on(Event.activeSessionChanged, (session:Session) => {
+            if (session && (session.mode === "typescript"))
+                handleOutlineEvent(session);
+            else
+                Cats.IDE.outlineNavigation.innerHTML = "";
+        });
+
+    }
+
+    function initStatusBar() {
+        var div = document.getElementById("sessionmode");
+        EventBus.on(Event.editModeChanged, (mode) => {
+            div.innerText = PATH.basename(mode);
+        });
+    }
 
     function initResultBar() {
         var resultbar = new UI.Tabbar();
-        var t = new UI.ElemTabAdapter(resultbar,[IDE.compilationResult,IDE.searchResult],IDE.compilationResult);
-        t.setAspect(IDE.compilationResult,"decorator","icon-errors");
-        t.setAspect(IDE.searchResult,"decorator","icon-search");
-        resultbar.appendTo(IDE.resultBar);
+        var t  = new UI.ElemTabAdapter(resultbar, [IDE.compilationResult, IDE.searchResult], IDE.compilationResult);
+        t.setAspect(IDE.compilationResult, "decorator", "icon-errors");
+        t.setAspect(IDE.searchResult, "decorator", "icon-search");
+        resultbar.appendTo(IDE.resultBar);        
     }
+
 
     Cats.Commands.init();
     Cats.Menu.createMenuBar();
     initTabBar();
     initNavBar();
-    initInfoBar();    
+    initInfoBar();
     initResultBar();
     initToolBar();
+    initStatusBar();
+    initOutlineView();
     mainEditor.init();
-   
-     
-        var win = gui.Window.get();
-        win.on("close", function() {
+
+
+    var win = gui.Window.get();
+    win.on("close", function() {
         mainEditor.closeAllSessions();
         if (win != null) win.close(true);
         this.close(true);
-        });
+    });
 
 
 

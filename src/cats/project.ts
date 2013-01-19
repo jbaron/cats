@@ -18,6 +18,7 @@ module Cats {
 
         // The singleton TSWorker handler instance
         iSense: ISenseHandler;
+        JSSense: ISenseHandler;
         config:any;
 
 
@@ -25,19 +26,20 @@ module Cats {
         // we remove old artifacts.
         constructor(projectDir: string) {
             project = this;            
-            this.projectDir = path.resolve(projectDir);
-            this.name = path.basename(this.projectDir);
+            this.projectDir = PATH.resolve(projectDir);
+            this.name = PATH.basename(this.projectDir);
             this.refresh();           
         }
 
 
         getConfigFileName():string {
-            return path.join(this.projectDir, ConfigLoader.NAME);
+            return PATH.join(this.projectDir, ConfigLoader.NAME);
         }    
 
          private initFileTree() {
             IDE.fileNavigation.innerHTML = "";
             var fileTree = new Cats.UI.TreeView();
+            // var fileTree = new Cats.UI.Tree();
             var dirReader = new DirectoryReader();
 
             fileTree.setAspect("children", (parent:ListEntry):ListEntry[] => {
@@ -53,7 +55,7 @@ module Cats {
                 return dirReader.read(parent);
             
             });
-                        
+                     
             fileTree.appendTo(IDE.fileNavigation);
             fileTree.refresh();
             
@@ -61,6 +63,16 @@ module Cats {
                 if (! entry.isFolder) this.editFile(entry.path);
             };
         }
+
+
+         private initJSSense() {
+            this.JSSense = new ISenseHandler();
+                        
+            var libdts = FS.readFileSync("typings/lib.d.ts", "utf8");
+            var fullName = PATH.join(process.cwd(),"typings/lib.d.ts" );
+            this.JSSense.perform("addScript", fullName, libdts, true, null);
+            
+        }    
 
         /**
          *  Refreshes the project and loads required artifacts
@@ -70,18 +82,19 @@ module Cats {
             this.initFileTree();
             this.config = new ConfigLoader(this.projectDir).load();
             
+            this.initJSSense();
             this.iSense = new ISenseHandler();
             this.iSense.perform("setCompilationSettings",this.config.compiler,null);
 
             if (this.config.compiler.useDefaultLib) {
-                var libdts = fs.readFileSync("typings/lib.d.ts", "utf8");
-                var fullName = path.join(process.cwd(),"typings/lib.d.ts" );
+                var libdts = FS.readFileSync("typings/lib.d.ts", "utf8");
+                var fullName = PATH.join(process.cwd(),"typings/lib.d.ts" );
                 this.iSense.perform("addScript", fullName, libdts, true, null);
             }
 
             var srcPaths = [].concat(this.config.sourcePath); 
             srcPaths.forEach( (srcPath:string) => {
-                var fullPath = path.join(this.projectDir,srcPath);
+                var fullPath = PATH.join(this.projectDir,srcPath);
                 this.loadTypeScriptFiles(fullPath);
             });
 
@@ -93,44 +106,25 @@ module Cats {
             if (!session) {
                 if (content == null) content = this.readTextFile(name);
                 session = new Session(this, name, content);
-                mainEditor.sessions.push(session);
-                mainEditor.setSession(session);
-                mainEditor.moveCursorTo(goto);
-
-                if (session.typeScriptMode) {
-                    this.iSense.perform("updateScript", name, content, (err, result) => {
-                        session.editSession.setAnnotations(result);
-                    });
-                }
-
-            } else {
-                mainEditor.setSession(session);
-                this.iSense.perform("getErrors", name, (err, result) => {
-                    session.editSession.setAnnotations(result);
-                });
-                if (goto) {
-                    mainEditor.moveCursorTo(goto);
-                    mainEditor.aceEditor.clearSelection();
-                }
+                mainEditor.addSession(session);                                             
             }
-            // this.session = session;
-
+            
+            
+            mainEditor.setSession(session,goto);
+            
             mainEditor.show();
-            tabbar.refresh();
+            // tabbar.refresh();
             return session;
         }
 
         getStartURL():string {
-            var url = path.join(this.projectDir, this.config.main);
+            var url = PATH.join(this.projectDir, this.config.main);
             return "file://" + url;
         }
         
 
-        writeTextFile(name: string, value: string) {
-            if (name.charAt(0) !== path.sep) {
-                name = path.join(this.projectDir,name);
-            }
-            fs.writeFileSync(name, value, "utf8");
+        writeTextFile(name: string, value: string) {            
+            FS.writeFileSync(name, value, "utf8");
         }
 
         writeSession(session: Session) {
@@ -147,7 +141,7 @@ module Cats {
 
         readTextFile(name: string): string {
             if (name === "untitled") return "";
-            var data = fs.readFileSync(name, "utf8");
+            var data = FS.readFileSync(name, "utf8");
             var content = data.replace(/\r\n?/g, "\n");
             return content;
         }
@@ -155,16 +149,16 @@ module Cats {
         // Load all the script that are part of the project into the tsworker
         // For now use a synchronous call to load.
         private loadTypeScriptFiles(directory: string) {
-            var files = fs.readdirSync(directory);
+            var files = FS.readdirSync(directory);
             files.forEach((file) =>{
                 try {
-                    var fullName = path.join(directory, file);
-                    var stats = fs.statSync(fullName);
+                    var fullName = PATH.join(directory, file);
+                    var stats = FS.statSync(fullName);
                     if (stats.isFile()) {
-                        var ext = path.extname(file);
+                        var ext = PATH.extname(file);
                         if (ext === ".ts") {
                             var content = this.readTextFile(fullName);
-                            this.iSense.perform("updateScript", fullName, content, () => { });
+                            this.iSense.perform("updateScript", fullName, content, null);
                             console.log("Found TypeScript file: " + fullName);
                         }
                     }
