@@ -129,20 +129,22 @@ body .ui-layout-pane {
 
 
 #result thead {
-    background-color: rgba(100,100,200,0.1);
+   font-size: 1.1em;
+   line-height: 1.0em;
 }
 
 #result td, #result th {
      padding: 5px;   
 }
 
-#result table tr:nth-child(even) {
+#result tbody tr:nth-child(odd) {
   background-color: rgba(100,100,100,0.1);
 }
 
 #result table, #result td, #result th
 {
   border:1px solid rgba(100,100,100,0.1);
+  border-top: 0px;
 }
 
 #result.busy {

@@ -1,3 +1,19 @@
+//
+// Copyright (c) JBaron.  All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+
 // This module contains all the global commands pertaining to project related functionality
 
 module Cats.Commands {
@@ -5,7 +21,7 @@ module Cats.Commands {
 
     function closeAllProjects() {
         var sure = confirm("Do you really want to quit?");
-        if (sure) gui.App.closeAllWindows();
+        if (sure) GUI.App.closeAllWindows();
     }
 
     function closeProject() {
@@ -21,7 +37,7 @@ module Cats.Commands {
         }
         var startPage = Cats.project.getStartURL();
         console.log("Opening file: " + startPage);
-        var win2 = gui.Window.open(startPage, {
+        var win2 = GUI.Window.open(startPage, {
             toolbar: true,
             webkit: {
                 "page-cache": false
@@ -48,19 +64,6 @@ module Cats.Commands {
         result.innerHTML = "";
         grid.appendTo(result);
     }
-
-    function mkdirRecursiveSync2(path) {
-        var stats = FS.statSync(path);
-        if (stats.isFile()) {
-            throw "\"" + path + "\" exists but isn't a directory.";
-        } else if (stats.isDirectory()) {
-            return;
-        } else {
-            mkdirRecursiveSync(PATH.dirname(path));
-            FS.mkdirSync(path, 0775);
-        }
-    }
-
 
     function mkdirRecursiveSync(path) {
         if (! FS.existsSync(path)) {

@@ -1,3 +1,19 @@
+//
+// Copyright (c) JBaron.  All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+
 ///<reference path='session.ts'/>
 ///<reference path='menu/editorcontextmenu.ts'/>
 ///<reference path='ui/autocompleteview.ts'/>
@@ -7,7 +23,11 @@ declare var $;
 
 module Cats {
 
-
+    /**
+     * The main Editor class that wraps the Ace editor
+     * and provides a set common methods. There is only
+     * one Editor per window.
+     */ 
     export class Editor {
         public aceEditor: Ace.Editor;
         public toolTip: UI.ToolTip;
@@ -113,6 +133,13 @@ module Cats {
 
         }
 
+        hasUnsavedSessions() :bool {
+            for (var i=0;i<this.sessions.length;i++) {
+                if (this.sessions[i].changed) return true;
+            }
+            return false;
+        }
+
         // Close a single session
         closeSession(session: Session) {
             if (session.changed) {
@@ -128,24 +155,12 @@ module Cats {
             if (this.activeSession === session) {
                 this.activeSession === null;
                 EventBus.emit(Event.activeSessionChanged,null,session);
-                mainEditor.hide();
+                this.hide();
             }
+
             tabbar.refresh();
         }
 
-        // Close all sessions and editor
-        closeAllSessions() {
-            this.sessions.forEach((session: Session) => {
-                if (session.changed) {
-                    var c = confirm("Save " + session.name + " before closing ?");
-                    if (c != null) session.persist();
-                };
-            });
-            this.sessions.length = 0;
-            this.activeSession = null;
-            mainEditor.hide();
-            tabbar.refresh();
-        }
 
         addCommand(command: Ace.EditorCommand) {
             this.aceEditor.commands.addCommand(command);

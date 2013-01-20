@@ -1,4 +1,3 @@
-
 <html>
 <head>
 <title>CATS</title>
@@ -18,6 +17,7 @@
 
 		// OUTER-LAYOUT
 		$('body').layout({
+            
 			center__paneSelector:	"#center"
 		,	west__paneSelector:		"#navigator"
 		,	north__paneSelector:	"#toolbar"
@@ -30,7 +30,8 @@
 
 			// MIDDLE-LAYOUT (child of outer-center-pane)
 		,	center__childOptions: {
-				center__paneSelector:	"#main"
+                onresize: function(name) { if (name === "center") Cats.mainEditor.aceEditor.resize(true);} 
+			,	center__paneSelector:	"#main"
 			,	east__paneSelector:		"#info"
 			,	south__paneSelector:	"#result"
 			,	east__size:				.20

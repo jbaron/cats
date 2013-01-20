@@ -1,5 +1,22 @@
+//
+// Copyright (c) JBaron.  All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+
 var PATH=require("path");
 var FS=require("fs");
+var GUI = require('nw.gui');
 ///<reference path='bootstrap.ts'/>
 ///<reference path='ui/widget.ts'/>
 ///<reference path='eventbus.ts'/>
@@ -35,7 +52,7 @@ module Cats {
 
     var projectName = getParameterByName("project");
     if (!projectName) {
-        var args = gui.App.argv;
+        var args = GUI.App.argv;
         if (args && (args.length > 0))
             projectName = args[0];
         else
@@ -173,11 +190,9 @@ module Cats {
     mainEditor.init();
 
 
-    var win = gui.Window.get();
+    var win = GUI.Window.get();
     win.on("close", function() {
-        mainEditor.closeAllSessions();
-        if (win != null) win.close(true);
-        this.close(true);
+        Cats.Commands.get(Cats.Commands.CMDS.ide_quit).command();
     });
 
 

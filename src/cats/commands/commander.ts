@@ -1,3 +1,18 @@
+//
+// Copyright (c) JBaron.  All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
 
 ///<reference path='helpcommands.ts'/>
 ///<reference path='filecommands.ts'/>
@@ -100,7 +115,7 @@ module Cats.Commands {
         var cmd = commands[name];
         if (! cmd) {
             console.error("No implementation available for command " + name);
-            return new gui.MenuItem({label:"Unknow command"});
+            return new GUI.MenuItem({label:"Unknow command"});
         }
         var click = cmd.command;
         if (params.length > 0) {
@@ -114,10 +129,10 @@ module Cats.Commands {
         if (cmd.shortcut) item.label += " [" + cmd.shortcut + "]";
         if (cmd.icon) item.icon = cmd.icon;
                 
-        return new gui.MenuItem(item);
+        return new GUI.MenuItem(item);
     }
 
-	export function get(name:string) :Command {
+	export function get(name:CMDS) :Command {
 		return commands[name];
 	}
 

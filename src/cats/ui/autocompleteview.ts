@@ -1,10 +1,17 @@
-/**
-  This class is "inspired" by the ace typescript playground project.
-  Especially the way popup is drawn and focused. 
-  @TODO create less HTML and separate UI and logic
-*/
-
-
+//
+// Copyright (c) JBaron.  All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
 
 module Cats.UI {
 
@@ -12,17 +19,23 @@ module Cats.UI {
     var HashHandler = ace.require('ace/keyboard/hash_handler').HashHandler;
 
     // This class takes care of the autocomplete popup and deals with 
-    // the key events
+    // the key events and filtering of the results while you are typing
     export class AutoCompleteView {
 
         private static selectedClassName = 'autocomplete_selected';
         private static className = 'autocomplete';
-        wrap: HTMLElement;
-        listElement: HTMLElement;
+        private wrap: HTMLElement;
+        private listElement: HTMLElement;
         private handler = new HashHandler();
-        changeListener;
+        private changeListener;
+        
+        // Other tasks can check wether autocompletion is in progress
         active = false;
+        
+        // The complete set of completions available
         completions: Services.CompletionEntry[];
+        
+        // The fitlered completions based on the users input so far
         filteredCompletions: Services.CompletionEntry[];
 
         private offset = 0;
@@ -37,15 +50,15 @@ module Cats.UI {
             this.listElement.innerHTML = '';
         }
 
-        init() {
+        private init() {
             this.wrap = document.createElement('div');
             this.listElement = document.createElement('ul');
             this.wrap.className = AutoCompleteView.className;
             this.wrap.appendChild(this.listElement);
         };
 
-
-        getInputText(): string {
+        // Get the text between cursor and start
+        private getInputText(): string {
             var cursor = this.editor.getCursorPosition();
             var text = this.editor.session.getLine(cursor.row).slice(0, cursor.column);
             // console.log("input text:" + text);
@@ -57,8 +70,8 @@ module Cats.UI {
         };
 
 
-            // Get the text between cursor and start
-        getInputText2(): string {
+        // ALternative immplementation to get the text between cursor and start
+        private getInputText2(): string {
             var pos = this.editor.getCursorPosition();
             var result = this.editor.getSession().getTokenAt(pos.row, pos.column);
             if (result && result.value)
@@ -67,7 +80,11 @@ module Cats.UI {
                 return "";
         }
 
-        filter() {
+        /**
+         * Fitler the available completetions based on the users input 
+         * so far.
+         */ 
+        private filter() {
             var text = this.getInputText(); // .toLowerCase();
             if (!text) {
                 this.filteredCompletions = this.completions;
@@ -78,8 +95,11 @@ module Cats.UI {
             }
         }
 
-
-        initKeys() {
+        /**
+         * Setup the different keybindings that would go to the 
+         * popup window and not the editor
+         */ 
+        private initKeys() {
             this.handler.bindKey("Home", () => { this.moveCursor(-10000) });
             this.handler.bindKey("End", () => { this.moveCursor(10000) });
             this.handler.bindKey("Down", () => { this.moveCursor(1) });
@@ -104,7 +124,11 @@ module Cats.UI {
 
         }
 
-        show() {
+        /**
+         * Show the popup and make sure the keybinding is in place
+         * 
+         */ 
+        private show() {
             this.editor.keyBinding.addKeyboardHandler(this.handler);
             this.wrap.style.display = 'block';
             this.changeListener = (ev) => this.onChange(ev);
@@ -113,8 +137,11 @@ module Cats.UI {
             this.active = true;
         };
 
-
-        hide() {
+        /**
+         * Hide the popup and remove all keybindings
+         * 
+         */ 
+        private hide() {
             this.editor.keyBinding.removeKeyboardHandler(this.handler);
             this.wrap.style.display = 'none';
             this.editor.getSession().removeListener('change', this.changeListener);
@@ -124,9 +151,13 @@ module Cats.UI {
             // this.editor.getSession().removeAllListeners('change');
         };
 
-        onChange(ev) {
+        /**
+         * Check wether the typed character is reason to stop
+         * the auto-complete task
+         */ 
+        private onChange(ev) {
             var key = ev.data.text;
-            if (" -=,[]_/()!';:<>".indexOf(key) !== -1) {
+            if (" .-=,[]_/()!';:<>".indexOf(key) !== -1) {
                 this.hide();
                 return;
             }
@@ -135,7 +166,10 @@ module Cats.UI {
             setTimeout(() => { this.render() }, 0);
         }
 
-
+        /**
+         * Render a single row
+         * 
+         */ 
         private renderRow() {
             var index = this.listElement.children.length;
             var info = this.filteredCompletions[index];
@@ -155,7 +189,10 @@ module Cats.UI {
             this.listElement.appendChild(li);
         }
 
-
+        /**
+         * Are there any completions to show
+         * 
+         */ 
         private hasCompletions() {
             return this.filteredCompletions.length > 0;
         }
@@ -177,8 +214,7 @@ module Cats.UI {
 
 
         showCompletions(completions) {
-            if (this.active || (completions.length === 0)) return;
-            var start = Date.now();
+            if (this.active || (completions.length === 0)) return;            
             this.completions = completions;
             console.log("Received completions: " + completions.length);
             var cursor = this.editor.getCursorPosition();
@@ -186,16 +222,15 @@ module Cats.UI {
             this.setPosition(coords);
             this.render();
             this.show();
-            console.log(Date.now() - start);
         };
 
 
-    highLite() {
+        private highLite() {
             var elem = <HTMLElement>this.listElement.children[this.cursor];
             elem.className = AutoCompleteView.selectedClassName;
         }
 
-        moveCursor(offset: number) {
+        private moveCursor(offset: number) {
             if (! this.hasCompletions()) return;
             var newCursor = this.cursor + offset;
             newCursor = Math.min(this.filteredCompletions.length-1, newCursor);
@@ -210,8 +245,12 @@ module Cats.UI {
             this.scroll();
         }
 
-        // TODO remove jquery dependency
-        setPosition(coords) {
+        /**
+         * Determine the location  of the popup. Copied fromt he Ace playground
+         * editor. 
+         * @TODO remove jQuery dependency
+         */ 
+        private setPosition(coords) {
             var bottom, editorBottom, top;
             top = coords.pageY + 20;
             editorBottom = $(this.editor.container).offset().top + $(this.editor.container).height();
@@ -225,7 +264,8 @@ module Cats.UI {
             }
         };
 
-        current(): HTMLElement {
+    
+        private current(): HTMLElement {
             if (this.cursor >= 0)
                 return <HTMLElement>this.listElement.childNodes[this.cursor];
             else
@@ -233,18 +273,22 @@ module Cats.UI {
         };
        
 
-        hideRow(index) {
+        private hideRow(index) {
             var elem = <HTMLElement>this.listElement.children[index];
             elem.style.display = "none";
         }
 
-        showRow(index) {
+        private showRow(index) {
             var elem = <HTMLElement>this.listElement.children[index];
             elem.style.display = "block";
         }
 
-        // ToDO use plain DOM API instead of jquery and speedup, since this is slow
-        // for fast scrolling through large sets
+
+        /**
+         * Scroll the view by hiding the first row and showing the next 
+         * or reverse.
+         * 
+         */ 
         private scroll() {
 
             while (this.cursor >= (this.offset + 10)) {
