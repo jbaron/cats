@@ -13,11 +13,11 @@
 // limitations under the License.
 //
 
-
 var PATH=require("path");
 var FS=require("fs");
 var GUI = require('nw.gui');
-///<reference path='bootstrap.ts'/>
+
+///<reference path='../typings/cats.d.ts'/>
 ///<reference path='ui/widget.ts'/>
 ///<reference path='eventbus.ts'/>
 ///<reference path='commands/commander.ts'/>
@@ -33,7 +33,7 @@ var GUI = require('nw.gui');
 ///<reference path='../typings/typescript.d.ts'/>
 
 module Cats {
-
+    
     export var mainEditor: Editor;
     export var project: Project;
     export var tabbar: UI.Tabbar;
@@ -169,8 +169,8 @@ module Cats {
         });
     }
 
+    export var resultbar = new UI.Tabbar();
     function initResultBar() {
-        var resultbar = new UI.Tabbar();
         var t  = new UI.ElemTabAdapter(resultbar, [IDE.compilationResult, IDE.searchResult], IDE.compilationResult);
         t.setAspect(IDE.compilationResult, "decorator", "icon-errors");
         t.setAspect(IDE.searchResult, "decorator", "icon-search");
@@ -187,6 +187,7 @@ module Cats {
     initToolBar();
     initStatusBar();
     initOutlineView();
+    Cats.Menu.initFileContextMenu();
     mainEditor.init();
 
 
@@ -194,8 +195,6 @@ module Cats {
     win.on("close", function() {
         Cats.Commands.get(Cats.Commands.CMDS.ide_quit).command();
     });
-
-
 
 
 }

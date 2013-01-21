@@ -54,11 +54,6 @@ export class ElemTabAdapter {
         return result;
     }
 
-
-    public select(elem:HTMLElement) {
-        this.onSelect(this.getTab(elem));
-    }
-
     private onSelect(tab:Tab) {
         var options:Tab[]= this.tab.options;
         options.forEach( (option) => {

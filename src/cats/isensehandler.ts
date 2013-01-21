@@ -41,7 +41,7 @@ export class ISenseHandler {
             params: data
         }
         this.worker.postMessage(message);
-        // console.log("Send message " + message.method + ":"  + message.id + " to worker");
+        console.log("Send message: " + message.method);
         if (handler) this.registry[this.messageId] = handler;
     }
 

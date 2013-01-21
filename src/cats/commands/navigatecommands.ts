@@ -19,9 +19,10 @@ module Cats.Commands {
         return Cats.mainEditor.aceEditor.getCursorPosition();
     }
 
-    export function gotoDeclaration() {
-        var cursor = getCursor();
+    export function gotoDeclaration() {        
         var session = Cats.mainEditor.activeSession;
+        if (! session) return;
+        var cursor = getCursor();
         session.project.iSense.perform("getDefinitionAtPosition", session.name, cursor, (err, data) => {
             if (data && data.unitName)
                 session.project.editFile(data.unitName, null, data.startPos);
@@ -32,16 +33,17 @@ module Cats.Commands {
         return (range.startRow + 1) + ":" + (range.startColumn + 1);
     }
 
-    function getInfoAt(type: string) {
-        var cursor = getCursor();
+    function getInfoAt(type: string) {        
         var session = Cats.mainEditor.activeSession;
-        var resultElem = document.getElementById("result");
-        $(resultElem).addClass("busy");
+        if (! session) return;
+        Cats.resultbar.selectOption(1);
+        var cursor = getCursor();
+        var searchResultsElem = Cats.IDE.searchResult;
+        searchResultsElem.innerHTML = "";
+        $(searchResultsElem).addClass("busy");        
         session.project.iSense.perform("getInfoAtPosition", type, session.name, cursor, (err, data) => {
-            $(resultElem).removeClass("busy");
-            if (data) {
-                var searchResultsElem = Cats.IDE.searchResult;
-                searchResultsElem.innerHTML = "";
+            $(searchResultsElem).removeClass("busy");
+            if (data) {                
                 var grid = new Cats.UI.Grid();
                 grid.setColumns(["description", "script", "position"]);
                 grid.setRows(data);

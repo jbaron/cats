@@ -1,4 +1,4 @@
-///@type=cats/config.d.ts
+///@type=Cats.Config
 
 {	
 	theme : "Cobalt",	
@@ -24,12 +24,9 @@
 
 
 
-
-
-
 /*
-    The above would translarte into before intellisense would be offered.
-	var config:Config = 
+    The above would translate into the following before intellisense would be offered.
+	var config:Cats.Config = {
 		....
 	}
 

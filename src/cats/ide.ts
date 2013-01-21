@@ -43,18 +43,7 @@ module Cats {
     }
     
     
-    export var JSSense;
-    
-    export function initIDE() {
-            JSSense = new ISenseHandler();
-                        
-            var libdts = FS.readFileSync("typings/lib.d.ts", "utf8");
-            var fullName = PATH.join(process.cwd(),"typings/lib.d.ts" );
-            JSSense.perform("addScript", fullName, libdts, true, null);
-            
-    }
-    
-    // initIDE();
+   
     
     
 

@@ -163,8 +163,21 @@ module Cats {
         showErrors() {
             if (this.mode === "typescript") {
                 var self = this; // BUG in TS
-                this.project.iSense.perform("getErrors", this.name, (err, result) => {
-                        self.editSession.setAnnotations(result);
+                this.project.iSense.perform("getErrors", this.name, (err, result:ErrorEntry[]) => {
+                    var annotations:Ace.Annotation[] = [];
+                    if (result) {
+                        result.forEach((error:ErrorEntry) => {
+                            annotations.push({
+                               row:error.range.startRow,
+                               column:error.range.startColumn,
+                               type:"error",
+                               text:error.message
+                            });
+                        });
+                        
+                    }
+              
+                    self.editSession.setAnnotations(annotations);
                 });
             }
         }

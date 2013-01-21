@@ -13,12 +13,26 @@
 
 	<script type="text/javascript">
 
+    function resizeOuter(name, state) {
+        if (name === "west") {
+            $("#filetree, #outlinenav").height(state.innerHeight()-25);
+        }
+    }
+
+    function resizeInner(name, state) {
+        if (name === "center") Cats.mainEditor.aceEditor.resize(true);
+        if (name === "south") {
+            $("#searchresults, #errorresults").height(state.innerHeight()-25);
+        }
+    }
+
+
 	$(document).ready(function () {
 
 		// OUTER-LAYOUT
 		$('body').layout({
-            
-			center__paneSelector:	"#center"
+            onresize: resizeOuter  
+		,	center__paneSelector:	"#center"
 		,	west__paneSelector:		"#navigator"
 		,	north__paneSelector:	"#toolbar"
 		,	south__paneSelector:	"#statusbar"
@@ -30,7 +44,7 @@
 
 			// MIDDLE-LAYOUT (child of outer-center-pane)
 		,	center__childOptions: {
-                onresize: function(name) { if (name === "center") Cats.mainEditor.aceEditor.resize(true);} 
+                onresize: resizeInner  
 			,	center__paneSelector:	"#main"
 			,	east__paneSelector:		"#info"
 			,	south__paneSelector:	"#result"
@@ -65,9 +79,9 @@
 		<div id=infobar></div>
 	</div>
 	<div id=result>
-		<div id=resultbar></div>
-		<div id=errorresults title=Compilation>No errors</div>
-		<div id=searchresults title=Search>No results</div>
+		    <div id=resultbar></div>
+		    <div id=errorresults title=Compilation>No errors</div>
+		    <div id=searchresults title=Search>No results</div>
 	</div>
 </div>
 

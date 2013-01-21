@@ -22,7 +22,7 @@ module Cats.Commands {
     }
 
     function showAbout() {
-        alert("Code Assisitant for TypeScript\nversion 0.6.8\nCreated by JBaron");
+        alert("Code Assisitant for TypeScript\nversion 0.6.9\nCreated by JBaron");
     }
 
     function showDevTools() {        

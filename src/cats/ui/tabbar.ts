@@ -136,12 +136,9 @@ export class Tabbar extends AspectWidget {
     }
 
 
-    selectOption(option) { 
-        if (this.onselect) this.onselect(option);         
+    selectOption(index:number) { 
+        if (this.onselect) this.onselect(this.options[index]);         
     }
-
-
-
 
     private getSelectedOption(ev) {
         var elem = ev.srcElement;

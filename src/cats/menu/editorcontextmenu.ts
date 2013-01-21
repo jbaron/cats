@@ -15,8 +15,7 @@
 
 module Cats.Menu {
 
-    var win = gui.Window.get();
-
+   
     export class EditorContextMenu {
 
         private ctxmenu;
@@ -24,7 +23,7 @@ module Cats.Menu {
 
         constructor(private editor: Cats.Editor) {
             // Create a new menu
-            this.ctxmenu = new gui.Menu();
+            this.ctxmenu = new GUI.Menu();
             var getCmd = Cats.Commands.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
 

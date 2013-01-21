@@ -33,17 +33,20 @@ function sort(a:ListEntry,b:ListEntry) {
 }
 
 /**
- * Reads a directory and returns an array
- * of files and direct sub directories. 
+ * Reads the contents of a directory. This class doesn't walk recursively.
  */ 
 export class DirectoryReader {
 
     ignore:string[]=["^\."];
 
 	constructor() {
-		
+		// @TODO allow to set filter flags
 	}
 
+    /**
+     * Read a directory and return a sorted list of its content
+     * 
+     */ 
 	read(dir:ListEntry) :ListEntry[] {       
 
 		var files = FS.readdirSync(dir.path);
@@ -55,6 +58,7 @@ export class DirectoryReader {
     			var pathName = PATH.join(dir.path,file);
                 var isFolder = FS.statSync(pathName).isDirectory();
 
+                // @TODO should not have decorator in here
                 entries.push({
                     name: file,
                     path: pathName,
@@ -68,7 +72,6 @@ export class DirectoryReader {
         });
 
 		entries.sort(sort);
-		// console.log(entries);
 
         return entries;
 	} 

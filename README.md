@@ -6,9 +6,11 @@ Although not yet feature complete, it is getting there. Right now CATS already h
 
 - Intelligent code editor with support for syntax highlighting and code completion.
 
-- Fast and lightweight, so it runs fine on older hardware. 
+<img src="https://raw.github.com/jbaron/cats/master/artifacts/autocomplete.png" />
 
-- Support for refactoring and smart navigation. 
+- Support for refactoring and smart navigation.
+
+- Basic refactoring support.
 
 - TypeScript compilation to JavaScript.
 
@@ -19,6 +21,8 @@ Although not yet feature complete, it is getting there. Right now CATS already h
 - Normal editing features you expect of an editor, like folding, indentation (see also help => keyboard shortcuts to see a list).
 
 - Running your application from within IDE and using the WebKit debugger to debug.
+ 
+- Fast and lightweight, so it runs fine on older hardware. 
 
 - Theming:
 

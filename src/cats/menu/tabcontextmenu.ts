@@ -15,7 +15,7 @@
 
 module Cats.Menu {
 
-    var win = gui.Window.get();
+
 
     function getTab() {
     }
@@ -32,25 +32,25 @@ module Cats.Menu {
 
         constructor(private editor: Cats.Editor) {
             // Create a new menu
-            this.ctxmenu = new gui.Menu();
+            this.ctxmenu = new GUI.Menu();
 
             // Add the items
-            this.ctxmenu.append(new gui.MenuItem({
+            this.ctxmenu.append(new GUI.MenuItem({
                 label: 'Close this tab',
                 click: nop
             }));
 
-            this.ctxmenu.append(new gui.MenuItem({
+            this.ctxmenu.append(new GUI.MenuItem({
                 label: 'Close other tabs',
                 click: nop
             }));
 
-            this.ctxmenu.append(new gui.MenuItem({
+            this.ctxmenu.append(new GUI.MenuItem({
                 label: 'Close all tabs',
                 click: nop
             }));
 
-            this.ctxmenu.append(new gui.MenuItem({
+            this.ctxmenu.append(new GUI.MenuItem({
                 label: 'Close active tab',
                 click: nop
             }));

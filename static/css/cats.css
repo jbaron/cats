@@ -24,9 +24,12 @@
   Simple file tree styling
 ***************************************************************/
 
+
+#filetree, #outlinenav {
+    overflow: auto;    
+}
+
 #navigator .treeview {
-  height: 95%;
-  overflow: auto;
   padding: 4px;
 }
 
@@ -147,7 +150,7 @@ body .ui-layout-pane {
   border-top: 0px;
 }
 
-#result.busy {
+#result .busy {
   background-image:url('../img/loader.gif');
   background-repeat:no-repeat;
   background-position:center; 
@@ -293,6 +296,7 @@ Auto complete styling
     position: fixed;
     z-index: 1000;
     display: none;
+    -webkit-box-shadow: 5px 5px 5px #888;
 }
 
 .autocomplete ul{

@@ -65,30 +65,28 @@ module Cats.Commands {
         grid.appendTo(result);
     }
 
-    function mkdirRecursiveSync(path) {
-        if (! FS.existsSync(path)) {
-            mkdirRecursiveSync(PATH.dirname(path));
-            FS.mkdirSync(path, 0775);
-        }
-    }
-
-
-
+  
     function buildProject() {
         // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
         var project = Cats.project;
 
         var options = project.config.compiler;
-        $("#result").addClass("busy");
-        project.iSense.perform("compile", options, (err, data) => {
-            $("#result").removeClass("busy");
+        var compilationResultsElem = Cats.IDE.compilationResult;
+        Cats.resultbar.selectOption(0);
+        compilationResultsElem.innerHTML = "";
+        $(compilationResultsElem).addClass("busy");
+        project.iSense.perform("compile", options, (err, data:Cats.CompileResults) => {
+            $(compilationResultsElem).removeClass("busy");
             if (data.error && (data.error.length > 0)) {
-                console.log(data.error);
+                // console.log(data.error);
                 showErrors(data.error); // Bug in TS, requiring Cats.
                 return;
             }
 
-            Cats.IDE.compilationResult.innerText = "Successfully generated " + Object.keys(data.source).length + " file(s).";
+            // Lets puts a timestamp so it is clear we did something
+            var time = new Date();
+            var stamp = time.toLocaleTimeString();
+            Cats.IDE.compilationResult.innerText = stamp + " Successfully generated " + Object.keys(data.source).length + " file(s).";
             var sources = data.source
             for (var name in sources) {
                 var src = sources[name];
@@ -96,7 +94,7 @@ module Cats.Commands {
                 if (name.charAt(0) !== PATH.sep) {
                     name = PATH.join(project.projectDir, name);
                 }
-                mkdirRecursiveSync(PATH.dirname(name));
+                
                 project.writeTextFile(name, src);
             }
         });

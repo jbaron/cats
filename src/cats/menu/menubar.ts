@@ -61,78 +61,78 @@ module Cats.Menu {
 
 
         constructor() {
-            var menubar = new gui.Menu({ type: 'menubar' });
+            var menubar = new GUI.Menu({ type: 'menubar' });
             var getCmd = Cats.Commands.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
 
-            var file = new gui.Menu();
+            var file = new GUI.Menu();
             file.append(getCmd(CMDS.file_new));
-            file.append(new gui.MenuItem({ type: "separator" }));
+            file.append(new GUI.MenuItem({ type: "separator" }));
             file.append(getCmd(CMDS.file_save));
             file.append(getCmd(CMDS.file_saveAs));
             file.append(getCmd(CMDS.file_saveAll));
-            file.append(new gui.MenuItem({ type: "separator" }));
+            file.append(new GUI.MenuItem({ type: "separator" }));
             file.append(getCmd(CMDS.file_close));
             file.append(getCmd(CMDS.file_closeAll));
             file.append(getCmd(CMDS.file_closeOther));
-            file.append(new gui.MenuItem({ type: "separator" }));
+            file.append(new GUI.MenuItem({ type: "separator" }));
             file.append(getCmd(CMDS.ide_quit));
 
-            var edit = new gui.Menu();
+            var edit = new GUI.Menu();
             // edit.append(this.editorCommand("undo"));
             edit.append(getCmd(CMDS.edit_undo));
             edit.append(getCmd(CMDS.edit_redo));
-            edit.append(new gui.MenuItem({ type: "separator" }));
+            edit.append(new GUI.MenuItem({ type: "separator" }));
             edit.append(getCmd(CMDS.edit_cut));
             edit.append(getCmd(CMDS.edit_copy));
             edit.append(getCmd(CMDS.edit_paste));
-            edit.append(new gui.MenuItem({ type: "separator" }));
+            edit.append(new GUI.MenuItem({ type: "separator" }));
             edit.append(getCmd(CMDS.edit_find));
             edit.append(getCmd(CMDS.edit_findNext));
             edit.append(getCmd(CMDS.edit_findPrev));
             edit.append(getCmd(CMDS.edit_replace));
             edit.append(getCmd(CMDS.edit_replaceAll));
             
-            edit.append(new gui.MenuItem({ type: "separator" }));
+            edit.append(new GUI.MenuItem({ type: "separator" }));
             edit.append(getCmd(CMDS.edit_toggleRecording));
             edit.append(getCmd(CMDS.edit_replayMacro));
 
 
-            var source = new gui.Menu();
+            var source = new GUI.Menu();
             source.append(getCmd(CMDS.edit_toggleComment));
             source.append(getCmd(CMDS.edit_indent));
             source.append(getCmd(CMDS.edit_outdent));
-            source.append(new gui.MenuItem({ label: 'Format code', click: this.formatText }));
+            source.append(new GUI.MenuItem({ label: 'Format code', click: this.formatText }));
 
-            var refactor = new gui.Menu();
+            var refactor = new GUI.Menu();
             refactor.append(getCmd(CMDS.refactor_rename));
 
-            var navigate = new gui.Menu();
+            var navigate = new GUI.Menu();
             navigate.append(getCmd(CMDS.navigate_declaration));
             navigate.append(getCmd(CMDS.navigate_references));
             navigate.append(getCmd(CMDS.navigate_occurences));
             navigate.append(getCmd(CMDS.navigate_implementors));
 
-            var proj = new gui.Menu();
+            var proj = new GUI.Menu();
             proj.append(getCmd(CMDS.project_open));
             proj.append(getCmd(CMDS.project_close));
-            proj.append(new gui.MenuItem({ type: "separator" }));
+            proj.append(new GUI.MenuItem({ type: "separator" }));
             proj.append(getCmd(CMDS.project_build));
             proj.append(getCmd(CMDS.project_refresh));
             proj.append(getCmd(CMDS.project_properties));
 
 
-            var run = new gui.Menu();
+            var run = new GUI.Menu();
             run.append(getCmd(CMDS.project_run));
             run.append(getCmd(CMDS.project_debug));
 
 
-            var window = new gui.Menu();
-            window.append(new gui.MenuItem({ label: 'Theme', submenu: this.createThemeMenu() }));
-            window.append(new gui.MenuItem({ label: 'Font size', submenu: this.createFontSizeMenu() }));
+            var window = new GUI.Menu();
+            window.append(new GUI.MenuItem({ label: 'Theme', submenu: this.createThemeMenu() }));
+            window.append(new GUI.MenuItem({ label: 'Font size', submenu: this.createFontSizeMenu() }));
             
 
-            var help = new gui.Menu();
+            var help = new GUI.Menu();
             help.append(getCmd(CMDS.help_shortcuts));
             help.append(getCmd(CMDS.help_processInfo));
             help.append(getCmd(CMDS.help_devTools));
@@ -145,17 +145,17 @@ module Cats.Menu {
             help.append(new gui.MenuItem({ label: 'About CATS', click: this.showAbout }));
             */
 
-            menubar.append(new gui.MenuItem({ label: 'File', submenu: file }));
-            menubar.append(new gui.MenuItem({ label: 'Edit', submenu: edit }));
-            menubar.append(new gui.MenuItem({ label: 'Source', submenu: source }));
-            menubar.append(new gui.MenuItem({ label: 'Refactor', submenu: refactor }));
-            menubar.append(new gui.MenuItem({ label: 'Navigate', submenu: navigate }));
-            menubar.append(new gui.MenuItem({ label: 'Project', submenu: proj }));
-            menubar.append(new gui.MenuItem({ label: 'Run', submenu: run }));
-            menubar.append(new gui.MenuItem({ label: 'Window', submenu: window }));
-            menubar.append(new gui.MenuItem({ label: 'Help', submenu: help }));
+            menubar.append(new GUI.MenuItem({ label: 'File', submenu: file }));
+            menubar.append(new GUI.MenuItem({ label: 'Edit', submenu: edit }));
+            menubar.append(new GUI.MenuItem({ label: 'Source', submenu: source }));
+            menubar.append(new GUI.MenuItem({ label: 'Refactor', submenu: refactor }));
+            menubar.append(new GUI.MenuItem({ label: 'Navigate', submenu: navigate }));
+            menubar.append(new GUI.MenuItem({ label: 'Project', submenu: proj }));
+            menubar.append(new GUI.MenuItem({ label: 'Run', submenu: run }));
+            menubar.append(new GUI.MenuItem({ label: 'Window', submenu: window }));
+            menubar.append(new GUI.MenuItem({ label: 'Help', submenu: help }));
             
-            var win = gui.Window.get();
+            var win = GUI.Window.get();
             win.menu = menubar;
             this.menubar = menubar;
         }
@@ -228,9 +228,9 @@ module Cats.Menu {
         }
 
         createFontSizeMenu() {
-            var menu = new gui.Menu();
+            var menu = new GUI.Menu();
             this.fontSizes.forEach((size: number) => {
-                menu.append(new gui.MenuItem({
+                menu.append(new GUI.MenuItem({
                     label: size + "px",
                     click: () => { Cats.mainEditor.aceEditor.setFontSize(size + "px") }
                 }));
@@ -239,15 +239,15 @@ module Cats.Menu {
         }
 
         createThemeMenu() {
-            var menu = new gui.Menu();
+            var menu = new GUI.Menu();
             this.themes.forEach((theme) => {
                 if (theme.theme) {
-                    menu.append(new gui.MenuItem({
+                    menu.append(new GUI.MenuItem({
                         label: theme.label,
                         click: this.setThemeWrapper(theme.theme)
                     }));
                 } else {
-                    menu.append(new gui.MenuItem({
+                    menu.append(new GUI.MenuItem({
                         type: "separator"
                     }));
                 }

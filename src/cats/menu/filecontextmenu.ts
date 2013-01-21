@@ -18,11 +18,11 @@ module Cats.Menu {
 
     function createFileContextMenu() {
         // Create an empty menu
-        var ctxmenu = new gui.Menu();
+        var ctxmenu = new GUI.Menu();
         // Add some items
-        ctxmenu.append(new gui.MenuItem({ label: 'Rename', click: rename }));
-        ctxmenu.append(new gui.MenuItem({ label: 'New file', click: newFile }));
-        ctxmenu.append(new gui.MenuItem({ label: 'Delete', click: deleteFile }));
+        ctxmenu.append(new GUI.MenuItem({ label: 'Rename', click: rename }));
+        ctxmenu.append(new GUI.MenuItem({ label: 'New file', click: newFile }));
+        ctxmenu.append(new GUI.MenuItem({ label: 'Delete', click: deleteFile }));
         return ctxmenu;
     }
 
@@ -72,9 +72,10 @@ module Cats.Menu {
         isFolder: true
     }
 
-    var fileContextMenu = createFileContextMenu();
+    export function initFileContextMenu() {
+        var fileContextMenu = createFileContextMenu();
 
-    IDE.fileNavigation.addEventListener('contextmenu', function(ev: any) {
+        IDE.fileNavigation.addEventListener('contextmenu', function(ev: any) {
         var d = UI.TreeView.getValueFromElement(ev.srcElement);
         data.key = d.path;
         data.isFolder = d.isFolder;
@@ -82,7 +83,7 @@ module Cats.Menu {
         ev.preventDefault();
         fileContextMenu.popup(ev.x, ev.y);
         return false;
-    });
-
+        });
+    }
 
 }

@@ -23,7 +23,8 @@ module Cats.Commands {
     }
 
     function closeFile() {
-        Cats.mainEditor.closeSession(Cats.mainEditor.activeSession);
+        if (Cats.mainEditor.activeSession)
+            Cats.mainEditor.closeSession(Cats.mainEditor.activeSession);
     }
 
     // Close all sessions and hide the editor
@@ -52,6 +53,16 @@ module Cats.Commands {
             if (session.changed) session.persist();
         }
     }
+        
+     function saveAs() {
+        var session = Cats.mainEditor.activeSession;
+        if (session) {
+            var newName = prompt("Enter new name", session.name);
+            if (newName) {
+                Cats.project.writeTextFile(newName,session.getValue());
+            }
+        }
+    }
 
     function saveFile() {
         Cats.mainEditor.aceEditor.execCommand("save");
@@ -65,7 +76,7 @@ module Cats.Commands {
             registry({ name: CMDS.file_closeAll, label: "Close All Files", command: closeAllFiles });
             registry({ name: CMDS.file_save, label: "Save File", icon:"static/img/save_edit.gif", command: saveFile });
             registry({ name: CMDS.file_saveAll, label: "Save All", icon:"static/img/saveall_edit.gif",command: saveAll });
-            registry({ name: CMDS.file_saveAs, label: "Save As...", icon:"static/img/saveas_edit.gif", command: null });
+            registry({ name: CMDS.file_saveAs, label: "Save As...", icon:"static/img/saveas_edit.gif", command: saveAs });
         }
 
     }

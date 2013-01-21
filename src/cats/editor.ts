@@ -186,7 +186,7 @@ module Cats {
             if (elem.className !== "ace_content") return;
             this.mouseMoveTimer = setTimeout(() => {
                 session.showInfoAt(ev);
-            }, 500);
+            }, 800);
         }
 
         // Initialize the editor
@@ -209,7 +209,9 @@ module Cats {
                     win: "Ctrl-S",
                     mac: "Command-S"
                 },
-                exec: () => { this.activeSession.persist() }
+                exec: () => { 
+                    if (this.activeSession) this.activeSession.persist();                    
+                }
             }
             ]);
 
