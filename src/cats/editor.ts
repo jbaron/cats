@@ -117,11 +117,12 @@ module Cats {
             // Get the color of ace editor and use it to style the rest
 
             // Use a timeout to make sure the editor has updated its style
+            // @TODO rewrite some css rules, don't set all of these.
             setTimeout(function() {
-                var isDark = $(".ace_dark").length > 0;
+                var isDark = document.getElementsByClassName("ace_dark").length > 0;
                 var fg = isDark ? "white" : "black";
-                var elem = $(".ace_scroller");
-                var bg = elem.css("background-color");
+                var elem = <HTMLElement>document.getElementsByClassName("ace_scroller")[0];
+                var bg =  window.getComputedStyle(elem,null).backgroundColor;
                 // var fg = elem.css("color");      
                 $("html, #main, #navigator, #info, #result").css("background-color", bg);
                 $("html").css("color", fg);

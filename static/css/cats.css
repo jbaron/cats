@@ -53,7 +53,7 @@
   content: "+";
   margin-left: -2em;
   padding-right: 1.5em;
-  font-family: monospace;
+  font-family: monospace; 
 }
 
 .treeview li.opened:before {
@@ -108,7 +108,7 @@ body #center {
     background-position: 5px;
     border-width: 1px;
     height: 23px;
-    background-color: rgba(130,130,130,0.5);
+    background-color: rgba(230,230,230,0.4);
     margin-right: 2px;
     margin-top: 2px;
 }
@@ -345,7 +345,7 @@ Auto complete styling
   Icons
 ************************************************************************/
 
-.icon-method, .icon-function {
+.icon-method, .icon-function, .icon-keyword {
     background: url('../img/methpub_obj.gif') no-repeat; 
 }
 
@@ -356,7 +356,6 @@ Auto complete styling
 .icon-module{
     background: url('../img/package_obj.gif') no-repeat; 
 }
-
 
 .icon-interface{
     background: url('../img/int_obj.gif') no-repeat; 
@@ -376,10 +375,6 @@ Auto complete styling
 
 .icon-property {
     background: url('../img/property_obj.gif') no-repeat; 
-}
-
-.icon-keyword {
-    background: url('../img/type_keyword.png') no-repeat; 
 }
 
 .icon-file {

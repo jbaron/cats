@@ -22,8 +22,6 @@ Although not yet feature complete, it is getting there. Right now CATS already h
 
 - Running your application from within IDE and using the WebKit debugger to debug.
  
-- Fast and lightweight, so it runs fine on older hardware. 
-
 - Theming:
 
 <img src="https://raw.github.com/jbaron/cats/master/artifacts/themes.png" height="220px" width="850px" />
@@ -53,18 +51,18 @@ By default the "greeter" project will be loaded. In the samples directory there 
 Configuration
 =============
 CATS will look for a file in the project directory called: ".settings/config.json". If found, CATS will use the values configured in this file, otherwise it will use sensible default values.
-
 You can edit this file (or the default values if you don't have this file yet) from the main menu.
 
 
 Goals
 =====
 One of the main goals of CATS is to make the developer that is used to IDE's like Eclipse, NetBeans, Visual Studio or IntelliJ, feel right at home. So the same support you got from your IDE when you developed in Java or C#, is now available for TypeScript/JavaScript.
-
+And in order to be productive, it is also very important that an IDE is responsive. So while designing and developing CATS, performance is one of the key aspects.
+In fact, CATS runs fine on older hardware.
 
 Bugs and Issues
 ===============
-In case you encounter an issue, you can open a ticket on Github. Also feature requests can be entered here: [Github issue tracker](https://github.com/jbaron/cats/issues)
+In case you encounter an issue, you can open a ticket on Github. Also enhancement requests can be entered here: [Github issue tracker](https://github.com/jbaron/cats/issues)
 
 
 Building from source

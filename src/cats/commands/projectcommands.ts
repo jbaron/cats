@@ -47,15 +47,15 @@ module Cats.Commands {
     };
 
 
-    function showErrors(errors: any[]) {
+    function showErrors(errors: Cats.FileRange[]) {
 
         var grid = new Cats.UI.Grid();
-        grid.setColumns(["message", "scriptName", "position"]);
-        grid.setAspect("position", (data) => { return (data.range.startRow + 1) + ":" + (data.range.startColumn + 1) });
+        grid.setColumns(["message", "unitName", "position"]);
+        grid.setAspect("position", (data:FileRange) => { return (data.range.start.row + 1) + ":" + (data.range.start.column + 1) });
 
         grid.setRows(errors);
-        grid.onselect = function(data) {
-            Cats.project.editFile(data.scriptName, null, { row: data.range.startRow, column: data.range.startColumn });
+        grid.onselect = function(data:FileRange) {
+            Cats.project.editFile(data.unitName, null, data.range.start);
         };
 
         grid.render();
@@ -77,9 +77,9 @@ module Cats.Commands {
         $(compilationResultsElem).addClass("busy");
         project.iSense.perform("compile", options, (err, data:Cats.CompileResults) => {
             $(compilationResultsElem).removeClass("busy");
-            if (data.error && (data.error.length > 0)) {
+            if (data.errors && (data.errors.length > 0)) {
                 // console.log(data.error);
-                showErrors(data.error); // Bug in TS, requiring Cats.
+                showErrors(data.errors); // Bug in TS, requiring Cats.
                 return;
             }
 

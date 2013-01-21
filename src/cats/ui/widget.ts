@@ -152,6 +152,7 @@ module Cats.UI {
             this.rootElem.innerHTML = "";
             var list = this.getAspect("children");            
             list.forEach((entry) => {
+                var li = document.createElement("li");                
                 var treeNode = new TreeElement(entry);
                 treeNode.setValue(entry);
                 if (entry.isFolder) treeNode.decorate(TreeView.COLLAPSED);
@@ -163,9 +164,10 @@ module Cats.UI {
                         this.handleClick(treeNode);
                     }
                 }
-                                
+                treeNode.appendTo(li);                
+                this.rootElem.appendChild(li);                                
                 treeNode.render();
-                treeNode.appendTo(this.rootElem);                
+                
             })            
         }
         

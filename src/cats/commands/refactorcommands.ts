@@ -26,20 +26,20 @@ var Range: Ace.Range = ace.require("ace/range").Range;
             return;
         }
         var grid = Cats.UI.Grid.getGridFromElement(table);
-        var rows = grid.getRows();
+        var rows:FileRange[] = grid.getRows();
         var msg = "Going to rename " + rows.length + " instances.\nPlease enter new name";
         var newName = prompt(msg);
         if (! newName) return;
         var i = rows.length;
         while (i--) {
             var data = rows[i];
-            var session = Cats.mainEditor.getSession(data.script,Cats.project);
+            var session = Cats.mainEditor.getSession(data.unitName,Cats.project);
             if (! session) {
-                session = Cats.project.editFile(data.script);
+                session = Cats.project.editFile(data.unitName);
             }
             // console.log(session.name);
             var r = data.range;
-            var range:Ace.Range = new Range(r.startRow, r.startColumn,r.endRow,r.endColumn);
+            var range:Ace.Range = new Range(r.start.row, r.start.column,r.end.row,r.end.column);
             session.editSession.replace(range,newName);
         }
         

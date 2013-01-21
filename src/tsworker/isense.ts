@@ -42,51 +42,48 @@ module Cats.TSWorker {
 
         private maxErrors = 10;
         ls: Services.ILanguageService;
-        private typescriptLS: TypeScriptLS;
+        private lsHost: LanguageServiceHost;
 
         // Create a new TypeScript instance with projectDir as project home
         constructor() {
-            this.typescriptLS = new TypeScriptLS();
-            this.ls = this.typescriptLS.getLanguageService();
+            this.init();            
         }
 
-        reset() {
-            this.typescriptLS = new TypeScriptLS();
-            this.ls = this.typescriptLS.getLanguageService();
-        }
-
-
-        createWriter() {
-            var output = "";
-            return {
-                Write: function(s) { output += s; },
-                WriteLine: function(s) { output += s + "\n"; },
-                Close: function() { },
-                Get: function() { return output }
-            };
+        init() {
+            this.lsHost = new LanguageServiceHost();
+            this.ls = new Services.TypeScriptServicesFactory().createLanguageService(this.lsHost);
+            this.ls.refresh();
         }
 
 
-        createVirtualFiles(path: string, useUTF8?: bool) {
-            var output = "";
-            var result = {
-                Write: function(s) { output += s; },
-                WriteLine: function(s) { output += s + "\n"; },
-                Close: function() { },
-                Get: function() { return output }
-            };
-            outputFiles[path] = result;
+         //
+        // line and column are 1-based
+        //
+        private lineColToPosition(fileName: string, line: number, col: number): number {
+            var script = this.ls.getScriptAST(fileName);
+            return TypeScript.getPositionFromLineColumn(script, line, col);
+        }
+
+        //
+        // line and column are 1-based
+        //
+        private positionToLineCol(fileName: string, position: number): TypeScript.ILineCol {
+            var script = this.ls.getScriptAST(fileName);
+            var result = TypeScript.getLineColumnFromPosition(script, position);
+
             return result;
         }
 
+    
+
         // Get the name of a script based on its index
-        getUnitName(index: number): string {
-            return this.typescriptLS.scripts[index].name;
+        private getUnitName(index: number): string {
+            return this.lsHost.scripts[index].name;
         }
 
         // Convert a TS offset to Ace position
         getCursor(name: string, chars: number): Ace.Position {
-            var tsCursor = this.typescriptLS.positionToLineCol(name, chars);
+            var tsCursor = this.positionToLineCol(name, chars);
             var result = {
                 row: tsCursor.line - 1,
                 column: tsCursor.col - 1
@@ -94,21 +91,23 @@ module Cats.TSWorker {
             return result;
         }
 
-        getDefinitionAtPosition(fileName: string, pos: Ace.Position) {
+        getDefinitionAtPosition(fileName: string, pos: Ace.Position):Cats.FileRange {
             var chars = this.getPositionFromCursor(fileName, pos);
-            var info = this.ls.getDefinitionAtPosition(fileName, chars);
+            var info = this.ls.getDefinitionAtPosition(fileName, chars);        
             if (info) {
                 var unitName = this.getUnitName(info.unitIndex);
-                info["unitName"] = unitName;
-                info["startPos"] = this.getCursor(unitName, info.minChar);
-                info["endPos"] = this.getCursor(unitName, info.limChar);
+                return {
+                    unitName: unitName,
+                    range: this.getRange(unitName,info.minChar,info.limChar)                    
+                };
+            } else {
+                return null;
             }
-            return info;
         }
 
 
-        private convertErrors(errors: TypeScript.ErrorEntry[]) :Cats.ErrorEntry[]{
-            var result:Cats.ErrorEntry[] = []
+        private convertErrors(errors: TypeScript.ErrorEntry[]) :Cats.FileRange[]{
+            var result:Cats.FileRange[] = []
             errors.forEach((error) => {
                 var scriptName = this.getUnitName(error.unitIndex);
                 var r = this.getRange(scriptName, error.minChar, error.limChar);
@@ -123,7 +122,7 @@ module Cats.TSWorker {
 
 
         compile(options): Cats.CompileResults {
-            var scripts = this.typescriptLS.scripts;
+            var scripts = this.lsHost.scripts;
             var result = {}
             scripts.forEach((script) => {
                 var files = this.ls.getEmitOutput(script.name);
@@ -136,13 +135,11 @@ module Cats.TSWorker {
             
             return {
                 source: result,
-                error: this.convertErrors(errors)
+                errors: this.convertErrors(errors)
             };
         }
 
-        setCompilationSettings(options) {
-            // return;
-            // ToDO figure out why this doesn't work
+        setCompilationSettings(options:any) {
             var compOptions = new TypeScript.CompilationSettings();
 
             // Do a quick mixin
@@ -150,77 +147,24 @@ module Cats.TSWorker {
                 compOptions[i] = options[i];
             }
 
-            this.typescriptLS.setCompilationSettings(compOptions);
+            this.lsHost.setCompilationSettings(compOptions);
         }
 
 
-        /*
-            compile_old(options){
-        
-                var outfile = this.createWriter();
-                var outerr = this.createWriter();
-        
-                // TODO recursive mixin
-                var compOptions = new TypeScript.CompilationSettings();
-                for (var i in options) {
-                    compOptions[i] = options[i];
-                } 
-        
-                try {
-                    var compiler = new TypeScript.TypeScriptCompiler(outerr, new TypeScript.NullLogger(), compOptions);
-                    var scripts = this.typescriptLS.scripts;
-                    scripts.forEach( (script) =>{
-                        compiler.addUnit(script.content, script.name, false);
-                    })
-                    
-                    outputFiles = {};
-                    compiler.typeCheck();
-                    
-                    // compiler.emit(false, function (name) {});
-                    // public emit(createFile: (path: string, useUTF8?: bool) => ITextWriter): void;
-        
-                    compiler.emit(this.createVirtualFiles);
-                    var resultSource = {}
-                    for ( var file in outputFiles) {
-                        resultSource[file] = outputFiles[file].Get();
-                    }
-        
-                    // compiler.emitToOutfile(outfile);
-                    // var error = this.structureErrors(outerr.Get());
-        
-                    return {
-                        source: resultSource, // outfile.Get(),
-                        error: outerr.Get()
-                    };
-        
-                } catch(err) {
-                    var msg = err.stack;
-                    var prefix = "SyntaxError: ";
-                    if (msg.indexOf(prefix) === 0) {
-                        return {
-                            error: msg.substring(prefix.length)
-                        };
-                    }
-                    throw err;    
-                }     
-            }
-        
-        */
-
-
+     
         // Get the filenames of the scripts
         getScriptIds(): string[] {
-            var count = this.typescriptLS.getScriptCount();
+            var count = this.lsHost.getScriptCount();
             var result = [];
             for (var i = 0; i < count; i++) {
-                result.push(this.typescriptLS.getScriptId(i));
+                result.push(this.lsHost.getScriptId(i));
             }
             return result;
         }
 
 
         getScriptContent(id: string): string {
-            var scripts = this.typescriptLS.scripts;
+            var scripts = this.lsHost.scripts;
             var i = scripts.length;
             while (i--) {
                 if (scripts[i].name === id) return scripts[i].content;
@@ -228,7 +172,7 @@ module Cats.TSWorker {
         }
 
         getIndex(id: string): number {
-            var scripts = this.typescriptLS.scripts;
+            var scripts = this.lsHost.scripts;
             var i = scripts.length;
             while (i--) {
                 if (scripts[i].name === id) return i;
@@ -237,24 +181,7 @@ module Cats.TSWorker {
         }
 
 
-        // Get the script name and content
-        getScript(id: string);
-        getScript(index: number);
-        getScript(index) {
-            if (typeof index === "string") {
-                index = this.getIndex(index);
-            }
-
-            var script = this.typescriptLS.scripts[index];
-
-            return {
-                content: script.content,
-                name: script.name
-            }
-        }
-
-
-        splice(str, start, max, replacement) {
+        private splice(str, start, max, replacement) {
             return str.substring(0, start) + replacement + str.substring(max);
         }
 
@@ -281,12 +208,12 @@ module Cats.TSWorker {
 
         // Add a new script
         addScript(name: string, source: string, resident?: bool) {
-            this.typescriptLS.addScript(name, source, resident);
+            this.lsHost.addScript(name, source, resident);
         }
 
 
         // Get the know errors in a script
-        getErrors(fileName: string) : Cats.ErrorEntry[]{
+        getErrors(fileName: string) : Cats.FileRange[]{
             var result = [];
             var errors;
             if (fileName)
@@ -301,34 +228,26 @@ module Cats.TSWorker {
 
         // updated the content of a script
         updateScript(fileName: string, src: string) {
-            this.typescriptLS.updateScript(fileName, src, false);
-            // if (getErrors) return this.getErrors(fileName);
+            this.lsHost.updateScript(fileName, src, false);
         }
 
         // Get an Ace Range from TS minChars and limChars
-        getRange(script: string, minChar: number, limChar: number):Cats.Range {
-            var startLC = this.typescriptLS.positionToLineCol(script, minChar);
-            var endLC = this.typescriptLS.positionToLineCol(script, limChar);
+        private getRange(script: string, minChar: number, limChar: number):Cats.Range {
+            var startLC = this.positionToLineCol(script, minChar);
+            var endLC = this.positionToLineCol(script, limChar);
             var result = {
-                startRow: startLC.line - 1,
-                startColumn: startLC.col - 1,
-                endRow: endLC.line - 1,
-                endColumn: endLC.col - 1
+                start : {
+                    row: startLC.line - 1,
+                    column: startLC.col - 1
+                },
+                end : {
+                    row: endLC.line - 1,
+                    column: endLC.col - 1
+                }
             };
             return result;
         }
-
-
-        // Get the chars based position on the coordinates
-        private getPosition(fileName: string, coord): number {
-            var script = this.ls.getScriptAST(fileName);
-            var lineMap = script.locationInfo.lineMap;
-
-            // Determine the position
-            var pos = lineMap[coord.line] + coord.col;
-            return pos;
-        }
-
+       
         // Get the chars offset based on the Ace position
         private getPositionFromCursor(fileName: string, cursor: Ace.Position): number {
             var script = this.ls.getScriptAST(fileName);
@@ -392,17 +311,17 @@ module Cats.TSWorker {
 
 
         // generic wrapper for info at a certain position 
-        public getInfoAtPosition(method: string, filename: string, cursor: Ace.Position) {
+        public getInfoAtPosition(method: string, filename: string, cursor: Ace.Position): Cats.FileRange[] {
             var pos = this.getPositionFromCursor(filename, cursor);
-            var result = [];
+            var result:Cats.FileRange[] = [];
             var entries: Services.ReferenceEntry[] = this.ls[method](filename, pos);
             for (var i = 0; i < entries.length; i++) {
                 var ref = entries[i];
-                var name = this.typescriptLS.scripts[ref.unitIndex].name;
+                var name = this.lsHost.scripts[ref.unitIndex].name;
                 result.push({
-                    script: name,
+                    unitName: name,
                     range: this.getRange(name, ref.ast.minChar, ref.ast.limChar),
-                    description: this.getLine(name, ref.ast.minChar, ref.ast.limChar)
+                    message: this.getLine(name, ref.ast.minChar, ref.ast.limChar)
                 });
             }
             return result;

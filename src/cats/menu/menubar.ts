@@ -162,7 +162,7 @@ module Cats.Menu {
 
 
         // TODO i18n
-        getLabelForCommand(commandName: string) {
+        private getLabelForCommand(commandName: string) {
             var label = commandName[0].toUpperCase() + commandName.slice(1);
             var platform = Cats.mainEditor.aceEditor.commands.platform;
             var command = Cats.mainEditor.aceEditor.commands.byName[commandName];
@@ -179,7 +179,7 @@ module Cats.Menu {
 
         
      
-        formatText() {
+        private formatText() {
             var session = Cats.mainEditor.activeSession;
             session.project.iSense.perform("getFormattedTextForRange", session.name, 0, session.getValue().length, (err, result) => {
                 if (!err) session.setValue(result);
@@ -189,7 +189,7 @@ module Cats.Menu {
 
 
 
-        nop() {
+        private nop() {
             alert("Not yet implemented");
         };
 
@@ -203,16 +203,16 @@ module Cats.Menu {
             //  man.redo();
             //}
 
-        enableFind() {
+        private enableFind() {
             window.open('findreplace.html', '_blank');
         }
 
-        actionFind() {
+        private actionFind() {
             var input = <HTMLInputElement>document.getElementById("findText");
             Cats.mainEditor.aceEditor.find(input.value, {}, true);
         }
 
-        actionReplace() {
+        private actionReplace() {
             var findText = <HTMLInputElement>document.getElementById("findText");
             var replaceText = <HTMLInputElement>document.getElementById("replaceText");
             var options = {
@@ -221,13 +221,13 @@ module Cats.Menu {
             Cats.mainEditor.aceEditor.replace(replaceText.value, options);
         }
 
-        setThemeWrapper(theme) {
+        private setThemeWrapper(theme) {
             return function setTheme() {
                 Cats.mainEditor.setTheme(theme);
             }
         }
 
-        createFontSizeMenu() {
+        private createFontSizeMenu() {
             var menu = new GUI.Menu();
             this.fontSizes.forEach((size: number) => {
                 menu.append(new GUI.MenuItem({
@@ -238,7 +238,7 @@ module Cats.Menu {
             return menu;
         }
 
-        createThemeMenu() {
+        private createThemeMenu() {
             var menu = new GUI.Menu();
             this.themes.forEach((theme) => {
                 if (theme.theme) {
@@ -255,7 +255,7 @@ module Cats.Menu {
             return menu;
         }
 
-        enableReplace() {
+        private enableReplace() {
             document.getElementById("findArea").style.display = "block";
             document.getElementById("replaceArea").style.display = "block";
         }

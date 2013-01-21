@@ -33,7 +33,7 @@ module TypeScript {
         private _warning;
         private _error;
         private _fatal;
-        constructor (logger: ILogger);
+        constructor(logger: ILogger);
         public information(): bool;
         public debug(): bool;
         public warning(): bool;
@@ -222,6 +222,7 @@ module TypeScript {
         ClassMethod,
         ClassPropertyMethodExported,
         HasSuperReferenceInFatArrowFunction,
+        IsPropertyBound,
     }
     enum SignatureFlags {
         None,
@@ -390,7 +391,7 @@ module TypeScript {
         public hasOwnProperty;
         public propertyIsEnumerable;
         public isPrototypeOf;
-        constructor ();
+        constructor();
     }
     interface IHashTable {
         getAllKeys(): string[];
@@ -418,7 +419,7 @@ module TypeScript {
         public primaryTable: IHashTable;
         public secondaryTable: IHashTable;
         public insertPrimary: bool;
-        constructor (primaryTable: IHashTable, secondaryTable: IHashTable);
+        constructor(primaryTable: IHashTable, secondaryTable: IHashTable);
         public getAllKeys(): string[];
         public add(key: string, data): bool;
         public addOrUpdate(key: string, data): bool;
@@ -434,7 +435,7 @@ module TypeScript {
         public key;
         public data;
         public next: HashEntry;
-        constructor (key, data);
+        constructor(key, data);
     }
     class HashTable {
         public size: number;
@@ -442,7 +443,7 @@ module TypeScript {
         public equalsFn: (key1: any, key2: any) => bool;
         public itemCount: number;
         public table: HashEntry[];
-        constructor (size: number, hashFn: (key: any) => number, equalsFn: (key1: any, key2: any) => bool);
+        constructor(size: number, hashFn: (key: any) => number, equalsFn: (key1: any, key2: any) => bool);
         public add(key, data): bool;
         public remove(key);
         public count(): number;
@@ -472,7 +473,7 @@ module TypeScript {
         public postComments: Comment[];
         private docComments;
         public isParenthesized: bool;
-        constructor (nodeType: NodeType);
+        constructor(nodeType: NodeType);
         public isExpression(): bool;
         public isStatementOrExpression(): bool;
         public isCompoundStatement(): bool;
@@ -489,12 +490,12 @@ module TypeScript {
         public getDocComments(): Comment[];
     }
     class IncompleteAST extends AST {
-        constructor (min: number, lim: number);
+        constructor(min: number, lim: number);
     }
     class ASTList extends AST {
         public enclosingScope: SymbolScope;
         public members: AST[];
-        constructor ();
+        constructor();
         public addToControlFlow(context: ControlFlowContext): void;
         public append(ast: AST): ASTList;
         public appendAll(ast: AST): ASTList;
@@ -507,7 +508,7 @@ module TypeScript {
         public sym: Symbol;
         public cloId: number;
         public text: string;
-        constructor (actualText: string, hasEscapeSequence?: bool);
+        constructor(actualText: string, hasEscapeSequence?: bool);
         public setText(actualText: string, hasEscapeSequence?: bool): void;
         public isMissing(): bool;
         public isLeaf(): bool;
@@ -518,19 +519,19 @@ module TypeScript {
         static fromToken(token: Token): Identifier;
     }
     class MissingIdentifier extends Identifier {
-        constructor ();
+        constructor();
         public isMissing(): bool;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
     }
     class Label extends AST {
         public id: Identifier;
-        constructor (id: Identifier);
+        constructor(id: Identifier);
         public printLabel(): string;
         public typeCheck(typeFlow: TypeFlow): Label;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
     }
     class Expression extends AST {
-        constructor (nodeType: NodeType);
+        constructor(nodeType: NodeType);
         public isExpression(): bool;
         public isStatementOrExpression(): bool;
     }
@@ -538,7 +539,7 @@ module TypeScript {
         public operand: AST;
         public targetType: Type;
         public castTerm: AST;
-        constructor (nodeType: NodeType, operand: AST);
+        constructor(nodeType: NodeType, operand: AST);
         public addToControlFlow(context: ControlFlowContext): void;
         public typeCheck(typeFlow: TypeFlow): AST;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
@@ -546,7 +547,7 @@ module TypeScript {
     class CallExpression extends Expression {
         public target: AST;
         public arguments: ASTList;
-        constructor (nodeType: NodeType, target: AST, arguments: ASTList);
+        constructor(nodeType: NodeType, target: AST, arguments: ASTList);
         public signature: Signature;
         public typeCheck(typeFlow: TypeFlow): AST;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
@@ -554,7 +555,7 @@ module TypeScript {
     class BinaryExpression extends Expression {
         public operand1: AST;
         public operand2: AST;
-        constructor (nodeType: NodeType, operand1: AST, operand2: AST);
+        constructor(nodeType: NodeType, operand1: AST, operand2: AST);
         public typeCheck(typeFlow: TypeFlow): AST;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
     }
@@ -562,14 +563,14 @@ module TypeScript {
         public operand1: AST;
         public operand2: AST;
         public operand3: AST;
-        constructor (operand1: AST, operand2: AST, operand3: AST);
+        constructor(operand1: AST, operand2: AST, operand3: AST);
         public typeCheck(typeFlow: TypeFlow): ConditionalExpression;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
     }
     class NumberLiteral extends Expression {
         public value: number;
         public hasEmptyFraction: bool;
-        constructor (value: number, hasEmptyFraction?: bool);
+        constructor(value: number, hasEmptyFraction?: bool);
         public isNegativeZero: bool;
         public typeCheck(typeFlow: TypeFlow): NumberLiteral;
         public treeViewLabel(): string;
@@ -578,20 +579,20 @@ module TypeScript {
     }
     class RegexLiteral extends Expression {
         public regex;
-        constructor (regex);
+        constructor(regex);
         public typeCheck(typeFlow: TypeFlow): RegexLiteral;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
     }
     class StringLiteral extends Expression {
         public text: string;
-        constructor (text: string);
+        constructor(text: string);
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): StringLiteral;
         public treeViewLabel(): string;
         public printLabel(): string;
     }
     class ModuleElement extends AST {
-        constructor (nodeType: NodeType);
+        constructor(nodeType: NodeType);
     }
     class ImportDeclaration extends ModuleElement {
         public id: Identifier;
@@ -600,7 +601,7 @@ module TypeScript {
         public varFlags: VarFlags;
         public isDynamicImport: bool;
         public isDeclaration(): bool;
-        constructor (id: Identifier, alias: AST);
+        constructor(id: Identifier, alias: AST);
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): ImportDeclaration;
         public getAliasName(aliasAST?: AST): string;
@@ -614,7 +615,7 @@ module TypeScript {
         public varFlags: VarFlags;
         public sym: Symbol;
         public isDeclaration(): bool;
-        constructor (id: Identifier, nodeType: NodeType, nestingLevel: number);
+        constructor(id: Identifier, nodeType: NodeType, nestingLevel: number);
         public isStatementOrExpression(): bool;
         public isPrivate(): bool;
         public isPublic(): bool;
@@ -623,7 +624,7 @@ module TypeScript {
         public printLabel();
     }
     class VarDecl extends BoundDecl {
-        constructor (id: Identifier, nest: number);
+        constructor(id: Identifier, nest: number);
         public isAmbient(): bool;
         public isExported(): bool;
         public isStatic(): bool;
@@ -631,7 +632,7 @@ module TypeScript {
         public treeViewLabel(): string;
     }
     class ArgDecl extends BoundDecl {
-        constructor (id: Identifier);
+        constructor(id: Identifier);
         public isOptional: bool;
         public isOptionalArg();
         public treeViewLabel(): string;
@@ -672,7 +673,7 @@ module TypeScript {
         public scopeType: Type;
         public endingToken: ASTSpan;
         public isDeclaration(): bool;
-        constructor (name: Identifier, bod: ASTList, isConstructor: bool, arguments: ASTList, vars: ASTList, scopes: ASTList, statics: ASTList, nodeType: number);
+        constructor(name: Identifier, bod: ASTList, isConstructor: bool, arguments: ASTList, vars: ASTList, scopes: ASTList, statics: ASTList, nodeType: number);
         public internalName(): string;
         public hasSelfReference(): bool;
         public setHasSelfReference(): void;
@@ -706,7 +707,7 @@ module TypeScript {
         public filename: string;
         public lineMap: number[];
         public unitIndex;
-        constructor (filename: string, lineMap: number[], unitIndex);
+        constructor(filename: string, lineMap: number[], unitIndex);
     }
     var unknownLocationInfo: LocationInfo;
     class Script extends FuncDecl {
@@ -726,10 +727,10 @@ module TypeScript {
         public containsUnicodeCharInComment: bool;
         public cachedEmitRequired: bool;
         private setCachedEmitRequired(value);
-        constructor (vars: ASTList, scopes: ASTList);
+        constructor(vars: ASTList, scopes: ASTList);
         public typeCheck(typeFlow: TypeFlow): Script;
         public treeViewLabel(): string;
-        public emitRequired(): bool;
+        public emitRequired(emitOptions: EmitOptions): bool;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         private externallyVisibleImportedSymbols;
         public AddExternallyVisibleImportedSymbol(symbol: Symbol, checker: TypeChecker): void;
@@ -741,7 +742,7 @@ module TypeScript {
         public leftCurlyCount: number;
         public rightCurlyCount: number;
         public isDeclaration(): bool;
-        constructor (nodeType: NodeType, name: Identifier, members: ASTList);
+        constructor(nodeType: NodeType, name: Identifier, members: ASTList);
     }
     class ModuleDeclaration extends NamedDeclaration {
         public endingToken: ASTSpan;
@@ -753,7 +754,7 @@ module TypeScript {
         public scopes: ASTList;
         public containsUnicodeChar: bool;
         public containsUnicodeCharInComment: bool;
-        constructor (name: Identifier, members: ASTList, vars: ASTList, scopes: ASTList, endingToken: ASTSpan);
+        constructor(name: Identifier, members: ASTList, vars: ASTList, scopes: ASTList, endingToken: ASTSpan);
         public isExported(): bool;
         public isAmbient(): bool;
         public isEnum(): bool;
@@ -765,7 +766,7 @@ module TypeScript {
         public extendsList: ASTList;
         public implementsList: ASTList;
         public varFlags: VarFlags;
-        constructor (nodeType: NodeType, name: Identifier, extendsList: ASTList, implementsList: ASTList, members: ASTList);
+        constructor(nodeType: NodeType, name: Identifier, extendsList: ASTList, implementsList: ASTList, members: ASTList);
         public isExported(): bool;
         public isAmbient(): bool;
     }
@@ -774,17 +775,17 @@ module TypeScript {
         public constructorDecl: FuncDecl;
         public constructorNestingLevel: number;
         public endingToken: ASTSpan;
-        constructor (name: Identifier, members: ASTList, extendsList: ASTList, implementsList: ASTList);
+        constructor(name: Identifier, members: ASTList, extendsList: ASTList, implementsList: ASTList);
         public typeCheck(typeFlow: TypeFlow): ClassDeclaration;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
     }
     class InterfaceDeclaration extends TypeDeclaration {
-        constructor (name: Identifier, members: ASTList, extendsList: ASTList, implementsList: ASTList);
+        constructor(name: Identifier, members: ASTList, extendsList: ASTList, implementsList: ASTList);
         public typeCheck(typeFlow: TypeFlow): InterfaceDeclaration;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
     }
     class Statement extends ModuleElement {
-        constructor (nodeType: NodeType);
+        constructor(nodeType: NodeType);
         public isLoop(): bool;
         public isStatementOrExpression(): bool;
         public isCompoundStatement(): bool;
@@ -793,7 +794,7 @@ module TypeScript {
     class LabeledStatement extends Statement {
         public labels: ASTList;
         public stmt: AST;
-        constructor (labels: ASTList, stmt: AST);
+        constructor(labels: ASTList, stmt: AST);
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): LabeledStatement;
         public addToControlFlow(context: ControlFlowContext): void;
@@ -801,7 +802,7 @@ module TypeScript {
     class Block extends Statement {
         public statements: ASTList;
         public isStatementBlock: bool;
-        constructor (statements: ASTList, isStatementBlock: bool);
+        constructor(statements: ASTList, isStatementBlock: bool);
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public addToControlFlow(context: ControlFlowContext): void;
         public typeCheck(typeFlow: TypeFlow): Block;
@@ -810,7 +811,7 @@ module TypeScript {
         public target: string;
         public hasExplicitTarget(): string;
         public resolvedTarget: Statement;
-        constructor (nodeType: NodeType);
+        constructor(nodeType: NodeType);
         public setResolvedTarget(parser: Parser, stmt: Statement): bool;
         public addToControlFlow(context: ControlFlowContext): void;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
@@ -818,7 +819,7 @@ module TypeScript {
     class WhileStatement extends Statement {
         public cond: AST;
         public body: AST;
-        constructor (cond: AST);
+        constructor(cond: AST);
         public isLoop(): bool;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): WhileStatement;
@@ -829,7 +830,7 @@ module TypeScript {
         public whileAST: AST;
         public cond: AST;
         public isLoop(): bool;
-        constructor ();
+        constructor();
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): DoWhileStatement;
         public addToControlFlow(context: ControlFlowContext): void;
@@ -839,7 +840,7 @@ module TypeScript {
         public thenBod: AST;
         public elseBod: AST;
         public statement: ASTSpan;
-        constructor (cond: AST);
+        constructor(cond: AST);
         public isCompoundStatement(): bool;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): IfStatement;
@@ -847,18 +848,18 @@ module TypeScript {
     }
     class ReturnStatement extends Statement {
         public returnExpression: AST;
-        constructor ();
+        constructor();
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public addToControlFlow(context: ControlFlowContext): void;
         public typeCheck(typeFlow: TypeFlow): ReturnStatement;
     }
     class EndCode extends AST {
-        constructor ();
+        constructor();
     }
     class ForInStatement extends Statement {
         public lval: AST;
         public obj: AST;
-        constructor (lval: AST, obj: AST);
+        constructor(lval: AST, obj: AST);
         public statement: ASTSpan;
         public body: AST;
         public isLoop(): bool;
@@ -872,7 +873,7 @@ module TypeScript {
         public cond: AST;
         public body: AST;
         public incr: AST;
-        constructor (init: AST);
+        constructor(init: AST);
         public isLoop(): bool;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): ForStatement;
@@ -883,7 +884,7 @@ module TypeScript {
         public body: AST;
         public isCompoundStatement(): bool;
         public withSym: WithSymbol;
-        constructor (expr: AST);
+        constructor(expr: AST);
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): WithStatement;
     }
@@ -892,7 +893,7 @@ module TypeScript {
         public caseList: ASTList;
         public defaultCase: CaseStatement;
         public statement: ASTSpan;
-        constructor (val: AST);
+        constructor(val: AST);
         public isCompoundStatement(): bool;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): SwitchStatement;
@@ -901,7 +902,7 @@ module TypeScript {
     class CaseStatement extends Statement {
         public expr: AST;
         public body: ASTList;
-        constructor ();
+        constructor();
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): CaseStatement;
         public addToControlFlow(context: ControlFlowContext): void;
@@ -909,14 +910,14 @@ module TypeScript {
     class TypeReference extends AST {
         public term: AST;
         public arrayCount: number;
-        constructor (term: AST, arrayCount: number);
+        constructor(term: AST, arrayCount: number);
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): TypeReference;
     }
     class TryFinally extends Statement {
         public tryNode: AST;
         public finallyNode: Finally;
-        constructor (tryNode: AST, finallyNode: Finally);
+        constructor(tryNode: AST, finallyNode: Finally);
         public isCompoundStatement(): bool;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): TryFinally;
@@ -925,7 +926,7 @@ module TypeScript {
     class TryCatch extends Statement {
         public tryNode: Try;
         public catchNode: Catch;
-        constructor (tryNode: Try, catchNode: Catch);
+        constructor(tryNode: Try, catchNode: Catch);
         public isCompoundStatement(): bool;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public addToControlFlow(context: ControlFlowContext): void;
@@ -933,7 +934,7 @@ module TypeScript {
     }
     class Try extends Statement {
         public body: AST;
-        constructor (body: AST);
+        constructor(body: AST);
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): Try;
         public addToControlFlow(context: ControlFlowContext): void;
@@ -941,7 +942,7 @@ module TypeScript {
     class Catch extends Statement {
         public param: VarDecl;
         public body: AST;
-        constructor (param: VarDecl, body: AST);
+        constructor(param: VarDecl, body: AST);
         public statement: ASTSpan;
         public containedScope: SymbolScope;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
@@ -950,7 +951,7 @@ module TypeScript {
     }
     class Finally extends Statement {
         public body: AST;
-        constructor (body: AST);
+        constructor(body: AST);
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public addToControlFlow(context: ControlFlowContext): void;
         public typeCheck(typeFlow: TypeFlow): Finally;
@@ -963,24 +964,24 @@ module TypeScript {
         public minLine: number;
         public limLine: number;
         private docCommentText;
-        constructor (content: string, isBlockComment: bool, endsLine);
+        constructor(content: string, isBlockComment: bool, endsLine);
         public getText(): string[];
         public isDocComment(): bool;
         public getDocCommentText(): string;
-        static consumeLeadingSpace(line: string, startIndex: number): number;
+        static consumeLeadingSpace(line: string, startIndex: number, maxSpacesToRemove?: number): number;
         static isSpaceChar(line: string, index: number): bool;
-        static cleanDocCommentLine(line: string, jsDocStyleComment: bool): {
+        static cleanDocCommentLine(line: string, jsDocStyleComment: bool, jsDocLineSpaceToRemove?: number): {
             minChar: number;
             limChar: number;
+            jsDocSpacesRemoved: number;
         };
-        static cleanJSDocComment(content: string): string;
-        static cleanVSDocComment(content: string): string;
+        static cleanJSDocComment(content: string, spacesToRemove?: number): string;
         static getDocCommentText(comments: Comment[]): string;
         static getParameterDocCommentText(param: string, fncDocComments: Comment[]): string;
         static getDocCommentTextOfSignatures(signatures: Signature[]): string;
     }
     class DebuggerStatement extends Statement {
-        constructor ();
+        constructor();
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
     }
 }
@@ -1004,7 +1005,7 @@ module TypeScript {
     }
     class AstWalkerFactory {
         private childrenWalkers;
-        constructor ();
+        constructor();
         public walk(ast: AST, pre: IAstWalkCallback, post?: IAstWalkCallback, options?: AstWalkOptions, state?: any): AST;
         public getWalker(pre: IAstWalkCallback, post?: IAstWalkCallback, options?: AstWalkOptions, state?: any): IAstWalker;
         private getSlowWalker(pre, post?, options?, state?);
@@ -1208,7 +1209,7 @@ module TypeScript {
 module TypeScript {
     class AstLogger {
         public logger: ILogger;
-        constructor (logger: ILogger);
+        constructor(logger: ILogger);
         public logScript(script: Script): void;
         public logNode(script: Script, cur: AST, indent: number): void;
         private logComments(script, comments, indent);
@@ -1220,7 +1221,7 @@ module TypeScript {
 module TypeScript {
     class Binder {
         public checker: TypeChecker;
-        constructor (checker: TypeChecker);
+        constructor(checker: TypeChecker);
         public resolveBaseTypeLinks(typeLinks: TypeLink[], scope: SymbolScope): Type[];
         public resolveBases(scope: SymbolScope, type: Type): void;
         public resolveSignatureGroup(signatureGroup: SignatureGroup, scope: SymbolScope, instanceType: Type): void;
@@ -1238,6 +1239,7 @@ module TypeScript {
         };
     }
 }
+var JSON2: any;
 module TypeScript {
     class SourceMapPosition {
         public sourceLine: number;
@@ -1262,7 +1264,7 @@ module TypeScript {
         public currentNameIndex: number[];
         public jsFileName: string;
         public tsFileName: string;
-        constructor (tsFileName: string, jsFileName: string, jsFile: ITextWriter, sourceMapOut: ITextWriter, errorReporter: ErrorReporter);
+        constructor(tsFileName: string, jsFileName: string, jsFile: ITextWriter, sourceMapOut: ITextWriter, errorReporter: ErrorReporter);
         static EmitSourceMapping(allSourceMappers: SourceMapper[]): void;
     }
 }
@@ -1283,7 +1285,7 @@ module TypeScript {
         public pretty: bool;
         public inObjectLiteral: bool;
         public container: EmitContainer;
-        constructor ();
+        constructor();
     }
     class EmitOptions {
         public minWhitespace: bool;
@@ -1293,7 +1295,7 @@ module TypeScript {
         public ioHost: EmitterIOHost;
         public outputMany: bool;
         public commonDirectoryPath: string;
-        constructor (settings: CompilationSettings);
+        constructor(settings: CompilationSettings);
         public mapOutputFileName(fileName: string, extensionChanger: (fname: string, wholeFileNameReplaced: bool) => string): string;
     }
     class Indenter {
@@ -1325,7 +1327,7 @@ module TypeScript {
         public sourceMapper: SourceMapper;
         public captureThisStmtString: string;
         private varListCountStack;
-        constructor (checker: TypeChecker, emittingFileName: string, outfile: ITextWriter, emitOptions: EmitOptions, errorReporter: ErrorReporter);
+        constructor(checker: TypeChecker, emittingFileName: string, outfile: ITextWriter, emitOptions: EmitOptions, errorReporter: ErrorReporter);
         public setSourceMappings(mapper: SourceMapper): void;
         public writeToOutput(s: string): void;
         public writeToOutputTrimmable(s: string): void;
@@ -1394,7 +1396,7 @@ module TypeScript {
         public hasErrors: bool;
         public pushToErrorSink: bool;
         public errorSink: string[];
-        constructor (outfile: ITextWriter);
+        constructor(outfile: ITextWriter);
         public getCapturedErrors(): string[];
         public freeCapturedErrors(): void;
         public captureError(emsg: string): void;
@@ -1456,7 +1458,7 @@ module TypeScript {
     class QuickParseResult {
         public Script: Script;
         public endLexState: LexState;
-        constructor (Script: Script, endLexState: LexState);
+        constructor(Script: Script, endLexState: LexState);
     }
     class Parser {
         private varLists;
@@ -1573,7 +1575,7 @@ module TypeScript {
         public indent1: string;
         public indentStrings: string[];
         public indentAmt: number;
-        constructor (outfile: ITextWriter, parser: Parser);
+        constructor(outfile: ITextWriter, parser: Parser);
         public increaseIndent(): void;
         public decreaseIndent(): void;
         public startLine(): void;
@@ -1677,7 +1679,7 @@ module TypeScript {
     }
     class StringSourceText implements ISourceText {
         public text: string;
-        constructor (text: string);
+        constructor(text: string);
         public getText(start: number, end: number): string;
         public getLength(): number;
     }
@@ -1685,14 +1687,14 @@ module TypeScript {
         public segmentStart: number;
         public segmentEnd: number;
         public segment: string;
-        constructor (segmentStart: number, segmentEnd: number, segment: string);
+        constructor(segmentStart: number, segmentEnd: number, segment: string);
         public charCodeAt(index: number): number;
         public substring(start: number, end: number): string;
     }
     class AggerateSourceTextSegment implements ISourceTextSegment {
         public seg1: SourceTextSegment;
         public seg2: SourceTextSegment;
-        constructor (seg1: SourceTextSegment, seg2: SourceTextSegment);
+        constructor(seg1: SourceTextSegment, seg2: SourceTextSegment);
         public charCodeAt(index: number): number;
         public substring(start: number, end: number): string;
     }
@@ -1705,7 +1707,7 @@ module TypeScript {
         static emptySegment: SourceTextSegment;
         public agg: AggerateSourceTextSegment;
         public len: number;
-        constructor (sourceText: ISourceText);
+        constructor(sourceText: ISourceText);
         public max(a: number, b: number): number;
         public min(a: number, b: number): number;
         public fetchSegment(start: number, end: number): ISourceTextSegment;
@@ -1798,7 +1800,7 @@ module TypeScript {
         public seenUnicodeChar: bool;
         public seenUnicodeCharInComment: bool;
         private reportError;
-        constructor ();
+        constructor();
         private prevTok;
         public previousToken(): Token;
         public setSourceText(newSrc: ISourceText, textMode: number): void;
@@ -1855,7 +1857,7 @@ module TypeScript {
         public scopeChain: ScopeChain;
         public typeFlow: TypeFlow;
         public modDeclChain: ModuleDeclaration[];
-        constructor (scopeChain: ScopeChain, typeFlow: TypeFlow, modDeclChain: ModuleDeclaration[]);
+        constructor(scopeChain: ScopeChain, typeFlow: TypeFlow, modDeclChain: ModuleDeclaration[]);
     }
     function pushAssignScope(scope: SymbolScope, context: AssignScopeContext, type: Type, classType: Type, fnc: FuncDecl): void;
     function popAssignScope(context: AssignScopeContext): void;
@@ -1864,7 +1866,7 @@ module TypeScript {
     class ScopeSearchFilter {
         public select: (a: Symbol, b: Symbol) => Symbol;
         public stop: (s: Symbol) => bool;
-        constructor (select: (a: Symbol, b: Symbol) => Symbol, stop: (s: Symbol) => bool);
+        constructor(select: (a: Symbol, b: Symbol) => Symbol, stop: (s: Symbol) => bool);
         public result: Symbol;
         public reset(): void;
         public update(b: Symbol): bool;
@@ -1884,7 +1886,7 @@ module TypeScript {
         public scopeChain: ScopeChain;
         public checker: TypeChecker;
         public script: Script;
-        constructor (scopeChain: ScopeChain, checker: TypeChecker);
+        constructor(scopeChain: ScopeChain, checker: TypeChecker);
     }
     class MemberScopeContext {
         public flow: TypeFlow;
@@ -1894,7 +1896,7 @@ module TypeScript {
         public ast: AST;
         public scope: SymbolScope;
         public options: AstWalkOptions;
-        constructor (flow: TypeFlow, pos: number, matchFlag: ASTFlags);
+        constructor(flow: TypeFlow, pos: number, matchFlag: ASTFlags);
     }
     class EnclosingScopeContext {
         public logger: ILogger;
@@ -1912,7 +1914,7 @@ module TypeScript {
         public publicsOnly: bool;
         public useFullAst: bool;
         private scriptFragment;
-        constructor (logger: ILogger, script: Script, text: ISourceText, pos: number, isMemberCompletion: bool);
+        constructor(logger: ILogger, script: Script, text: ISourceText, pos: number, isMemberCompletion: bool);
         public getScope(): SymbolScope;
         public getObjectLiteralScope(): SymbolScope;
         public getScopeAST(): AST;
@@ -1987,7 +1989,7 @@ module TypeScript {
         public declAST: AST;
         public declModule: ModuleDeclaration;
         public passSymbolCreated: number;
-        constructor (name: string, location: number, length: number, unitIndex: number);
+        constructor(name: string, location: number, length: number, unitIndex: number);
         public isInstanceProperty(): bool;
         public getTypeName(scope: SymbolScope): string;
         public getTypeNameEx(scope: SymbolScope): MemberName;
@@ -2015,7 +2017,7 @@ module TypeScript {
         public typeLink: TypeLink;
     }
     class InferenceSymbol extends Symbol {
-        constructor (name: string, location: number, length: number, unitIndex: number);
+        constructor(name: string, location: number, length: number, unitIndex: number);
         public typeCheckStatus: TypeCheckStatus;
         public isInferenceSymbol(): bool;
         public transferVarFlags(varFlags: VarFlags): void;
@@ -2026,7 +2028,7 @@ module TypeScript {
         public expansions: Type[];
         public expansionsDeclAST: AST[];
         public isDynamic: bool;
-        constructor (locName: string, location: number, length: number, unitIndex: number, type: Type);
+        constructor(locName: string, location: number, length: number, unitIndex: number, type: Type);
         public addLocation(loc: number): void;
         public isMethod: bool;
         public aliasLink: ImportDeclaration;
@@ -2050,7 +2052,7 @@ module TypeScript {
         public getDocComments(): Comment[];
     }
     class WithSymbol extends TypeSymbol {
-        constructor (location: number, unitIndex: number, withType: Type);
+        constructor(location: number, unitIndex: number, withType: Type);
         public isWith(): bool;
     }
     class FieldSymbol extends InferenceSymbol {
@@ -2058,7 +2060,7 @@ module TypeScript {
         public field: ValueLocation;
         public name: string;
         public location: number;
-        constructor (name: string, location: number, unitIndex: number, canWrite: bool, field: ValueLocation);
+        constructor(name: string, location: number, unitIndex: number, canWrite: bool, field: ValueLocation);
         public kind(): SymbolKind;
         public writeable(): bool;
         public getType(): Type;
@@ -2079,7 +2081,8 @@ module TypeScript {
         public name: string;
         public location: number;
         private paramDocComment;
-        constructor (name: string, location: number, unitIndex: number, parameter: ValueLocation);
+        public funcDecl: AST;
+        constructor(name: string, location: number, unitIndex: number, parameter: ValueLocation);
         public kind(): SymbolKind;
         public writeable(): bool;
         public getType(): Type;
@@ -2094,7 +2097,7 @@ module TypeScript {
     }
     class VariableSymbol extends InferenceSymbol {
         public variable: ValueLocation;
-        constructor (name: string, location: number, unitIndex: number, variable: ValueLocation);
+        constructor(name: string, location: number, unitIndex: number, variable: ValueLocation);
         public kind(): SymbolKind;
         public writeable(): bool;
         public getType(): Type;
@@ -2109,7 +2112,7 @@ module TypeScript {
         public allMembers: IHashTable;
         public publicMembers: IHashTable;
         public privateMembers: IHashTable;
-        constructor (dualMembers: DualStringHashTable);
+        constructor(dualMembers: DualStringHashTable);
         public addPublicMember(key: string, data): bool;
         public addPrivateMember(key: string, data): bool;
     }
@@ -2122,7 +2125,7 @@ module TypeScript {
     }
     class SymbolScope {
         public container: Symbol;
-        constructor (container: Symbol);
+        constructor(container: Symbol);
         public printLabel(): string;
         public getAllSymbolNames(members: bool): string[];
         public getAllTypeSymbolNames(members: bool): string[];
@@ -2146,7 +2149,7 @@ module TypeScript {
         public typeAmbientCache: IHashTable;
         public parents: SymbolScope[];
         public container: Symbol;
-        constructor (container: Symbol);
+        constructor(container: Symbol);
         public search(filter: ScopeSearchFilter, name: string, publicOnly: bool, typespace: bool): Symbol;
         public getAllSymbolNames(members: bool): string[];
         public getAllTypeSymbolNames(members: bool): string[];
@@ -2163,7 +2166,7 @@ module TypeScript {
         public enclosedTypes: ScopedMembers;
         public ambientEnclosedTypes: ScopedMembers;
         public container: Symbol;
-        constructor (valueMembers: ScopedMembers, ambientValueMembers: ScopedMembers, enclosedTypes: ScopedMembers, ambientEnclosedTypes: ScopedMembers, container: Symbol);
+        constructor(valueMembers: ScopedMembers, ambientValueMembers: ScopedMembers, enclosedTypes: ScopedMembers, ambientEnclosedTypes: ScopedMembers, container: Symbol);
         public printLabel(): string;
         public getAllSymbolNames(members: bool): string[];
         public getAllTypeSymbolNames(members: bool): string[];
@@ -2182,7 +2185,7 @@ module TypeScript {
         public ambientEnclosedTypes: ScopedMembers;
         public parent: SymbolScope;
         public container: Symbol;
-        constructor (valueMembers: ScopedMembers, ambientValueMembers: ScopedMembers, enclosedTypes: ScopedMembers, ambientEnclosedTypes: ScopedMembers, parent: SymbolScope, container: Symbol);
+        constructor(valueMembers: ScopedMembers, ambientValueMembers: ScopedMembers, enclosedTypes: ScopedMembers, ambientEnclosedTypes: ScopedMembers, parent: SymbolScope, container: Symbol);
         public printLabel(): string;
         public getAllSymbolNames(members: bool): string[];
         public getAllTypeSymbolNames(members: bool): string[];
@@ -2198,14 +2201,14 @@ module TypeScript {
     class FilteredSymbolScope extends SymbolScope {
         public scope: SymbolScope;
         public filter: ScopeSearchFilter;
-        constructor (scope: SymbolScope, container: Symbol, filter: ScopeSearchFilter);
+        constructor(scope: SymbolScope, container: Symbol, filter: ScopeSearchFilter);
         public print(outfile: ITextWriter): void;
         public find(name: string, publicOnly: bool, typespace: bool): Symbol;
         public findLocal(name: string, publicOnly: bool, typespace: bool): Symbol;
     }
     class FilteredSymbolScopeBuilder extends SymbolScopeBuilder {
         public filter: (sym: Symbol) => bool;
-        constructor (valueMembers: ScopedMembers, parent: SymbolScope, container: Symbol, filter: (sym: Symbol) => bool);
+        constructor(valueMembers: ScopedMembers, parent: SymbolScope, container: Symbol, filter: (sym: Symbol) => bool);
         public findLocal(name: string, publicOnly: bool, typespace: bool): Symbol;
         public search(filter: ScopeSearchFilter, name: string, publicOnly: bool, typespace: bool): Symbol;
         public find(name: string, publicOnly: bool, typespace: bool): Symbol;
@@ -2370,7 +2373,7 @@ module TypeScript {
         public unopNodeType: number;
         public text: string;
         public ers: ErrorRecoverySet;
-        constructor (tokenId: TokenID, reservation: Reservation, binopPrecedence: number, binopNodeType: number, unopPrecedence: number, unopNodeType: number, text: string, ers: ErrorRecoverySet);
+        constructor(tokenId: TokenID, reservation: Reservation, binopPrecedence: number, binopNodeType: number, unopPrecedence: number, unopNodeType: number, text: string, ers: ErrorRecoverySet);
     }
     function lookupToken(tokenId: TokenID): TokenInfo;
     enum TokenClass {
@@ -2388,11 +2391,11 @@ module TypeScript {
         public tok: Token;
         public minChar: number;
         public limChar: number;
-        constructor (tok: Token, minChar: number, limChar: number);
+        constructor(tok: Token, minChar: number, limChar: number);
     }
     class Token {
         public tokenId: TokenID;
-        constructor (tokenId: TokenID);
+        constructor(tokenId: TokenID);
         public toString(): string;
         public print(line: number, outfile): void;
         public getText(): string;
@@ -2401,26 +2404,26 @@ module TypeScript {
     class NumberLiteralToken extends Token {
         public value: number;
         public hasEmptyFraction: bool;
-        constructor (value: number, hasEmptyFraction?: bool);
+        constructor(value: number, hasEmptyFraction?: bool);
         public getText(): string;
         public classification(): TokenClass;
     }
     class StringLiteralToken extends Token {
         public value: string;
-        constructor (value: string);
+        constructor(value: string);
         public getText(): string;
         public classification(): TokenClass;
     }
     class IdentifierToken extends Token {
         public value: string;
         public hasEscapeSequence: bool;
-        constructor (value: string, hasEscapeSequence: bool);
+        constructor(value: string, hasEscapeSequence: bool);
         public getText(): string;
         public classification(): TokenClass;
     }
     class WhitespaceToken extends Token {
         public value: string;
-        constructor (tokenId: TokenID, value: string);
+        constructor(tokenId: TokenID, value: string);
         public getText(): string;
         public classification(): TokenClass;
     }
@@ -2430,13 +2433,13 @@ module TypeScript {
         public startPos: number;
         public line: number;
         public endsLine: bool;
-        constructor (tokenID: TokenID, value: string, isBlock: bool, startPos: number, line: number, endsLine: bool);
+        constructor(tokenID: TokenID, value: string, isBlock: bool, startPos: number, line: number, endsLine: bool);
         public getText(): string;
         public classification(): TokenClass;
     }
     class RegularExpressionLiteralToken extends Token {
         public regex;
-        constructor (regex);
+        constructor(regex);
         public getText(): string;
         public classification(): TokenClass;
     }
@@ -2497,7 +2500,7 @@ module TypeScript {
         public mod: ModuleType;
         public gloMod: TypeSymbol;
         public wildElm: TypeSymbol;
-        constructor (errorReporter: ErrorReporter);
+        constructor(errorReporter: ErrorReporter);
         public enterPrimitive(flags: number, name: string): Type;
         public setCollectionMode(mode: TypeCheckCollectionMode): void;
         public refreshPersistentState(): void;
@@ -2510,7 +2513,7 @@ module TypeScript {
         public targetSig: Signature;
         public targetThis: Type;
         public targetAccessorType: Type;
-        constructor (contextualType: Type, provisional: bool, contextID: number);
+        constructor(contextualType: Type, provisional: bool, contextID: number);
     }
     class ContextualTypingContextStack {
         public checker: TypeChecker;
@@ -2522,7 +2525,7 @@ module TypeScript {
         public getContextualType(): ContextualTypeContext;
         public getContextID(): number;
         public isProvisional(): bool;
-        constructor (checker: TypeChecker);
+        constructor(checker: TypeChecker);
     }
     class TypeChecker {
         public persistentState: PersistentGlobalTypeState;
@@ -2565,7 +2568,7 @@ module TypeScript {
         public identicalCache: any[];
         public provisionalStartedTypecheckObjects: PhasedTypecheckObject[];
         public mustCaptureGlobalThis: bool;
-        constructor (persistentState: PersistentGlobalTypeState);
+        constructor(persistentState: PersistentGlobalTypeState);
         public setStyleOptions(style: StyleSettings): void;
         public setContextualType(type: Type, provisional: bool): void;
         public unsetContextualType(): ContextualTypeContext;
@@ -2583,13 +2586,13 @@ module TypeScript {
         public cleanStartedPTO(): void;
         public collectTypes(ast: AST): void;
         public makeArrayType(type: Type): Type;
-        public getParameterList(args: ASTList, container: Symbol): SignatureData;
+        public getParameterList(funcDecl: FuncDecl, container: Symbol): SignatureData;
         public createFunctionSignature(funcDecl: FuncDecl, container: Symbol, scope: SymbolScope, overloadGroupSym: Symbol, addToScope: bool): Signature;
         public createAccessorSymbol(funcDecl: FuncDecl, fgSym: Symbol, enclosingClass: Type, addToMembers: bool, isClassProperty: bool, scope: SymbolScope, container: Symbol): FieldSymbol;
         public addBases(resultScope: SymbolAggregateScope, type: Type, baseContext: {
-            base: string;
-            baseId: number;
-        }): void;
+                base: string;
+                baseId: number;
+            }): void;
         public scopeOf(type: Type): SymbolScope;
         public lookupMemberTypeSymbol(containingType: Type, name: string): Symbol;
         public findSymbolForDynamicModule(idText: string, currentFileName: string, search: (id: string) => Symbol): Symbol;
@@ -2626,7 +2629,7 @@ module TypeScript {
     class Continuation {
         public normalBlock: number;
         public exceptionBlock: number;
-        constructor (normalBlock: number);
+        constructor(normalBlock: number);
     }
     function createNewConstructGroupForType(type: Type): void;
     function cloneParentConstructGroupForChildType(child: Type, parent: Type): void;
@@ -2655,7 +2658,7 @@ module TypeScript {
         public classType: Type;
         public fnc: FuncDecl;
         public moduleDecl: ModuleDeclaration;
-        constructor (container: Symbol, previous: ScopeChain, scope: SymbolScope);
+        constructor(container: Symbol, previous: ScopeChain, scope: SymbolScope);
     }
     class BBUseDefInfo {
         public bb: BasicBlock;
@@ -2664,7 +2667,7 @@ module TypeScript {
         public kill: BitVector;
         public top: BitVector;
         public useIndexBySymbol: number[][];
-        constructor (bb: BasicBlock);
+        constructor(bb: BasicBlock);
         public updateTop(): bool;
         public initialize(useDefContext: UseDefContext): void;
         public initializeGen(useDefContext: UseDefContext): void;
@@ -2677,7 +2680,7 @@ module TypeScript {
         public symbolMap: StringHashTable;
         public symbolCount: number;
         public func: Symbol;
-        constructor ();
+        constructor();
         public getSymbolIndex(sym: Symbol): number;
         public addUse(symIndex: number, astIndex: number): void;
         public getUseIndex(ast: AST): number;
@@ -2689,7 +2692,7 @@ module TypeScript {
         static packBits: number;
         public firstBits: number;
         public restOfBits: number[];
-        constructor (bitCount: number);
+        constructor(bitCount: number);
         public set(bitIndex: number, value: bool): void;
         public map(fn: (index: number) => any): void;
         public union(b: BitVector): void;
@@ -2722,7 +2725,7 @@ module TypeScript {
         public statementStack: ITargetInfo[];
         public currentSwitch: BasicBlock[];
         public walker: IAstWalker;
-        constructor (current: BasicBlock, exit: BasicBlock);
+        constructor(current: BasicBlock, exit: BasicBlock);
         public walk(ast: AST, parent: AST): AST;
         public pushSwitch(bb: BasicBlock): void;
         public popSwitch(): BasicBlock;
@@ -2752,7 +2755,7 @@ module TypeScript {
         public cacheSize: number;
         public rdCache: IResolutionData[];
         public nextUp: number;
-        constructor ();
+        constructor();
         public getResolutionData(): IResolutionData;
         public returnResolutionData(rd: IResolutionData): void;
     }
@@ -2788,9 +2791,8 @@ module TypeScript {
         public inArrayElementTypeCheck: bool;
         public resolutionDataCache: ResolutionDataCache;
         public nestingLevel: number;
-        public inBoundPropTypeCheck: bool;
         public inSuperCall: bool;
-        constructor (logger: ILogger, initScope: SymbolScope, parser: Parser, checker: TypeChecker);
+        constructor(logger: ILogger, initScope: SymbolScope, parser: Parser, checker: TypeChecker);
         public initLibs(): void;
         public cast(ast: AST, type: Type): AST;
         public castWithCoercion(ast: AST, type: Type, applyCoercion: bool, typeAssertion: bool): AST;
@@ -2898,7 +2900,7 @@ module TypeScript {
     }
     class MemberNameString extends MemberName {
         public text: string;
-        constructor (text: string);
+        constructor(text: string);
         public isString(): bool;
     }
     class MemberNameArray extends MemberName {
@@ -2970,7 +2972,7 @@ module TypeScript {
     class ModuleType extends Type {
         public enclosedTypes: ScopedMembers;
         public ambientEnclosedTypes: ScopedMembers;
-        constructor (enclosedTypes: ScopedMembers, ambientEnclosedTypes: ScopedMembers);
+        constructor(enclosedTypes: ScopedMembers, ambientEnclosedTypes: ScopedMembers);
         public isModuleType(): bool;
         public hasMembers(): bool;
         public getAllEnclosedTypes(): ScopedMembers;
@@ -3033,7 +3035,7 @@ module TypeScript {
         public path: string;
         public content: string;
         public referencedFiles: IFileReference[];
-        constructor (path: string, content: string);
+        constructor(path: string, content: string);
         public getText(start: number, end: number): string;
         public getLength(): number;
     }
@@ -3052,7 +3054,7 @@ module TypeScript {
     class CompilationEnvironment {
         public compilationSettings: CompilationSettings;
         public ioHost: IFileSystemObject;
-        constructor (compilationSettings: CompilationSettings, ioHost: IFileSystemObject);
+        constructor(compilationSettings: CompilationSettings, ioHost: IFileSystemObject);
         public residentCode: SourceUnit[];
         public code: SourceUnit[];
     }
@@ -3069,7 +3071,7 @@ module TypeScript {
     class CodeResolver implements ICodeResolver {
         public environment: CompilationEnvironment;
         public visited: any;
-        constructor (environment: CompilationEnvironment);
+        constructor(environment: CompilationEnvironment);
         public resolveCode(referencePath: string, parentPath: string, performSearch: bool, resolutionDispatcher: IResolutionDispatcher): void;
     }
 }
@@ -3135,7 +3137,7 @@ module TypeScript {
     class IncrementalParser {
         private logger;
         private astLogger;
-        constructor (logger: ILogger);
+        constructor(logger: ILogger);
         public getEnclosingScopeContextIfSingleScopeEdit(previousScript: Script, scriptId: string, newSourceText: ISourceText, editRange: ScriptEditRange): EnclosingScopeContext;
         public attemptIncrementalUpdateUnit(previousScript: Script, scriptId: string, newSourceText: ISourceText, editRange: ScriptEditRange): UpdateUnitResult;
         public mergeTrees(updateResult: UpdateUnitResult): void;
@@ -3148,7 +3150,7 @@ module TypeScript {
     class DeclFileWriter {
         private declFile;
         public onNewLine: bool;
-        constructor (declFile: ITextWriter);
+        constructor(declFile: ITextWriter);
         public Write(s: string): void;
         public WriteLine(s: string): void;
         public Close(): void;
@@ -3167,7 +3169,7 @@ module TypeScript {
         private varListCount;
         private getAstDeclarationContainer();
         private emitDottedModuleName();
-        constructor (checker: TypeChecker, emitOptions: EmitOptions, errorReporter: ErrorReporter);
+        constructor(checker: TypeChecker, emitOptions: EmitOptions, errorReporter: ErrorReporter);
         public setDeclarationFile(file: ITextWriter): void;
         public Close(): void;
         public emitDeclarations(script: Script): void;
@@ -3210,7 +3212,7 @@ module TypeScript {
         public minChar: number;
         public limChar: number;
         public delta: number;
-        constructor (minChar: number, limChar: number, delta: number);
+        constructor(minChar: number, limChar: number, delta: number);
         static unknown(): ScriptEditRange;
         public isUnknown(): bool;
         public containsPosition(pos: number): bool;
@@ -3221,7 +3223,7 @@ module TypeScript {
         public unitIndex: number;
         public script1: Script;
         public script2: Script;
-        constructor (kind: UpdateUnitKind, unitIndex: number, script1: Script, script2: Script);
+        constructor(kind: UpdateUnitKind, unitIndex: number, script1: Script, script2: Script);
         public scope1: AST;
         public scope2: AST;
         public editRange: ScriptEditRange;
@@ -3235,7 +3237,7 @@ module TypeScript {
         public minChar: number;
         public limChar: number;
         public message: string;
-        constructor (unitIndex: number, minChar: number, limChar: number, message: string);
+        constructor(unitIndex: number, minChar: number, limChar: number, message: string);
     }
     var defaultSettings: CompilationSettings;
     interface EmitterIOHost {
@@ -3256,7 +3258,7 @@ module TypeScript {
         public errorReporter: ErrorReporter;
         public persistentTypeState: PersistentGlobalTypeState;
         public emitSettings: EmitOptions;
-        constructor (errorOutput: ITextWriter, logger?: ILogger, settings?: CompilationSettings);
+        constructor(errorOutput: ITextWriter, logger?: ILogger, settings?: CompilationSettings);
         public timeFunction(funcDescription: string, func: () => any): any;
         public initTypeChecker(errorOutput: ITextWriter): void;
         public setErrorOutput(outerr): void;
@@ -3297,11 +3299,11 @@ module TypeScript {
         public name: string;
         public type: string;
         public sym: Symbol;
-        constructor (name: string, type: string, sym: Symbol);
+        constructor(name: string, type: string, sym: Symbol);
     }
     class ScopeTraversal {
         private compiler;
-        constructor (compiler: TypeScriptCompiler);
+        constructor(compiler: TypeScriptCompiler);
         public getScope(enclosingScopeContext: EnclosingScopeContext): SymbolScope;
         public getScopeEntries(enclosingScopeContext: EnclosingScopeContext): ScopeEntry[];
         private getTypeNamesForNames(enclosingScopeContext, allNames, scope);
@@ -3310,14 +3312,14 @@ module TypeScript {
 module Services {
     class ScriptMap {
         private map;
-        constructor ();
+        constructor();
         public setEntry(id: string, isResident: bool, version: number): void;
         public getEntry(id: string): ScriptMapEntry;
     }
     class ScriptMapEntry {
         public isResident: bool;
         public version: number;
-        constructor (isResident: bool, version: number);
+        constructor(isResident: bool, version: number);
     }
     class HostCacheEntry {
         private host;
@@ -3327,14 +3329,14 @@ module Services {
         public isResident: bool;
         private _cachedSourceText;
         private _sourceText;
-        constructor (host: ILanguageServiceHost, hostUnitIndex: number, id: string, version: number, isResident: bool);
+        constructor(host: ILanguageServiceHost, hostUnitIndex: number, id: string, version: number, isResident: bool);
         public getSourceText(cached: bool): TypeScript.ISourceText;
     }
     class HostCache {
         public host: ILanguageServiceHost;
         private map;
         private array;
-        constructor (host: ILanguageServiceHost);
+        constructor(host: ILanguageServiceHost);
         private init();
         public count(): number;
         public getUnitIndex(scriptId: string): number;
@@ -3346,20 +3348,20 @@ module Services {
     class CompilerCache {
         public compiler: TypeScript.TypeScriptCompiler;
         private map;
-        constructor (compiler: TypeScript.TypeScriptCompiler);
+        constructor(compiler: TypeScript.TypeScriptCompiler);
         private init();
         public getUnitIndex(scriptId: string): number;
     }
     class UnitErrors {
         public parseErrors: TypeScript.ErrorEntry[];
         public typeCheckErrors: TypeScript.ErrorEntry[];
-        constructor ();
+        constructor();
     }
     class CompilerErrorCollector {
         public logger: TypeScript.ILogger;
         private parseMode;
         public fileMap: UnitErrors[];
-        constructor (logger: TypeScript.ILogger);
+        constructor(logger: TypeScript.ILogger);
         public startParsing(unitIndex: number): void;
         public startTypeChecking(): void;
         public reportError(pos: number, len: number, message: string, unitIndex: number): void;
@@ -3375,7 +3377,7 @@ module Services {
         private compilerCache;
         private symbolTree;
         private compilationSettings;
-        constructor (host: ILanguageServiceHost);
+        constructor(host: ILanguageServiceHost);
         public getCompilationSettings(): TypeScript.CompilationSettings;
         private setUnitMapping(unitIndex, hostUnitIndex);
         private setUnitIndexMapping(unitIndex, hostUnitIndex);
@@ -3417,7 +3419,7 @@ module Services {
         private logger;
         private script;
         private sourceText;
-        constructor (logger: TypeScript.ILogger, script: TypeScript.Script, sourceText: TypeScript.ISourceText);
+        constructor(logger: TypeScript.ILogger, script: TypeScript.Script, sourceText: TypeScript.ISourceText);
         public getLogger(): TypeScript.ILogger;
         public getScriptId(): string;
         public getScript(): TypeScript.Script;
@@ -3430,7 +3432,7 @@ module Services {
         private scanner;
         private offset;
         private currentToken;
-        constructor (scanner: TypeScript.Scanner, offset: number);
+        constructor(scanner: TypeScript.Scanner, offset: number);
         public moveNext(): bool;
         public sourceTextOffset(): number;
         public tokenId(): TypeScript.TokenID;
@@ -3439,7 +3441,7 @@ module Services {
     }
     class TokenStreamHelper {
         public stream: TokenStream;
-        constructor (stream: TokenStream);
+        constructor(stream: TokenStream);
         public moveNext(): bool;
         public expect(token: TypeScript.TokenID): bool;
         public skipToOffset(pos: number): bool;
@@ -3451,7 +3453,7 @@ module Services {
 module Services {
     class BraceMatchingManager {
         private scriptSyntaxAST;
-        constructor (scriptSyntaxAST: ScriptSyntaxAST);
+        constructor(scriptSyntaxAST: ScriptSyntaxAST);
         public getBraceMatchingAtPosition(position: number): TextRange[];
         public getMatchingBraceForward(position: number, openToken: TypeScript.TokenID, closeToken: TypeScript.TokenID): number;
         public getMatchingBraceBackward(position: number, closeToken: TypeScript.TokenID, openToken: TypeScript.TokenID): number;
@@ -3460,7 +3462,7 @@ module Services {
 module Services {
     class SymbolSet {
         private table;
-        constructor ();
+        constructor();
         private isSymbolArraySet(value);
         public add(sym: TypeScript.Symbol): bool;
         public contains(sym: TypeScript.Symbol): bool;
@@ -3486,7 +3488,7 @@ module Services {
     class SymbolTree implements ISymbolTree {
         public host: ISymbolTreeHost;
         private _allTypes;
-        constructor (host: ISymbolTreeHost);
+        constructor(host: ISymbolTreeHost);
         public findBaseTypesTransitiveClosure(sym: TypeScript.TypeSymbol): SymbolSet;
         public findDerivedTypesTransitiveClosure(sym: TypeScript.TypeSymbol): SymbolSet;
         public getOverride(container: TypeScript.TypeSymbol, memberSym: TypeScript.Symbol): TypeScript.Symbol;
@@ -3505,7 +3507,7 @@ module Services {
 module Services {
     class OverridesCollector {
         public symbolTree: ISymbolTree;
-        constructor (symbolTree: ISymbolTree);
+        constructor(symbolTree: ISymbolTree);
         public findMemberOverrides(memberSym: TypeScript.Symbol): SymbolSet;
         public findImplementors(sym: TypeScript.Symbol): SymbolSet;
         private findMemberOverridesImpl(memberSym, lookInBases, lookInDerived);
@@ -3559,14 +3561,14 @@ module Services {
     class SourceTextAdapter implements TypeScript.ISourceText {
         private host;
         private scriptIndex;
-        constructor (host: ILanguageServiceHost, scriptIndex: number);
+        constructor(host: ILanguageServiceHost, scriptIndex: number);
         public getText(start: number, end: number): string;
         public getLength(): number;
     }
     class CachedSourceTextAdapter implements TypeScript.ISourceText {
         private length;
         private text;
-        constructor (host: ILanguageServiceHost, scriptIndex: number);
+        constructor(host: ILanguageServiceHost, scriptIndex: number);
         public getText(start: number, end: number): string;
         public getLength(): number;
     }
@@ -3574,7 +3576,7 @@ module Services {
         private sourceText;
         private minChar;
         private limChar;
-        constructor (sourceText: TypeScript.ISourceText, minChar: number, limChar: number);
+        constructor(sourceText: TypeScript.ISourceText, minChar: number, limChar: number);
         public getText(start: number, end: number): string;
         public getLength(): number;
     }
@@ -3582,14 +3584,14 @@ module Services {
         public unitIndex: number;
         public ast: TypeScript.AST;
         public isWriteAccess: bool;
-        constructor (unitIndex: number, ast: TypeScript.AST, isWriteAccess: bool);
+        constructor(unitIndex: number, ast: TypeScript.AST, isWriteAccess: bool);
         public getHashCode(): number;
         public equals(other: ReferenceEntry): bool;
     }
     class ReferenceEntrySet {
         private hashTable;
         private entries;
-        constructor ();
+        constructor();
         public getEntries(): ReferenceEntry[];
         public addAst(unitIndex: number, ast: TypeScript.AST, isWriteAccess: bool): void;
         public addSymbol(sym: TypeScript.Symbol): void;
@@ -3617,13 +3619,13 @@ module Services {
     class TextRange {
         public minChar: number;
         public limChar: number;
-        constructor (minChar: number, limChar: number);
+        constructor(minChar: number, limChar: number);
     }
     class TextEdit {
         public minChar: number;
         public limChar: number;
         public text: string;
-        constructor (minChar: number, limChar: number, text: string);
+        constructor(minChar: number, limChar: number, text: string);
         static createInsert(pos: number, text: string): TextEdit;
         static createDelete(minChar: number, limChar: number): TextEdit;
         static createReplace(minChar: number, limChar: number, text: string): TextEdit;
@@ -3655,20 +3657,20 @@ module Services {
         public name: string;
         public containerKind: string;
         public containerName: string;
-        constructor (unitIndex: number, minChar: number, limChar: number, kind: string, name: string, containerKind: string, containerName: string);
+        constructor(unitIndex: number, minChar: number, limChar: number, kind: string, name: string, containerKind: string, containerName: string);
     }
     class TypeInfo {
         public memberName: TypeScript.MemberName;
         public docComment: string;
         public minChar: number;
         public limChar: number;
-        constructor (memberName: TypeScript.MemberName, docComment: string, minChar: number, limChar: number);
+        constructor(memberName: TypeScript.MemberName, docComment: string, minChar: number, limChar: number);
     }
     class SpanInfo {
         public minChar: number;
         public limChar: number;
         public text: string;
-        constructor (minChar: number, limChar: number, text?: string);
+        constructor(minChar: number, limChar: number, text?: string);
     }
     class SignatureInfo {
         public actual: ActualSignatureInfo;
@@ -3754,7 +3756,7 @@ module Services {
         public version: number;
         public syntaxAST: ScriptSyntaxAST;
         public fileName: string;
-        constructor ();
+        constructor();
     }
     interface IOutputFile {
         name: string;
@@ -3767,7 +3769,7 @@ module Services {
         private compilerState;
         private syntaxASTState;
         private formattingRulesProvider;
-        constructor (host: ILanguageServiceHost);
+        constructor(host: ILanguageServiceHost);
         public refresh(): void;
         public minimalRefresh(): void;
         public getSymbolTree(): ISymbolTree;
@@ -3870,7 +3872,7 @@ module Services {
     }
     class LanguageServiceShimHostAdapter implements ILanguageServiceHost {
         private shimHost;
-        constructor (shimHost: ILanguageServiceShimHost);
+        constructor(shimHost: ILanguageServiceShimHost);
         public information(): bool;
         public debug(): bool;
         public warning(): bool;
@@ -3893,7 +3895,7 @@ module Services {
         public host: ILanguageServiceShimHost;
         public languageService: ILanguageService;
         public logger: TypeScript.ILogger;
-        constructor (host: ILanguageServiceShimHost, languageService: ILanguageService);
+        constructor(host: ILanguageServiceShimHost, languageService: ILanguageService);
         public forwardCall(actionDescription: string, action: () => any, throwOnError?: bool): any;
         public forwardJSONCall(actionDescription: string, action: () => any): string;
         public dispose(dummy: any): void;
@@ -3927,14 +3929,14 @@ module Services {
     class ClassifierShim {
         public host: IClassifierHost;
         public classifier: Classifier;
-        constructor (host: IClassifierHost);
+        constructor(host: IClassifierHost);
         public getClassificationsForLine(text: string, lexState: TypeScript.LexState): string;
     }
     class CoreServicesShim {
         public host: ICoreServicesHost;
         public logger: TypeScript.ILogger;
         public services: CoreServices;
-        constructor (host: ICoreServicesHost);
+        constructor(host: ICoreServicesHost);
         private forwardCall(actionDescription, action, throwOnError?);
         private forwardJSONCall(actionDescription, action);
         public getPreProcessedFileInfo(scriptId: string, sourceText: TypeScript.ISourceText): string;
@@ -3949,7 +3951,7 @@ module Formatting {
         public span: Span;
         private _startPoint;
         private _endPoint;
-        constructor (snapshot: ITextSnapshot, span: Span);
+        constructor(snapshot: ITextSnapshot, span: Span);
         public start(): SnapshotPoint;
         public end(): SnapshotPoint;
         public startPosition(): number;
@@ -3962,20 +3964,20 @@ module Formatting {
     class SnapshotPoint {
         public snapshot: ITextSnapshot;
         public position: number;
-        constructor (snapshot: ITextSnapshot, position: number);
+        constructor(snapshot: ITextSnapshot, position: number);
         public GetContainingLine(): ITextSnapshotLine;
         public Add(offset: number): SnapshotPoint;
     }
     class FileAuthoringProxy {
         public scriptSyntaxAST: Services.ScriptSyntaxAST;
-        constructor (scriptSyntaxAST: Services.ScriptSyntaxAST);
+        constructor(scriptSyntaxAST: Services.ScriptSyntaxAST);
         public GetASTCursor(): IAuthorParseNodeCursor;
     }
     class AuthorParseNodeCursor implements IAuthorParseNodeCursor {
         private fileAuthoringProxy;
         private logger;
         private path;
-        constructor (fileAuthoringProxy: FileAuthoringProxy);
+        constructor(fileAuthoringProxy: FileAuthoringProxy);
         private fixupPath(newPath);
         private mapNodeType(path);
         private mapNodeFlags(path);
@@ -4010,7 +4012,7 @@ module Formatting {
         private script;
         private sourceText;
         private lines;
-        constructor (script: TypeScript.Script, sourceText: TypeScript.ISourceText);
+        constructor(script: TypeScript.Script, sourceText: TypeScript.ISourceText);
         public GetText(span: Span): string;
         public GetLineNumberFromPosition(position: number): number;
         public GetLineFromPosition(position: number): ITextSnapshotLine;
@@ -4035,7 +4037,7 @@ module Formatting {
         private _start;
         private _end;
         private _lineBreak;
-        constructor (_snapshot: TextSnapshot, _lineNumber: number, _start: number, _end: number, _lineBreak: string);
+        constructor(_snapshot: TextSnapshot, _lineNumber: number, _start: number, _end: number, _lineBreak: string);
         public snapshot(): TextSnapshot;
         public start(): SnapshotPoint;
         public startPosition(): number;
@@ -4050,7 +4052,7 @@ module Formatting {
     class Span {
         private _start;
         private _length;
-        constructor (_start: number, _length: number);
+        constructor(_start: number, _length: number);
         public start(): number;
         public end(): number;
         public length(): number;
@@ -4105,14 +4107,14 @@ module Formatting {
     class ListEnumerator implements IEnumerator {
         private list;
         private index;
-        constructor (list: IList);
+        constructor(list: IList);
         public MoveNext(): bool;
         public Current(): any;
     }
     class List implements IList {
         static empty: any[];
         private items;
-        constructor ();
+        constructor();
         private copyOnWrite();
         public count(): number;
         public get(index: number): any;
@@ -4145,7 +4147,7 @@ module Formatting {
         public foreach(action: (item: ParseNode) => void): void;
     }
     class List_TextEditInfo extends List implements IList_TextEditInfo {
-        constructor (item?: TextEditInfo);
+        constructor(item?: TextEditInfo);
         public get(index: number): TextEditInfo;
         public foreach(action: (item: TextEditInfo) => void): void;
     }
@@ -4161,7 +4163,7 @@ module Formatting {
     }
     class Stack {
         private items;
-        constructor ();
+        constructor();
         public Count(): number;
         public Push(item: any): void;
         public Pop(): any;
@@ -4173,7 +4175,7 @@ module Formatting {
     function FirstOrDefault(list: IList, pred: (item: any) => bool);
     function LastOrDefault(list: IList, pred: (item: any) => bool);
     class AuthorParseNode {
-        constructor ();
+        constructor();
         public Details: AuthorParseNodeDetails;
         public Name: number;
         public Label: number;
@@ -4181,7 +4183,7 @@ module Formatting {
         public Level: number;
     }
     class AuthorParseNodeDetails {
-        constructor ();
+        constructor();
         public nodeType: TypeScript.NodeType;
         public ast: TypeScript.AST;
         public Kind: AuthorParseNodeKind;
@@ -4461,7 +4463,7 @@ module Formatting {
     }
     class AuthorParseNodeSet implements IAuthorParseNodeSet {
         private nodes;
-        constructor (nodes: AuthorParseNode[]);
+        constructor(nodes: AuthorParseNode[]);
         public Count(): number;
         public GetItems(startIndex: number, count: number): AuthorParseNode[];
     }
@@ -4479,7 +4481,7 @@ module Formatting {
         static instance: AuthorTokenKindMap;
         private tokenMap;
         static getInstance(): AuthorTokenKindMap;
-        constructor ();
+        constructor();
         private init();
         public getTokenKind(kind: TypeScript.TokenID): AuthorTokenKind;
         private mapTokenID(kind);
@@ -4490,19 +4492,19 @@ module Formatting {
     }
     class HashSet_int {
         public items: number[];
-        constructor ();
+        constructor();
         public Contains(item: number): bool;
         public Add(item: number): void;
     }
     class Dictionary_int_List_IndentationEditInfo {
         private items;
-        constructor ();
+        constructor();
         public GetValue(key: number): List_IndentationEditInfo;
         public Add(key: number, value: List_IndentationEditInfo): void;
     }
     class Dictionary_int_int {
         private items;
-        constructor ();
+        constructor();
         public GetValue(key: number): number;
         public Add(key: number, value: number): void;
     }
@@ -4535,7 +4537,7 @@ module Formatting {
         private contextNodeAllOnSameLine;
         private tokensAreOnSameLine;
         private tokensAreSiblingNodesOnSameLine;
-        constructor (fileAuthoringProxy: FileAuthoringProxy, snapshot: ITextSnapshot, tokens: IList_TokenSpan, formattingRequestKind: FormattingRequestKind);
+        constructor(fileAuthoringProxy: FileAuthoringProxy, snapshot: ITextSnapshot, tokens: IList_TokenSpan, formattingRequestKind: FormattingRequestKind);
         public findTokenAtPosition(position: number): TokenSpan;
         public setContext(node: ParseNode, t1: TokenSpan, t2: TokenSpan): void;
         public ContextNodeAllOnSameLine(): bool;
@@ -4554,7 +4556,7 @@ module Formatting {
         private snapshot;
         private fileAuthoringProxy;
         private tokenKindMap;
-        constructor (scriptSyntaxAST: Services.ScriptSyntaxAST, rulesProvider: RulesProvider, editorOptions: Services.EditorOptions);
+        constructor(scriptSyntaxAST: Services.ScriptSyntaxAST, rulesProvider: RulesProvider, editorOptions: Services.EditorOptions);
         public FormatSelection(minChar: number, limChar: number): Services.TextEdit[];
         public FormatDocument(minChar: number, limChar: number): Services.TextEdit[];
         public FormatOnPaste(minChar: number, limChar: number): Services.TextEdit[];
@@ -4596,7 +4598,7 @@ module Formatting {
         private snapshotSpan;
         private tokenTags;
         public EditCommands: List_TextEditInfo;
-        constructor (logger: TypeScript.ILogger, Snapshot: ITextSnapshot, span: SnapshotSpan, tokens: IList_TokenSpan, fileAuthoringProxy: FileAuthoringProxy, rulesProvider: RulesProvider, editorOptions: Services.EditorOptions, languageHostIndentation: string, scriptHasErrors: bool, formattingRequestKind: FormattingRequestKind);
+        constructor(logger: TypeScript.ILogger, Snapshot: ITextSnapshot, span: SnapshotSpan, tokens: IList_TokenSpan, fileAuthoringProxy: FileAuthoringProxy, rulesProvider: RulesProvider, editorOptions: Services.EditorOptions, languageHostIndentation: string, scriptHasErrors: bool, formattingRequestKind: FormattingRequestKind);
         public Run(): void;
         private Format(tree);
         private GetProjectionEndLines();
@@ -4628,7 +4630,7 @@ module Formatting {
     class IndentationBag {
         private snapshot;
         private indentationEdits;
-        constructor (snapshot: ITextSnapshot);
+        constructor(snapshot: ITextSnapshot);
         public AddIndent(edit: IndentationEditInfo): void;
         public FindIndent(position: number): IndentationEditInfo;
     }
@@ -4646,7 +4648,7 @@ module Formatting {
     class IndentationEditInfo {
         private textEditInfo;
         public OrigIndentPosition: number;
-        constructor (textEditInfo: TextEditInfo);
+        constructor(textEditInfo: TextEditInfo);
         public Position(): number;
         public Indentation(): string;
         public OrigIndentLength(): number;
@@ -4658,7 +4660,7 @@ module Formatting {
     class IndentationInfo {
         public Prefix: string;
         public Level: number;
-        constructor (Prefix?: string, Level?: number);
+        constructor(Prefix?: string, Level?: number);
     }
 }
 module Formatting {
@@ -4673,7 +4675,7 @@ module Formatting {
         private indentationBag;
         private scriptBlockBeginLineNumber;
         private offsetIndentationDeltas;
-        constructor (logger: TypeScript.ILogger, tree: ParseTree, snapshot: ITextSnapshot, languageHostIndentation: string, editorOptions: Services.EditorOptions, firstToken: TokenSpan, smartIndent: bool);
+        constructor(logger: TypeScript.ILogger, tree: ParseTree, snapshot: ITextSnapshot, languageHostIndentation: string, editorOptions: Services.EditorOptions, firstToken: TokenSpan, smartIndent: bool);
         public GetIndentationEdits(token: TokenSpan, nextToken: TokenSpan, node: ParseNode, sameLineIndent: bool): List_TextEditInfo;
         public GetIndentationEditsWorker(token: TokenSpan, nextToken: TokenSpan, node: ParseNode, sameLineIndent: bool): List_TextEditInfo;
         private GetCommentIndentationEdits(token);
@@ -4703,7 +4705,7 @@ module Formatting {
     class MatchingBlockFinderTask {
         private bracePoint;
         private FileAuthoringProxy;
-        constructor (bracePoint: SnapshotPoint, FileAuthoringProxy: FileAuthoringProxy);
+        constructor(bracePoint: SnapshotPoint, FileAuthoringProxy: FileAuthoringProxy);
         public Run(): Span;
         private FindMatchingBlockSpan(parser);
     }
@@ -4719,7 +4721,7 @@ module Formatting {
         public IndentationDelta: number;
         public ChildrenIndentationDelta: number;
         public TokenTagIndex: number;
-        constructor ();
+        constructor();
         public children(): List_ParseNode;
         public addChildNode(node: ParseNode): void;
         public CanIndent(): bool;
@@ -4752,7 +4754,7 @@ module Formatting {
         public Root: ParseNode;
         public StartNodeSelf: ParseNode;
         public StartNodePreviousSibling: AuthorParseNode;
-        constructor (fileAuthoringProxy: FileAuthoringProxy, span: Span, tokens: IList_TokenSpan, onlySelfAndAncestors: bool);
+        constructor(fileAuthoringProxy: FileAuthoringProxy, span: Span, tokens: IList_TokenSpan, onlySelfAndAncestors: bool);
         static FindCommonParentNode(leftSpan: Span, rightSpan: Span, context: ParseNode): ParseNode;
         private Initialize(fileAuthoringProxy, span, onlySelfAndAncestors);
         static GetPreviousSibling(startNodeSelf: AuthorParseNode, nodes: AuthorParseNode[]): AuthorParseNode;
@@ -4768,7 +4770,7 @@ module Formatting {
         public Descriptor: RuleDescriptor;
         public Operation: RuleOperation;
         public Flag: RuleFlags;
-        constructor (Descriptor: RuleDescriptor, Operation: RuleOperation, Flag?: RuleFlags);
+        constructor(Descriptor: RuleDescriptor, Operation: RuleOperation, Flag?: RuleFlags);
         public toString(): string;
     }
 }
@@ -4784,7 +4786,7 @@ module Formatting {
     class RuleDescriptor {
         public LeftTokenRange: Shared.TokenRange;
         public RightTokenRange: Shared.TokenRange;
-        constructor (LeftTokenRange: Shared.TokenRange, RightTokenRange: Shared.TokenRange);
+        constructor(LeftTokenRange: Shared.TokenRange, RightTokenRange: Shared.TokenRange);
         public toString(): string;
         static create1(left: AuthorTokenKind, right: AuthorTokenKind): RuleDescriptor;
         static create2(left: Shared.TokenRange, right: AuthorTokenKind): RuleDescriptor;
@@ -4802,7 +4804,7 @@ module Formatting {
     class RuleOperation {
         public Context: RuleOperationContext;
         public Action: RuleAction;
-        constructor ();
+        constructor();
         public toString(): string;
         static create1(action: RuleAction): RuleOperation;
         static create2(context: RuleOperationContext, action: RuleAction): RuleOperation;
@@ -4811,9 +4813,9 @@ module Formatting {
 module Formatting {
     class RuleOperationContext {
         private customContextChecks;
-        constructor (...funcs: {
-            (context: FormattingContext): bool;
-        }[]);
+        constructor(...funcs: {
+                (context: FormattingContext): bool;
+            }[]);
         static Any: RuleOperationContext;
         public IsAny(): bool;
         public InContext(context: FormattingContext): bool;
@@ -4904,7 +4906,7 @@ module Formatting {
         public NoSpaceBeforeCloseParen: Rule;
         public SpaceAfterAnonymousFunctionKeyword: Rule;
         public NoSpaceAfterAnonymousFunctionKeyword: Rule;
-        constructor ();
+        constructor();
         static IsForContext(context: FormattingContext): bool;
         static IsNotForContext(context: FormattingContext): bool;
         static IsBinaryOpContext(context: FormattingContext): bool;
@@ -4936,7 +4938,7 @@ module Formatting {
     class RulesMap {
         public map: RulesBucket[];
         public mapRowLength: number;
-        constructor ();
+        constructor();
         static create(rules: List_Rule): RulesMap;
         public Initialize(rules: List_Rule): RulesBucket[];
         public FillRules(rules: List_Rule, rulesBucketConstructionStateList: RulesBucketConstructionState[]): void;
@@ -4954,13 +4956,13 @@ module Formatting {
     }
     class RulesBucketConstructionState {
         private rulesInsertionIndexBitmap;
-        constructor ();
+        constructor();
         public GetInsertionIndex(maskPosition: Position): number;
         public IncreaseInsertionIndex(maskPosition: Position): void;
     }
     class RulesBucket {
         private rules;
-        constructor ();
+        constructor();
         public Rules(): List_Rule;
         public AddRule(rule: Rule, specificTokens: bool, constructionState: RulesBucketConstructionState[], rulesBucketIndex: number): void;
     }
@@ -4972,7 +4974,7 @@ module Formatting {
         private options;
         private activeRules;
         private rulesMap;
-        constructor (logger: TypeScript.ILogger);
+        constructor(logger: TypeScript.ILogger);
         public getRuleName(rule: Rule): string;
         public getRuleByName(name: string): Rule;
         public setActiveRules(staticList: List_Rule): void;
@@ -4991,7 +4993,7 @@ module Formatting {
         private snapshot;
         private fileAuthoringProxy;
         private tokenKindMap;
-        constructor (scriptSyntaxAST: Services.ScriptSyntaxAST, editorOptions: Services.EditorOptions);
+        constructor(scriptSyntaxAST: Services.ScriptSyntaxAST, editorOptions: Services.EditorOptions);
         public getSmartIndentAtLineNumber(lineNumber: number): number;
         private getPossibleTokenSpan(caretPosition);
         private gtTokens(span);
@@ -5008,7 +5010,7 @@ module Formatting {
         private languageHostIndentation;
         private snapshot;
         public DesiredIndentation: string;
-        constructor (logger: TypeScript.ILogger, snapshotSpan: SnapshotSpan, tokens: IList_TokenSpan, fileAuthoringProxy: FileAuthoringProxy, editorOptions: Services.EditorOptions, languageHostIndentation: string);
+        constructor(logger: TypeScript.ILogger, snapshotSpan: SnapshotSpan, tokens: IList_TokenSpan, fileAuthoringProxy: FileAuthoringProxy, editorOptions: Services.EditorOptions, languageHostIndentation: string);
         public Run(): void;
         private FindIndentation(tree);
         private CanDoSmartIndent(context, firstToken);
@@ -5027,7 +5029,7 @@ module Formatting {
         private semicolonPoint;
         private fileAuthoringProxy;
         public BlockSpan: Span;
-        constructor (logger: TypeScript.ILogger, semicolonPoint: SnapshotPoint, fileAuthoringProxy: FileAuthoringProxy);
+        constructor(logger: TypeScript.ILogger, semicolonPoint: SnapshotPoint, fileAuthoringProxy: FileAuthoringProxy);
         public Run(): void;
     }
 }
@@ -5039,7 +5041,7 @@ module Formatting {
         public Position: number;
         public Length: number;
         public ReplaceWith: string;
-        constructor (position: number, length: number, replaceWith: string);
+        constructor(position: number, length: number, replaceWith: string);
     }
 }
 module Formatting.Shared {
@@ -5049,20 +5051,20 @@ module Formatting.Shared {
     }
     class TokenRangeAccess implements ITokenAccess {
         private tokens;
-        constructor (from: AuthorTokenKind, to: AuthorTokenKind, except: AuthorTokenKind[]);
+        constructor(from: AuthorTokenKind, to: AuthorTokenKind, except: AuthorTokenKind[]);
         public GetTokens(): List_AuthorTokenKind;
         public Contains(token: AuthorTokenKind): bool;
         public toString(): string;
     }
     class TokenValuesAccess implements ITokenAccess {
         private tokens;
-        constructor (tks: AuthorTokenKind[]);
+        constructor(tks: AuthorTokenKind[]);
         public GetTokens(): List_AuthorTokenKind;
         public Contains(token: AuthorTokenKind): bool;
     }
     class TokenSingleValueAccess implements ITokenAccess {
         public token: AuthorTokenKind;
-        constructor (token: AuthorTokenKind);
+        constructor(token: AuthorTokenKind);
         public GetTokens(): List_AuthorTokenKind;
         public Contains(tokenValue: AuthorTokenKind): bool;
         public toString(): string;
@@ -5074,7 +5076,7 @@ module Formatting.Shared {
     }
     class TokenRange {
         public tokenAccess: ITokenAccess;
-        constructor (tokenAccess: ITokenAccess);
+        constructor(tokenAccess: ITokenAccess);
         static FromToken(token: AuthorTokenKind): TokenRange;
         static FromTokens(tokens: AuthorTokenKind[]): TokenRange;
         static FromRange(f: AuthorTokenKind, to: AuthorTokenKind, except?: AuthorTokenKind[]): TokenRange;
@@ -5102,7 +5104,7 @@ module Formatting {
         public tokenID: TypeScript.TokenID;
         public Span: SnapshotSpan;
         private _lineNumber;
-        constructor (Token: AuthorTokenKind, tokenID: TypeScript.TokenID, Span: SnapshotSpan);
+        constructor(Token: AuthorTokenKind, tokenID: TypeScript.TokenID, Span: SnapshotSpan);
         public lineNumber(): number;
         public toString(): string;
     }
@@ -5122,7 +5124,7 @@ module Services {
 module Services {
     class Classifier {
         public host: IClassifierHost;
-        constructor (host: IClassifierHost);
+        constructor(host: IClassifierHost);
         private scanner;
         public getClassificationsForLine(text: string, lexState: TypeScript.LexState): ClassificationResult;
     }
@@ -5132,12 +5134,12 @@ module Services {
         public initialState: TypeScript.LexState;
         public finalLexState: TypeScript.LexState;
         public entries: ClassificationInfo[];
-        constructor ();
+        constructor();
     }
     class ClassificationInfo {
         public length: number;
         public classification: TypeScript.TokenClass;
-        constructor (length: number, classification: TypeScript.TokenClass);
+        constructor(length: number, classification: TypeScript.TokenClass);
     }
 }
 var debugObjectHost;
@@ -5147,7 +5149,7 @@ module Services {
     }
     class CoreServices {
         public host: ICoreServicesHost;
-        constructor (host: ICoreServicesHost);
+        constructor(host: ICoreServicesHost);
         public getPreProcessedFileInfo(scritpId: string, sourceText: TypeScript.ISourceText): TypeScript.IPreProcessedFileInfo;
         public getDefaultCompilationSettings(): TypeScript.CompilationSettings;
         public dumpMemory(): string;

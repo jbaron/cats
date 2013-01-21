@@ -16,7 +16,6 @@
 module Cats.Menu {
 
 
-
     function getTab() {
     }
 

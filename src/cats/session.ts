@@ -163,13 +163,13 @@ module Cats {
         showErrors() {
             if (this.mode === "typescript") {
                 var self = this; // BUG in TS
-                this.project.iSense.perform("getErrors", this.name, (err, result:ErrorEntry[]) => {
+                this.project.iSense.perform("getErrors", this.name, (err, result:FileRange[]) => {
                     var annotations:Ace.Annotation[] = [];
                     if (result) {
-                        result.forEach((error:ErrorEntry) => {
+                        result.forEach((error:FileRange) => {
                             annotations.push({
-                               row:error.range.startRow,
-                               column:error.range.startColumn,
+                               row:error.range.start.row,
+                               column:error.range.start.column,
                                type:"error",
                                text:error.message
                             });

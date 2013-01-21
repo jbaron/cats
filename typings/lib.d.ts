@@ -593,6 +593,7 @@ declare var DataView: {
 /// IE9 DOM APIs (note that 
 ////////////////
 
+
 interface NavigatorID {
     appVersion: string;
     appName: string;

@@ -23,14 +23,14 @@ module Cats.Commands {
         var session = Cats.mainEditor.activeSession;
         if (! session) return;
         var cursor = getCursor();
-        session.project.iSense.perform("getDefinitionAtPosition", session.name, cursor, (err, data) => {
+        session.project.iSense.perform("getDefinitionAtPosition", session.name, cursor, (err, data:FileRange) => {
             if (data && data.unitName)
-                session.project.editFile(data.unitName, null, data.startPos);
+                session.project.editFile(data.unitName, null, data.range.start);
         });
     }
 
-    function rangeToPosition(range: Ace.Range): string {
-        return (range.startRow + 1) + ":" + (range.startColumn + 1);
+    function rangeToPosition(range: Cats.Range): string {
+        return (range.start.row + 1) + ":" + (range.start.column + 1);
     }
 
     function getInfoAt(type: string) {        
@@ -41,17 +41,17 @@ module Cats.Commands {
         var searchResultsElem = Cats.IDE.searchResult;
         searchResultsElem.innerHTML = "";
         $(searchResultsElem).addClass("busy");        
-        session.project.iSense.perform("getInfoAtPosition", type, session.name, cursor, (err, data) => {
+        session.project.iSense.perform("getInfoAtPosition", type, session.name, cursor, (err, data:Cats.FileRange[]) => {
             $(searchResultsElem).removeClass("busy");
             if (data) {                
                 var grid = new Cats.UI.Grid();
-                grid.setColumns(["description", "script", "position"]);
+                grid.setColumns(["message", "unitName", "position"]);
                 grid.setRows(data);
                 grid.setAspect("position", (row) => { return rangeToPosition(row.range) });
                 grid.render();
                 grid.appendTo(searchResultsElem);
-                grid.onselect = (data) => {
-                    session.project.editFile(data.script, null, { row: data.range.startRow, column: data.range.startColumn });
+                grid.onselect = (sel:Cats.FileRange) => {
+                    session.project.editFile(sel.unitName, null, sel.range.start);
                 };
 
             }

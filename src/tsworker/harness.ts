@@ -81,7 +81,7 @@ module Cats.TSWorker {
         }
     }
 
-    export class TypeScriptLS implements Services.ILanguageServiceHost {
+    export class LanguageServiceHost implements Services.ILanguageServiceHost {
         private ls: Services.ILanguageService = null;
         private compilationSettings:TypeScript.CompilationSettings = null;
 
@@ -175,16 +175,7 @@ module Cats.TSWorker {
             return range;
         }
 
-        //
-        // Return a new instance of the language service
-        //
-        public getLanguageService(): Services.ILanguageService {
-            var ls = new Services.TypeScriptServicesFactory().createLanguageService(this);
-            ls.refresh();
-            this.ls = ls;
-            return ls;
-        }
-
+       
         //
         // Parse file given its source text
         //
@@ -200,23 +191,7 @@ module Cats.TSWorker {
         }
 
 
-        //
-        // line and column are 1-based
-        //
-        public lineColToPosition(fileName: string, line: number, col: number): number {
-            var script = this.ls.getScriptAST(fileName);
-            return TypeScript.getPositionFromLineColumn(script, line, col);
-        }
-
-        //
-        // line and column are 1-based
-        //
-        public positionToLineCol(fileName: string, position: number): TypeScript.ILineCol {
-            var script = this.ls.getScriptAST(fileName);
-            var result = TypeScript.getLineColumnFromPosition(script, position);
-
-            return result;
-        }
+       
 
         //
         // Apply an array of text edits to a string, and return the resulting string.

@@ -15,8 +15,6 @@
 
 module Cats{
 
-
-
 export interface ListEntry {
     name: string;
 	path: string;
