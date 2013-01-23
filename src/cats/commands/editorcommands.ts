@@ -101,10 +101,10 @@ module Cats.Commands {
 
             editorCommands.forEach((config) => {
                 if (!config.cmd) config.cmd = config.label.toLowerCase();
-                var label = addShortcut(config.label, config.cmd);
+                // var label = addShortcut(config.label, config.cmd);
                 var item:Command = {
                     name: config.id,
-                    label: label,
+                    label: config.label,
                     shortcut: getShortcut(config.cmd),
                     command: editorCommand(config.cmd),
                 }

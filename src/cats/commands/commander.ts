@@ -140,8 +140,11 @@ module Cats.Commands {
             label: label || cmd.label,
             click: click
         };
-        if (cmd.shortcut) item.label += " [" + cmd.shortcut + "]";
-        if (cmd.icon) item.icon = cmd.icon;
+        
+        
+        // if (cmd.shortcut) item.label += " [" + cmd.shortcut + "]";
+        // @BUG in NW when using icon for Windows menu
+        // if (cmd.icon) item.icon = cmd.icon;
                 
         return new GUI.MenuItem(item);
     }
