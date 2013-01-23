@@ -13,11 +13,49 @@
 // limitations under the License.
 //
 
+
 module Cats {
 
-    export interface Ide {
-        fileNavigation: HTMLElement;
-        outlineNavigation: HTMLElement;
+    class Ide {
+
+        navigationBar= document.getElementById("navigationbar");
+        fileNavigation= document.getElementById("filetree");
+        outlineNavigation= document.getElementById("outlinenav");
+
+        resultBar= document.getElementById("resultbar");
+        compilationResult = document.getElementById("errorresults");
+        searchResult= document.getElementById("searchresults");
+
+        taskBar= document.getElementById("infobar");
+
+        editor= document.getElementById("editor");
+        sessionBar= document.getElementById("sessionbar");
+
+        toolBar= document.getElementById("toolbar");
+        statusBar= document.getElementById("statusbar");
+
+        mainMenu= null;
+    
+        setTheme(theme:string) {            
+            mainEditor.setTheme(theme);
+            setTimeout(function() {
+                var isDark = document.getElementsByClassName("ace_dark").length > 0;
+                var fg = isDark ? "white" : "black";
+                var elem = <HTMLElement>document.getElementsByClassName("ace_scroller")[0];
+                var bg =  window.getComputedStyle(elem,null).backgroundColor;
+
+                $("html, #main, #navigator, #info, #result").css("background-color", bg);
+                $("html").css("color", fg);
+                $(".autocomplete").css("background-color", bg);
+                $(".autocomplete").css("color", fg);
+                $("input").css("background-color", fg);
+                $("input").css("color", bg);
+            }, 500); 
+        }
+
+        loadProject(dir:string) {
+            
+        }        
 
     }
 

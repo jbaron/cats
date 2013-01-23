@@ -111,48 +111,38 @@ module Cats {
 	*/
     
     /**
-     *  Loads the configuration for a project. If not found it  
-     *  returns a number of sensible defaults.
+     *  Loads the configuration for a project. If no configuration is found, it  
+     *  returns a number of sensible defaults that will be used.
      */
 	export class ConfigLoader {
 
-		// static NAME = ".settings" + PATH.sep + "config.json"; 
-		static NAME = ".settings" + "/" + "config.json"; // work around
-		private _config;
-        private fileName:string;
+        /**
+         * Get the name of the configuation file
+         */ 
+        static getFileName(projectRoot:string) {
+            return PATH.join(projectRoot,".settings","config.json");
+        }
 
-		constructor(projectRoot:string) {
-			this.fileName = PATH.join(projectRoot,ConfigLoader.NAME);
-			var dir:string = PATH.dirname(this.fileName);
-			FS.exists(dir, (exists) => {
-					if (! exists) {
-						FS.mkdirSync(dir); //Should be called only once.
-						console.log("created .setting directory");
-					}
-			});	
-		}
-
-		load():any {
+        /**
+         * Load the configuration for a certain project
+         */ 
+		static load(projectRoot:string):any {
+            var fileName = ConfigLoader.getFileName(projectRoot);
 			try {
-				var content = Cats.project.readTextFile(this.fileName);
-				this._config = JSON.parse(content);                
+				var content = Cats.project.readTextFile(fileName);
+				return JSON.parse(content);                
 			} catch (err) {
 				console.log("Couldn't load project configuration, loading defaults");
-				this.loadDefault();                
+				return ConfigLoader.loadDefault();                
 			}
-            return this._config;
 		}
 
-		config() {
-			return this._config;
-		}
 
 	
-		loadDefault() {
-			this._config = {	
+		private static loadDefault() {
+			var result = {	
 				main: "index.html",
 				sourcePath : null, //If not set, the whole project directory is searched for source files
-				outputPath: null,
 
 				compiler : {
 					useDefaultLib: true,
@@ -166,6 +156,7 @@ module Cats {
 				minify: false,
 				rememberOpenFiles : false
 			};
+            return result;
 		}
 
 	}

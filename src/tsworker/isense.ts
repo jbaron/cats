@@ -14,7 +14,6 @@
 //
 
 
-// Licensed under the Apache License, Version 2.0. 
 ///<reference path='harness.ts'/>
 ///<reference path='../typings/ace.d.ts'/>
 ///<reference path='../typings/cats.d.ts'/>
@@ -22,8 +21,6 @@
 importScripts("../static/js/typescript.js")
 
 module Cats.TSWorker {
-
-    var outputFiles = {};
 
     var console = {
         log: function(str) {
@@ -263,7 +260,9 @@ module Cats.TSWorker {
         // Get the position
         public getTypeAtPosition(fileName: string, coord): Services.TypeInfo {
             var pos = this.getPositionFromCursor(fileName, coord);
-            return this.ls.getTypeAtPosition(fileName, pos);
+            var result = this.ls.getTypeAtPosition(fileName, pos);
+            result["description"] = TypeScript.MemberName.memberNameToString(result.memberName);
+            return result;
         }
 
 

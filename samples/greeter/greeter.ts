@@ -1,5 +1,9 @@
+/**
+ * Greets you with a warm welcome.
+ */ 
 class Greeter {
     greeting: string;
+    
     constructor(message: string) {
         this.greeting = message;
     }

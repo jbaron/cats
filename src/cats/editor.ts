@@ -26,7 +26,7 @@ module Cats {
     /**
      * The main Editor class that wraps the Ace editor
      * and provides a set common methods. There is only
-     * one Editor per window.
+     * one Editor instance per window.
      */ 
     export class Editor {
         public aceEditor: Ace.Editor;
@@ -47,8 +47,7 @@ module Cats {
         constructor(private rootElement: HTMLElement) {
 
             this.aceEditor = this.createEditor();
-            this.aceEditor.setFontSize("16px");
-            this.setTheme("cats");
+            this.aceEditor.setFontSize("16px");            
             this.hide();            
         }
 

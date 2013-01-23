@@ -24,6 +24,9 @@
 
 module Cats.Commands {
 
+    /**
+     * List of knows commands
+     */ 
     export enum CMDS {
         help_devTools,
         help_shortcuts,
@@ -101,16 +104,27 @@ module Cats.Commands {
         return commands;
     }
 
+    /**
+     * When a command has no function declared,
+     * use this one 
+     */ 
     function nop() {
         alert("Not yet implemented");
     }
 
+    /**
+     * Register a new command
+     */ 
 	export function register(command:Command)  {       
         if (! command.command) command.command = nop;
 		commands[command.name] = command;
         commandList.push(command);
 	}
 
+    /**
+     * Create a menu item for a certain command
+     * 
+     */ 
     export function getMenuCommand(name,label?, ...params:any[]) {
         var cmd = commands[name];
         if (! cmd) {
@@ -136,6 +150,10 @@ module Cats.Commands {
 		return commands[name];
 	}
 
+    /**
+     * Call the different command implementers so they can register 
+     * themselves
+     */ 
 	export function init() {
 		EditorCommands.init(register);
 	    FileCommands.init(register);

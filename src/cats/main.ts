@@ -49,7 +49,6 @@ module Cats {
             return decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
-
     var projectName = getParameterByName("project");
     if (!projectName) {
         var args = GUI.App.argv;
@@ -189,7 +188,10 @@ module Cats {
     initOutlineView();
     Cats.Menu.initFileContextMenu();
     mainEditor.init();
-
+    
+    setTimeout(() => {
+        mainEditor.setTheme("cats");
+    }, 2000);
 
     var win = GUI.Window.get();
     win.on("close", function() {

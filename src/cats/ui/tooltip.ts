@@ -24,7 +24,7 @@ export class ToolTip {
     };
     
     show(x:number, y:number, tip:string) {
-        this.element.innerText = tip;
+        this.element.innerHTML = tip;
 
         var st = this.element.style;
         st.left = (x + 10).toString(10) + "px";

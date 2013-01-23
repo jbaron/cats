@@ -15,8 +15,7 @@
 
 module Cats.UI {
     
-    
-    
+        
     export class Widget {
         
         public onselect: (value) => void;
@@ -33,8 +32,8 @@ module Cats.UI {
             this.rootElem = document.createElement(tagName);            
         }
                 
-        setAspect(name, aspect) {
-            this.aspects[name] = aspect;
+        setAspect(name, value) {
+            this.aspects[name] = value;
         }
 
 
@@ -110,10 +109,19 @@ module Cats.UI {
   
   
     class Label extends Widget {
-        constructor(text="") {
+        constructor(label?:string) {
             super("span");
-            this.rootElem.innerText = text;
+            if (label) this.setAspect("label",label);
         }
+            
+        setLabel(label:string) {
+            this.setAspect("label", label);
+        }    
+            
+        render() {
+            this.rootElem.innerText = this.getAspect("label");
+        }
+        
     }
   
   
@@ -223,10 +231,7 @@ module Cats.UI {
         setText(txt:string) {
            this.rootElem.innerText = txt; 
         }
-    
-        
-
-    
+            
     }
  
  

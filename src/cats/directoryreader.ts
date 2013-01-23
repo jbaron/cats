@@ -16,9 +16,9 @@
 module Cats{
 
 export interface ListEntry {
-    name: string;
-	path: string;
-	isFolder: bool;
+    name: string; // Just the file/directory name without path
+	path: string; // fullName including path
+	isFolder: bool; // is this a folder or a file
 }
 
 // Sort first on directory versus file and then on alphabet
@@ -47,7 +47,7 @@ export class DirectoryReader {
      */ 
 	read(dir:ListEntry) :ListEntry[] {       
 
-		var files = FS.readdirSync(dir.path);
+		var files:string[] = FS.readdirSync(dir.path);
 
 		var entries:ListEntry[] = [];
 

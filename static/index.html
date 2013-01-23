@@ -2,15 +2,14 @@
 <head>
 <title>CATS</title>
     <meta charset="utf-8">   
-	<link type="text/css" rel="stylesheet" href="jquery/layout-default-latest.css">
-	<script type="text/javascript" src="jquery/jquery-latest.js"></script>
-	<script type="text/javascript" src="jquery/jquery-ui-latest.js"></script>
-	<script type="text/javascript" src="jquery/jquery.layout-latest.js"></script>
-
+	<script type="text/javascript" src="js/jquery-latest.js"></script>
+	<script type="text/javascript" src="js/jquery-ui-latest.js"></script>
+	<script type="text/javascript" src="js/jquery.layout-latest.js"></script>
+    <script type="text/javascript" src="js/ace-noconflict/ace.js" charset="utf-8"></script>
+    
 	<link rel="stylesheet" href="css/cats.css">
-    <script src="ace-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-
-
+    <link rel="stylesheet" href="css/layout.css">
+    
 	<script type="text/javascript">
 
     function resizeOuter(name, state) {
@@ -37,7 +36,7 @@
 		,	north__paneSelector:	"#toolbar"
 		,	south__paneSelector:	"#statusbar"
 		,	west__size:				.20
-		,	spacing_open:			8  // ALL panes
+		,	spacing_open:			6  // ALL panes
 		,	spacing_closed:			12 // ALL panes
 		,	north__maxSize:			25
 		,	south__maxSize:			25
@@ -50,7 +49,7 @@
 			,	south__paneSelector:	"#result"
 			,	east__size:				.20
 			,	south__size:			.20
-			,	spacing_open:			8  // ALL panes
+			,	spacing_open:			6  // ALL panes
 			,	spacing_closed:			12 // ALL panes
 
 			}

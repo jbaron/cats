@@ -55,13 +55,9 @@ module Cats {
             this.name = PATH.basename(this.projectDir);
             this.refresh();           
         }
-
-
-        getConfigFileName():string {
-            return PATH.join(this.projectDir, ConfigLoader.NAME);
-        }    
-
-         private initFileTree() {
+        
+        // @TODO move to separate class
+        private initFileTree() {
             IDE.fileNavigation.innerHTML = "";
             var fileTree = new Cats.UI.TreeView();
             // var fileTree = new Cats.UI.Tree();
@@ -105,7 +101,7 @@ module Cats {
          */
         refresh() {
             this.initFileTree();
-            this.config = new ConfigLoader(this.projectDir).load();
+            this.config = new ConfigLoader.load(this.projectDir);
             
             this.initJSSense();
             this.iSense = new ISenseHandler();

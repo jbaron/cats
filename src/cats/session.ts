@@ -130,7 +130,12 @@ module Cats {
                     var member = data.memberName;
                     if (!member) return;
 
-                    var tip = Session.convertMember(member);
+                    // var tip = Session.convertMember(member);
+                    var tip = data["description"];
+                    if (data.docComment) {
+                        tip += "<hr>" + data.docComment;    
+                    }
+                    
                     // Bug in TS, need to prefix with cats.
                     Cats.mainEditor.toolTip.show(ev.x, ev.y, tip);
                 });

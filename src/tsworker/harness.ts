@@ -189,10 +189,7 @@ module Cats.TSWorker {
             var script = parser.parse(sourceText, fileName, 0);
             return script;
         }
-
-
-       
-
+     
         //
         // Apply an array of text edits to a string, and return the resulting string.
         //

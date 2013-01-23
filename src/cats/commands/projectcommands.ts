@@ -103,7 +103,7 @@ module Cats.Commands {
 
     function propertiesProject() {
         var content = JSON.stringify(Cats.project.config, null, 4);
-        Cats.project.editFile(Cats.project.getConfigFileName(), content);
+        Cats.project.editFile(ConfigLoader.getFileName(this.projectDir), content);
     }
 
     function refreshProject() {
