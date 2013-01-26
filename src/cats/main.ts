@@ -115,7 +115,7 @@ module Cats {
     }
 
     function handleOutlineEvent(session) {
-        session.project.iSense.perform("getOutliningRegions", session.name, (err, data) => {
+        session.project.iSense.perform("getOutliningRegions", session.name, (err, data:NavigateToItem[]) => {
             // console.log(data);
             Cats.IDE.outlineNavigation.innerHTML = "";
             var outliner = new Cats.UI.TreeView();
@@ -142,8 +142,8 @@ module Cats {
             });
             outliner.appendTo(Cats.IDE.outlineNavigation);
             outliner.onselect = (value) => {
-                var data = value.outline;
-                Cats.project.editFile(data.unitName, null, { row: data.range.startRow, column: data.range.startColumn });
+                var data:NavigateToItem = value.outline;
+                Cats.project.editFile(data.unitName, null, { row: data.range.start.row, column: data.range.start.column });
             };
 
             outliner.refresh();

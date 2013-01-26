@@ -297,13 +297,13 @@ module Cats.TSWorker {
         }
 
 
-        public getOutliningRegions(fileName: string) {
-            var results: Services.NavigateToItem[] = this.ls.getOutliningRegions(fileName);
+        public getOutliningRegions(fileName: string):NavigateToItem[] {
+            var results: NavigateToItem[] = <NavigateToItem[]>this.ls.getOutliningRegions(fileName);
             for (var i = 0; i < results.length; i++) {
                 var result = results[i];
                 var fileName = this.getUnitName(result.unitIndex);
-                result["range"] = this.getRange(fileName, result.minChar, result.limChar);
-                result["unitName"] = fileName;
+                result.range = this.getRange(fileName, result.minChar, result.limChar);
+                result.unitName = fileName;
             }
             return results;
         }

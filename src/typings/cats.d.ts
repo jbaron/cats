@@ -23,6 +23,10 @@ declare interface CompileResults {
     errors:FileRange[];
 }
 
+declare class NavigateToItem extends Services.NavigateToItem {
+    range:Range;
+    unitName:string;
+}
 
 
 
