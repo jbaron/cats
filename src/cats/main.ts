@@ -38,7 +38,7 @@ module Cats {
     export var project: Project;
     export var tabbar: UI.Tabbar;
 
-    function getParameterByName(name) {
+    function getParameterByName(name):string {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regexS = "[\\?&]" + name + "=([^&#]*)";
         var regex = new RegExp(regexS);
@@ -111,12 +111,22 @@ module Cats {
         decorator: string;
         qualifyer: string;
         kind: string;
-        isFolder: bool;
+        isFolder?: bool;
     }
 
-    function handleOutlineEvent(session) {
-        session.project.iSense.perform("getOutliningRegions", session.name, (err, data:NavigateToItem[]) => {
-            // console.log(data);
+    function navigateToItemHasChildren(name:string,kind:string,data:NavigateToItem[]):bool {
+        for (var i=0;i<data.length;i++) {
+            var item = data[i];
+            if ((item.containerName === name) && (item.containerKind === kind)) return true;
+        }
+        return false;
+    }
+
+    function handleOutlineEvent(session:Session) {
+        var mode = "getScriptLexicalStructure";
+        // var mode = "getOutliningRegions";
+        // session.project.iSense.perform("getNavigateToItems","Greeter", (err, data:NavigateToItem[]) => {
+        session.project.iSense.perform(mode, session.name, (err, data:NavigateToItem[]) => {        
             Cats.IDE.outlineNavigation.innerHTML = "";
             var outliner = new Cats.UI.TreeView();
             outliner.setAspect("children", (parent: OutlineTreeElement): OutlineTreeElement[] => {
@@ -128,14 +138,17 @@ module Cats {
                     if ((o.containerKind === kind) && (o.containerName === name)) {
                         var fullName = o.name;
                         if (name) fullName = name + "." + fullName;
-                        result.push({
+                        var item:OutlineTreeElement = {
                             name: o.name,
                             decorator: "icon-" + o.kind,
                             qualifyer: fullName,
                             kind: o.kind,
-                            outline: o,
-                            isFolder: !(o.kind === "method" || o.kind === "constructor" || o.kind === "function")
-                        })
+                            outline: o
+                        };
+                        
+                        item.isFolder= navigateToItemHasChildren(fullName,o.kind,data); // !(o.kind === "method" || o.kind === "constructor" || o.kind === "function")
+                        
+                        result.push(item);
                     }
                 }
                 return result;

@@ -14,11 +14,13 @@
 //
 
 
-// Load the TSWorker and handles the communication with the ISense web worker
-// This implementation uses a JSON-RPC message format for the communication.
 
 module Cats {
 
+/** 
+ * Load the TSWorker and handles the communication with the ISense web worker
+ * This implementation uses a JSON-RPC message format for the communication.
+ */
 export class ISenseHandler {
 
     private worker;
@@ -31,7 +33,9 @@ export class ISenseHandler {
         this.init();
     }
 
-    // Invoke a method on the Worker 
+    /**
+     * Invoke a method on the worker using JSON-RPC message structure
+     */ 
     perform(method:string, ...data:any[]) {
         var handler = data.pop();
         this.messageId++;
@@ -45,11 +49,16 @@ export class ISenseHandler {
         if (handler) this.registry[this.messageId] = handler;
     }
 
-    // Clear pending handlers.
+    /**
+     * Clear any pending handlers
+     */ 
     clear() {
         this.registry = {};
     }
 
+    /**
+     * Setup the message communication with the worker
+     */ 
     private init() {
         // Setup the message handler
         this.worker.onmessage = (e) => {

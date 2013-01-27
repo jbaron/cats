@@ -125,13 +125,12 @@ module Cats {
             var project = this.project;
 
             this.project.iSense.perform("getTypeAtPosition", this.name, docPos,
-                (err, data: Services.TypeInfo) => {
+                (err, data: TypeInfo) => {
                     if (!data) return;
                     var member = data.memberName;
                     if (!member) return;
 
-                    // var tip = Session.convertMember(member);
-                    var tip = data["description"];
+                    var tip = data.description;
                     if (data.docComment) {
                         tip += "<hr>" + data.docComment;    
                     }

@@ -15,7 +15,7 @@
 
 module Cats.Commands {
 
-  function getCursor(): Ace.Position {
+    function getCursor(): Ace.Position {
         return Cats.mainEditor.aceEditor.getCursorPosition();
     }
 

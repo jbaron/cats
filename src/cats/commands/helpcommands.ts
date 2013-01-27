@@ -17,18 +17,30 @@
 // This module contains all the global commands pertaining to the help functionality
 module Cats.Commands {
 
+    /**
+     * Show the available keyboard shortcuts
+     */ 
     function showShortcuts() {
         window.open('keyboard_shortcuts.html', '_blank');
     }
 
+    /**
+     * Show the version of CATS
+     */ 
     function showAbout() {
         alert("Code Assisitant for TypeScript\nversion 0.6.9\nCreated by JBaron");
     }
 
+    /**
+     * Open the webkit developers tools for debugging etc.
+     */ 
     function showDevTools() {        
         GUI.Window.get().showDevTools();
     }
 
+    /**
+     * Show process info like current memory usage
+     */ 
     function showProcess() {
             var mem = process.memoryUsage();
             var display = "memory used: " + mem.heapUsed;

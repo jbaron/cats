@@ -18,22 +18,32 @@
 
 module Cats.Commands {
 
+    /**
+     * Create a new edit session
+     */ 
     function newFile() {
         Cats.project.editFile("untitled", "");
     }
 
+    /**
+     * Close the active edit session
+     */ 
     function closeFile() {
         if (Cats.mainEditor.activeSession)
             Cats.mainEditor.closeSession(Cats.mainEditor.activeSession);
     }
 
-    // Close all sessions and hide the editor
+    /**
+     * Close all edit sessions
+     */ 
     function closeAllFiles() {
         var sessions = Cats.mainEditor.sessions.slice(0);
         sessions.forEach((session: Session) => {Cats.mainEditor.closeSession(session)});
     }
 
-
+    /**
+     * Close all edit sessions except the active session
+     */ 
     function closeOtherFiles() {
         // Make a copy of sessions
         var sessions = Cats.mainEditor.sessions.slice(0);
@@ -46,6 +56,9 @@ module Cats.Commands {
         }
     }
 
+    /**
+     * Save all edit sessions that have changed
+     */ 
     function saveAll() {
         var sessions = Cats.mainEditor.sessions;
         for (var i = 0; i < sessions.length; i++) {
@@ -54,6 +67,9 @@ module Cats.Commands {
         }
     }
         
+    /**
+     * Save thee active sessions under a different name
+     */     
      function saveAs() {
         var session = Cats.mainEditor.activeSession;
         if (session) {
@@ -64,9 +80,13 @@ module Cats.Commands {
         }
     }
 
+    /**
+     * Save the active session
+     */     
     function saveFile() {
         Cats.mainEditor.aceEditor.execCommand("save");
     }
+
 
     export class FileCommands {
         static init(registry: (cmd: Command) => void ) {

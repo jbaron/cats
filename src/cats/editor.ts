@@ -35,17 +35,15 @@ module Cats {
         public onAutoComplete: Function;
         private mouseMoveTimer: number;
 
-        // The sessions that are open by the editor
+        /** The sessions that are open by the editor */
         sessions: Session[] = [];
 
-        // The current session that is being edited
+        /** The session that is currently being edited */
         public activeSession: Session;
 
         private editorContextMenu: Cats.Menu.EditorContextMenu;
 
-        // private rootElement
         constructor(private rootElement: HTMLElement) {
-
             this.aceEditor = this.createEditor();
             this.aceEditor.setFontSize("16px");            
             this.hide();            
@@ -56,10 +54,13 @@ module Cats {
             this.autoCompleteView = new UI.AutoCompleteView(this.aceEditor);
 
             this.editorContextMenu = new Cats.Menu.EditorContextMenu(this);
-            this.editorContextMenu.bindTo(this.rootElement);
-            
+            this.editorContextMenu.bindTo(this.rootElement);            
         }
 
+        /**
+         * Get the session based on its filename
+         * @param name 
+         */ 
         getSession(name: string, project: Project): Session {
             for (var i = 0; i < this.sessions.length; i++) {
                 var session = this.sessions[i];

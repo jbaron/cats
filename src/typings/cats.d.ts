@@ -11,6 +11,10 @@ declare interface Range {
     end: Position;
 }
 
+declare class TypeInfo extends Services.TypeInfo {
+    description: string;
+}
+
 declare interface FileRange {
     unitName: string;
     range: Range;

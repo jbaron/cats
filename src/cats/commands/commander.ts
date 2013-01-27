@@ -121,6 +121,21 @@ module Cats.Commands {
         commandList.push(command);
 	}
 
+
+
+    // TODO i18n
+    function addShortcut(label:string, shortCut: string) {
+        var result = label;
+        var tabs = 5 - Math.floor((result.length / 4));
+        // console.log("Label " + result + " has tabs: " + tabs);
+        result = result + "     " + "\t\t\t\t\t\t".substring(0, tabs) + shortCut;
+        // result += "\u0007" + shortCut;
+        // result += "      " + shortCut;
+        // result += shortCut;        
+        return result;
+    }
+
+
     /**
      * Create a menu item for a certain command
      * 
@@ -143,6 +158,7 @@ module Cats.Commands {
         
         
         // if (cmd.shortcut) item.label += " [" + cmd.shortcut + "]";
+        if (cmd.shortcut) item.label = addShortcut(item.label, cmd.shortcut);
         // @BUG in NW when using icon for Windows menu
         // if (cmd.icon) item.icon = cmd.icon;
                 

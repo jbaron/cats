@@ -24,11 +24,16 @@ module Cats.Commands {
         if (sure) GUI.App.closeAllWindows();
     }
 
+    /**
+     * Close the project
+     */ 
     function closeProject() {
         window.close();
     }
 
-
+    /**
+     * Run the project
+     */ 
     function runProject() {
         var main = Cats.project.config.main;
         if (!main) {
@@ -46,7 +51,9 @@ module Cats.Commands {
         // win2.reloadIgnoringCache()
     };
 
-
+    /**
+     * Show the compilation errors
+     */ 
     function showErrors(errors: Cats.FileRange[]) {
 
         var grid = new Cats.UI.Grid();
@@ -65,7 +72,9 @@ module Cats.Commands {
         grid.appendTo(result);
     }
 
-  
+    /**
+     * Build the project
+     */ 
     function buildProject() {
         // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
         var project = Cats.project;
@@ -105,11 +114,17 @@ module Cats.Commands {
         var content = JSON.stringify(Cats.project.config, null, 4);
         Cats.project.editFile(ConfigLoader.getFileName(this.projectDir), content);
     }
-
+    
+    /**
+     * Refresh the project so everything is in sync again.
+     */ 
     function refreshProject() {
         Cats.project.refresh();
     }
 
+    /**
+     * Open a (new) project in a separate window
+     */ 
     function openProject() {
         var chooser: any = document.getElementById('fileDialog');
         chooser.onchange = function(evt) {

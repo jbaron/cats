@@ -15,7 +15,9 @@
 
 module Cats.Menu {
 
-   
+    /**
+     * Context menu for the main editor
+     */ 
     export class EditorContextMenu {
 
         private ctxmenu;
@@ -35,7 +37,9 @@ module Cats.Menu {
 
         }
 
-        // Bind this context menu to an HTML element
+        /**
+         * Bind this context menu to an HTML element
+         */ 
         bindTo(elem: HTMLElement) {
 
             elem.oncontextmenu = (ev: any) => {

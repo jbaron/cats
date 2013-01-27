@@ -12,6 +12,7 @@ class Greeter {
     }
 }
 
+
 var greeter = new Greeter("world");
 
 var button = document.createElement('button');

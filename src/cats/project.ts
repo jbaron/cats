@@ -25,7 +25,7 @@
 
 module Cats {
 
-    function mkdirRecursiveSync(path) {
+    function mkdirRecursiveSync(path:string) {
             if (! FS.existsSync(path)) {
                 mkdirRecursiveSync(PATH.dirname(path));
                 FS.mkdirSync(path, 0775);
