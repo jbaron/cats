@@ -95,13 +95,20 @@ body #center {
   max-height: 25px;
 }
 
-#statusbar div {
+#statusbar > ul {
+   margin: 0px;
    float: right;
+   list-style: none;
+}
+
+#statusbar li {
+float: left;
    margin-right: 10px;
    border-left-style: groove;
    height: 90%;
    padding-left: 5px;
 }
+
 
 #toolbar button {
     width: 30px;
@@ -297,6 +304,7 @@ Auto complete styling
     position: fixed;
     z-index: 1000;
     display: none;
+    background: white;
     -webkit-box-shadow: 5px 5px 5px #888;
 }
 

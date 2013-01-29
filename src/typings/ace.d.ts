@@ -69,6 +69,7 @@ module Ace {
 		new(content:string, mode:string);
 		getUndoManager():UndoManager;
 		getValue():string;
+        getOverwrite():bool;
         setValue(value:string);
 		getDocument():Document;
 		setMode(mode:string);
@@ -109,7 +110,8 @@ module Ace {
 		getSession():EditSession;
 		setTheme(theme:string);
 		getTheme():string;
-		moveCursorTo(row:number, column:number);
+		moveCursorTo(row:number, column:number, animate?:bool);
+        moveCursorToPosition(position:Position);
 		setFontSize(cssSize: string);
 	}
 

@@ -15,51 +15,6 @@
 
 
 /*
-compiler_options = {
-	canCallDefinitionSignature: false,
-	codeGenTarget: 0,
-	controlFlow: false,
-	controlFlowUseDef: false,
-	emitComments: false,
-	errorOnWith: true,
-	errorRecovery: false,
-	exec: false,
-	generateDeclarationFiles: false,
-	inferPropertiesFromThisAssignment: false,
-	mapSourceFiles: false,
-	minWhitespace: false,
-	moduleGenTarget: 0,
-	outputFileName: "",
-	outputMany: true,
-	parseOnly: false,
-	preprocess: true,
-	printControlFlow: false,
-	propagateConstants: false,
-	resolve: true,
-	styleSettings: {
-		assignmentInCond: false,
-		bitwise: false,
-		blockInCompoundStmt: false,
-		emptyBlocks: true,
-		eqeqeq: false,
-		eqnull: false,
-		evalOK: true,
-		forin: false,
-		funcInLoop: true,
-		implicitAny: false,
-		innerScopeDeclEscape: true,
-		literalSubscript: true,
-		newMustBeUsed: false,
-		reDeclareLocal: true,
-		requireSemi:false
-	},
-	useCaseSensitiveFileResolution: false,
-	useDefaultLib: true,
-	watch: false
-}
-*/
-
-/*
 
 var formatting_options = {
         public IndentSize: number;
@@ -78,87 +33,58 @@ var formatting_options = {
 */
 
 
-function errorHandler(err,data) {
-	if (err) {
-		console.log(err);
-		alert("Error occured, check console logging");
-	}
-}
-
 module Cats {
-    
-    /*
-    interface Config {
-        
-				main: string;
-				sourcePath : string;
-				outputPath: string;
 
-				compiler : {
-					useDefaultLib: bool;
-					outputMany: bool;
-					outputFileName: string;
-					emitComments: bool;
-					generateDeclarationFiles: bool;
-					mapSourceFiles: bool;
-        			codeGenTarget: number;
-        			moduleGenTarget: number;
-				};
-				minify: bool;
-			};
-    }
-
-	*/
-    
     /**
-     *  Loads the configuration for a project. If no configuration is found, it  
+     *  Loads the configuration for a project. If no configurationfile is found, it  
      *  returns a number of sensible defaults that will be used.
      */
-	export class ConfigLoader {
+    export class ConfigLoader {
 
         /**
          * Get the name of the configuation file
-         */ 
-        static getFileName(projectRoot:string) {
-            return PATH.join(projectRoot,".settings","config.json");
+         */
+        static getFileName(projectRoot: string):string {
+            return PATH.join(projectRoot, ".settings", "config.json");
         }
 
         /**
          * Load the configuration for a certain project
-         */ 
-		static load(projectRoot:string):any {
+         */
+        static load(projectRoot: string): Configuration {
             var fileName = ConfigLoader.getFileName(projectRoot);
-			try {
-				var content = Cats.project.readTextFile(fileName);
-				return JSON.parse(content);                
-			} catch (err) {
-				console.log("Couldn't load project configuration, loading defaults");
-				return ConfigLoader.loadDefault();                
-			}
-		}
+            try {
+                var content = Cats.project.readTextFile(fileName);
+                return JSON.parse(content);
+            } catch (err) {
+                console.log("Couldn't load project configuration, loading defaults");
+                return ConfigLoader.loadDefault();
+            }
+        }
 
+        /**
+         * Load the default configuration for a project
+         */
+        private static loadDefault():Configuration {
+            var result = {
+                main: "index.html",
+                sourcePath: null, //If not set, the whole project directory is searched for source files
 
-	
-		private static loadDefault() {
-			var result = {	
-				main: "index.html",
-				sourcePath : null, //If not set, the whole project directory is searched for source files
-
-				compiler : {
-					useDefaultLib: true,
-					outputOption: null,
-					emitComments: false,
-					generateDeclarationFiles: false,
-					mapSourceFiles: false,
-        			codeGenTarget: 1,
-        			moduleGenTarget: 0
-				},
-				minify: false,
-				rememberOpenFiles : false
-			};
+                compiler: {
+                    useDefaultLib: true,
+                    outputOption: null,
+                    emitComments: false,
+                    generateDeclarationFiles: false,
+                    mapSourceFiles: false,
+                    codeGenTarget: 1,
+                    moduleGenTarget: 0
+                },
+                minify: false,
+                rememberOpenFiles: false
+            };
             return result;
-		}
+        }
 
-	}
-    
- }
+    }
+
+}

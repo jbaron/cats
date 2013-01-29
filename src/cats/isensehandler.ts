@@ -67,14 +67,15 @@ export class ISenseHandler {
             // console.log("Received message reply " + msg.id + " from worker.");
             if (msg.error) {
                 console.error("Got error back !!! ");
-                console.error(msg.error.stack);
+                console.error(msg.error.stack);                
             }
+            // @TODO handle exceptions better and call callback
             var id = msg.id;
             if (id) {
                 var handler = this.registry[id];
                 if (handler) {
                     delete this.registry[id];
-                    handler(msg.error, msg.result);
+                    handler(msg.error, msg.result); 
                 }
             } else {
                 console.log(msg);

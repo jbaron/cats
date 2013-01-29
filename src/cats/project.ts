@@ -44,7 +44,7 @@ module Cats {
         // The singleton TSWorker handler instance
         iSense: ISenseHandler;
         JSSense: ISenseHandler;
-        config:any;
+        config:Configuration;
 
 
         // Set the project to a new directory and make sure 
@@ -52,7 +52,7 @@ module Cats {
         constructor(projectDir: string) {
             project = this;            
             this.projectDir = PATH.resolve(projectDir);
-            this.name = PATH.basename(this.projectDir);
+            
             this.refresh();           
         }
         
@@ -100,9 +100,13 @@ module Cats {
          *  again from the filesystem to be fully in sync
          */
         refresh() {
-            this.initFileTree();
-            this.config = new ConfigLoader.load(this.projectDir);
             
+            this.config = ConfigLoader.load(this.projectDir);
+            this.name = this.config.name || PATH.basename(this.projectDir);
+            var titleElem = <HTMLElement>document.getElementsByTagName("title")[0];
+            titleElem.innerText="CATS | " + this.name;
+            
+            this.initFileTree();
             this.initJSSense();
             this.iSense = new ISenseHandler();
             this.iSense.perform("setCompilationSettings",this.config.compiler,null);
@@ -112,8 +116,8 @@ module Cats {
                 var libdts = this.readTextFile(fullName);
                 this.iSense.perform("addScript", fullName, libdts, true, null);
             }
-
-            var srcPaths = [].concat(this.config.sourcePath); 
+                
+            var srcPaths = [].concat(<any>this.config.sourcePath); 
             srcPaths.forEach( (srcPath:string) => {
                 var fullPath = PATH.join(this.projectDir,srcPath);
                 this.loadTypeScriptFiles(fullPath);
@@ -172,8 +176,10 @@ module Cats {
             return data;
         }
 
-        // @BUG Somehow TSWorker is not ready by default.
-        // This triggers it.
+        /**
+         * @BUG Somehow TS LanguageServices are not ready by default.
+         * This triggers it to be ready 
+         */
         private initTSWorker() {
             try {
                 if (this.tsFiles.length > 0) {                   
@@ -182,8 +188,11 @@ module Cats {
             } catch(err) {}
         }
 
-        // Load all the script that are part of the project into the tsworker
-        // For now use a synchronous call to load.
+        /**
+         * Load all the script that are part of the project into the tsworker
+         * For now use a synchronous call to load.
+         * @param directory The source directory where to start the scan
+         */ 
         private loadTypeScriptFiles(directory: string) {
             var files = FS.readdirSync(directory);
             files.forEach((file) =>{

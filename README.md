@@ -10,8 +10,6 @@ Although not yet feature complete, it is getting there. Right now CATS already h
 
 - Support for refactoring and smart navigation.
 
-- Basic refactoring support.
-
 - TypeScript compilation to JavaScript.
 
 - Validation of the source code while you are typing.

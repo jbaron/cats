@@ -102,7 +102,7 @@ module Cats.Menu {
             source.append(getCmd(CMDS.edit_toggleComment));
             source.append(getCmd(CMDS.edit_indent));
             source.append(getCmd(CMDS.edit_outdent));
-            source.append(new GUI.MenuItem({ label: 'Format code', click: this.formatText }));
+            source.append(getCmd(CMDS.source_format));
 
             var refactor = new GUI.Menu();
             refactor.append(getCmd(CMDS.refactor_rename));
@@ -138,13 +138,6 @@ module Cats.Menu {
             help.append(getCmd(CMDS.help_devTools));
             help.append(getCmd(CMDS.help_about));
             
-            /*
-            help.append(new gui.MenuItem({ label: 'Keyboard shortcuts', click: this.showShortcuts }));
-            help.append(new gui.MenuItem({ label: 'Process Info', click: this.showProcess }));
-            help.append(new gui.MenuItem({ label: 'Developers tools', click: this.showDevTools }));
-            help.append(new gui.MenuItem({ label: 'About CATS', click: this.showAbout }));
-            */
-
             menubar.append(new GUI.MenuItem({ label: 'File', submenu: file }));
             menubar.append(new GUI.MenuItem({ label: 'Edit', submenu: edit }));
             menubar.append(new GUI.MenuItem({ label: 'Source', submenu: source }));
@@ -159,50 +152,7 @@ module Cats.Menu {
             win.menu = menubar;
             this.menubar = menubar;
         }
-
-
-        // TODO i18n
-        private getLabelForCommand(commandName: string) {
-            var label = commandName[0].toUpperCase() + commandName.slice(1);
-            var platform = Cats.mainEditor.aceEditor.commands.platform;
-            var command = Cats.mainEditor.aceEditor.commands.byName[commandName];
-
-            var tabs = 5 - Math.floor((label.length / 4) - 0.01);
-            label = label + "\t\t\t\t\t\t".substring(0, tabs);
-            if (command && command.bindKey) {
-                var key = command.bindKey[platform];
-                if (key) label += key ;
-            }
-            return label;
-        }
-
-
-        
-     
-        private formatText() {
-            var session = Cats.mainEditor.activeSession;
-            session.project.iSense.perform("getFormattedTextForRange", session.name, 0, session.getValue().length, (err, result) => {
-                if (!err) session.setValue(result);
-            });
-        }
-
-
-
-
-        private nop() {
-            alert("Not yet implemented");
-        };
-
-            //undoChange() {
-            //  var man = cats.mainEditor.aceEditor.getSession().getUndoManager();
-            //  man.undo();
-            //}
-            //
-            //redoChange() {
-            //  var man = cats.mainEditor.aceEditor.getSession().getUndoManager();
-            //  man.redo();
-            //}
-
+         
         private enableFind() {
             window.open('findreplace.html', '_blank');
         }
@@ -221,31 +171,25 @@ module Cats.Menu {
             Cats.mainEditor.aceEditor.replace(replaceText.value, options);
         }
 
-        private setThemeWrapper(theme) {
-            return function setTheme() {
-                Cats.mainEditor.setTheme(theme);
-            }
-        }
-
         private createFontSizeMenu() {
+            var getCmd = Cats.Commands.getMenuCommand;
+            var CMDS = Cats.Commands.CMDS;
             var menu = new GUI.Menu();
             this.fontSizes.forEach((size: number) => {
-                menu.append(new GUI.MenuItem({
-                    label: size + "px",
-                    click: () => { Cats.mainEditor.aceEditor.setFontSize(size + "px") }
-                }));
+                var item = getCmd(CMDS.ide_fontSize,size+"px",size);
+                menu.append(item);
             });
             return menu;
         }
 
         private createThemeMenu() {
+            var getCmd = Cats.Commands.getMenuCommand;
+            var CMDS = Cats.Commands.CMDS;
             var menu = new GUI.Menu();
             this.themes.forEach((theme) => {
                 if (theme.theme) {
-                    menu.append(new GUI.MenuItem({
-                        label: theme.label,
-                        click: this.setThemeWrapper(theme.theme)
-                    }));
+                    var item = getCmd(CMDS.ide_theme,theme.label,theme.theme);
+                    menu.append(item);
                 } else {
                     menu.append(new GUI.MenuItem({
                         type: "separator"

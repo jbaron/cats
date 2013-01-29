@@ -25,7 +25,7 @@
 module Cats.Commands {
 
     /**
-     * List of knows commands
+     * List of known commands
      */ 
     export enum CMDS {
         help_devTools,
@@ -137,19 +137,22 @@ module Cats.Commands {
 
 
     /**
-     * Create a menu item for a certain command
-     * 
-     */ 
-    export function getMenuCommand(name,label?, ...params:any[]) {
+     * Create a menu item for a certain command.
+     */
+    export function getMenuCommand(name); 
+    export function getMenuCommand(name,label:string, ...params:any[]);     
+    export function getMenuCommand(name,label?:string, ...params:any[]) {
         var cmd = commands[name];
         if (! cmd) {
             console.error("No implementation available for command " + name);
             return new GUI.MenuItem({label:"Unknow command"});
         }
-        var click = cmd.command;
+        var click;
         if (params.length > 0) {
             // lets generate a closure
             click = function() { cmd.command.apply(this,params); }
+        } else {
+            click = cmd.command;
         }
         var item:any = {
             label: label || cmd.label,

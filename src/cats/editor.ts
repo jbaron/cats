@@ -28,7 +28,7 @@ module Cats {
      * and provides a set common methods. There is only
      * one Editor instance per window.
      */ 
-    export class Editor {
+    export class Editor extends EventEmitter {
         public aceEditor: Ace.Editor;
         public toolTip: UI.ToolTip;
         private autoCompleteView: UI.AutoCompleteView;
@@ -44,15 +44,16 @@ module Cats {
         private editorContextMenu: Cats.Menu.EditorContextMenu;
 
         constructor(private rootElement: HTMLElement) {
+            super();
             this.aceEditor = this.createEditor();
             this.aceEditor.setFontSize("16px");            
-            this.hide();            
+            this.hide();
+            this.init();
         }
 
         init() {
             this.toolTip = new UI.ToolTip();
             this.autoCompleteView = new UI.AutoCompleteView(this.aceEditor);
-
             this.editorContextMenu = new Cats.Menu.EditorContextMenu(this);
             this.editorContextMenu.bindTo(this.rootElement);            
         }
@@ -67,12 +68,21 @@ module Cats {
                 if ((session.name === name) && (project === session.project)) return session;
             }
         }
-    
+        
+        /**
+         * Add a new session to the editor
+         * @param session The session to be added
+         */ 
         addSession(session:Session) {
             this.sessions.push(session);
             session.update();
         }
     
+        /**
+         * Make a session the active one
+         * @param session the session to make active
+         * @param pos The position to scroll to
+         */ 
         setSession(session: Session, pos?: Ace.Position) {
             
             if (this.activeSession === session) {
@@ -82,8 +92,7 @@ module Cats {
                 }
                 return;
             }
-            
-            
+                        
             this.activeSession = session;
             this.aceEditor.setSession(session.editSession);
             if (pos) {
@@ -98,42 +107,35 @@ module Cats {
          
         }
 
+        /**
+         * Move cursor to a certain position
+         */ 
         moveCursorTo(pos: Ace.Position = { column: 0, row: 0 }) {
-            this.aceEditor.moveCursorTo(pos.row, pos.column);
+            this.aceEditor.moveCursorToPosition(pos);
         }
 
-
+        /**
+         * Show the editor
+         */ 
         show() {
             this.rootElement.style.display = "block";
             this.aceEditor.focus();
         }
 
+        /**
+         * Hide the editor
+         */ 
         hide() {
             this.rootElement.style.display = "none";
         }
 
         setTheme(theme: string) {
-            this.aceEditor.setTheme("ace/theme/" + theme);
-            // Get the color of ace editor and use it to style the rest
-
-            // Use a timeout to make sure the editor has updated its style
-            // @TODO rewrite some css rules, don't set all of these.
-            setTimeout(function() {
-                var isDark = document.getElementsByClassName("ace_dark").length > 0;
-                var fg = isDark ? "white" : "black";
-                var elem = <HTMLElement>document.getElementsByClassName("ace_scroller")[0];
-                var bg =  window.getComputedStyle(elem,null).backgroundColor;
-                // var fg = elem.css("color");      
-                $("html, #main, #navigator, #info, #result").css("background-color", bg);
-                $("html").css("color", fg);
-                $(".autocomplete").css("background-color", bg);
-                $(".autocomplete").css("color", fg);
-                $("input").css("background-color", fg);
-                $("input").css("color", bg);
-            }, 500);
-
+            this.aceEditor.setTheme("ace/theme/" + theme);           
         }
 
+        /**
+         * Does the editor contain any session with unsaved changes 
+         */ 
         hasUnsavedSessions() :bool {
             for (var i=0;i<this.sessions.length;i++) {
                 if (this.sessions[i].changed) return true;
@@ -141,7 +143,9 @@ module Cats {
             return false;
         }
 
-        // Close a single session
+        /**
+         * Close a single session
+         */ 
         closeSession(session: Session) {
             if (session.changed) {
                 var c = confirm("Save " + session.name + " before closing ?");
@@ -162,7 +166,9 @@ module Cats {
             tabbar.refresh();
         }
 
-
+        /**
+         * Add a command to the editor
+         */ 
         addCommand(command: Ace.EditorCommand) {
             this.aceEditor.commands.addCommand(command);
         }

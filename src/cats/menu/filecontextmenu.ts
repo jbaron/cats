@@ -75,7 +75,7 @@ module Cats.Menu {
     export function initFileContextMenu() {
         var fileContextMenu = createFileContextMenu();
 
-        IDE.fileNavigation.addEventListener('contextmenu', function(ev: any) {
+        Cats.IDE.fileNavigation.addEventListener('contextmenu', function(ev: any) {
         var d = UI.TreeView.getValueFromElement(ev.srcElement);
         data.key = d.path;
         data.isFolder = d.isFolder;

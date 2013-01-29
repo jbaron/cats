@@ -28,18 +28,30 @@ module Cats.Commands {
 
  // Perform code autocompletion
      function autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
-         var session = Cats.mainEditor.activeSession;
-                     
+            var session = Cats.mainEditor.activeSession;
+            if (! session) return;
+            
             if (session.mode !== "typescript") return;
             session.update();
-
 
             session.project.iSense.perform("autoComplete", cursor, session.name, (err, completes) => {
                 if (completes != null) view.showCompletions(completes.entries);
             });
         }
 
-
+      function formatText() {
+            var session = Cats.mainEditor.activeSession;
+            if (session) {
+                session.project.iSense.perform("getFormattedTextForRange", session.name, 0, session.getValue().length, (err, result) => {                    
+                    if (!err) {
+                        var pos = Cats.mainEditor.aceEditor.getCursorPosition();
+                        session.setValue(result);
+                        if (pos) Cats.mainEditor.aceEditor.moveCursorToPosition(pos);
+                    }
+                    
+                });
+            }
+        }
 
     // TODO i18n
     function getShortcut(commandName: string) {
@@ -95,6 +107,7 @@ module Cats.Commands {
                { id: Cats.Commands.CMDS.edit_toggleComment, label: "Toggle Comment", cmd: "togglecomment" },
                { id: Cats.Commands.CMDS.edit_toggleRecording, label: "Start/stop Recording", cmd: "togglerecording" },
                { id: Cats.Commands.CMDS.edit_replayMacro, label: "Playback Macro", cmd: "replaymacro" }
+               
             ];
 
 
@@ -111,6 +124,8 @@ module Cats.Commands {
                 if (config.icon) item.icon = "static/img/" + config.icon;
                 registry(item);
             });
+            
+            registry({name:CMDS.source_format, label:"Format Code", command: formatText});               
         }
 
     }

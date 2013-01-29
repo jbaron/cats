@@ -50,7 +50,7 @@ export enum Event {
    
    activeSessionChanged,
    editModeChanged,
-   
+   overwriteModeChanged,
 
 }
 
@@ -83,23 +83,23 @@ export class EventBus2 {
  * Simple Event bus to tie together the different events
  * TODO: implement a more typed version
  */
-export class EventBus {
-    private static suscribers = [];
+export class EventBusImpl {
+    private suscribers = [];
     
-    static emit(event:Event,data,old?) {
+    emit(event:Event,data,old?) {
         var s:Function[] = this.suscribers[event] || [];
         s.forEach((fn) => {
             try { fn(data,old) } catch(err) {console.error(err);}    
         })        
     }
             
-    static on(event,subscriber:(data,old?)=>void) {
+    on(event,subscriber:(data,old?)=>void) {
       if (! this.suscribers[event]) this.suscribers[event] = [];
-        EventBus.suscribers[event].push(subscriber);
+        this.suscribers[event].push(subscriber);
      }
     
 };
 
-
+export var EventBus = new EventBusImpl();
 
 }

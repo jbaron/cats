@@ -42,6 +42,7 @@ module Cats {
         };
     
         
+        
         private static DEFAULT_MODE = "text";
 
         // The Ace EditSession object
@@ -62,53 +63,55 @@ module Cats {
                 tabbar.refresh();
             }
         }
-
+        
+        /**
+         * Create a new edit session
+         * 
+         */ 
         constructor(public project: Project, public name: string, content: string) {
             console.log("Creating new session for file " + name + " with content length " + content.length);
-            var ext = PATH.extname(name);
-
-            this.mode = this.determineMode(ext);
+            this.mode = this.determineMode(name);
             this.editSession = new EditSession(content,"ace/mode/" + this.mode);
 
-          
-
             this.editSession.on("change", this.onChangeHandler.bind(this));
+            this.editSession.on("changeOverwrite", () => {
+                EventBus.emit(Event.overwriteModeChanged,this.editSession.getOverwrite());
+            });
             this.editSession.setUndoManager(new UndoManager());
         }
 
+        /**
+         * Persist the edit session
+         */ 
         persist() {
             this.project.writeSession(this);
             this.changed = false;
         }
 
+        /**
+         * Gte the value of this edit session
+         */ 
         getValue(): string {
             return this.editSession.getValue();
         }
 
+        /**
+         * Set the value of the current edit session.
+         */ 
         setValue(value: string) {
             this.editSession.setValue(value);
         }
 
 
-        static convertMember(member): string {
-            var result = member.prefix;
-            if (member.entries) {
-                for (var i = 0; i < member.entries.length; i++) {
-                    result += this.convertMember(member.entries[i]);
-                }
-            } else {
-                result += member.text;
-            }
-            result += member.suffix;
-            return result;
-        }
-
+        /**
+         * Get the Position based on mouse x,y coordinates
+         */ 
         getPositionFromScreenOffset(x: number, y: number): Ace.Position {
             var r = Cats.mainEditor.aceEditor.renderer;
             // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
             var offset = (x - r.$padding) / r.characterWidth;
 
-            // Quickfix for strange issue        
+            // @BUG: Quickfix for strange issue with top
             var correction = r.scrollTop ? 7 : 0;
 
             var row = Math.floor((y + r.scrollTop - correction) / r.lineHeight);
@@ -140,8 +143,9 @@ module Cats {
                 });
         }
 
-        // Determine the edit mode based on the file extension
-        private determineMode(ext: string): string {
+        // Determine the edit mode based on the file name
+        private determineMode(name: string): string {
+            var ext = PATH.extname(name);
             var result = Session.MODES[ext] || Session.DEFAULT_MODE;
             return result;
         }
@@ -164,9 +168,11 @@ module Cats {
             });
         }
 
+        /**
+         * Check if there are any errors for this session and show them.    
+         */ 
         showErrors() {
             if (this.mode === "typescript") {
-                var self = this; // BUG in TS
                 this.project.iSense.perform("getErrors", this.name, (err, result:FileRange[]) => {
                     var annotations:Ace.Annotation[] = [];
                     if (result) {
@@ -177,18 +183,16 @@ module Cats {
                                type:"error",
                                text:error.message
                             });
-                        });
-                        
-                    }
-              
-                    self.editSession.setAnnotations(annotations);
+                        });                        
+                    }              
+                    this.editSession.setAnnotations(annotations);
                 });
             }
         }
 
         /**
-         * Make sure the session updated any pending chnages to the worker.
-         * 
+         * Update the worker with the latest version of the content of this 
+         * session.
          */
         update() {
            if (this.mode === "typescript") {
@@ -198,7 +202,9 @@ module Cats {
             }; 
         }
 
-        // Perform code autocompletion
+        /**
+         * Perform code autocompletion. Right now support for JS and TS.
+         */ 
         autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
             if (this.mode === "javascript") {
                 this.autoCompleteJS(cursor, view);
@@ -206,16 +212,20 @@ module Cats {
             }
             
             if (this.mode !== "typescript") return;
-            var editSession = this.editSession;
 
             // Any pending changes that are not yet send to the worker?
-            this.update();
+            if (this.pendingWorkerUpdate) this.update();
 
             this.project.iSense.perform("autoComplete", cursor, this.name, (err, completes) => {
                 if (completes != null) view.showCompletions(completes.entries);
             });
         }
 
+        /**
+         * Keep track of changes made to the content and update the 
+         * worker if required.
+         * 
+         */ 
         private onChangeHandler(event) {
             this.changed = true;
             this.pendingWorkerUpdate = true;
@@ -224,6 +234,7 @@ module Cats {
                         
             clearTimeout(this.updateSourceTimer);
 
+            // Don't send too many updates to the worker
             this.updateSourceTimer = setTimeout(() => {
                 if (this.pendingWorkerUpdate) {
                     this.update();

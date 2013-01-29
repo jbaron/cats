@@ -17,11 +17,12 @@ var PATH=require("path");
 var FS=require("fs");
 var GUI = require('nw.gui');
 
+///<reference path='eventemitter.ts'/>
+///<reference path='ide.ts'/>
 ///<reference path='../typings/cats.d.ts'/>
 ///<reference path='ui/widget.ts'/>
 ///<reference path='eventbus.ts'/>
 ///<reference path='commands/commander.ts'/>
-///<reference path='ide.ts'/>
 ///<reference path='menu/menubar.ts'/>
 ///<reference path='menu/filecontextmenu.ts'/>
 ///<reference path='project.ts'/>
@@ -32,8 +33,9 @@ var GUI = require('nw.gui');
 ///<reference path='ui/grid.ts'/>
 ///<reference path='../typings/typescript.d.ts'/>
 
+
 module Cats {
-    
+        
     export var mainEditor: Editor;
     export var project: Project;
     export var tabbar: UI.Tabbar;
@@ -49,18 +51,18 @@ module Cats {
             return decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
-    var projectName = getParameterByName("project");
-    if (!projectName) {
-        var args = GUI.App.argv;
-        if (args && (args.length > 0))
-            projectName = args[0];
-        else
-            projectName = PATH.join(process.cwd(), "samples", "greeter");
+    function determineProject():string {
+        var projectName = getParameterByName("project");
+        if (!projectName) {
+            var args = GUI.App.argv;
+            if (args && (args.length > 0))
+                projectName = args[0];
+            else
+                projectName = PATH.join(process.cwd(), "samples", "greeter");
+        }
+        return projectName;
     }
-
-    project = new Project(projectName);
-    mainEditor = new Editor(IDE.editor);
-
+   
 
     function initTabBar() {
 
@@ -175,10 +177,20 @@ module Cats {
     }
 
     function initStatusBar() {
-        var div = document.getElementById("sessionmode");
-        EventBus.on(Event.editModeChanged, (mode) => {
-            div.innerText = PATH.basename(mode);
+        var sessionMode = document.getElementById("sessionmode");
+        EventBus.on(Event.editModeChanged, (mode:string) => {
+            sessionMode.innerText = PATH.basename(mode);
         });
+        
+        var overwriteMode = document.getElementById("overwritemode");
+        EventBus.on(Event.overwriteModeChanged, (mode:bool) => {
+            var session = mainEditor.activeSession;
+            if (session) {
+                var b = session.editSession.getOverwrite();
+                overwriteMode.innerText = b ? "overwrite" : "insert";
+            }            
+        });
+
     }
 
     export var resultbar = new UI.Tabbar();
@@ -189,6 +201,9 @@ module Cats {
         resultbar.appendTo(IDE.resultBar);        
     }
 
+    IDE = new Ide();    
+    mainEditor = new Editor(IDE.editor);
+    project = new Project(determineProject());
 
     Cats.Commands.init();
     Cats.Menu.createMenuBar();

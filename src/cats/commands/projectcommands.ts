@@ -85,6 +85,7 @@ module Cats.Commands {
         compilationResultsElem.innerHTML = "";
         $(compilationResultsElem).addClass("busy");
         project.iSense.perform("compile", options, (err, data:Cats.CompileResults) => {
+                        
             $(compilationResultsElem).removeClass("busy");
             if (data.errors && (data.errors.length > 0)) {
                 // console.log(data.error);

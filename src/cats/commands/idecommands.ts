@@ -27,13 +27,13 @@ module Cats.Commands {
         GUI.App.quit();
     }
 
-    function setTheme(theme) {
-        Cats.mainEditor.setTheme(theme);
+    function setTheme(theme:string) {
+        Cats.IDE.setTheme(theme);
     }
 
 
-    function setFontSize(size) {
-        Cats.mainEditor.aceEditor.setFontSize(size + "px");
+    function setFontSize(size:number) {
+        Cats.IDE.setFontSize(size);
     }
 
     export class IdeCommands {

@@ -1,6 +1,30 @@
 module Cats {
 
 
+
+
+
+interface Configuration {
+    name?:string;
+    main?: string;
+
+    sourcePath?: string;
+
+    compiler: {
+        useDefaultLib: bool;
+        outputOption: string;
+        emitComments: bool;
+        generateDeclarationFiles: bool;
+        mapSourceFiles: bool;
+        codeGenTarget: number;
+        moduleGenTarget: number;
+    };
+    
+
+};
+
+
+
 declare interface Position {
     row: number;
     column: number;
