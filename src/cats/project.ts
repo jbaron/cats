@@ -23,7 +23,10 @@
 ///<reference path='directoryreader.ts'/>
 
 
+ 
 module Cats {
+
+   
 
     function mkdirRecursiveSync(path:string) {
             if (! FS.existsSync(path)) {

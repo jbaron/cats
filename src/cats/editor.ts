@@ -28,7 +28,7 @@ module Cats {
      * and provides a set common methods. There is only
      * one Editor instance per window.
      */ 
-    export class Editor extends EventEmitter {
+    export class Editor  {
         public aceEditor: Ace.Editor;
         public toolTip: UI.ToolTip;
         private autoCompleteView: UI.AutoCompleteView;
@@ -44,7 +44,6 @@ module Cats {
         private editorContextMenu: Cats.Menu.EditorContextMenu;
 
         constructor(private rootElement: HTMLElement) {
-            super();
             this.aceEditor = this.createEditor();
             this.aceEditor.setFontSize("16px");            
             this.hide();
@@ -99,6 +98,7 @@ module Cats {
                 this.moveCursorTo(pos);
                 this.aceEditor.clearSelection();
             }
+            this.show();
             this.aceEditor.focus();
             session.showErrors();
             tabbar.refresh();

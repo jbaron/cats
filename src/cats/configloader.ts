@@ -32,8 +32,8 @@ var formatting_options = {
 }
 */
 
-
 module Cats {
+
 
     /**
      *  Loads the configuration for a project. If no configurationfile is found, it  

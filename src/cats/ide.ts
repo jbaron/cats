@@ -16,7 +16,10 @@
 
 module Cats {
 
-    export class Ide extends EventEmitter {
+    export class Ide {
+
+
+        sessions: Session[]=[];
 
         navigationBar= document.getElementById("navigationbar");
         fileNavigation= document.getElementById("filetree");
@@ -42,6 +45,29 @@ module Cats {
         setFontSize(size:number) {
             mainEditor.aceEditor.setFontSize(size + "px");
         }
+    
+    
+        addSession(session:Session) {
+            this.sessions = this.sessions.concat([session]);
+        }
+
+        getSession(name:string) {
+            for (var i = 0; i < this.sessions.length; i++) {
+                var session = this.sessions[i];
+                if (session.name === name) return session;
+            }
+        }
+
+        removeSession(session:Session) {
+            var result = [];
+            this.sessions.forEach((s)=>{
+                if ( s !== session) {
+                    result.push(s);
+                } 
+            })
+            this.sessions = result;
+        }
+
     
         /**
          * Set the theme

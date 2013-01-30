@@ -22,6 +22,55 @@ module Cats {
     var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
     var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
 
+    export class SessionList extends EventEmitter {
+
+        private sessions: Session[] = [];
+
+        /**
+         * Get the session based on its filename
+         * @param name 
+         */
+        get (name: string): Session {
+            for (var i = 0; i < this.sessions.length; i++) {
+                var session = this.sessions[i];
+                if (session.name === name) return session;
+            }
+            return null;
+        }
+
+        /**
+         * Add a new session to the editor
+         * @param session The session to be added
+         */
+        add(session: Session) {
+            this.sessions.push(session);
+            session.update();
+            this.emit("add", session);
+        }
+
+
+        /**
+         * Close a single session
+         */
+        remove(session: Session) {
+
+            // Remove it for the list of sessions
+            var index = this.sessions.indexOf(session);
+            if (index > -1) {
+                if (session.changed) {
+                    var c = confirm("Save " + session.name + " before closing ?");
+                    if (c) session.persist();
+                }
+                this.sessions.splice(index, 1);
+                this.emit("remove", session);
+            }
+
+        }
+
+
+    }
+
+
     export class Session {
 
         private static MODES = {
@@ -40,9 +89,9 @@ module Cats {
             ".xml": "xml",
             ".json": "json"
         };
-    
-        
-        
+
+
+
         private static DEFAULT_MODE = "text";
 
         // The Ace EditSession object
@@ -63,26 +112,26 @@ module Cats {
                 tabbar.refresh();
             }
         }
-        
+
         /**
          * Create a new edit session
          * 
-         */ 
+         */
         constructor(public project: Project, public name: string, content: string) {
             console.log("Creating new session for file " + name + " with content length " + content.length);
             this.mode = this.determineMode(name);
-            this.editSession = new EditSession(content,"ace/mode/" + this.mode);
+            this.editSession = new EditSession(content, "ace/mode/" + this.mode);
 
             this.editSession.on("change", this.onChangeHandler.bind(this));
             this.editSession.on("changeOverwrite", () => {
-                EventBus.emit(Event.overwriteModeChanged,this.editSession.getOverwrite());
+                EventBus.emit(Event.overwriteModeChanged, this.editSession.getOverwrite());
             });
             this.editSession.setUndoManager(new UndoManager());
         }
 
         /**
          * Persist the edit session
-         */ 
+         */
         persist() {
             this.project.writeSession(this);
             this.changed = false;
@@ -90,14 +139,14 @@ module Cats {
 
         /**
          * Gte the value of this edit session
-         */ 
+         */
         getValue(): string {
             return this.editSession.getValue();
         }
 
         /**
          * Set the value of the current edit session.
-         */ 
+         */
         setValue(value: string) {
             this.editSession.setValue(value);
         }
@@ -105,7 +154,7 @@ module Cats {
 
         /**
          * Get the Position based on mouse x,y coordinates
-         */ 
+         */
         getPositionFromScreenOffset(x: number, y: number): Ace.Position {
             var r = Cats.mainEditor.aceEditor.renderer;
             // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
@@ -135,9 +184,9 @@ module Cats {
 
                     var tip = data.description;
                     if (data.docComment) {
-                        tip += "<hr>" + data.docComment;    
+                        tip += "<hr>" + data.docComment;
                     }
-                    
+
                     // Bug in TS, need to prefix with cats.
                     Cats.mainEditor.toolTip.show(ev.x, ev.y, tip);
                 });
@@ -170,21 +219,21 @@ module Cats {
 
         /**
          * Check if there are any errors for this session and show them.    
-         */ 
+         */
         showErrors() {
             if (this.mode === "typescript") {
-                this.project.iSense.perform("getErrors", this.name, (err, result:FileRange[]) => {
-                    var annotations:Ace.Annotation[] = [];
+                this.project.iSense.perform("getErrors", this.name, (err, result: FileRange[]) => {
+                    var annotations: Ace.Annotation[] = [];
                     if (result) {
-                        result.forEach((error:FileRange) => {
+                        result.forEach((error: FileRange) => {
                             annotations.push({
-                               row:error.range.start.row,
-                               column:error.range.start.column,
-                               type:"error",
-                               text:error.message
+                                row: error.range.start.row,
+                                column: error.range.start.column,
+                                type: "error",
+                                text: error.message
                             });
-                        });                        
-                    }              
+                        });
+                    }
                     this.editSession.setAnnotations(annotations);
                 });
             }
@@ -195,22 +244,22 @@ module Cats {
          * session.
          */
         update() {
-           if (this.mode === "typescript") {
-                var source = this.editSession.getValue();                
+            if (this.mode === "typescript") {
+                var source = this.editSession.getValue();
                 this.project.iSense.perform("updateScript", this.name, source, null);
                 this.pendingWorkerUpdate = false;
-            }; 
+            };
         }
 
         /**
          * Perform code autocompletion. Right now support for JS and TS.
-         */ 
+         */
         autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
             if (this.mode === "javascript") {
                 this.autoCompleteJS(cursor, view);
                 return;
             }
-            
+
             if (this.mode !== "typescript") return;
 
             // Any pending changes that are not yet send to the worker?
@@ -225,13 +274,13 @@ module Cats {
          * Keep track of changes made to the content and update the 
          * worker if required.
          * 
-         */ 
+         */
         private onChangeHandler(event) {
             this.changed = true;
             this.pendingWorkerUpdate = true;
 
             if (this.mode !== "typescript") return;
-                        
+
             clearTimeout(this.updateSourceTimer);
 
             // Don't send too many updates to the worker
