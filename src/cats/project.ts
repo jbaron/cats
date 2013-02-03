@@ -23,16 +23,16 @@
 ///<reference path='directoryreader.ts'/>
 
 
- 
+
 module Cats {
 
-   
 
-    function mkdirRecursiveSync(path:string) {
-            if (! FS.existsSync(path)) {
-                mkdirRecursiveSync(PATH.dirname(path));
-                FS.mkdirSync(path, 0775);
-            }
+
+    function mkdirRecursiveSync(path: string) {
+        if (!FS.existsSync(path)) {
+            mkdirRecursiveSync(PATH.dirname(path));
+            FS.mkdirSync(path, 0775);
+        }
     }
 
 
@@ -42,23 +42,23 @@ module Cats {
         // The home directory of the project
         projectDir: string;
         name: string;
-        private tsFiles:string[] = [];
+        private tsFiles: string[] = [];
 
         // The singleton TSWorker handler instance
         iSense: ISenseHandler;
         JSSense: ISenseHandler;
-        config:Configuration;
+        config: Configuration;
 
 
         // Set the project to a new directory and make sure 
         // we remove old artifacts.
         constructor(projectDir: string) {
-            project = this;            
+            project = this;
             this.projectDir = PATH.resolve(projectDir);
-            
-            this.refresh();           
+
+            this.refresh();
         }
-        
+
         // @TODO move to separate class
         private initFileTree() {
             IDE.fileNavigation.innerHTML = "";
@@ -66,88 +66,88 @@ module Cats {
             // var fileTree = new Cats.UI.Tree();
             var dirReader = new DirectoryReader();
 
-            fileTree.setAspect("children", (parent:ListEntry):ListEntry[] => {
+            fileTree.setAspect("children", (parent: ListEntry): ListEntry[] => {
                 if (parent == null) {
                     return [{
-                        name:this.name, 
-                        isFolder:true, 
-                        path:this.projectDir,
-                        decorator:"icon-folder"
+                        name: this.name,
+                        isFolder: true,
+                        path: this.projectDir,
+                        decorator: "icon-folder"
                     }];
                 }
 
                 return dirReader.read(parent);
-            
+
             });
-                     
+
             fileTree.appendTo(IDE.fileNavigation);
             fileTree.refresh();
-            
+
             fileTree.onselect = (entry) => {
-                if (! entry.isFolder) this.editFile(entry.path);
+                if (!entry.isFolder) this.editFile(entry.path);
             };
         }
 
 
-         private initJSSense() {
+        private initJSSense() {
             this.JSSense = new ISenseHandler();
-                                    
-            var fullName = PATH.join(process.cwd(),"typings/lib.d.ts" );
+
+            var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
             var libdts = this.readTextFile(fullName);
             this.JSSense.perform("addScript", fullName, libdts, true, null);
-            
-        }    
+
+        }
 
         /**
          *  Refreshes the project and loads required artifacts
          *  again from the filesystem to be fully in sync
          */
         refresh() {
-            
+            this.tsFiles = [];
             this.config = ConfigLoader.load(this.projectDir);
             this.name = this.config.name || PATH.basename(this.projectDir);
             var titleElem = <HTMLElement>document.getElementsByTagName("title")[0];
-            titleElem.innerText="CATS | " + this.name;
-            
+            titleElem.innerText = "CATS | " + this.name;
+
             this.initFileTree();
             this.initJSSense();
             this.iSense = new ISenseHandler();
-            this.iSense.perform("setCompilationSettings",this.config.compiler,null);
+            this.iSense.perform("setCompilationSettings", this.config.compiler, null);
 
-            if (this.config.compiler.useDefaultLib) {                
-                var fullName = PATH.join(process.cwd(),"typings/lib.d.ts" );
+            if (this.config.compiler.useDefaultLib) {
+                var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
                 var libdts = this.readTextFile(fullName);
                 this.iSense.perform("addScript", fullName, libdts, true, null);
             }
-                
-            var srcPaths = [].concat(<any>this.config.sourcePath); 
-            srcPaths.forEach( (srcPath:string) => {
-                var fullPath = PATH.join(this.projectDir,srcPath);
+
+            var srcPaths = [].concat(<any>this.config.sourcePath);
+            srcPaths.forEach((srcPath: string) => {
+                var fullPath = PATH.join(this.projectDir, srcPath);
                 this.loadTypeScriptFiles(fullPath);
                 this.initTSWorker();
             });
 
         }
 
-        editFile(name: string, content?: string, goto?: Ace.Position) :Session {
-            var session: Session = mainEditor.getSession(name, this);
+        editFile(name: string, content?: string, goto?: Ace.Position): Session {
+            var session: Session = IDE.getSession(name);
 
             if (!session) {
                 if (content == null) content = this.readTextFile(name);
                 session = new Session(this, name, content);
-                mainEditor.addSession(session);                                             
+                IDE.addSession(session);
             }
-                        
-            mainEditor.setSession(session,goto);            
-            mainEditor.show();            
+
+            mainEditor.setSession(session, goto);
+            mainEditor.show();
             return session;
         }
 
-        getStartURL():string {
+        getStartURL(): string {
             var url = PATH.join(this.projectDir, this.config.main);
             return "file://" + url;
         }
-        
+
 
         writeTextFile(name: string, value: string) {
             mkdirRecursiveSync(PATH.dirname(name));
@@ -168,12 +168,12 @@ module Cats {
 
         readTextFile(name: string): string {
             if (name === "untitled") return "";
-            
+
             var data = FS.readFileSync(name, "utf8");
-            
+
             // Use single character line returns
             data = data.replace(/\r\n?/g, "\n");
-            
+
             // Remove the BOM (only MS uses BOM for UTF8)
             data = data.replace(/^\uFEFF/, '');
             return data;
@@ -184,21 +184,19 @@ module Cats {
          * This triggers it to be ready 
          */
         private initTSWorker() {
-            try {
-                if (this.tsFiles.length > 0) {                   
-                   this.iSense.perform("autoComplete", {row:0,column:0},this.tsFiles[0],null);
-                }
-            } catch(err) {}
+            if (this.tsFiles.length > 0) {
+                this.iSense.perform("initialize", null);
+            }
         }
 
         /**
          * Load all the script that are part of the project into the tsworker
          * For now use a synchronous call to load.
          * @param directory The source directory where to start the scan
-         */ 
+         */
         private loadTypeScriptFiles(directory: string) {
             var files = FS.readdirSync(directory);
-            files.forEach((file) =>{
+            files.forEach((file) => {
                 try {
                     var fullName = PATH.join(directory, file);
                     var stats = FS.statSync(fullName);

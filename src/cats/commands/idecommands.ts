@@ -21,7 +21,7 @@ module Cats.Commands {
 
 
     function quit() {
-         if (Cats.mainEditor.hasUnsavedSessions()) {
+         if (IDE.hasUnsavedSessions()) {
             if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
         }
         GUI.App.quit();

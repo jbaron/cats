@@ -30,28 +30,27 @@ module Cats.Commands {
      */ 
     function closeFile() {
         if (Cats.mainEditor.activeSession)
-            Cats.mainEditor.closeSession(Cats.mainEditor.activeSession);
+            IDE.closeSession(Cats.mainEditor.activeSession);
     }
 
     /**
      * Close all edit sessions
      */ 
     function closeAllFiles() {
-        var sessions = Cats.mainEditor.sessions.slice(0);
-        sessions.forEach((session: Session) => {Cats.mainEditor.closeSession(session)});
+        var sessions = IDE.sessions;
+        sessions.forEach((session: Session) => {IDE.closeSession(session)});
     }
 
     /**
      * Close all edit sessions except the active session
      */ 
-    function closeOtherFiles() {
-        // Make a copy of sessions
-        var sessions = Cats.mainEditor.sessions.slice(0);
+    function closeOtherFiles() {       
+        var sessions = IDE.sessions;
         var activeSession = Cats.mainEditor.activeSession;
         for (var i = 0; i < sessions.length; i++) {
             var session = sessions[i];
             if (session !== activeSession) {
-                Cats.mainEditor.closeSession(session);
+                IDE.closeSession(session);
             }
         }
     }
@@ -60,7 +59,7 @@ module Cats.Commands {
      * Save all edit sessions that have changed
      */ 
     function saveAll() {
-        var sessions = Cats.mainEditor.sessions;
+        var sessions = IDE.sessions;
         for (var i = 0; i < sessions.length; i++) {
             var session = sessions[i];
             if (session.changed) session.persist();
@@ -68,7 +67,7 @@ module Cats.Commands {
     }
         
     /**
-     * Save thee active sessions under a different name
+     * Save the active sessions under a different name
      */     
      function saveAs() {
         var session = Cats.mainEditor.activeSession;
@@ -86,7 +85,6 @@ module Cats.Commands {
     function saveFile() {
         Cats.mainEditor.aceEditor.execCommand("save");
     }
-
 
     export class FileCommands {
         static init(registry: (cmd: Command) => void ) {

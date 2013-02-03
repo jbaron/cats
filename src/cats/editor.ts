@@ -23,20 +23,25 @@ declare var $;
 
 module Cats {
 
+
+    function setOverwrite() {
+        mainEditor.overwrite = mainEditor.activeSession.editSession.getOverwrite();
+    }
+
     /**
      * The main Editor class that wraps the Ace editor
      * and provides a set common methods. There is only
      * one Editor instance per window.
      */ 
-    export class Editor  {
+    export class Editor extends ObservableImpl {
         public aceEditor: Ace.Editor;
         public toolTip: UI.ToolTip;
         private autoCompleteView: UI.AutoCompleteView;
         public onAutoComplete: Function;
         private mouseMoveTimer: number;
-
-        /** The sessions that are open by the editor */
-        sessions: Session[] = [];
+        
+        editMode:string;
+        overwrite:bool;
 
         /** The session that is currently being edited */
         public activeSession: Session;
@@ -44,11 +49,18 @@ module Cats {
         private editorContextMenu: Cats.Menu.EditorContextMenu;
 
         constructor(private rootElement: HTMLElement) {
+            super("activeSession", "editMode", "overwrite");
             this.aceEditor = this.createEditor();
             this.aceEditor.setFontSize("16px");            
             this.hide();
             this.init();
         }
+
+        // Small wrappers to make the observers a bit more typed.
+        onEditMode(fn:(mode:string)=>void) { this.on("editMode",fn); }
+        onActiveSession(fn:(session:Session)=>void) { this.on("activeSession",fn); }
+        onOverwrite(fn:(mode:bool)=>void) { this.on("overwrite",fn); }
+
 
         init() {
             this.toolTip = new UI.ToolTip();
@@ -58,25 +70,30 @@ module Cats {
         }
 
         /**
-         * Get the session based on its filename
-         * @param name 
+         * Deactive and activeate listeners
+         * @param oldSession The current active session that will de activated
+         * @param newSession The session that will be the new active session
          */ 
-        getSession(name: string, project: Project): Session {
-            for (var i = 0; i < this.sessions.length; i++) {
-                var session = this.sessions[i];
-                if ((session.name === name) && (project === session.project)) return session;
+        private swapListeners(oldSession:Session, newSession:Session) {
+            var listeners = {
+               "changeOverwrite" : setOverwrite                 
+            };
+            
+            if (oldSession) {
+                for (var event in listeners) {
+                    oldSession.editSession.removeListener(event,listeners[event]);
+                }
             }
+            
+            if (newSession) {
+                for (var event in listeners) {
+                    newSession.editSession.on(event,listeners[event]);
+                }
+
+            }
+                    
         }
-        
-        /**
-         * Add a new session to the editor
-         * @param session The session to be added
-         */ 
-        addSession(session:Session) {
-            this.sessions.push(session);
-            session.update();
-        }
-    
+
         /**
          * Make a session the active one
          * @param session the session to make active
@@ -91,8 +108,11 @@ module Cats {
                 }
                 return;
             }
-                        
+           
+            this.swapListeners(this.activeSession,session); 
+
             this.activeSession = session;
+            
             this.aceEditor.setSession(session.editSession);
             if (pos) {
                 this.moveCursorTo(pos);
@@ -102,8 +122,7 @@ module Cats {
             this.aceEditor.focus();
             session.showErrors();
             tabbar.refresh();
-            EventBus.emit(Event.editModeChanged,session.mode);
-            EventBus.emit(Event.activeSessionChanged,session);
+            this.editMode = PATH.basename(session.mode); 
          
         }
 
@@ -129,41 +148,11 @@ module Cats {
             this.rootElement.style.display = "none";
         }
 
+        /**
+         * Set the theme of the editor
+         */ 
         setTheme(theme: string) {
             this.aceEditor.setTheme("ace/theme/" + theme);           
-        }
-
-        /**
-         * Does the editor contain any session with unsaved changes 
-         */ 
-        hasUnsavedSessions() :bool {
-            for (var i=0;i<this.sessions.length;i++) {
-                if (this.sessions[i].changed) return true;
-            }
-            return false;
-        }
-
-        /**
-         * Close a single session
-         */ 
-        closeSession(session: Session) {
-            if (session.changed) {
-                var c = confirm("Save " + session.name + " before closing ?");
-                if (c) session.persist();
-            }
-
-            // Remove it for the list of sessions
-            var index = this.sessions.indexOf(session);
-            this.sessions.splice(index, 1);
-
-            // Check if was the current session displayed
-            if (this.activeSession === session) {
-                this.activeSession === null;
-                EventBus.emit(Event.activeSessionChanged,null,session);
-                this.hide();
-            }
-
-            tabbar.refresh();
         }
 
         /**
@@ -187,10 +176,10 @@ module Cats {
 
         private onMouseMove(ev: MouseEvent) {
             this.toolTip.hide();
-            var session = this.activeSession;
             clearTimeout(this.mouseMoveTimer);
             var elem = <HTMLElement>ev.srcElement;
             if (elem.className !== "ace_content") return;
+            var session = this.activeSession;
             this.mouseMoveTimer = setTimeout(() => {
                 session.showInfoAt(ev);
             }, 800);

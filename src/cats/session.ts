@@ -22,56 +22,7 @@ module Cats {
     var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
     var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
 
-    export class SessionList extends EventEmitter {
-
-        private sessions: Session[] = [];
-
-        /**
-         * Get the session based on its filename
-         * @param name 
-         */
-        get (name: string): Session {
-            for (var i = 0; i < this.sessions.length; i++) {
-                var session = this.sessions[i];
-                if (session.name === name) return session;
-            }
-            return null;
-        }
-
-        /**
-         * Add a new session to the editor
-         * @param session The session to be added
-         */
-        add(session: Session) {
-            this.sessions.push(session);
-            session.update();
-            this.emit("add", session);
-        }
-
-
-        /**
-         * Close a single session
-         */
-        remove(session: Session) {
-
-            // Remove it for the list of sessions
-            var index = this.sessions.indexOf(session);
-            if (index > -1) {
-                if (session.changed) {
-                    var c = confirm("Save " + session.name + " before closing ?");
-                    if (c) session.persist();
-                }
-                this.sessions.splice(index, 1);
-                this.emit("remove", session);
-            }
-
-        }
-
-
-    }
-
-
-    export class Session {
+    export class Session extends ObservableImpl {
 
         private static MODES = {
             ".js": "javascript",
@@ -90,8 +41,6 @@ module Cats {
             ".json": "json"
         };
 
-
-
         private static DEFAULT_MODE = "text";
 
         // The Ace EditSession object
@@ -104,29 +53,20 @@ module Cats {
         public mode: string;
 
         // Has the code been changed without saving yet
-        private _changed = false;
-        get changed(): bool { return this._changed; }
-        set changed(value: bool) {
-            if (this._changed !== value) {
-                this._changed = value;
-                tabbar.refresh();
-            }
-        }
-
+        changed = false;
+        
         /**
-         * Create a new edit session
-         * 
+         * Create a new edit session 
          */
         constructor(public project: Project, public name: string, content: string) {
+            super("changed");
             console.log("Creating new session for file " + name + " with content length " + content.length);
             this.mode = this.determineMode(name);
             this.editSession = new EditSession(content, "ace/mode/" + this.mode);
 
             this.editSession.on("change", this.onChangeHandler.bind(this));
-            this.editSession.on("changeOverwrite", () => {
-                EventBus.emit(Event.overwriteModeChanged, this.editSession.getOverwrite());
-            });
             this.editSession.setUndoManager(new UndoManager());
+            this.on("changed", () => {tabbar.refresh()});
         }
 
         /**
@@ -150,7 +90,6 @@ module Cats {
         setValue(value: string) {
             this.editSession.setValue(value);
         }
-
 
         /**
          * Get the Position based on mouse x,y coordinates
@@ -273,7 +212,6 @@ module Cats {
         /**
          * Keep track of changes made to the content and update the 
          * worker if required.
-         * 
          */
         private onChangeHandler(event) {
             this.changed = true;
@@ -285,10 +223,8 @@ module Cats {
 
             // Don't send too many updates to the worker
             this.updateSourceTimer = setTimeout(() => {
-                if (this.pendingWorkerUpdate) {
-                    this.update();
-                    this.showErrors();
-                }
+                if (this.pendingWorkerUpdate) this.update();
+                this.showErrors();            
             }, 1000);
         };
     }

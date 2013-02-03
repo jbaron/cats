@@ -16,7 +16,7 @@
 
 module Cats {
 
-    export class Ide {
+    export class Ide extends ObservableImpl {
 
 
         sessions: Session[]=[];
@@ -39,6 +39,11 @@ module Cats {
 
         mainMenu= null;
     
+    
+        constructor() {
+            super("sessions");
+        }
+    
         /**
          * Set the font size of the IDE
          */ 
@@ -46,11 +51,28 @@ module Cats {
             mainEditor.aceEditor.setFontSize(size + "px");
         }
     
-    
+        /**
+         * Add a new session to the IDE
+         * @param session The session to be added
+         */ 
         addSession(session:Session) {
             this.sessions = this.sessions.concat([session]);
         }
 
+        /**
+         * Are there any session with unsaved changes 
+         */ 
+        hasUnsavedSessions() :bool {
+            for (var i=0;i<this.sessions.length;i++) {
+                if (this.sessions[i].changed) return true;
+            }
+            return false;
+        }
+
+        /**
+         * Get the session based on its filename
+         * @param name 
+         */ 
         getSession(name:string) {
             for (var i = 0; i < this.sessions.length; i++) {
                 var session = this.sessions[i];
@@ -58,20 +80,32 @@ module Cats {
             }
         }
 
-        removeSession(session:Session) {
+        /**
+         * Close a session
+         */ 
+        closeSession(session:Session) {
             var result = [];
+            
+            if (session.changed) {
+                var c = confirm("Save " + session.name + " before closing ?");
+                if (c) session.persist();
+            }
+            
             this.sessions.forEach((s)=>{
                 if ( s !== session) {
                     result.push(s);
                 } 
             })
+             // Check if was the current session displayed
+            if (mainEditor.activeSession === session) {
+                mainEditor.activeSession = null;                
+                mainEditor.hide();
+            }            
             this.sessions = result;
         }
 
-    
         /**
          * Set the theme
-         * 
          */ 
         setTheme(theme:string) {            
             mainEditor.setTheme(theme);
@@ -102,9 +136,4 @@ module Cats {
 
     export var IDE:Ide; 
     
-    
-   
-    
-    
-
 }

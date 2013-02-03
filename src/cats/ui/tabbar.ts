@@ -128,6 +128,7 @@ export class Tabbar extends AspectWidget {
 
     setOptions(arr:any[]) {
         this.options = arr;
+        this.refresh();
     }
 
     appendTo(elem:HTMLElement) {

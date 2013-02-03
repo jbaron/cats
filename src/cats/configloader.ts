@@ -72,7 +72,7 @@ module Cats {
 
                 compiler: {
                     useDefaultLib: true,
-                    outputOption: null,
+                    outputOption: "",
                     emitComments: false,
                     generateDeclarationFiles: false,
                     mapSourceFiles: false,

@@ -18,6 +18,7 @@ var FS=require("fs");
 var GUI = require('nw.gui');
 
 ///<reference path='eventemitter.ts'/>
+///<reference path='observable.ts'/>
 ///<reference path='ide.ts'/>
 ///<reference path='../typings/cats.d.ts'/>
 ///<reference path='ui/widget.ts'/>
@@ -66,15 +67,14 @@ module Cats {
 
     function initTabBar() {
 
-        tabbar = new UI.Tabbar();
-        tabbar.setOptions(mainEditor.sessions);
+        tabbar = new UI.Tabbar();        
         tabbar.setAspect("name", (session: Session) => { return PATH.basename(session.name) });
         tabbar.setAspect("selected", (session: Session) => { return session === Cats.mainEditor.activeSession });
         tabbar.setAspect("longname", (session: Session) => { return session.name });
         tabbar.setAspect("changed", (session: Session) => { return session.changed });
-        // tabbar.onselect = (session) => Cats.project.editFile(session.name); //TODO Fix to use real session
-        tabbar.onselect = (session) => Cats.mainEditor.setSession(session); //TODO Fix to use real session
+        tabbar.onselect = (session) => Cats.mainEditor.setSession(session);
         tabbar.appendTo(IDE.sessionBar);
+        IDE.on("sessions", (sessions) => {tabbar.setOptions(sessions)} );
     }
 
     function initNavBar() {
@@ -167,7 +167,7 @@ module Cats {
     }
 
     function initOutlineView() {
-        EventBus.on(Event.activeSessionChanged, (session:Session) => {
+        mainEditor.on("activeSession", (session:Session) => {
             if (session && (session.mode === "typescript"))
                 handleOutlineEvent(session);
             else
@@ -178,19 +178,14 @@ module Cats {
 
     function initStatusBar() {
         var sessionMode = document.getElementById("sessionmode");
-        EventBus.on(Event.editModeChanged, (mode:string) => {
-            sessionMode.innerText = PATH.basename(mode);
+        mainEditor.on("editMode", (mode:string) => {
+            sessionMode.innerText = mode;
         });
         
         var overwriteMode = document.getElementById("overwritemode");
-        EventBus.on(Event.overwriteModeChanged, (mode:bool) => {
-            var session = mainEditor.activeSession;
-            if (session) {
-                var b = session.editSession.getOverwrite();
-                overwriteMode.innerText = b ? "overwrite" : "insert";
-            }            
+        mainEditor.onOverwrite((mode:bool) => {
+            overwriteMode.innerText = mode ? "overwrite" : "insert";            
         });
-
     }
 
     export var resultbar = new UI.Tabbar();
@@ -201,8 +196,9 @@ module Cats {
         resultbar.appendTo(IDE.resultBar);        
     }
 
-    IDE = new Ide();    
+    IDE = new Ide();     
     mainEditor = new Editor(IDE.editor);
+    // mainEditor.on("activeSession",()=>{console.log("active session changed")})
     project = new Project(determineProject());
 
     Cats.Commands.init();

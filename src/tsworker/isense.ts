@@ -49,13 +49,21 @@ module Cats.TSWorker {
          * 
          */ 
         constructor() {
-            this.init();            
-        }
-
-        init() {
             this.lsHost = new LanguageServiceHost();
             this.ls = new Services.TypeScriptServicesFactory().createLanguageService(this.lsHost);
-            this.ls.refresh();
+        }
+
+        /**
+         * Sometimes the TS langugaeservices don't work
+         * This tries to fix that 
+         */ 
+        initialize() {
+            try {
+                this.ls.refresh();
+                this.compile();
+            } catch (err) {
+                // Silently ignore
+            }
         }
 
      

@@ -33,7 +33,7 @@ var Range: Ace.Range = ace.require("ace/range").Range;
         var i = rows.length;
         while (i--) {
             var data = rows[i];
-            var session = Cats.mainEditor.getSession(data.unitName,Cats.project);
+            var session = IDE.getSession(data.unitName);
             if (! session) {
                 session = Cats.project.editFile(data.unitName);
             }

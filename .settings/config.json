@@ -1,11 +1,9 @@
 {
     "main": "static/index.html",
     "sourcePath": "src",
-    "outputPath": null,
     "compiler": {
         "useDefaultLib": true,
         "outputOption": "tmp",
-        "outputFileName": "main.js",
         "emitComments": false,
         "generateDeclarationFiles": false,
         "mapSourceFiles": false,
