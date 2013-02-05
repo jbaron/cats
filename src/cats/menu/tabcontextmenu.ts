@@ -29,7 +29,7 @@ module Cats.Menu {
         private ctxmenu;
         private lastEvent: MouseEvent;
 
-        constructor(private editor: Cats.Editor) {
+        constructor(private editor: Cats.TextEditor) {
             // Create a new menu
             this.ctxmenu = new GUI.Menu();
 

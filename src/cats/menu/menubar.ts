@@ -15,7 +15,6 @@
 
 module Cats.Menu {
 
-    export var IDE = Cats.IDE;
 
     // This class creates the main menubar and has the actions that are linked to the 
     // menubar.
@@ -159,7 +158,7 @@ module Cats.Menu {
 
         private actionFind() {
             var input = <HTMLInputElement>document.getElementById("findText");
-            Cats.mainEditor.aceEditor.find(input.value, {}, true);
+            IDE.mainEditor.aceEditor.find(input.value, {}, true);
         }
 
         private actionReplace() {
@@ -168,7 +167,7 @@ module Cats.Menu {
             var options = {
                 needle: findText.value
             };
-            Cats.mainEditor.aceEditor.replace(replaceText.value, options);
+            IDE.mainEditor.aceEditor.replace(replaceText.value, options);
         }
 
         private createFontSizeMenu() {

@@ -16,11 +16,11 @@
 module Cats.Commands {
 
     function getCursor(): Ace.Position {
-        return Cats.mainEditor.aceEditor.getCursorPosition();
+        return IDE.mainEditor.aceEditor.getCursorPosition();
     }
 
     export function gotoDeclaration() {        
-        var session = Cats.mainEditor.activeSession;
+        var session = IDE.mainEditor.activeSession;
         if (! session) return;
         var cursor = getCursor();
         session.project.iSense.perform("getDefinitionAtPosition", session.name, cursor, (err, data:FileRange) => {
@@ -29,32 +29,17 @@ module Cats.Commands {
         });
     }
 
-    function rangeToPosition(range: Cats.Range): string {
-        return (range.start.row + 1) + ":" + (range.start.column + 1);
-    }
-
     function getInfoAt(type: string) {        
-        var session = Cats.mainEditor.activeSession;
+        var session = IDE.mainEditor.activeSession;
         if (! session) return;
-        Cats.resultbar.selectOption(1);
+        IDE.resultbar.selectOption(1);
         var cursor = getCursor();
-        var searchResultsElem = Cats.IDE.searchResult;
+        var searchResultsElem = IDE.searchResult;
         searchResultsElem.innerHTML = "";
         $(searchResultsElem).addClass("busy");        
         session.project.iSense.perform("getInfoAtPosition", type, session.name, cursor, (err, data:Cats.FileRange[]) => {
             $(searchResultsElem).removeClass("busy");
-            if (data) {                
-                var grid = new Cats.UI.Grid();
-                grid.setColumns(["message", "unitName", "position"]);
-                grid.setRows(data);
-                grid.setAspect("position", (row) => { return rangeToPosition(row.range) });
-                grid.render();
-                grid.appendTo(searchResultsElem);
-                grid.onselect = (sel:Cats.FileRange) => {
-                    session.project.editFile(sel.unitName, null, sel.range.start);
-                };
-
-            }
+            IDE.views.searchResults.render(data);
         });
     }
 

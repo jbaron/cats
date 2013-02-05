@@ -48,7 +48,7 @@ module Cats.Menu {
         var name = prompt("Enter new file name ");
         if (name == null) return;
         var fullName = PATH.join(basedir, name);
-        Cats.project.writeTextFile(fullName, "");
+        IDE.project.writeTextFile(fullName, "");
     }
 
 
@@ -75,7 +75,7 @@ module Cats.Menu {
     export function initFileContextMenu() {
         var fileContextMenu = createFileContextMenu();
 
-        Cats.IDE.fileNavigation.addEventListener('contextmenu', function(ev: any) {
+        IDE.fileNavigation.addEventListener('contextmenu', function(ev: any) {
         var d = UI.TreeView.getValueFromElement(ev.srcElement);
         data.key = d.path;
         data.isFolder = d.isFolder;

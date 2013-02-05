@@ -22,13 +22,13 @@ module Cats.Commands {
 
     // Just wrap the Ace command.
     function editorCommand(commandName: string) {
-        return function() { Cats.mainEditor.aceEditor.execCommand(commandName); }
+        return function() { IDE.mainEditor.aceEditor.execCommand(commandName); }
     }
 
 
  // Perform code autocompletion
      function autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
-            var session = Cats.mainEditor.activeSession;
+            var session = IDE.mainEditor.activeSession;
             if (! session) return;
             
             if (session.mode !== "typescript") return;
@@ -40,13 +40,13 @@ module Cats.Commands {
         }
 
       function formatText() {
-            var session = Cats.mainEditor.activeSession;
+            var session = IDE.mainEditor.activeSession;
             if (session) {
                 session.project.iSense.perform("getFormattedTextForRange", session.name, 0, session.getValue().length, (err, result) => {                    
                     if (!err) {
-                        var pos = Cats.mainEditor.aceEditor.getCursorPosition();
+                        var pos = IDE.mainEditor.aceEditor.getCursorPosition();
                         session.setValue(result);
-                        if (pos) Cats.mainEditor.aceEditor.moveCursorToPosition(pos);
+                        if (pos) IDE.mainEditor.aceEditor.moveCursorToPosition(pos);
                     }
                     
                 });
@@ -55,8 +55,8 @@ module Cats.Commands {
 
     // TODO i18n
     function getShortcut(commandName: string) {
-        var platform = Cats.mainEditor.aceEditor.commands.platform;
-        var command = Cats.mainEditor.aceEditor.commands.byName[commandName];
+        var platform = IDE.mainEditor.aceEditor.commands.platform;
+        var command = IDE.mainEditor.aceEditor.commands.byName[commandName];
 
         if (command && command.bindKey) {
             var key = command.bindKey[platform];
@@ -70,8 +70,8 @@ module Cats.Commands {
     // TODO i18n
     function addShortcut(label, commandName: string) {
         var result = label;
-        var platform = Cats.mainEditor.aceEditor.commands.platform;
-        var command = Cats.mainEditor.aceEditor.commands.byName[commandName];
+        var platform = IDE.mainEditor.aceEditor.commands.platform;
+        var command = IDE.mainEditor.aceEditor.commands.byName[commandName];
 
         if (command && command.bindKey) {
             var tabs = 5 - Math.floor((result.length / 4) - 0.01);

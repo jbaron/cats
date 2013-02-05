@@ -53,41 +53,13 @@ module Cats {
         // Set the project to a new directory and make sure 
         // we remove old artifacts.
         constructor(projectDir: string) {
-            project = this;
+            IDE.project = this;
             this.projectDir = PATH.resolve(projectDir);
 
             this.refresh();
         }
 
-        // @TODO move to separate class
-        private initFileTree() {
-            IDE.fileNavigation.innerHTML = "";
-            var fileTree = new Cats.UI.TreeView();
-            // var fileTree = new Cats.UI.Tree();
-            var dirReader = new DirectoryReader();
-
-            fileTree.setAspect("children", (parent: ListEntry): ListEntry[] => {
-                if (parent == null) {
-                    return [{
-                        name: this.name,
-                        isFolder: true,
-                        path: this.projectDir,
-                        decorator: "icon-folder"
-                    }];
-                }
-
-                return dirReader.read(parent);
-
-            });
-
-            fileTree.appendTo(IDE.fileNavigation);
-            fileTree.refresh();
-
-            fileTree.onselect = (entry) => {
-                if (!entry.isFolder) this.editFile(entry.path);
-            };
-        }
-
+       
 
         private initJSSense() {
             this.JSSense = new ISenseHandler();
@@ -109,7 +81,7 @@ module Cats {
             var titleElem = <HTMLElement>document.getElementsByTagName("title")[0];
             titleElem.innerText = "CATS | " + this.name;
 
-            this.initFileTree();
+            // IDE.views.navigation.initNavigatorView();
             this.initJSSense();
             this.iSense = new ISenseHandler();
             this.iSense.perform("setCompilationSettings", this.config.compiler, null);
@@ -138,8 +110,8 @@ module Cats {
                 IDE.addSession(session);
             }
 
-            mainEditor.setSession(session, goto);
-            mainEditor.show();
+            IDE.mainEditor.setSession(session, goto);
+            IDE.mainEditor.show();
             return session;
         }
 

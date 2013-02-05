@@ -1,5 +1,32 @@
 module Cats {
 
+
+    interface Editor {
+        hide();
+        show();
+        
+    }
+
+    interface IView {
+        icon: string;
+        name: string;
+        show();
+        hide();
+        appendTo(root: HTMLElement);
+    }
+
+
+
+    interface ISession {
+        id:string;
+        project: any;
+        changed: bool;
+        getValue() : string;
+        setValue(value:string);
+        getEditor():Editor;
+        persist();
+    }
+
     interface Configuration {
         name?: string;
         main?: string;

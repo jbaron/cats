@@ -13,8 +13,14 @@
 // limitations under the License.
 //
 
-module Cats{
+module Cats.View {
 
+     export class TaskList extends BaseView {
 
+    constructor() {
+         super(document.getElementById("tasklist"));             
+    }
+    
+     }
 
 }

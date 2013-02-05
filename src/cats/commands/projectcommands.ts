@@ -35,12 +35,12 @@ module Cats.Commands {
      * Run the project
      */ 
     function runProject() {
-        var main = Cats.project.config.main;
+        var main = IDE.project.config.main;
         if (!main) {
             alert("Please specify the main html file to run in the project settings.");
             return;
         }
-        var startPage = Cats.project.getStartURL();
+        var startPage = IDE.project.getStartURL();
         console.log("Opening file: " + startPage);
         var win2 = GUI.Window.open(startPage, {
             toolbar: true,
@@ -51,52 +51,25 @@ module Cats.Commands {
         // win2.reloadIgnoringCache()
     };
 
-    /**
-     * Show the compilation errors
-     */ 
-    function showErrors(errors: Cats.FileRange[]) {
-
-        var grid = new Cats.UI.Grid();
-        grid.setColumns(["message", "unitName", "position"]);
-        grid.setAspect("position", (data:FileRange) => { return (data.range.start.row + 1) + ":" + (data.range.start.column + 1) });
-
-        grid.setRows(errors);
-        grid.onselect = function(data:FileRange) {
-            Cats.project.editFile(data.unitName, null, data.range.start);
-        };
-
-        grid.render();
-
-        var result = IDE.compilationResult;
-        result.innerHTML = "";
-        grid.appendTo(result);
-    }
+   
 
     /**
      * Build the project
      */ 
     function buildProject() {
         // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
-        var project = Cats.project;
+        var project = IDE.project;
 
         var options = project.config.compiler;
-        var compilationResultsElem = Cats.IDE.compilationResult;
-        Cats.resultbar.selectOption(0);
+        var compilationResultsElem = IDE.compilationResult;
+        IDE.resultbar.selectOption(0);
         compilationResultsElem.innerHTML = "";
         $(compilationResultsElem).addClass("busy");
-        project.iSense.perform("compile", options, (err, data:Cats.CompileResults) => {
-                        
-            $(compilationResultsElem).removeClass("busy");
-            if (data.errors && (data.errors.length > 0)) {
-                // console.log(data.error);
-                showErrors(data.errors); // Bug in TS, requiring Cats.
-                return;
-            }
-
-            // Lets puts a timestamp so it is clear we did something
-            var time = new Date();
-            var stamp = time.toLocaleTimeString();
-            Cats.IDE.compilationResult.innerText = stamp + " Successfully generated " + Object.keys(data.source).length + " file(s).";
+        project.iSense.perform("compile", options, (err, data:Cats.CompileResults) => {                        
+            $(compilationResultsElem).removeClass("busy");            
+            View.showCompilationResults(data);
+            if (data.errors && (data.errors.length > 0)) return;
+            
             var sources = data.source
             for (var name in sources) {
                 var src = sources[name];
@@ -112,15 +85,15 @@ module Cats.Commands {
 
 
     function propertiesProject() {
-        var content = JSON.stringify(Cats.project.config, null, 4);
-        Cats.project.editFile(ConfigLoader.getFileName(Cats.project.projectDir), content);
+        var content = JSON.stringify(IDE.project.config, null, 4);
+        IDE.project.editFile(ConfigLoader.getFileName(IDE.project.projectDir), content);
     }
     
     /**
      * Refresh the project so everything is in sync again.
      */ 
     function refreshProject() {
-        Cats.project.refresh();
+        IDE.project.refresh();
     }
 
     /**

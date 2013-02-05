@@ -37,7 +37,7 @@ module Cats {
 
     /**
      *  Loads the configuration for a project. If no configurationfile is found, it  
-     *  returns a number of sensible defaults that will be used.
+     *  returns sensible defaults that will be used instead
      */
     export class ConfigLoader {
 
@@ -54,7 +54,7 @@ module Cats {
         static load(projectRoot: string): Configuration {
             var fileName = ConfigLoader.getFileName(projectRoot);
             try {
-                var content = Cats.project.readTextFile(fileName);
+                var content = IDE.project.readTextFile(fileName);
                 return JSON.parse(content);
             } catch (err) {
                 console.log("Couldn't load project configuration, loading defaults");

@@ -19,7 +19,7 @@ module Cats {
 
 /** 
  * Load the TSWorker and handles the communication with the ISense web worker
- * This implementation uses a JSON-RPC message format for the communication.
+ * This implementation uses a JSON-RPC style message format for the communication.
  */
 export class ISenseHandler {
 

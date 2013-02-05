@@ -66,7 +66,7 @@ module Cats {
 
             this.editSession.on("change", this.onChangeHandler.bind(this));
             this.editSession.setUndoManager(new UndoManager());
-            this.on("changed", () => {tabbar.refresh()});
+            this.on("changed", () => {IDE.tabbar.refresh()});
         }
 
         /**
@@ -95,7 +95,7 @@ module Cats {
          * Get the Position based on mouse x,y coordinates
          */
         getPositionFromScreenOffset(x: number, y: number): Ace.Position {
-            var r = Cats.mainEditor.aceEditor.renderer;
+            var r = IDE.mainEditor.aceEditor.renderer;
             // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
             var offset = (x - r.$padding) / r.characterWidth;
 
@@ -127,7 +127,7 @@ module Cats {
                     }
 
                     // Bug in TS, need to prefix with cats.
-                    Cats.mainEditor.toolTip.show(ev.x, ev.y, tip);
+                    IDE.mainEditor.toolTip.show(ev.x, ev.y, tip);
                 });
         }
 

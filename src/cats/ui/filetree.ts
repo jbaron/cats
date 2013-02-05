@@ -89,16 +89,11 @@ module Cats.UI {
             
         }
  
-
-            
-        
-
         public refresh() {
             this.rootElem.innerHTML = "";
             var elem = this.render(this.getValue(null, "children"));
             this.rootElem.appendChild(elem);
         }
-
 
         appendTo(elem: HTMLElement) {
             elem.appendChild(this.rootElem);

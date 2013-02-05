@@ -28,12 +28,12 @@ module Cats.Commands {
     }
 
     function setTheme(theme:string) {
-        Cats.IDE.setTheme(theme);
+        IDE.setTheme(theme);
     }
 
 
     function setFontSize(size:number) {
-        Cats.IDE.setFontSize(size);
+        IDE.setFontSize(size);
     }
 
     export class IdeCommands {

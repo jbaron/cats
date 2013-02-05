@@ -25,15 +25,15 @@ module Cats {
 
 
     function setOverwrite() {
-        mainEditor.overwrite = mainEditor.activeSession.editSession.getOverwrite();
+        IDE.mainEditor.overwrite = IDE.mainEditor.activeSession.editSession.getOverwrite();
     }
 
     /**
-     * The main Editor class that wraps the Ace editor
+     * The TextEditor class that wraps the Ace editor
      * and provides a set common methods. There is only
-     * one Editor instance per window.
+     * one TextEditor instance per window.
      */ 
-    export class Editor extends ObservableImpl {
+    export class TextEditor extends ObservableImpl implements Editor {
         public aceEditor: Ace.Editor;
         public toolTip: UI.ToolTip;
         private autoCompleteView: UI.AutoCompleteView;
@@ -50,7 +50,7 @@ module Cats {
 
         constructor(private rootElement: HTMLElement) {
             super("activeSession", "editMode", "overwrite");
-            this.aceEditor = this.createEditor();
+            this.aceEditor = this.createAceEditor();
             this.aceEditor.setFontSize("16px");            
             this.hide();
             this.init();
@@ -94,6 +94,10 @@ module Cats {
                     
         }
 
+        edit(session: Session) {
+            this.setSession(session);
+        }
+
         /**
          * Make a session the active one
          * @param session the session to make active
@@ -121,7 +125,7 @@ module Cats {
             this.show();
             this.aceEditor.focus();
             session.showErrors();
-            tabbar.refresh();
+            IDE.tabbar.refresh();
             this.editMode = PATH.basename(session.mode); 
          
         }
@@ -186,7 +190,7 @@ module Cats {
         }
 
         // Initialize the editor
-        private createEditor():Ace.Editor {
+        private createAceEditor():Ace.Editor {
             var editor: Ace.Editor = ace.edit(this.rootElement);
 
             editor.commands.addCommands([

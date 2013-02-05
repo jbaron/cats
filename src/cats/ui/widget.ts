@@ -13,9 +13,14 @@
 // limitations under the License.
 //
 
+
+///<reference path='mvc.ts'/>
+
 module Cats.UI {
     
-        
+    
+    
+    
     export class Widget {
         
         public onselect: (value) => void;
@@ -125,6 +130,43 @@ module Cats.UI {
     }
   
   
+    class HorizontalView extends MVC.View {
+        init;    
+    }
+  
+    var label = new LabelView("text");
+    var label2 = new LabelView(IDE.mainEditor.activeSession.name);
+    var label3 = new LabelView(() => IDE.mainEditor.activeSession.name);
+  
+    
+    class LabelView extends MVC.View {
+        
+        private root: HTMLElement;
+        
+        constructor(public label) {
+            super();
+            this.root = document.createElement("span");
+            this.update();
+        }
+        
+        
+        appendTo(elem:HTMLElement) {
+            elem.appendChild(this.root);
+        }
+        
+        
+        private get(prop:string) {
+            if (typeof this[prop] === "function")
+                return this[prop]()
+            else 
+                return this[prop];
+        }
+        
+        render() {
+            this.root.innerText = this.get("label");
+        }
+        
+    }
   
   
     export class TreeElement extends Widget {

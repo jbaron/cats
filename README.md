@@ -34,8 +34,8 @@ To install CATS, just follow these steps:
 
         git clone https://github.com/jbaron/cats.git
 
-2. Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at: [Node-Webkit](https://github.com/rogerwang/node-webkit)
-
+2. Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at: [Node-Webkit](https://github.com/rogerwang/node-webkit).
+   Make sure you have at least version 0.4.1 installed since in earlier versions there are some bugs.
 
 3. Go to the cats directory and type: 
 
@@ -43,7 +43,7 @@ To install CATS, just follow these steps:
 
 By default the "greeter" project will be loaded. In the samples directory there are several other projects you can try out. Of course when you open a new project, you can also open a directory that contains your own project. When you want to start CATS with a specific project, you can pass the project directory as a command line parameter:
 
-		/path_to_node_webkit/nw ./ <path_to_project>
+		/path_to_node_webkit/nw ./ <full_path_to_project>
    
 
 Configuration
@@ -67,7 +67,7 @@ Building from source
 =====================
 There is normally no need to compile CATS yourself, since all the compiled files are already included. But if you want to play around with it, here are the steps:
 
-1. Make sure you have installed TypeScript 0.8.1 or later
+1. Make sure you have installed TypeScript 0.8.2 or later
 
 2. Go to the cats directory
 
