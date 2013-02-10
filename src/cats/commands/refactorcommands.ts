@@ -15,39 +15,34 @@
 
 module Cats.Commands {
 
-var Range: Ace.Range = ace.require("ace/range").Range;
-    
-    
- 
- function rename() {        
+    var Range: Ace.Range = ace.require("ace/range").Range;
+
+    function rename() {
         var table = <HTMLElement>document.querySelector("#searchresults table");
-        if (! table) {
-            alert("Cannot rename if there are no search results");
+        if (!table) {
+            alert("Cannot rename if there are no search results available");
             return;
         }
         var grid = Cats.UI.Grid.getGridFromElement(table);
-        var rows:FileRange[] = grid.getRows();
+        var rows: FileRange[] = grid.getRows();
         var msg = "Going to rename " + rows.length + " instances.\nPlease enter new name";
         var newName = prompt(msg);
-        if (! newName) return;
+        if (!newName) return;
         var i = rows.length;
         while (i--) {
             var data = rows[i];
-            var session = IDE.getSession(data.unitName);
-            if (! session) {
-                session = IDE.project.editFile(data.unitName);
-            }
+            var session = IDE.openSession(data.unitName);
             // console.log(session.name);
             var r = data.range;
-            var range:Ace.Range = new Range(r.start.row, r.start.column,r.end.row,r.end.column);
-            session.editSession.replace(range,newName);
+            var range: Ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
+            session.editSession.replace(range, newName);
         }
-        
+
     }
 
 
     export class RefactorCommands {
-        static init(registry:(cmd:Command)=>void) {
+        static init(registry: (cmd: Command) => void ) {
             registry({ name: CMDS.refactor_rename, label: "Rename", command: rename });
         }
 

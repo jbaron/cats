@@ -14,14 +14,13 @@
 //
 
 var PATH=require("path");
-var FS=require("fs");
 var GUI = require('nw.gui');
-var IDE:Cats.Ide; 
+var IDE:Cats.Ide;
 
-declare var layoutIDE;
-///<reference path='eventemitter.ts'/>
+///<reference path='os.ts'/>
 ///<reference path='observable.ts'/>
 ///<reference path='ide.ts'/>
+///<reference path='layout.ts'/>
 ///<reference path='../typings/cats.d.ts'/>
 ///<reference path='eventbus.ts'/>
 ///<reference path='commands/commander.ts'/>
@@ -35,6 +34,11 @@ declare var layoutIDE;
 ///<reference path='ui/grid.ts'/>
 ///<reference path='../typings/typescript.d.ts'/>
 
+
+/**
+ * This is the file that is included in the index.html and 
+ * bootstraps the starting of CATS.
+ */ 
 module Cats {
            
 
@@ -49,6 +53,10 @@ module Cats {
             return decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
+    /**
+     * Determine which project(s) we should load during 
+     * startup.
+     */ 
     function determineProject():string {
         var projectName = getParameterByName("project");
         if (!projectName) {
@@ -61,62 +69,20 @@ module Cats {
         return projectName;
     }
    
-
-    function initTabBar() {
-
-        IDE.tabbar = new UI.Tabbar();        
-        IDE.tabbar.setAspect("name", (session: Session) => { return PATH.basename(session.name) });
-        IDE.tabbar.setAspect("selected", (session: Session) => { return session === IDE.mainEditor.activeSession });
-        IDE.tabbar.setAspect("longname", (session: Session) => { return session.name });
-        IDE.tabbar.setAspect("changed", (session: Session) => { return session.changed });
-        IDE.tabbar.onselect = (session) => IDE.mainEditor.setSession(session);
-        IDE.tabbar.appendTo(IDE.sessionBar);
-        IDE.on("sessions", (sessions) => {IDE.tabbar.setOptions(sessions)} );
-    }
-
-    function initNavBar() {
-        var navbar = new UI.Tabbar();
-
-        var t = new UI.ElemTabAdapter(navbar, [IDE.fileNavigation, IDE.outlineNavigation], IDE.fileNavigation);
-        t.setAspect(IDE.fileNavigation, "decorator", "icon-files");
-        t.setAspect(IDE.outlineNavigation, "decorator", "icon-outline");
-        navbar.appendTo(IDE.navigationBar);
-    }
-
-    function initInfoBar() {
-        var infobar = new UI.Tabbar();
-        infobar.setOptions([
-            { name: "Task List", selected: true, decorator: "icon-tasks" }
-        ]);
-        infobar.appendTo(IDE.taskBar);
-    }
-
-      
-    function initResultBar() {
-        var t  = new UI.ElemTabAdapter(IDE.resultbar, [IDE.compilationResult, IDE.searchResult], IDE.compilationResult);
-        t.setAspect(IDE.compilationResult, "decorator", "icon-errors");
-        t.setAspect(IDE.searchResult, "decorator", "icon-search");
-        IDE.resultbar.appendTo(IDE.resultbarElem);        
-    }
-
-
     IDE = new Ide();     
     IDE.mainEditor = new TextEditor(IDE.editor);
     // mainEditor.on("activeSession",()=>{console.log("active session changed")})
-    IDE.project = new Project(determineProject());
+    IDE.addProject(determineProject());
     Cats.Commands.init();
     Cats.Menu.createMenuBar();
     IDE.initViews();
-    initTabBar();
-    initNavBar();
-    initInfoBar();
-    initResultBar();
+    layoutIDE(); 
     
     Cats.Menu.initFileContextMenu();
     IDE.mainEditor.init();
     
     setTimeout(() => {
-        IDE.mainEditor.setTheme("cats");
+        IDE.setTheme("cats");
     }, 2000);
 
     var win = GUI.Window.get();
@@ -124,6 +90,6 @@ module Cats {
         Cats.Commands.get(Cats.Commands.CMDS.ide_quit).command();
     });
 
-    layoutIDE(); 
+    
 
 }

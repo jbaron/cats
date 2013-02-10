@@ -16,13 +16,13 @@
 module Cats.Menu {
 
 
-    // This class creates the main menubar and has the actions that are linked to the 
-    // menubar.
+    /**
+     * This class creates the main menubar. 
+     */
     class Menubar {
 
-        menubar;
 
-        fontSizes = [10, 12, 14, 16, 18, 20];
+        fontSizes = [8, 10, 12, 14, 16, 18, 20, 24];
 
         themes = [
                     { theme: "cats", label: "CATS" },
@@ -117,6 +117,12 @@ module Cats.Menu {
             proj.append(getCmd(CMDS.project_close));
             proj.append(new GUI.MenuItem({ type: "separator" }));
             proj.append(getCmd(CMDS.project_build));
+            var buildOnSaveItem = new GUI.MenuItem({ label: 'Build on Save', checked: false, type: "checkbox" });
+            proj.append(buildOnSaveItem);
+            buildOnSaveItem.click = () => {
+                console.log("Clicked: " + buildOnSaveItem.checked);
+                IDE.project.config.buildOnSave = buildOnSaveItem.checked;
+            }
             proj.append(getCmd(CMDS.project_refresh));
             proj.append(getCmd(CMDS.project_properties));
 
@@ -149,7 +155,7 @@ module Cats.Menu {
             
             var win = GUI.Window.get();
             win.menu = menubar;
-            this.menubar = menubar;
+            
         }
          
         private enableFind() {
@@ -206,13 +212,9 @@ module Cats.Menu {
 
     }
 
-    export var mainMenuBar;
     export function createMenuBar() {
-        mainMenuBar = new Menubar();
+        new Menubar();
     }
-
 
 }
 
-
-// global.actionFind = Menu.mainMenuBar.actionFind; 

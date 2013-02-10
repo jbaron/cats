@@ -59,13 +59,11 @@ module Cats.Commands {
     function buildProject() {
         // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
         var project = IDE.project;
-
-        var options = project.config.compiler;
         var compilationResultsElem = IDE.compilationResult;
         IDE.resultbar.selectOption(0);
         compilationResultsElem.innerHTML = "";
         $(compilationResultsElem).addClass("busy");
-        project.iSense.perform("compile", options, (err, data:Cats.CompileResults) => {                        
+        project.iSense.perform("compile", (err, data:Cats.CompileResults) => {                        
             $(compilationResultsElem).removeClass("busy");            
             View.showCompilationResults(data);
             if (data.errors && (data.errors.length > 0)) return;
@@ -78,15 +76,17 @@ module Cats.Commands {
                     name = PATH.join(project.projectDir, name);
                 }
                 
-                project.writeTextFile(name, src);
+                OS.File.writeTextFile(name, src);
             }
         });
     }
 
 
     function propertiesProject() {
-        var content = JSON.stringify(IDE.project.config, null, 4);
-        IDE.project.editFile(ConfigLoader.getFileName(IDE.project.projectDir), content);
+        var project = IDE.project;
+        var content = JSON.stringify(project.config, null, 4);
+        var session = IDE.openSession(ConfigLoader.getFileName(project.projectDir));
+        session.setValue(content);
     }
     
     /**

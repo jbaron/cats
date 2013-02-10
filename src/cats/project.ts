@@ -27,16 +27,6 @@
 module Cats {
 
 
-
-    function mkdirRecursiveSync(path: string) {
-        if (!FS.existsSync(path)) {
-            mkdirRecursiveSync(PATH.dirname(path));
-            FS.mkdirSync(path, 0775);
-        }
-    }
-
-
-
     export class Project {
 
         // The home directory of the project
@@ -65,7 +55,7 @@ module Cats {
             this.JSSense = new ISenseHandler();
 
             var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
-            var libdts = this.readTextFile(fullName);
+            var libdts = OS.File.readTextFile(fullName);
             this.JSSense.perform("addScript", fullName, libdts, true, null);
 
         }
@@ -78,17 +68,15 @@ module Cats {
             this.tsFiles = [];
             this.config = ConfigLoader.load(this.projectDir);
             this.name = this.config.name || PATH.basename(this.projectDir);
-            var titleElem = <HTMLElement>document.getElementsByTagName("title")[0];
-            titleElem.innerText = "CATS | " + this.name;
+            document.title = "CATS | " + this.name;
 
-            // IDE.views.navigation.initNavigatorView();
-            this.initJSSense();
+            // this.initJSSense();
             this.iSense = new ISenseHandler();
             this.iSense.perform("setCompilationSettings", this.config.compiler, null);
 
             if (this.config.compiler.useDefaultLib) {
                 var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
-                var libdts = this.readTextFile(fullName);
+                var libdts = OS.File.readTextFile(fullName);
                 this.iSense.perform("addScript", fullName, libdts, true, null);
             }
 
@@ -101,56 +89,16 @@ module Cats {
 
         }
 
-        editFile(name: string, content?: string, goto?: Ace.Position): Session {
-            var session: Session = IDE.getSession(name);
-
-            if (!session) {
-                if (content == null) content = this.readTextFile(name);
-                session = new Session(this, name, content);
-                IDE.addSession(session);
-            }
-
-            IDE.mainEditor.setSession(session, goto);
-            IDE.mainEditor.show();
-            return session;
-        }
-
+       
+        /**
+         * Get the URl for running the project
+         */ 
         getStartURL(): string {
             var url = PATH.join(this.projectDir, this.config.main);
             return "file://" + url;
         }
 
-
-        writeTextFile(name: string, value: string) {
-            mkdirRecursiveSync(PATH.dirname(name));
-            FS.writeFileSync(name, value, "utf8");
-        }
-
-        writeSession(session: Session) {
-            if (session.name === "untitled") {
-                session.name = prompt("Please enter the file name") || "untitled";
-            }
-
-            if (session.name !== "untitled") {
-                session.changed = false;
-                this.writeTextFile(session.name, session.getValue());
-            }
-
-        }
-
-        readTextFile(name: string): string {
-            if (name === "untitled") return "";
-
-            var data = FS.readFileSync(name, "utf8");
-
-            // Use single character line returns
-            data = data.replace(/\r\n?/g, "\n");
-
-            // Remove the BOM (only MS uses BOM for UTF8)
-            data = data.replace(/^\uFEFF/, '');
-            return data;
-        }
-
+        
         /**
          * @BUG Somehow TS LanguageServices are not ready by default.
          * This triggers it to be ready 
@@ -167,21 +115,21 @@ module Cats {
          * @param directory The source directory where to start the scan
          */
         private loadTypeScriptFiles(directory: string) {
-            var files = FS.readdirSync(directory);
+            var files = OS.File.readDir(directory);
             files.forEach((file) => {
                 try {
-                    var fullName = PATH.join(directory, file);
-                    var stats = FS.statSync(fullName);
-                    if (stats.isFile()) {
-                        var ext = PATH.extname(file);
+                    var fullName = file.fullName;
+                    if (file.isFile) {                       
+                        console.log("FullName: " + fullName);
+                        var ext = PATH.extname(fullName);
                         if (ext === ".ts") {
-                            var content = this.readTextFile(fullName);
+                            var content = OS.File.readTextFile(fullName);
                             this.iSense.perform("addScript", fullName, content, null);
                             this.tsFiles.push(fullName);
                             console.log("Found TypeScript file: " + fullName);
                         }
                     }
-                    if (stats.isDirectory()) {
+                    if (file.isDirectory) {
                         this.loadTypeScriptFiles(fullName);
                     }
                 } catch (err) {

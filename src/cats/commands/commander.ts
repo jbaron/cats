@@ -24,8 +24,6 @@
 
 module Cats.Commands {
 
-   
-
     /**
      * List of known commands
      */ 
@@ -168,6 +166,10 @@ module Cats.Commands {
                 
         return new GUI.MenuItem(item);
     }
+
+    export function runCommand(name:CMDS):void  {
+		commands[name].command();
+	}
 
 	export function get(name:CMDS) :Command {
 		return commands[name];

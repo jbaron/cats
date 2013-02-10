@@ -10,55 +10,6 @@
 	<link rel="stylesheet" href="css/cats.css">
     <link rel="stylesheet" href="css/layout.css">
     
-	<script type="text/javascript">
-
-    function resizeOuter(name, state) {
-        if (name === "west") {
-            $("#filetree, #outlinenav").height(state.innerHeight()-25);
-        }
-    }
-
-    function resizeInner(name, state) {
-        if (name === "center") IDE.mainEditor.aceEditor.resize(true);
-        if (name === "south") {
-            $("#searchresults, #errorresults").height(state.innerHeight()-25);
-        }
-    }
-
-
-	function layoutIDE() {
-
-		// OUTER-LAYOUT
-		$('body').layout({
-            onresize: resizeOuter  
-		,	center__paneSelector:	"#center"
-		,	west__paneSelector:		"#navigator"
-		,	north__paneSelector:	"#toolbar"
-		,	south__paneSelector:	"#statusbar"
-		,	west__size:				.20
-		,	spacing_open:			6  // ALL panes
-		,	spacing_closed:			12 // ALL panes
-		,	north__maxSize:			25
-		,	south__maxSize:			25
-
-			// MIDDLE-LAYOUT (child of outer-center-pane)
-		,	center__childOptions: {
-                onresize: resizeInner  
-			,	center__paneSelector:	"#main"
-			,	east__paneSelector:		"#info"
-			,	south__paneSelector:	"#result"
-			,	east__size:				.20
-			,	south__size:			.20
-			,	spacing_open:			6  // ALL panes
-			,	spacing_closed:			12 // ALL panes
-
-			}
-		});
-		
-	};
-
-	</script>
-
 
 </head>
 

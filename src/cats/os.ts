@@ -14,25 +14,89 @@
 //
 
 
-// This module abstracts the native IO form the rest. Right now supports node (node-webkit).
+/**
+ * This module abstracts out the native File IO. Right now it uses Nodejs, but this
+ * could be easily changed to other mechanism.
+ * 
+ * @TODO make this async
+ */  
+module OS.File {
 
-var path = require("path");
+        var FS=require("fs");
 
-// Some commonly used filesystem functions
-export var fs = {
-	readFile: "",
-	writeFiles:"",
-	readDir:"",
-	writeFile : "",
-	removeFile : "",
-	removeDir : "",
-	watchPath: ""
+        function mkdirRecursiveSync(path: string) {
+            if (!FS.existsSync(path)) {
+                mkdirRecursiveSync(PATH.dirname(path));
+                FS.mkdirSync(path, 0775);
+            }
+        }
+
+        /**
+         * Remove a file or empty directory
+         */ 
+        export function remove(path:string) {
+            var isFile = FS.statSync(path).isFile();
+            if (isFile) 
+                FS.unlinkSync(path);
+            else 
+                FS.rmdirSync(path);
+        }
+
+        /**
+         * Rename a file or directory
+         */ 
+        export function rename(oldName:string,newName: string) {
+             FS.renameSync(oldName, newName);
+        }
+
+        /**
+         * Write content to a file. If a directory doesn't exist, create it
+         */ 
+         export function writeTextFile(name: string, value: string) {
+            mkdirRecursiveSync(PATH.dirname(name));
+            FS.writeFileSync(name, value, "utf8");
+        }
+        
+        /**
+         * Read the files from a directory
+         */ 
+        export function readDir(directory:string): Cats.FileEntry[] {
+            var files:string[] = FS.readdirSync(directory);
+            var result = [];
+            files.forEach((file) => {
+                var fullName = PATH.join(directory, file);
+                var stats = FS.statSync(fullName);
+                result.push({
+                   name:file,
+                   fullName:fullName,
+                   isFile: stats.isFile() ,
+                   isDirectory: stats.isDirectory()
+                });
+            });
+            return result;
+        }
+                   
+        /**
+         * Read the content from a text file
+         */ 
+        export function readTextFile(name: string): string {
+            if (name === "untitled") return "";
+
+            var data = FS.readFileSync(name, "utf8");
+
+            // Use single character line returns
+            data = data.replace(/\r\n?/g, "\n");
+
+            // Remove the BOM (only MS uses BOM for UTF8)
+            data = data.replace(/^\uFEFF/, '');
+            return data;
+        }
+
+
+        // export var join = PATH.join;
+        // export var basename = PATH.basename;
+        // export var dirname = PATH.dirname;
+
+
 }
-
-// Some commonly used path functions to make sure CATS work on all platforms
-export var path = {
-	join:path.join,
-	basename:path.basename,
-	dirname:path.dirname
-};
 

@@ -22,7 +22,7 @@ module Cats.Commands {
      * Create a new edit session
      */ 
     function newFile() {
-        IDE.project.editFile("untitled", "");
+        IDE.openSession("untitled");
     }
 
     /**
@@ -74,7 +74,7 @@ module Cats.Commands {
         if (session) {
             var newName = prompt("Enter new name", session.name);
             if (newName) {
-                IDE.project.writeTextFile(newName,session.getValue());
+                OS.File.writeTextFile(newName,session.getValue());
             }
         }
     }
@@ -83,7 +83,8 @@ module Cats.Commands {
      * Save the active session
      */     
     function saveFile() {
-        IDE.mainEditor.aceEditor.execCommand("save");
+        var session = IDE.mainEditor.activeSession;
+        if (session) session.persist();
     }
 
     export class FileCommands {

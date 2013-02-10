@@ -41,10 +41,11 @@ module Cats.View {
         }
 
         handleOutlineEvent(session: Session) {
+            var project = session.project;
             var mode = "getScriptLexicalStructure";
             // var mode = "getOutliningRegions";
             // session.project.iSense.perform("getNavigateToItems","Greeter", (err, data:NavigateToItem[]) => {
-            session.project.iSense.perform(mode, session.name, (err, data: NavigateToItem[]) => {
+            project.iSense.perform(mode, session.name, (err, data: NavigateToItem[]) => {
                 IDE.outlineNavigation.innerHTML = "";
                 var outliner = new Cats.UI.TreeView();
                 outliner.setAspect("children", (parent: OutlineTreeElement): OutlineTreeElement[] => {
@@ -74,9 +75,8 @@ module Cats.View {
                 outliner.appendTo(IDE.outlineNavigation);
                 outliner.onselect = (value) => {
                     var data: NavigateToItem = value.outline;
-                    IDE.project.editFile(data.unitName, null, { row: data.range.start.row, column: data.range.start.column });
+                    IDE.openSession(data.unitName, { row: data.range.start.row, column: data.range.start.column });
                 };
-
                 outliner.refresh();
             });
 

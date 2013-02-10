@@ -17,6 +17,14 @@ module Cats {
 
 
 
+    interface FileEntry {
+        name: string; // Just the file/directory name without path
+        fullName: string; // fullName including path
+        isFile: bool; // is this a folder or a file
+        isDirectory: bool; // is this a folder or a file
+    }
+
+
     interface ISession {
         id:string;
         project: any;
@@ -31,6 +39,7 @@ module Cats {
         name?: string;
         main?: string;
         sourcePath?: string;
+        buildOnSave?: bool;
         compiler: {
             useDefaultLib: bool;
             outputOption: string;

@@ -36,7 +36,7 @@ module Cats {
 
 
     /**
-     *  Loads the configuration for a project. If no configurationfile is found, it  
+     *  Loads the configuration for a project. If no configuration file is found, it  
      *  returns sensible defaults that will be used instead
      */
     export class ConfigLoader {
@@ -54,7 +54,7 @@ module Cats {
         static load(projectRoot: string): Configuration {
             var fileName = ConfigLoader.getFileName(projectRoot);
             try {
-                var content = IDE.project.readTextFile(fileName);
+                var content = OS.File.readTextFile(fileName);
                 return JSON.parse(content);
             } catch (err) {
                 console.log("Couldn't load project configuration, loading defaults");
@@ -69,7 +69,7 @@ module Cats {
             var result = {
                 main: "index.html",
                 sourcePath: null, //If not set, the whole project directory is searched for source files
-
+                buildOnSave: false,
                 compiler: {
                     useDefaultLib: true,
                     outputOption: "",

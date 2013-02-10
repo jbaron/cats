@@ -303,6 +303,7 @@ Auto complete styling
     font-size: 90%;
     position: fixed;
     z-index: 1000;
+    padding: 3px;
     display: none;
     background: white;
     -webkit-box-shadow: 5px 5px 5px #888;

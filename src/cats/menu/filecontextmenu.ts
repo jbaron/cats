@@ -32,7 +32,7 @@ module Cats.Menu {
         var basename = PATH.basename(data.key);
         var sure = confirm("Delete " + basename);
         if (sure) {            
-            FS.unlinkSync(data.key);
+            OS.File.remove(data.key);
         }
     }
 
@@ -48,7 +48,7 @@ module Cats.Menu {
         var name = prompt("Enter new file name ");
         if (name == null) return;
         var fullName = PATH.join(basedir, name);
-        IDE.project.writeTextFile(fullName, "");
+        OS.File.writeTextFile(fullName, "");
     }
 
 
@@ -57,10 +57,10 @@ module Cats.Menu {
         var basename = PATH.basename(data.key);
         var name = prompt("Enter new name", basename);
         if (name == null) return;
-        var c = confirm("Going to rename " + basename + " into " + name);
+        var c = confirm("Going to rename " + basename + " to " + name);
         if (c) {        
             try {
-                FS.renameSync(data.key, PATH.join(dirname, name));
+                OS.File.rename(data.key, PATH.join(dirname, name));
             } catch (err) {
                 alert(err);
             }

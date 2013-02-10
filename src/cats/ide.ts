@@ -41,6 +41,7 @@ module Cats {
 
         sessions: Session[] = [];
         project: Project;
+        activeSession: Session;
 
         views: IDEViews = {
             navigation: null,
@@ -52,7 +53,6 @@ module Cats {
             taskList: null,
             editor: null
         };
-
 
         /**
          * Initialize the views associated with the IDE
@@ -67,7 +67,7 @@ module Cats {
 
         tabbar: UI.Tabbar;
         resultbar = new UI.Tabbar();
-
+        
         navigationBar = document.getElementById("navigationbar");
         fileNavigation = document.getElementById("filetree");
         outlineNavigation = document.getElementById("outlinenav");
@@ -86,7 +86,7 @@ module Cats {
         mainEditor: TextEditor;
 
         constructor() {
-            super("sessions");
+            super("sessions","activeSession","project");
         }
 
         /**
@@ -125,6 +125,22 @@ module Cats {
             }
         }
 
+        /**
+         * Open an existing session or if it doesn't exist yet create
+         * a new one.
+         */ 
+        openSession(name: string, pos?:Ace.Position): Session {
+            var session = this.getSession(name);
+            if (! session) {
+                var content;
+                if (name) content = OS.File.readTextFile(name);
+                session = new Session(name, content);
+                this.addSession(session);
+            }
+            this.mainEditor.setSession(session,pos);
+            this.activeSession = session;
+            return session;
+        }
 
         /**
          * Close a session
@@ -171,15 +187,12 @@ module Cats {
         }
 
         /**
-         * Load a new project into the IDE
-         * 
+         * Add a new project into the IDE
          */
-        loadProject(dir: string) {
-
+        addProject(dir: string) {
+            this.project = new Project(dir);
         }
 
     }
-
-
 
 }

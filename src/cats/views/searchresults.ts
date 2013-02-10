@@ -39,7 +39,7 @@ module Cats.View {
             grid.render();
             grid.appendTo(searchResultsElem);
             grid.onselect = (sel: Cats.FileRange) => {
-                IDE.project.editFile(sel.unitName, null, sel.range.start);
+                IDE.openSession(sel.unitName, sel.range.start);
             };
 
         }

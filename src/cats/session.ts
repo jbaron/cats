@@ -47,6 +47,7 @@ module Cats {
         editSession: Ace.EditSession;
 
         private updateSourceTimer;
+        public overwrite = false;
 
         // Is the worker out of sync with the source code
         private pendingWorkerUpdate = false;
@@ -54,11 +55,15 @@ module Cats {
 
         // Has the code been changed without saving yet
         changed = false;
-        
+
         /**
-         * Create a new edit session 
+         * Create a new session
+         * 
+         * @param project The project the session belongs to
+         * @param name The name of the session
+         * @param content The content of the session
          */
-        constructor(public project: Project, public name: string, content: string) {
+        constructor(public name?: string, content?: string) {
             super("changed");
             console.log("Creating new session for file " + name + " with content length " + content.length);
             this.mode = this.determineMode(name);
@@ -66,26 +71,61 @@ module Cats {
 
             this.editSession.on("change", this.onChangeHandler.bind(this));
             this.editSession.setUndoManager(new UndoManager());
-            this.on("changed", () => {IDE.tabbar.refresh()});
+            this.on("changed", () => { IDE.tabbar.refresh() });
+        }
+
+
+        get project():Project {
+            return IDE.project;
+        }
+
+        get shortName():string {
+            if (! this.name) return "untitled";
+            return PATH.basename(this.name);
+        }
+
+        /**
+         * Setup some required listeners
+         */ 
+        private setListeners() {
+            var listeners = {
+               "changeOverwrite" : () => {this.overwrite = this.editSession.getOverwrite()}                 
+            };
+            
+
+            for (var event in listeners) {
+                this.editSession.on(event,listeners[event]);
+            }
+                    
         }
 
         /**
          * Persist the edit session
          */
         persist() {
-            this.project.writeSession(this);
-            this.changed = false;
+            if (this.name === "untitled") {
+                this.name = prompt("Please enter the file name") || "untitled";
+            }
+
+            if (this.name !== "untitled") {
+                OS.File.writeTextFile(this.name, this.getValue());
+                this.changed = false;
+            }
+            
+            if (IDE.project.config.buildOnSave && (this.mode === "typescript") ) 
+                    Commands.runCommand(Commands.CMDS.project_build);
+                    
         }
 
         /**
-         * Gte the value of this edit session
+         * Get the value of this edit session
          */
         getValue(): string {
             return this.editSession.getValue();
         }
 
         /**
-         * Set the value of the current edit session.
+         * Set the value of this edit session.
          */
         setValue(value: string) {
             this.editSession.setValue(value);
@@ -94,7 +134,7 @@ module Cats {
         /**
          * Get the Position based on mouse x,y coordinates
          */
-        getPositionFromScreenOffset(x: number, y: number): Ace.Position {
+        private getPositionFromScreenOffset(x: number, y: number): Ace.Position {
             var r = IDE.mainEditor.aceEditor.renderer;
             // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
             var offset = (x - r.$padding) / r.characterWidth;
@@ -108,7 +148,9 @@ module Cats {
             return docPos;
         }
 
-        // Screen location
+        /**
+         * Show info at Screen location
+         */
         showInfoAt(ev: MouseEvent) {
             if (this.mode !== "typescript") return;
 
@@ -131,7 +173,10 @@ module Cats {
                 });
         }
 
-        // Determine the edit mode based on the file name
+        /**
+         * Determine the edit mode based on the file name
+         * @param name File name
+         */
         private determineMode(name: string): string {
             var ext = PATH.extname(name);
             var result = Session.MODES[ext] || Session.DEFAULT_MODE;
@@ -145,9 +190,7 @@ module Cats {
             // Any pending changes that are not yet send to the worker?
             if (this.pendingWorkerUpdate) {
                 var source = editSession.getValue();
-                this.project.JSSense.perform("updateScript", this.name, source, (err, result) => {
-                    // editSession.setAnnotations(result);
-                });
+                this.project.JSSense.perform("updateScript", this.name, source, null);
                 this.pendingWorkerUpdate = false;
             };
 
@@ -224,7 +267,7 @@ module Cats {
             // Don't send too many updates to the worker
             this.updateSourceTimer = setTimeout(() => {
                 if (this.pendingWorkerUpdate) this.update();
-                this.showErrors();            
+                this.showErrors();
             }, 1000);
         };
     }

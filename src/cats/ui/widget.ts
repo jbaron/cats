@@ -17,10 +17,7 @@
 ///<reference path='mvc.ts'/>
 
 module Cats.UI {
-    
-    
-    
-    
+       
     export class Widget {
         
         public onselect: (value) => void;

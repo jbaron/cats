@@ -79,7 +79,21 @@ module MVC {
 
     var __OBSERVER_CURRENT:Function;
     
-    // Make a function an observer
+    
+    /**
+     * Get the current Observer is any
+     */ 
+    export function getObserver() {
+        return __OBSERVER_CURRENT;
+    }
+    /**
+     * Make a function an observer. This means when you run this function
+     * models keeps track of the interest and will invoke this function when 
+     * the model state changes.
+     * 
+     * @param fn The function that should become the observer
+     * @param ctx The this parameter used to invoke the function
+     */ 
     export function makeObserver(fn:Function,ctx={}) {
         return function () {
             var oldObserver = __OBSERVER_CURRENT;
@@ -101,30 +115,28 @@ module MVC {
 
 
         private static Waiting;
-        private static Waiters = null;
+        private static Waiters:Function[] = null;
 
 
         /**
          * Notify observers of a change. This method bundles multiple
          * updates to the same viewer in to one
          */
-        private static notify(newWaiters) {
+        private static notify(newWaiters:Function[]) {
             if (Model.Waiting) {
-                for (var id in newWaiters) {
-                    Model.Waiters[id] = newWaiters[id];
-                }
+                var waiters = Model.Waiters;
+                newWaiters.forEach((waiter) => {
+                    if (waiters.indexOf(waiter) !== -1) waiters.push(waiter);
+                });
                 return;
             }
             Model.Waiters = newWaiters;
             Model.Waiting = setTimeout(() => {
                 var waiters = Model.Waiters;
                 Model.Waiting = null;
-                for (var id in waiters) {
-                    var viewer = waiters[id];
-                    try { viewer.update() } catch (err) { console.error(err); }
-                }
-
-            }, 0);
+                waiters.forEach((waiter) => {
+                    try { waiter() } catch (err) { console.error(err); }
+                })}, 0);
         }
 
         /**
@@ -133,29 +145,30 @@ module MVC {
          * @param obj The object of the property
          * @param prop The property name
          */
-        private static registerViewer(obj, prop: string) {
-            var viewer: View = View.GetViewer();
-            if (viewer) {
-                if (!obj.__observers[prop][viewer.id]) {
-                    console.log("registering viewer " + viewer.id + " for property " + prop);
-                    obj.__observers[prop][viewer.id] = viewer;
+        private static registerObserver(obj, prop: string) {
+            var observer: Function = getObserver();
+            if (observer) {
+                if (obj.__observers[prop].indexOf(observer) === -1) {
+                    console.log("registering new observer " + observer + " for property " + prop);
+                    obj.__observers[prop].push(observer);
                 }
             }
         }
 
         /**
          * Utiltiy method to make a number of plain properties observable.
+         * @param obj The object that contains the properties of interest
          * @param props The list of property names to be observable
          */
         static makeObservable(obj, props: string[]) {
             if (!obj.__observers) obj.__observers = {};
             props.forEach((prop) => {
                 if (obj.__observers[prop]) return; // We already observe this property
-                obj.__observers[prop] = {};
+                obj.__observers[prop] = [];
                 var privateVar = obj[prop];
                 Object.defineProperty(obj, prop, {
                     get: function() {
-                        Model.registerViewer(obj, prop);
+                        Model.registerObserver(obj, prop);
                         return privateVar;
                     },
                     set: function(val) {

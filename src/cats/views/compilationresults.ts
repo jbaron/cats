@@ -25,7 +25,7 @@ function showErrors(errors: Cats.FileRange[]) {
 
         grid.setRows(errors);
         grid.onselect = function(data:FileRange) {
-            IDE.project.editFile(data.unitName, null, data.range.start);
+            IDE.openSession(data.unitName, data.range.start);
         };
 
         grid.render();

@@ -104,7 +104,7 @@ module Cats {
          * @param pos The position to scroll to
          */ 
         setSession(session: Session, pos?: Ace.Position) {
-            
+
             if (this.activeSession === session) {
                 if (pos) {
                     this.moveCursorTo(pos);
@@ -178,6 +178,7 @@ module Cats {
             // }                        
         }
 
+    
         private onMouseMove(ev: MouseEvent) {
             this.toolTip.hide();
             clearTimeout(this.mouseMoveTimer);
@@ -203,15 +204,23 @@ module Cats {
                 exec: () => { this.autoComplete() }
             },
 
+           {
+                name: "gotoDeclaration",
+                bindKey: {
+                    win: "F12",
+                    mac: "F12"
+                },
+                exec: () => { Commands.runCommand(Commands.CMDS.navigate_declaration) }
+            },
+
+
             {
                 name: "save",
                 bindKey: {
                     win: "Ctrl-S",
                     mac: "Command-S"
                 },
-                exec: () => { 
-                    if (this.activeSession) this.activeSession.persist();                    
-                }
+                exec: () =>  { Commands.runCommand(Commands.CMDS.file_save) }
             }
             ]);
 

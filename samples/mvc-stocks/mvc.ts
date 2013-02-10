@@ -19,7 +19,7 @@ module MVC {
 
         constructor(public id?: string) {
             if (!this.id) {
-                this.id = "view#" + View.ID++
+                this.id = "view#" + View.ID++;
             }
         }
 
@@ -30,6 +30,13 @@ module MVC {
             return View.VIEWER;
         }
 
+        /**
+         * Return wether this viewer is still active and therefor could be 
+         * a listener.
+         */ 
+        static isActive() {
+            return true;
+        }
         /**
          * Called whenever a model change happens
          */

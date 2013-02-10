@@ -20,6 +20,7 @@ module Cats {
 /** 
  * Load the TSWorker and handles the communication with the ISense web worker
  * This implementation uses a JSON-RPC style message format for the communication.
+ * @TODO make it typed instead of directly invoking perfom method
  */
 export class ISenseHandler {
 
@@ -31,6 +32,29 @@ export class ISenseHandler {
         // Lets create a new worker
         this.worker = new Worker("../lib/tsworker.js");
         this.init();
+    }
+
+
+    getErrors(unitName:string,cb) {
+        this.perform("getErrors",unitName, cb);
+    }
+
+    compile(cb) {
+        this.perform("compile", cb);
+    }
+
+
+    getCompletions(unitName:string,cursor,cb) {
+        this.perform("getCompletions", unitName, cursor,cb);
+    }
+
+
+    addScript(unitName:string,content:string,persistent=false) {
+        this.perform("addScript",unitName, content, persistent, null);
+    }
+    
+    updateScript(unitName:string,content:string) {
+        this.perform("updateScript",unitName, content, null);
     }
 
     /**

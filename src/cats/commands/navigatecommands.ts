@@ -25,7 +25,7 @@ module Cats.Commands {
         var cursor = getCursor();
         session.project.iSense.perform("getDefinitionAtPosition", session.name, cursor, (err, data:FileRange) => {
             if (data && data.unitName)
-                session.project.editFile(data.unitName, null, data.range.start);
+                IDE.openSession(data.unitName, data.range.start);
         });
     }
 
@@ -64,7 +64,6 @@ module Cats.Commands {
             registry({name:CMDS.navigate_implementors, label:"Find Implementations", command:findImplementors});
             registry({name:CMDS.navigate_occurences, label:"Find Occurences", command:findOccurences});
             registry({name:CMDS.navigate_declaration, label:"Goto declaration", command: gotoDeclaration});
-
             
             
         }

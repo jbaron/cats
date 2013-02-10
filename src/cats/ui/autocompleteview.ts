@@ -18,8 +18,10 @@ module Cats.UI {
     declare var $;
     var HashHandler = ace.require('ace/keyboard/hash_handler').HashHandler;
 
-    // This class takes care of the autocomplete popup and deals with 
-    // the key events and filtering of the results while you are typing
+    /** 
+     * This class takes care of the autocomplete popup and deals with 
+     * the key events and filtering of the results while you are typing
+     */
     export class AutoCompleteView {
 
         private static selectedClassName = 'autocomplete_selected';
@@ -57,7 +59,9 @@ module Cats.UI {
             this.wrap.appendChild(this.listElement);
         };
 
-        // Get the text between cursor and start
+        /**
+         * Get the text between cursor and start
+         */ 
         private getInputText(): string {
             var cursor = this.editor.getCursorPosition();
             var text = this.editor.session.getLine(cursor.row).slice(0, cursor.column);
@@ -212,7 +216,6 @@ module Cats.UI {
             
         }
 
-
         showCompletions(completions) {
             if (this.active || (completions.length === 0)) return;            
             this.completions = completions;
@@ -283,11 +286,9 @@ module Cats.UI {
             elem.style.display = "block";
         }
 
-
         /**
          * Scroll the view by hiding the first row and showing the next 
-         * or reverse.
-         * 
+         * or the reverse.
          */ 
         private scroll() {
 
