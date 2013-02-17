@@ -216,7 +216,7 @@ module Cats.UI {
             
         }
 
-        showCompletions(completions) {
+        showCompletions(completions:Services.CompletionEntry[]) {
             if (this.active || (completions.length === 0)) return;            
             this.completions = completions;
             console.log("Received completions: " + completions.length);

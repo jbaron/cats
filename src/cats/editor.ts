@@ -223,7 +223,7 @@ module Cats {
                 exec: () =>  { Commands.runCommand(Commands.CMDS.file_save) }
             }
             ]);
-
+ 
             var originalTextInput = editor.onTextInput;
             editor.onTextInput = (text) => {
                 originalTextInput.call(editor, text);

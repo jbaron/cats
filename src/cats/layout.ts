@@ -47,7 +47,6 @@ module Cats {
         ]);
         infobar.appendTo(IDE.taskBar);
     }
-
       
     function initResultBar() {
         var t  = new UI.ElemTabAdapter(IDE.resultbar, [IDE.compilationResult, IDE.searchResult], IDE.compilationResult);
@@ -68,7 +67,6 @@ module Cats {
             $("#searchresults, #errorresults").height(state.innerHeight()-25);
         }
     }
-
 
     export function layoutIDE() {
         
@@ -105,19 +103,5 @@ module Cats {
 		});
 		
 	};
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+        
 }

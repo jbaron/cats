@@ -23,7 +23,8 @@ importScripts("../static/js/typescript.js")
 module Cats.TSWorker {
 
     /**
-     * Simple function to stub console.log functionality
+     * Simple function to stub console.log functionality since this is 
+     * not available in a worker.
      */ 
     var console = {
         log: function(str) {
@@ -31,16 +32,21 @@ module Cats.TSWorker {
         }
     }
 
-    // Case insensitive sorting
+    /**
+     * Case insensitive sorting
+     */ 
     function caseInsensitiveSort(a: { name: string; }, b: { name: string; }) {
         if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
         if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+        // the lower-case strings are equal, so now put them in local order..
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
         return 0;
     }
 
     class ISense {
 
-        private maxErrors = 10;
+        private maxErrors = 20;
         ls: Services.ILanguageService;
         private lsHost: LanguageServiceHost;
 
@@ -201,7 +207,9 @@ module Cats.TSWorker {
             return result;
         }
 
-        // Add a new script
+        /**
+         * Add a new script to the compiler environment
+         */ 
         addScript(name: string, source: string, resident?: bool) {
             this.lsHost.addScript(name, source, resident);
         }
@@ -210,6 +218,8 @@ module Cats.TSWorker {
         /**
          * Get the errors for either one script or for 
          * all the scripts
+         * @param unitName name of the script. If none provided the errors
+         * for all scripts will be returned.
          */ 
         getErrors(unitName?: string) : Cats.FileRange[]{
             var result = [];
@@ -225,8 +235,8 @@ module Cats.TSWorker {
           
 
         // updated the content of a script
-        updateScript(unitName: string, src: string) {
-            this.lsHost.updateScript(unitName, src, false);
+        updateScript(unitName: string, src: string, resident?: bool) {
+            this.lsHost.updateScript(unitName, src, resident);
         }
 
         // Get an Ace Range from TS minChars and limChars

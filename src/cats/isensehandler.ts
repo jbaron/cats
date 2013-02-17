@@ -14,7 +14,6 @@
 //
 
 
-
 module Cats {
 
 /** 
@@ -49,12 +48,12 @@ export class ISenseHandler {
     }
 
 
-    addScript(unitName:string,content:string,persistent=false) {
+    addScript(unitName:string,content:string,persistent?:bool) {
         this.perform("addScript",unitName, content, persistent, null);
     }
     
-    updateScript(unitName:string,content:string) {
-        this.perform("updateScript",unitName, content, null);
+    updateScript(unitName:string,content:string,persistent?:bool) {
+        this.perform("updateScript",unitName, content, persistent, null);
     }
 
     /**

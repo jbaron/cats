@@ -228,7 +228,8 @@ module Cats {
         update() {
             if (this.mode === "typescript") {
                 var source = this.editSession.getValue();
-                this.project.iSense.perform("updateScript", this.name, source, null);
+                this.project.iSense.updateScript(this.name, source);
+                clearTimeout(this.updateSourceTimer);
                 this.pendingWorkerUpdate = false;
             };
         }
@@ -247,16 +248,18 @@ module Cats {
             // Any pending changes that are not yet send to the worker?
             if (this.pendingWorkerUpdate) this.update();
 
-            this.project.iSense.perform("autoComplete", cursor, this.name, (err, completes) => {
+            this.project.iSense.perform("autoComplete", cursor, this.name, (err, completes:Services.CompletionInfo) => {
                 if (completes != null) view.showCompletions(completes.entries);
             });
         }
 
+        
         /**
          * Keep track of changes made to the content and update the 
          * worker if required.
          */
         private onChangeHandler(event) {
+            document
             this.changed = true;
             this.pendingWorkerUpdate = true;
 

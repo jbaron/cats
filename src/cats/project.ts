@@ -56,7 +56,7 @@ module Cats {
 
             var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
             var libdts = OS.File.readTextFile(fullName);
-            this.JSSense.perform("addScript", fullName, libdts, true, null);
+            this.JSSense.addScript(fullName, libdts, true);
 
         }
 
@@ -77,7 +77,7 @@ module Cats {
             if (this.config.compiler.useDefaultLib) {
                 var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
                 var libdts = OS.File.readTextFile(fullName);
-                this.iSense.perform("addScript", fullName, libdts, true, null);
+                this.iSense.addScript(fullName, libdts, true);
             }
 
             var srcPaths = [].concat(<any>this.config.sourcePath);
@@ -124,7 +124,7 @@ module Cats {
                         var ext = PATH.extname(fullName);
                         if (ext === ".ts") {
                             var content = OS.File.readTextFile(fullName);
-                            this.iSense.perform("addScript", fullName, content, null);
+                            this.iSense.addScript(fullName, content);
                             this.tsFiles.push(fullName);
                             console.log("Found TypeScript file: " + fullName);
                         }
