@@ -73,6 +73,8 @@ module Ace {
         setValue(value:string);
 		getDocument():Document;
 		setMode(mode:string);
+        setNewLineMode(mode:string); // unix, windows or auto
+        getNewLineMode():string;
         getMode():any;
 		setUndoManager(manager:UndoManager);
 		on: (event:string, handler:Function) => void;

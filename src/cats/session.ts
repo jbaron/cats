@@ -68,6 +68,7 @@ module Cats {
             console.log("Creating new session for file " + name + " with content length " + content.length);
             this.mode = this.determineMode(name);
             this.editSession = new EditSession(content, "ace/mode/" + this.mode);
+            this.editSession.setNewLineMode("unix");
 
             this.editSession.on("change", this.onChangeHandler.bind(this));
             this.editSession.setUndoManager(new UndoManager());
