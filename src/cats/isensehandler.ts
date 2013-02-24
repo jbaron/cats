@@ -33,12 +33,11 @@ export class ISenseHandler {
         this.init();
     }
 
-
-    getErrors(unitName:string,cb) {
+    getErrors(unitName:string,cb:(err, result: FileRange[]) => void) {
         this.perform("getErrors",unitName, cb);
     }
 
-    compile(cb) {
+    compile(cb:(err, data:Cats.CompileResults)=>void) {
         this.perform("compile", cb);
     }
 
@@ -47,6 +46,10 @@ export class ISenseHandler {
         this.perform("getCompletions", unitName, cursor,cb);
     }
 
+
+    setCompilationSettings(settings) {
+         this.perform("setCompilationSettings", settings, null);
+    }
 
     addScript(unitName:string,content:string,persistent?:bool) {
         this.perform("addScript",unitName, content, persistent, null);

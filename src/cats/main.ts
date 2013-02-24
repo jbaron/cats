@@ -69,6 +69,12 @@ module Cats {
         return projectName;
     }
    
+    // Catch unhandled expections so they don't showup in the IDE.
+    process.on('uncaughtException', function (err) {
+        console.error('Caught exception: ' + err);
+    });
+   
+   
     IDE = new Ide();     
     IDE.mainEditor = new TextEditor(IDE.editor);
     // mainEditor.on("activeSession",()=>{console.log("active session changed")})

@@ -72,7 +72,7 @@ module Cats {
 
             // this.initJSSense();
             this.iSense = new ISenseHandler();
-            this.iSense.perform("setCompilationSettings", this.config.compiler, null);
+            this.iSense.setCompilationSettings(this.config.compiler);
 
             if (this.config.compiler.useDefaultLib) {
                 var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");

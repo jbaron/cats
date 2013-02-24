@@ -108,7 +108,7 @@ module Ace {
 		container: HTMLElement;
 		commands:CommandManager;
 		setSession(session:EditSession);
-		getCursorPosition():Position;
+		getCursorPosition(): Position;
 		execCommand(command:string);
 		getSession():EditSession;
 		setTheme(theme:string);

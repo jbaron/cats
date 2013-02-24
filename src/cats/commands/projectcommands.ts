@@ -63,7 +63,7 @@ module Cats.Commands {
         IDE.resultbar.selectOption(0);
         compilationResultsElem.innerHTML = "";
         $(compilationResultsElem).addClass("busy");
-        project.iSense.perform("compile", (err, data:Cats.CompileResults) => {                        
+        project.iSense.compile((err, data:Cats.CompileResults) => {                        
             $(compilationResultsElem).removeClass("busy");            
             View.showCompilationResults(data);
             if (data.errors && (data.errors.length > 0)) return;
@@ -71,8 +71,11 @@ module Cats.Commands {
             var sources = data.source
             for (var name in sources) {
                 var src = sources[name];
-                console.log(name);                
-                if (name.charAt(0) !== PATH.sep) {
+                console.log(name);
+                
+                // We might get a relative path back. Lets make sure it 
+                // is absolute before we save it
+                if (name.indexOf(project.projectDir) !== 0 ) {
                     name = PATH.join(project.projectDir, name);
                 }
                 

@@ -191,7 +191,7 @@ module Cats {
             // Any pending changes that are not yet send to the worker?
             if (this.pendingWorkerUpdate) {
                 var source = editSession.getValue();
-                this.project.JSSense.perform("updateScript", this.name, source, null);
+                this.project.JSSense.updateScript(this.name, source);
                 this.pendingWorkerUpdate = false;
             };
 
@@ -205,7 +205,7 @@ module Cats {
          */
         showErrors() {
             if (this.mode === "typescript") {
-                this.project.iSense.perform("getErrors", this.name, (err, result: FileRange[]) => {
+                this.project.iSense.getErrors(this.name, (err, result: FileRange[]) => {
                     var annotations: Ace.Annotation[] = [];
                     if (result) {
                         result.forEach((error: FileRange) => {

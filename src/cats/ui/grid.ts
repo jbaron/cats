@@ -19,7 +19,9 @@ export interface AspectHandler {
 	(row,aspectName?:string);
 }
 
-// Simple grid
+/***
+ * Simple grid that shows an array of data in tabular format.
+ */ 
 export class Grid  {
 
 	private rootElement:HTMLTableElement;

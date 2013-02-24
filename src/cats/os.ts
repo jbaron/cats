@@ -16,7 +16,7 @@
 
 /**
  * This module abstracts out the native File IO. Right now it uses Nodejs, but this
- * could be easily changed to other mechanism.
+ * could be easily changed to another mechanism.
  * 
  * @TODO make this async
  */  
@@ -24,6 +24,11 @@ module OS.File {
 
         var FS=require("fs");
 
+
+        /**
+         * Create recursively directories if they don't exist yet
+         * @param path The directory path to create
+         */ 
         function mkdirRecursiveSync(path: string) {
             if (!FS.existsSync(path)) {
                 mkdirRecursiveSync(PATH.dirname(path));
@@ -33,6 +38,7 @@ module OS.File {
 
         /**
          * Remove a file or empty directory
+         * @param path the path of the file or directory
          */ 
         export function remove(path:string) {
             var isFile = FS.statSync(path).isFile();
@@ -44,13 +50,17 @@ module OS.File {
 
         /**
          * Rename a file or directory
+         * @param oldName the old name of the file or directory
+         * @param newName the new name of the file or directory
          */ 
         export function rename(oldName:string,newName: string) {
              FS.renameSync(oldName, newName);
         }
 
         /**
-         * Write content to a file. If a directory doesn't exist, create it
+         * Write text content to a file. If a directory doesn't exist, create it
+         * @param name The full name of the file
+         * @param value The content of the file
          */ 
          export function writeTextFile(name: string, value: string) {
             mkdirRecursiveSync(PATH.dirname(name));
@@ -59,6 +69,7 @@ module OS.File {
         
         /**
          * Read the files from a directory
+         * @param directory The directory name that should be read
          */ 
         export function readDir(directory:string): Cats.FileEntry[] {
             var files:string[] = FS.readdirSync(directory);
@@ -78,6 +89,7 @@ module OS.File {
                    
         /**
          * Read the content from a text file
+         * @param name The full name/path of the file
          */ 
         export function readTextFile(name: string): string {
             if (name === "untitled") return "";
