@@ -111,6 +111,7 @@ module MVC {
 
         /**
          * Utiltiy method to make a number of plain properties observable.
+         * @param obj The object that should become observable
          * @param props The list of property names to be observable
          */
         static makeObservable(obj, props: string[]) {

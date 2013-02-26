@@ -11,6 +11,9 @@ var MVC;
         View.GetViewer = function GetViewer() {
             return View.VIEWER;
         };
+        View.isActive = function isActive() {
+            return true;
+        };
         View.prototype.update = function () {
             this._render();
         };

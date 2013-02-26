@@ -35,6 +35,23 @@ module Cats {
         persist();
     }
 
+    /**
+     * Used for storing IDE specific settings
+     */ 
+    interface IDEConfiguration {
+        version: string;
+        theme: string;
+        fontSize: number;
+        projects: string[];
+        sessions: {
+            path:string;
+            pos:Position;
+        }[];
+    }
+
+    /**
+     * Used for storing project specific settings
+     */ 
     interface Configuration {
         name?: string;
         main?: string;

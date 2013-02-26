@@ -51,7 +51,6 @@ module Cats {
         constructor(private rootElement: HTMLElement) {
             super("activeSession", "editMode", "overwrite");
             this.aceEditor = this.createAceEditor();
-            this.aceEditor.setFontSize("16px");            
             this.hide();
             this.init();
         }

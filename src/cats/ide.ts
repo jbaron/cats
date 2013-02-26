@@ -87,10 +87,23 @@ module Cats {
 
         constructor() {
             super("sessions","activeSession","project");
+            this.mainEditor = new TextEditor(this.editor);
+            this.mainEditor.init();
+            this.init();
         }
+
+        private init() {
+            var c = this.loadConfig(true);
+            setTimeout(() => {
+                this.setTheme(c.theme);
+                this.setFontSize(c.fontSize);
+            }, 2000);
+        }
+
 
         /**
          * Set the font size of the IDE
+         * @param size the font size in pixels
          */
         setFontSize(size: number) {
             IDE.mainEditor.aceEditor.setFontSize(size + "px");
@@ -105,7 +118,7 @@ module Cats {
         }
 
         /**
-         * Are there any session with unsaved changes 
+         * Are there any session that have unsaved changes 
          */
         hasUnsavedSessions(): bool {
             for (var i = 0; i < this.sessions.length; i++) {
@@ -115,15 +128,52 @@ module Cats {
         }
 
         /**
-         * Get the session based on its filename
-         * @param name 
+         * Get the first session based on its filename
+         * @param name The name of the session
          */
-        getSession(name: string) {
+        getSession(name: string) : Session {
             for (var i = 0; i < this.sessions.length; i++) {
                 var session = this.sessions[i];
                 if (session.name === name) return session;
             }
         }
+
+        /**
+         * Load the configuration for the IDE
+         * @param project Also load the project
+         */ 
+        loadConfig(project:bool) {
+            var defaultConfig:IDEConfiguration = {
+                version: "1",
+                theme: "cats",
+                fontSize: 16,
+                sessions: [],
+                projects:[],
+            };
+            
+            return defaultConfig;
+            
+            var configStr = OS.File.readTextFile(".cats");
+            var config = JSON.parse(configStr);
+            
+        }
+
+        /**
+         * Persist the current IDE configuration to file
+         */ 
+        saveConfig() {
+            var config = <IDEConfiguration>{};
+            config.theme = "cats";
+            config.fontSize = 16;
+            this.sessions.forEach((session)=>{
+                config.sessions.push({
+                    path: session.name,
+                    pos: null
+                });
+            });
+            config.projects = [this.project.projectDir];                        
+        }
+
 
         /**
          * Open an existing session or if it doesn't exist yet create
@@ -167,7 +217,8 @@ module Cats {
         }
 
         /**
-         * Set the theme
+         * Set the theme of the IDE
+         * @param theme The name of the new theme
          */
         setTheme(theme: string) {
             IDE.mainEditor.setTheme(theme);
@@ -187,10 +238,11 @@ module Cats {
         }
 
         /**
-         * Add a new project into the IDE
+         * Add a new project to the IDE
+         * @param projectDir the directory of the new project
          */
-        addProject(dir: string) {
-            this.project = new Project(dir);
+        addProject(projectDir: string) {
+            this.project = new Project(projectDir);
         }
 
     }

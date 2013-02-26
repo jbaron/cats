@@ -71,12 +71,13 @@ module Cats {
    
     // Catch unhandled expections so they don't showup in the IDE.
     process.on('uncaughtException', function (err) {
-        console.error('Caught exception: ' + err);
+        console.error("Uncaught exception occured: " + err);
+        console.error(err.stack);
     });
    
    
     IDE = new Ide();     
-    IDE.mainEditor = new TextEditor(IDE.editor);
+    // IDE.mainEditor = new TextEditor(IDE.editor);
     // mainEditor.on("activeSession",()=>{console.log("active session changed")})
     IDE.addProject(determineProject());
     Cats.Commands.init();
@@ -85,11 +86,8 @@ module Cats {
     layoutIDE(); 
     
     Cats.Menu.initFileContextMenu();
-    IDE.mainEditor.init();
+    // IDE.mainEditor.init();
     
-    setTimeout(() => {
-        IDE.setTheme("cats");
-    }, 2000);
 
     var win = GUI.Window.get();
     win.on("close", function() {

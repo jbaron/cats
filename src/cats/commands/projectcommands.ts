@@ -27,7 +27,7 @@ module Cats.Commands {
     /**
      * Close the project
      */ 
-    function closeProject() {
+    function closeProject() {        
         window.close();
     }
 
@@ -85,11 +85,20 @@ module Cats.Commands {
     }
 
 
+    /**
+     * Configure the properties of a project
+     */ 
     function propertiesProject() {
         var project = IDE.project;
-        var content = JSON.stringify(project.config, null, 4);
-        var session = IDE.openSession(ConfigLoader.getFileName(project.projectDir));
-        session.setValue(content);
+        var name = ConfigLoader.getFileName(project.projectDir);
+        if (IDE.getSession(name)) {
+            IDE.openSession(name);
+        } else {
+            var content = JSON.stringify(project.config, null, 4);
+            var session = new Session(name,content);
+            IDE.addSession(session);
+            IDE.openSession(name);
+        }
     }
     
     /**
