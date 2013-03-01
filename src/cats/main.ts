@@ -22,7 +22,6 @@ var IDE:Cats.Ide;
 ///<reference path='ide.ts'/>
 ///<reference path='layout.ts'/>
 ///<reference path='../typings/cats.d.ts'/>
-///<reference path='eventbus.ts'/>
 ///<reference path='commands/commander.ts'/>
 ///<reference path='menu/menubar.ts'/>
 ///<reference path='menu/filecontextmenu.ts'/>

@@ -20,8 +20,6 @@
 ///<reference path='ui/tooltip.ts'/>
 ///<reference path='ui/filetree.ts'/>
 ///<reference path='../typings/ace.d.ts'/>
-///<reference path='directoryreader.ts'/>
-
 
 
 module Cats {

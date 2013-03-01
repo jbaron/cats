@@ -13,8 +13,6 @@
 // limitations under the License.
 //
 
-///<reference path='../cats/node.d.ts' />
-
 
 module Cats.UI {
 
