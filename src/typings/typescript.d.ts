@@ -209,7 +209,6 @@ module TypeScript {
         LocalStatic,
         GetAccessor,
         SetAccessor,
-        Definition,
         Signature,
         Method,
         HasReturnExpression,
@@ -569,17 +568,16 @@ module TypeScript {
     }
     class NumberLiteral extends Expression {
         public value: number;
-        public hasEmptyFraction: bool;
-        constructor(value: number, hasEmptyFraction?: bool);
-        public isNegativeZero: bool;
+        public text: string;
+        constructor(value: number, text: string);
         public typeCheck(typeFlow: TypeFlow): NumberLiteral;
         public treeViewLabel(): string;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public printLabel(): string;
     }
     class RegexLiteral extends Expression {
-        public regex;
-        constructor(regex);
+        public text: string;
+        constructor(text: string);
         public typeCheck(typeFlow: TypeFlow): RegexLiteral;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
     }
@@ -664,7 +662,6 @@ module TypeScript {
         public boundToProperty: VarDecl;
         public isOverload: bool;
         public innerStaticFuncs: FuncDecl[];
-        public isTargetTypedAsMethod: bool;
         public isInlineCallLiteral: bool;
         public accessorSymbol: Symbol;
         public leftCurlyCount: number;
@@ -673,6 +670,7 @@ module TypeScript {
         public scopeType: Type;
         public endingToken: ASTSpan;
         public isDeclaration(): bool;
+        public constructorSpan: ASTSpan;
         constructor(name: Identifier, bod: ASTList, isConstructor: bool, arguments: ASTList, vars: ASTList, scopes: ASTList, statics: ASTList, nodeType: number);
         public internalName(): string;
         public hasSelfReference(): bool;
@@ -722,7 +720,6 @@ module TypeScript {
         public leftCurlyCount: number;
         public rightCurlyCount: number;
         public vars: ASTList;
-        public scopes: ASTList;
         public containsUnicodeChar: bool;
         public containsUnicodeCharInComment: bool;
         public cachedEmitRequired: bool;
@@ -732,7 +729,7 @@ module TypeScript {
         public treeViewLabel(): string;
         public emitRequired(emitOptions: EmitOptions): bool;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
-        private externallyVisibleImportedSymbols;
+        public externallyVisibleImportedSymbols: Symbol[];
         public AddExternallyVisibleImportedSymbol(symbol: Symbol, checker: TypeChecker): void;
         public isExternallyVisibleSymbol(symbol: Symbol): bool;
     }
@@ -751,13 +748,13 @@ module TypeScript {
         public prettyName: string;
         public amdDependencies: string[];
         public vars: ASTList;
-        public scopes: ASTList;
         public containsUnicodeChar: bool;
         public containsUnicodeCharInComment: bool;
-        constructor(name: Identifier, members: ASTList, vars: ASTList, scopes: ASTList, endingToken: ASTSpan);
+        constructor(name: Identifier, members: ASTList, vars: ASTList, endingToken: ASTSpan);
         public isExported(): bool;
         public isAmbient(): bool;
         public isEnum(): bool;
+        public isWholeFile(): bool;
         public recordNonInterface(): void;
         public typeCheck(typeFlow: TypeFlow): ModuleDeclaration;
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
@@ -902,6 +899,7 @@ module TypeScript {
     class CaseStatement extends Statement {
         public expr: AST;
         public body: ASTList;
+        public colonSpan: ASTSpan;
         constructor();
         public emit(emitter: Emitter, tokenId: TokenID, startLine: bool): void;
         public typeCheck(typeFlow: TypeFlow): CaseStatement;
@@ -978,7 +976,7 @@ module TypeScript {
         static cleanJSDocComment(content: string, spacesToRemove?: number): string;
         static getDocCommentText(comments: Comment[]): string;
         static getParameterDocCommentText(param: string, fncDocComments: Comment[]): string;
-        static getDocCommentTextOfSignatures(signatures: Signature[]): string;
+        static getDocCommentFirstOverloadSignature(signatureGroup: SignatureGroup): string;
     }
     class DebuggerStatement extends Statement {
         constructor();
@@ -1264,7 +1262,7 @@ module TypeScript {
         public currentNameIndex: number[];
         public jsFileName: string;
         public tsFileName: string;
-        constructor(tsFileName: string, jsFileName: string, jsFile: ITextWriter, sourceMapOut: ITextWriter, errorReporter: ErrorReporter);
+        constructor(tsFileName: string, jsFileName: string, jsFile: ITextWriter, sourceMapOut: ITextWriter, errorReporter: ErrorReporter, emitFullPathOfSourceMap: bool);
         static EmitSourceMapping(allSourceMappers: SourceMapper[]): void;
     }
 }
@@ -1291,6 +1289,7 @@ module TypeScript {
         public minWhitespace: bool;
         public propagateConstants: bool;
         public emitComments: bool;
+        public emitFullSourceMapPath: bool;
         public outputOption: string;
         public ioHost: EmitterIOHost;
         public outputMany: bool;
@@ -1313,7 +1312,8 @@ module TypeScript {
         public outfile: ITextWriter;
         public emitOptions: EmitOptions;
         public errorReporter: ErrorReporter;
-        public prologueEmitted: bool;
+        public globalThisCapturePrologueEmitted: bool;
+        public extendsPrologueEmitted: bool;
         public thisClassNode: TypeDeclaration;
         public thisFnc: FuncDecl;
         public moduleDeclList: ModuleDeclaration[];
@@ -1343,6 +1343,7 @@ module TypeScript {
         public emitObjectLiteral(content: ASTList): void;
         public emitArrayLiteral(content: ASTList): void;
         public emitNew(target: AST, args: ASTList): void;
+        private getConstantValue(init);
         public tryEmitConstant(dotExpr: BinaryExpression): bool;
         public emitCall(callNode: CallExpression, target: AST, args: ASTList): void;
         public emitConstructorCalls(bases: ASTList, classDecl: TypeDeclaration): void;
@@ -1375,7 +1376,7 @@ module TypeScript {
         public emitSuperReference(): void;
         public emitSuperCall(callEx: CallExpression): bool;
         public emitThis(): void;
-        static shouldCaptureThis(func);
+        private static shouldCaptureThis(func);
         private createFile(fileName, useUTF8);
     }
 }
@@ -1433,21 +1434,6 @@ module TypeScript {
         AllSimpleTypes,
         AllTypes,
     }
-    enum ParseState {
-        None,
-        StartScript,
-        StartStatementList,
-        StartStatement,
-        StartFncDecl,
-        FncDeclName,
-        FncDeclArgs,
-        FncDeclReturnType,
-        ForInit,
-        ForInitAfterVar,
-        ForCondStart,
-        EndStmtList,
-        EndScript,
-    }
     interface IStatementInfo {
         stmt: Statement;
         labels: ASTList;
@@ -1478,7 +1464,6 @@ module TypeScript {
         public errorRecovery: bool;
         public outfile: ITextWriter;
         public errorCallback: (minChar: number, charLen: number, message: string, unit: number) => void;
-        private state;
         private ambientModule;
         private ambientClass;
         private topLevel;
@@ -1545,7 +1530,7 @@ module TypeScript {
         private parseTypeMemberList(errorRecoverySet, members);
         private parseInterfaceDecl(errorRecoverySet, modifiers);
         private makeVarDecl(id, nest);
-        private parsePropertyDeclaration(errorRecoverySet, modifiers, requireSignature, isStatic);
+        private parsePropertyDeclaration(errorRecoverySet, modifiers, requireSignature, isStatic, unnamedAmbientFunctionOk?);
         private parseVariableDeclaration(errorRecoverySet, modifiers, allowIn, isStatic);
         private parseMemberList(errorRecoverySet);
         private parseArrayList(errorRecoverySet);
@@ -1753,25 +1738,22 @@ module TypeScript {
         public pos: number;
         public seenUnicodeChar: bool;
         public seenUnicodeCharInComment: bool;
-        public close(): void;
-        public addToken(tok: Token, scanner: IScanner): void;
-        public scan(): Token;
         public startLine: number;
         public prevLine: number;
         public line: number;
         public col: number;
         public leftCurlyCount: number;
         public rightCurlyCount: number;
-        public syncToTok(offset: number): number;
-        public lastTokenLimChar(): number;
-        public lastTokenHadNewline(): bool;
         public lexState: LexState;
         public commentStack: CommentToken[];
-        public pushComment(comment: CommentToken): void;
+        public lineMap: number[];
+        public addToken(tok: Token, scanner: IScanner): void;
+        public scan(): Token;
+        public lastTokenLimChar(): number;
+        public lastTokenHadNewline(): bool;
         public getComments(): CommentToken[];
         public getCommentsForLine(line: number): CommentToken[];
         public resetComments(): void;
-        public lineMap: number[];
         public setSourceText(newSrc: ISourceText, textMode: number): void;
         public setErrorHandler(reportError: (message: string) => void): void;
         public getLookAheadToken(): Token;
@@ -1800,15 +1782,13 @@ module TypeScript {
         public seenUnicodeChar: bool;
         public seenUnicodeCharInComment: bool;
         private reportError;
-        constructor();
         private prevTok;
+        constructor();
         public previousToken(): Token;
         public setSourceText(newSrc: ISourceText, textMode: number): void;
         public setErrorHandler(reportError: (message: string) => void): void;
-        public setSaveScan(savedTokens: SavedTokens): void;
         public setText(newSrc: string, textMode: number): void;
         public setScanComments(value: bool): void;
-        public getLexState(): number;
         public tokenStart(): void;
         public peekChar(): number;
         public peekCharAt(index: number): number;
@@ -1827,7 +1807,6 @@ module TypeScript {
         public resetComments(): void;
         public endsLine(c: number): bool;
         public finishSinglelineComment(): void;
-        public tokenText(): string;
         public findClosingSLH(): number;
         public speculateRegex(): Token;
         public lastTokenHadNewline(): bool;
@@ -1838,7 +1817,7 @@ module TypeScript {
         public scanInLine(): Token;
         public scan(): Token;
         private isValidUnicodeIdentifierChar();
-        private scanStringConstant();
+        private scanStringConstant(endCode);
         private scanIdentifier();
         public innerScan(): Token;
         private reportScannerError(message);
@@ -1940,7 +1919,7 @@ module TypeScript {
         public specializeType(pattern: Type, replacement: Type, checker: TypeChecker): Signature;
         public toString(): string;
         public toStringHelper(shortform: bool, brackets: bool, scope: SymbolScope): string;
-        public toStringHelperEx(shortform: bool, brackets: bool, scope: SymbolScope, prefix?: string): MemberName;
+        public toStringHelperEx(shortform: bool, brackets: bool, scope: SymbolScope, prefix?: string): MemberNameArray;
     }
     class SignatureGroup {
         public signatures: Signature[];
@@ -1950,7 +1929,7 @@ module TypeScript {
         public flags: SignatureFlags;
         public addSignature(signature: Signature): void;
         public toString(): string;
-        public toStrings(prefix: string, shortform: bool, scope: SymbolScope): MemberName[];
+        public toStrings(prefix: string, shortform: bool, scope: SymbolScope, getPrettyTypeName?: bool, useSignature?: Signature): MemberName[];
         public specializeType(pattern: Type, replacement: Type, checker: TypeChecker): SignatureGroup;
         public verifySignatures(checker: TypeChecker): void;
         public typeCheck(checker: TypeChecker, ast: AST, hasConstruct: bool): void;
@@ -1998,7 +1977,7 @@ module TypeScript {
         public findCommonAncestorPath(b: Symbol): Symbol[];
         public getPrettyName(scopeSymbol: Symbol): string;
         public scopeRelativeName(scope: SymbolScope): string;
-        public fullName(): string;
+        public fullName(scope?: SymbolScope): string;
         public isExternallyVisible(checker: TypeChecker);
         public visible(scope: SymbolScope, checker: TypeChecker): bool;
         public addRef(identifier: Identifier): void;
@@ -2094,6 +2073,7 @@ module TypeScript {
         public toString(): string;
         public specializeType(pattern: Type, replacement: Type, checker: TypeChecker): Symbol;
         public getParameterDocComments(): string;
+        public fullName(): string;
     }
     class VariableSymbol extends InferenceSymbol {
         public variable: ValueLocation;
@@ -2403,8 +2383,8 @@ module TypeScript {
     }
     class NumberLiteralToken extends Token {
         public value: number;
-        public hasEmptyFraction: bool;
-        constructor(value: number, hasEmptyFraction?: bool);
+        public text: string;
+        constructor(value: number, text: string);
         public getText(): string;
         public classification(): TokenClass;
     }
@@ -2438,8 +2418,8 @@ module TypeScript {
         public classification(): TokenClass;
     }
     class RegularExpressionLiteralToken extends Token {
-        public regex;
-        constructor(regex);
+        public text: string;
+        constructor(text: string);
         public getText(): string;
         public classification(): TokenClass;
     }
@@ -2824,7 +2804,7 @@ module TypeScript {
         public typeCheckQMark(trinex: ConditionalExpression): ConditionalExpression;
         public addFormals(container: Symbol, signature: Signature, table: IHashTable): void;
         public addLocalsFromScope(scope: SymbolScope, container: Symbol, vars: ASTList, table: IHashTable, isModContainer: bool): void;
-        public addConstructorLocalArgs(container: Symbol, args: ASTList, table: IHashTable, isClass: bool): void;
+        public addConstructorLocalArgs(constructorDecl: FuncDecl, table: IHashTable, isClass: bool): void;
         public checkInitSelf(funcDecl: FuncDecl): bool;
         public checkPromoteFreeVars(funcDecl: FuncDecl, constructorSym: Symbol): void;
         public allReturnsAreVoid(funcDecl: FuncDecl): bool;
@@ -2945,11 +2925,11 @@ module TypeScript {
         public isBoolean(): bool;
         public isNull(): bool;
         public getTypeName(): string;
-        public getScopedTypeName(scope: SymbolScope): string;
-        public getScopedTypeNameEx(scope: SymbolScope): MemberName;
+        public getScopedTypeName(scope: SymbolScope, getPrettyTypeName?: bool): string;
+        public getScopedTypeNameEx(scope: SymbolScope, getPrettyTypeName?: bool): MemberName;
         public callCount(): number;
-        public getMemberTypeName(prefix: string, topLevel: bool, isElementType: bool, scope: SymbolScope): string;
-        public getMemberTypeNameEx(prefix: string, topLevel: bool, isElementType: bool, scope: SymbolScope): MemberName;
+        public getMemberTypeName(prefix: string, topLevel: bool, isElementType: bool, scope: SymbolScope, getPrettyTypeName?: bool): string;
+        public getMemberTypeNameEx(prefix: string, topLevel: bool, isElementType: bool, scope: SymbolScope, getPrettyTypeName?: bool): MemberName;
         public checkDecl(checker: TypeChecker): void;
         public getMemberScope(flow: TypeFlow): SymbolScope;
         public isReferenceType();
@@ -2997,9 +2977,11 @@ module TypeScript {
 }
 module TypeScript {
     function stripQuotes(str: string): string;
+    function isSingleQuoted(str: string): bool;
     function isQuoted(str: string): bool;
     function quoteStr(str: string): string;
     function swapQuotes(str: string): string;
+    function changeToSingleQuote(str: string): string;
     function switchToForwardSlashes(path: string): string;
     function trimModName(modName: string): string;
     function getDeclareFilePath(fname: string): string;
@@ -3042,6 +3024,8 @@ module TypeScript {
     interface IFileReference {
         minChar: number;
         limChar: number;
+        startLine: number;
+        startCol: number;
         path: string;
         isResident: bool;
     }
@@ -3057,9 +3041,10 @@ module TypeScript {
         constructor(compilationSettings: CompilationSettings, ioHost: IFileSystemObject);
         public residentCode: SourceUnit[];
         public code: SourceUnit[];
+        public inputOutputMap: any[];
     }
     interface IResolutionDispatcher {
-        postResolutionError(errorFile: string, errorMessage: string, errorObject: any): void;
+        postResolutionError(errorFile: string, line: number, col: number, errorMessage: string): void;
         postResolution(path: string, source: ISourceText): void;
     }
     interface ICodeResolver {
@@ -3072,7 +3057,7 @@ module TypeScript {
         public environment: CompilationEnvironment;
         public visited: any;
         constructor(environment: CompilationEnvironment);
-        public resolveCode(referencePath: string, parentPath: string, performSearch: bool, resolutionDispatcher: IResolutionDispatcher): void;
+        public resolveCode(referencePath: string, parentPath: string, performSearch: bool, resolutionDispatcher: IResolutionDispatcher): bool;
     }
 }
 module TypeScript {
@@ -3117,6 +3102,7 @@ module TypeScript {
         public moduleGenTarget: ModuleGenTarget;
         public outputOption: string;
         public mapSourceFiles: bool;
+        public emitFullSourceMapPath: bool;
         public generateDeclarationFiles: bool;
         public useCaseSensitiveFileResolution: bool;
         public setStyleOptions(str: string): void;
@@ -3287,8 +3273,8 @@ module TypeScript {
         public emitDeclarations(): void;
         static mapToFileNameExtension(extension: string, fileName: string, wholeFileNameReplaced: bool): string;
         static mapToJSFileName(fileName: string, wholeFileNameReplaced: bool): string;
-        public emitUnit(script: Script, reuseEmitter?: bool, emitter?: Emitter): Emitter;
-        public emit(ioHost: EmitterIOHost): void;
+        public emitUnit(script: Script, reuseEmitter?: bool, emitter?: Emitter, inputOutputMapper?: (unitIndex: number, outFile: string) => void): Emitter;
+        public emit(ioHost: EmitterIOHost, inputOutputMapper?: (unitIndex: number, outFile: string) => void): void;
         public emitToOutfile(outputFile: ITextWriter): void;
         public emitAST(ioHost: EmitterIOHost): void;
         private outputScriptToUTF8(script);
@@ -3305,644 +3291,29 @@ module TypeScript {
         private compiler;
         constructor(compiler: TypeScriptCompiler);
         public getScope(enclosingScopeContext: EnclosingScopeContext): SymbolScope;
-        public getScopeEntries(enclosingScopeContext: EnclosingScopeContext): ScopeEntry[];
-        private getTypeNamesForNames(enclosingScopeContext, allNames, scope);
+        public getScopeEntries(enclosingScopeContext: EnclosingScopeContext, getPrettyTypeName?: bool): ScopeEntry[];
+        private getTypeNamesForNames(enclosingScopeContext, allNames, scope, getPrettyTypeName?);
     }
 }
 module Services {
-    class ScriptMap {
-        private map;
-        constructor();
-        public setEntry(id: string, isResident: bool, version: number): void;
-        public getEntry(id: string): ScriptMapEntry;
-    }
-    class ScriptMapEntry {
-        public isResident: bool;
-        public version: number;
-        constructor(isResident: bool, version: number);
-    }
-    class HostCacheEntry {
-        private host;
-        public hostUnitIndex: number;
-        public id: string;
-        public version: number;
-        public isResident: bool;
-        private _cachedSourceText;
-        private _sourceText;
-        constructor(host: ILanguageServiceHost, hostUnitIndex: number, id: string, version: number, isResident: bool);
-        public getSourceText(cached: bool): TypeScript.ISourceText;
-    }
-    class HostCache {
-        public host: ILanguageServiceHost;
-        private map;
-        private array;
-        constructor(host: ILanguageServiceHost);
-        private init();
-        public count(): number;
-        public getUnitIndex(scriptId: string): number;
-        public getVersion(scriptIndex: number): number;
-        public getIsResident(scriptIndex: number): bool;
-        public getScriptId(scriptIndex: number): string;
-        public getSourceText(scriptIndex: number, cached?: bool): TypeScript.ISourceText;
-    }
-    class CompilerCache {
-        public compiler: TypeScript.TypeScriptCompiler;
-        private map;
-        constructor(compiler: TypeScript.TypeScriptCompiler);
-        private init();
-        public getUnitIndex(scriptId: string): number;
-    }
-    class UnitErrors {
-        public parseErrors: TypeScript.ErrorEntry[];
-        public typeCheckErrors: TypeScript.ErrorEntry[];
-        constructor();
-    }
-    class CompilerErrorCollector {
-        public logger: TypeScript.ILogger;
-        private parseMode;
-        public fileMap: UnitErrors[];
-        constructor(logger: TypeScript.ILogger);
-        public startParsing(unitIndex: number): void;
-        public startTypeChecking(): void;
-        public reportError(pos: number, len: number, message: string, unitIndex: number): void;
-    }
-    class CompilerState {
-        public host: ILanguageServiceHost;
-        public logger: TypeScript.ILogger;
-        private compiler;
-        private errorCollector;
-        private unitIndexMap;
-        private scriptMap;
-        private hostCache;
-        private compilerCache;
-        private symbolTree;
-        private compilationSettings;
-        constructor(host: ILanguageServiceHost);
-        public getCompilationSettings(): TypeScript.CompilationSettings;
-        private setUnitMapping(unitIndex, hostUnitIndex);
-        private setUnitIndexMapping(unitIndex, hostUnitIndex);
-        private onTypeCheckStarting();
-        public getSymbolTree(): ISymbolTree;
-        public mapToHostUnitIndex(unitIndex: number): number;
-        public anyType(): TypeScript.Type;
-        public getScriptCount(): number;
-        public getScript(index: number): TypeScript.Script;
-        public getScripts(): TypeScript.Script[];
-        public getUnitIndex(fileName: string): number;
-        public getScriptVersion(fileName: string): number;
-        private addCompilerUnit(compiler, hostUnitIndex);
-        private updateCompilerUnit(compiler, hostUnitIndex, unitIndex);
-        private attemptIncrementalUpdateUnit(scriptId);
-        private getHostCompilationSettings();
-        private createCompiler();
-        public minimalRefresh(): void;
-        public refresh(throwOnError?: bool): void;
-        private fullRefresh();
-        private partialRefresh();
-        private attemptIncrementalTypeCheck(updateResult);
-        private applyUpdateResult(updateResult);
-        public getScriptAST(fileName: string): TypeScript.Script;
-        public getLineMap(fileName: string): number[];
-        public getScopeEntries(enclosingScopeContext: TypeScript.EnclosingScopeContext): TypeScript.ScopeEntry[];
-        public getErrorEntries(maxCount: number, filter: (unitIndex: number, error: TypeScript.ErrorEntry) => bool): TypeScript.ErrorEntry[];
-        public cleanASTTypesForReTypeCheck(ast: TypeScript.AST): void;
-        public getScriptEditRange(script: TypeScript.Script): TypeScript.ScriptEditRange;
-        public getScriptEditRangeSinceVersion(fileName: string, lastKnownVersion: number): TypeScript.ScriptEditRange;
-        public getSourceText(script: TypeScript.Script, cached?: bool): TypeScript.ISourceText;
-        public getSourceText2(fileName: string, cached?: bool): TypeScript.ISourceText;
-        public getScriptSyntaxAST(fileName: string): ScriptSyntaxAST;
-        public getEmitOutput(fileName: string): IOutputFile[];
-    }
-}
-module Services {
-    class ScriptSyntaxAST {
-        private logger;
-        private script;
-        private sourceText;
-        constructor(logger: TypeScript.ILogger, script: TypeScript.Script, sourceText: TypeScript.ISourceText);
-        public getLogger(): TypeScript.ILogger;
-        public getScriptId(): string;
-        public getScript(): TypeScript.Script;
-        public getSourceText(): TypeScript.ISourceText;
-        public getTokenStream(minChar?: number, limChar?: number): TokenStream;
-        public getTokenizationOffset(position: number): number;
-        public getAstPathToPosition(pos: number, options?: TypeScript.GetAstPathOptions): TypeScript.AstPath;
-    }
-    class TokenStream {
-        private scanner;
-        private offset;
-        private currentToken;
-        constructor(scanner: TypeScript.Scanner, offset: number);
-        public moveNext(): bool;
-        public sourceTextOffset(): number;
-        public tokenId(): TypeScript.TokenID;
-        public tokenStartPos(): number;
-        public tokenEndPos(): number;
-    }
-    class TokenStreamHelper {
-        public stream: TokenStream;
-        constructor(stream: TokenStream);
-        public moveNext(): bool;
-        public expect(token: TypeScript.TokenID): bool;
-        public skipToOffset(pos: number): bool;
-        public tokenId(): TypeScript.TokenID;
-        public tokenStartPos(): number;
-        public tokenEndPos(): number;
-    }
-}
-module Services {
-    class BraceMatchingManager {
-        private scriptSyntaxAST;
-        constructor(scriptSyntaxAST: ScriptSyntaxAST);
-        public getBraceMatchingAtPosition(position: number): TextRange[];
-        public getMatchingBraceForward(position: number, openToken: TypeScript.TokenID, closeToken: TypeScript.TokenID): number;
-        public getMatchingBraceBackward(position: number, closeToken: TypeScript.TokenID, openToken: TypeScript.TokenID): number;
-    }
-}
-module Services {
-    class SymbolSet {
-        private table;
-        constructor();
-        private isSymbolArraySet(value);
-        public add(sym: TypeScript.Symbol): bool;
-        public contains(sym: TypeScript.Symbol): bool;
-        public isEmpty(): bool;
-        public getAll(): TypeScript.Symbol[];
-        public forEach(callback: (x: TypeScript.Symbol) => void): void;
-        public union(other: SymbolSet): void;
-    }
-}
-module Services {
-    interface ISymbolTree {
-        findBaseTypesTransitiveClosure(sym: TypeScript.TypeSymbol): SymbolSet;
-        findDerivedTypesTransitiveClosure(sym: TypeScript.TypeSymbol): SymbolSet;
-        getOverride(container: TypeScript.TypeSymbol, memberSym: TypeScript.Symbol): TypeScript.Symbol;
-        isClass(sym: TypeScript.Symbol): bool;
-        isInterface(sym: TypeScript.Symbol): bool;
-        isMethod(sym: TypeScript.Symbol): bool;
-        isField(sym: TypeScript.Symbol): bool;
-    }
-    interface ISymbolTreeHost {
-        getScripts(): TypeScript.Script[];
-    }
-    class SymbolTree implements ISymbolTree {
-        public host: ISymbolTreeHost;
-        private _allTypes;
-        constructor(host: ISymbolTreeHost);
-        public findBaseTypesTransitiveClosure(sym: TypeScript.TypeSymbol): SymbolSet;
-        public findDerivedTypesTransitiveClosure(sym: TypeScript.TypeSymbol): SymbolSet;
-        public getOverride(container: TypeScript.TypeSymbol, memberSym: TypeScript.Symbol): TypeScript.Symbol;
-        public getAllTypes(): TypeScript.Symbol[];
-        public findBaseTypes(closure: SymbolSet, lastSet: SymbolSet): SymbolSet;
-        public findDerivedTypes(alreadyFound: SymbolSet, baseSymbols: SymbolSet): SymbolSet;
-        public addBaseTypes(closure: SymbolSet, syms: SymbolSet, bases: TypeScript.Type[]): void;
-        private isDefinition(sym);
-        public isClass(sym: TypeScript.Symbol): bool;
-        public isInterface(sym: TypeScript.Symbol): bool;
-        public isMethod(sym: TypeScript.Symbol): bool;
-        public isField(sym: TypeScript.Symbol): bool;
-        public isStatic(sym: TypeScript.Symbol): bool;
-    }
-}
-module Services {
-    class OverridesCollector {
-        public symbolTree: ISymbolTree;
-        constructor(symbolTree: ISymbolTree);
-        public findMemberOverrides(memberSym: TypeScript.Symbol): SymbolSet;
-        public findImplementors(sym: TypeScript.Symbol): SymbolSet;
-        private findMemberOverridesImpl(memberSym, lookInBases, lookInDerived);
-    }
-}
-module Services {
-    interface ILanguageService {
-        host: ILanguageServiceHost;
-        refresh(): void;
-        logAST(fileName: string): void;
-        logSyntaxAST(fileName: string): void;
-        getErrors(maxCount: number): TypeScript.ErrorEntry[];
-        getScriptAST(fileName: string): TypeScript.Script;
-        getScriptErrors(fileName: string, maxCount: number): TypeScript.ErrorEntry[];
-        getCompletionsAtPosition(fileName: string, pos: number, isMemberCompletion: bool): CompletionInfo;
-        getTypeAtPosition(fileName: string, pos: number): TypeInfo;
-        getNameOrDottedNameSpan(fileName: string, startPos: number, endPos: number): SpanInfo;
-        getBreakpointStatementAtPosition(fileName: string, pos: number): SpanInfo;
-        getSignatureAtPosition(fileName: string, pos: number): SignatureInfo;
-        getDefinitionAtPosition(fileName: string, pos: number): DefinitionInfo;
-        getReferencesAtPosition(fileName: string, pos: number): ReferenceEntry[];
-        getOccurrencesAtPosition(fileName: string, pos: number): ReferenceEntry[];
-        getImplementorsAtPosition(fileName: string, pos: number): ReferenceEntry[];
-        getNavigateToItems(searchValue: string): NavigateToItem[];
-        getScriptLexicalStructure(fileName: string): NavigateToItem[];
-        getOutliningRegions(fileName: string): NavigateToItem[];
-        getScriptSyntaxAST(fileName: string): ScriptSyntaxAST;
-        getFormattingEditsForRange(fileName: string, minChar: number, limChar: number, options: FormatCodeOptions): TextEdit[];
-        getFormattingEditsForDocument(fileName: string, minChar: number, limChar: number, options: FormatCodeOptions): TextEdit[];
-        getFormattingEditsOnPaste(fileName: string, minChar: number, limChar: number, options: FormatCodeOptions): TextEdit[];
-        getFormattingEditsAfterKeystroke(fileName: string, position: number, key: string, options: FormatCodeOptions): TextEdit[];
-        getBraceMatchingAtPosition(fileName: string, position: number): TextRange[];
-        getSmartIndentAtLineNumber(fileName: string, lineNumber: number, options: EditorOptions): number;
-        getAstPathToPosition(script: TypeScript.AST, pos: number, options: TypeScript.GetAstPathOptions): TypeScript.AstPath;
-        getIdentifierPathToPosition(script: TypeScript.AST, pos: number): TypeScript.AstPath;
-        getSymbolAtPosition(script: TypeScript.AST, pos: number): TypeScript.Symbol;
-        getSymbolTree(): ISymbolTree;
-        getEmitOutput(fileName: string): IOutputFile[];
-    }
-    interface ILanguageServiceHost extends TypeScript.ILogger {
-        getCompilationSettings(): TypeScript.CompilationSettings;
-        getScriptCount(): number;
-        getScriptId(scriptIndex: number): string;
-        getScriptSourceText(scriptIndex: number, start: number, end: number): string;
-        getScriptSourceLength(scriptIndex: number): number;
-        getScriptIsResident(scriptIndex: number): bool;
-        getScriptVersion(scriptIndex: number): number;
-        getScriptEditRangeSinceVersion(scriptIndex: number, scriptVersion: number): TypeScript.ScriptEditRange;
-    }
-    function logInternalError(logger: TypeScript.ILogger, err: Error): void;
-    class SourceTextAdapter implements TypeScript.ISourceText {
-        private host;
-        private scriptIndex;
-        constructor(host: ILanguageServiceHost, scriptIndex: number);
-        public getText(start: number, end: number): string;
-        public getLength(): number;
-    }
-    class CachedSourceTextAdapter implements TypeScript.ISourceText {
-        private length;
-        private text;
-        constructor(host: ILanguageServiceHost, scriptIndex: number);
-        public getText(start: number, end: number): string;
-        public getLength(): number;
-    }
-    class SourceTextRange implements TypeScript.ISourceText {
-        private sourceText;
-        private minChar;
-        private limChar;
-        constructor(sourceText: TypeScript.ISourceText, minChar: number, limChar: number);
-        public getText(start: number, end: number): string;
-        public getLength(): number;
-    }
-    class ReferenceEntry {
-        public unitIndex: number;
-        public ast: TypeScript.AST;
-        public isWriteAccess: bool;
-        constructor(unitIndex: number, ast: TypeScript.AST, isWriteAccess: bool);
-        public getHashCode(): number;
-        public equals(other: ReferenceEntry): bool;
-    }
-    class ReferenceEntrySet {
-        private hashTable;
-        private entries;
-        constructor();
-        public getEntries(): ReferenceEntry[];
-        public addAst(unitIndex: number, ast: TypeScript.AST, isWriteAccess: bool): void;
-        public addSymbol(sym: TypeScript.Symbol): void;
-    }
-    class NavigateToItem {
-        public name: string;
-        public kind: string;
-        public kindModifiers: string;
-        public matchKind: string;
-        public unitIndex: number;
-        public minChar: number;
-        public limChar: number;
-        public containerName: string;
-        public containerKind: string;
-    }
-    class NavigateToContext {
-        public options: TypeScript.AstWalkOptions;
-        public unitIndex: number;
-        public containerSymbols: TypeScript.Symbol[];
-        public containerKinds: string[];
-        public containerASTs: TypeScript.AST[];
-        public path: TypeScript.AstPath;
-        public result: NavigateToItem[];
-    }
-    class TextRange {
-        public minChar: number;
-        public limChar: number;
-        constructor(minChar: number, limChar: number);
-    }
-    class TextEdit {
-        public minChar: number;
-        public limChar: number;
-        public text: string;
-        constructor(minChar: number, limChar: number, text: string);
-        static createInsert(pos: number, text: string): TextEdit;
-        static createDelete(minChar: number, limChar: number): TextEdit;
-        static createReplace(minChar: number, limChar: number, text: string): TextEdit;
-    }
-    class EditorOptions {
-        public IndentSize: number;
-        public TabSize: number;
-        public NewLineCharacter: string;
-        public ConvertTabsToSpaces: bool;
-    }
-    class FormatCodeOptions extends EditorOptions {
-        public InsertSpaceAfterCommaDelimiter: bool;
-        public InsertSpaceAfterSemicolonInForStatements: bool;
-        public InsertSpaceBeforeAndAfterBinaryOperators: bool;
-        public InsertSpaceAfterKeywordsInControlFlowStatements: bool;
-        public InsertSpaceAfterFunctionKeywordForAnonymousFunctions: bool;
-        public InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: bool;
-        public PlaceOpenBraceOnNewLineForFunctions: bool;
-        public PlaceOpenBraceOnNewLineForControlBlocks: bool;
-    }
-    class GetReferencesContext {
-        public scope: number[];
-    }
-    class DefinitionInfo {
-        public unitIndex: number;
-        public minChar: number;
-        public limChar: number;
-        public kind: string;
-        public name: string;
-        public containerKind: string;
-        public containerName: string;
-        constructor(unitIndex: number, minChar: number, limChar: number, kind: string, name: string, containerKind: string, containerName: string);
-    }
-    class TypeInfo {
-        public memberName: TypeScript.MemberName;
-        public docComment: string;
-        public minChar: number;
-        public limChar: number;
-        constructor(memberName: TypeScript.MemberName, docComment: string, minChar: number, limChar: number);
-    }
-    class SpanInfo {
-        public minChar: number;
-        public limChar: number;
-        public text: string;
-        constructor(minChar: number, limChar: number, text?: string);
-    }
-    class SignatureInfo {
-        public actual: ActualSignatureInfo;
-        public formal: FormalSignatureInfo;
-        public activeFormal: number;
-    }
-    class FormalSignatureInfo {
-        public name: string;
-        public isNew: bool;
-        public openParen: string;
-        public closeParen: string;
-        public docComment: string;
-        public signatureGroup: FormalSignatureItemInfo[];
-    }
-    class FormalSignatureItemInfo {
-        public parameters: FormalParameterInfo[];
-        public returnType: string;
-        public docComment: string;
-    }
-    class FormalParameterInfo {
-        public name: string;
-        public type: string;
-        public isOptional: bool;
-        public isVariable: bool;
-        public docComment: string;
-    }
-    class ActualSignatureInfo {
-        public openParenMinChar: number;
-        public closeParenLimChar: number;
-        public currentParameter: number;
-        public parameters: ActualParameterInfo[];
-    }
-    class ActualParameterInfo {
-        public minChar: number;
-        public limChar: number;
-    }
-    class CompletionInfo {
-        public maybeInaccurate: bool;
-        public isMemberCompletion: bool;
-        public entries: CompletionEntry[];
-    }
-    class CompletionEntry {
-        public name: string;
-        public type: string;
-        public kind: string;
-        public kindModifiers: string;
-        public docComment: string;
-    }
-    class ScriptElementKind {
-        static unknown: string;
-        static keyword: string;
-        static scriptElement: string;
-        static moduleElement: string;
-        static classElement: string;
-        static interfaceElement: string;
-        static enumElement: string;
-        static variableElement: string;
-        static functionElement: string;
-        static memberFunctionElement: string;
-        static memberGetAccessorElement: string;
-        static memberSetAccessorElement: string;
-        static memberVariableElement: string;
-        static constructorImplementationElement: string;
-        static callSignatureElement: string;
-        static indexSignatureElement: string;
-        static constructSignatureElement: string;
-    }
-    class ScriptElementKindModifier {
-        static none: string;
-        static publicMemberModifier: string;
-        static privateMemberModifier: string;
-        static exportedModifier: string;
-        static ambientModifier: string;
-        static staticModifier: string;
-    }
-    class MatchKind {
-        static none: string;
-        static exact: string;
-        static subString: string;
-        static prefix: string;
-    }
-    class ScriptSyntaxASTState {
-        public version: number;
-        public syntaxAST: ScriptSyntaxAST;
-        public fileName: string;
-        constructor();
-    }
-    interface IOutputFile {
-        name: string;
-        useUTF8encoding: bool;
-        text: string;
-    }
-    class LanguageService implements ILanguageService {
-        public host: ILanguageServiceHost;
-        public logger: TypeScript.ILogger;
-        private compilerState;
-        private syntaxASTState;
-        private formattingRulesProvider;
-        constructor(host: ILanguageServiceHost);
-        public refresh(): void;
-        public minimalRefresh(): void;
-        public getSymbolTree(): ISymbolTree;
-        public getScriptSyntaxAST(fileName: string): ScriptSyntaxAST;
-        private _getScriptSyntaxAST(fileName);
-        private attemptIncrementalSyntaxAST(syntaxASTState);
-        public getScriptAST(fileName: string): TypeScript.Script;
-        public getTypeAtPosition(fileName: string, pos: number): TypeInfo;
-        public getNameOrDottedNameSpan(fileName: string, startPos: number, endPos: number): SpanInfo;
-        private getBreakpointInStatement(pos, astSpan, verifyASTPos, existingResult, forceFirstStatement, isAst);
-        public getBreakpointStatementAtPosition(fileName: string, pos: number): SpanInfo;
-        public getSignatureAtPosition(fileName: string, pos: number): SignatureInfo;
-        public getDefinitionAtPosition(fileName: string, pos: number): DefinitionInfo;
-        public getSmartIndentAtLineNumber(fileName: string, lineNumber: number, options: EditorOptions): number;
-        public getBraceMatchingAtPosition(fileName: string, position: number): TextRange[];
-        private getSymbolElementKind(sym);
-        private getSymbolElementKindModifiers(sym);
-        private getSymbolContainerKind(sym);
-        private getSymbolContainerName(sym);
-        public getReferencesAtPosition(fileName: string, pos: number): ReferenceEntry[];
-        public getOccurrencesAtPosition(fileName: string, pos: number): ReferenceEntry[];
-        public getImplementorsAtPosition(fileName: string, position: number): ReferenceEntry[];
-        private getReferencesForSourceLocation(context, unitIndex, position);
-        private isWriteAccess(parent, cur);
-        private getReferencesForSymbol(context, sym);
-        private mapUnitIndexInReferenceEntrySet(references);
-        public getCompletionsAtPosition(fileName: string, pos: number, isMemberCompletion: bool): CompletionInfo;
-        private getQuickCompletionsAtPosition(fileName, pos, isMemberCompletion);
-        private getAccurateCompletionsAtPosition(fileName, pos, isMemberCompletion);
-        private getCompletionsFromEnclosingScopeContext(enclosingScopeContext, result);
-        private isObjectLiteralMemberNameCompletion(enclosingScopeContext);
-        private isCompletionListBlocker(path);
-        private isCompletionListTriggerPoint(path);
-        public getFormattingEditsForRange(fileName: string, minChar: number, limChar: number, options: FormatCodeOptions): TextEdit[];
-        public getFormattingEditsForDocument(fileName: string, minChar: number, limChar: number, options: FormatCodeOptions): TextEdit[];
-        public getFormattingEditsOnPaste(fileName: string, minChar: number, limChar: number, options: FormatCodeOptions): TextEdit[];
-        public getFormattingEditsAfterKeystroke(fileName: string, position: number, key: string, options: FormatCodeOptions): TextEdit[];
-        public getNavigateToItems(searchValue: string): NavigateToItem[];
-        public getScriptLexicalStructure(fileName: string): NavigateToItem[];
-        public getOutliningRegions(fileName: string): NavigateToItem[];
-        public logAST(fileName: string): void;
-        public logSyntaxAST(fileName: string): void;
-        public getErrors(maxCount: number): TypeScript.ErrorEntry[];
-        public getScriptErrors(fileName: string, maxCount: number): TypeScript.ErrorEntry[];
-        public getEmitOutput(fileName: string): IOutputFile[];
-        private getTypeInfoAtPosition(pos, script);
-        private getNameOrDottedNameSpanFromPosition(pos, script);
-        private getReferencesToField(context, symbolSet, match);
-        private getReferencesToType(context, symbolSet, match);
-        private getReferencesToParameter(context, symbolSet, match);
-        private getReferencesToVariable(context, symbolSet, match);
-        private getReferencesToSymbolSet(context, symbolSet, match);
-        private getDeclNodeElementKind(ast);
-        private getDeclNodeElementKindModifiers(ast);
-        private getASTItems(unitIndex, ast, match, findMinChar?, findLimChar?);
-        public getAstPathToPosition(script: TypeScript.AST, pos: number, options?: TypeScript.GetAstPathOptions): TypeScript.AstPath;
-        public getIdentifierPathToPosition(script: TypeScript.AST, pos: number): TypeScript.AstPath;
-        public getSymbolAtPosition(script: TypeScript.AST, pos: number): TypeScript.Symbol;
-        private logFormatCodeOptions(options);
-        private logEditResults(syntaxAST, result);
-    }
-}
-module Services {
-    interface ILanguageServiceShim {
-        host: ILanguageServiceShimHost;
-        languageService: ILanguageService;
-        logger: TypeScript.ILogger;
-        dispose(dummy: any): void;
-        refresh(throwOnError: bool): void;
-        logAST(fileName: string): void;
-        logSyntaxAST(fileName: string): void;
-        getErrors(maxCount: number): string;
-        getScriptErrors(fileName: string, maxCount: number): string;
-        getTypeAtPosition(fileName: string, pos: number): string;
-        getSignatureAtPosition(fileName: string, pos: number): string;
-        getDefinitionAtPosition(fileName: string, pos: number): string;
-        getBraceMatchingAtPosition(fileName: string, pos: number): string;
-        getSmartIndentAtLineNumber(fileName: string, lineNumber: number, options: string): string;
-        getReferencesAtPosition(fileName: string, pos: number): string;
-        getOccurrencesAtPosition(fileName: string, pos: number): string;
-        getCompletionsAtPosition(fileName: string, pos: number, isMemberCompletion: bool);
-        getImplementorsAtPosition(fileName: string, pos: number): string;
-        getFormattingEditsForRange(fileName: string, minChar: number, limChar: number, options: string): string;
-        getFormattingEditsForDocument(fileName: string, minChar: number, limChar: number, options: string): string;
-        getFormattingEditsOnPaste(fileName: string, minChar: number, limChar: number, options: string): string;
-        getFormattingEditsAfterKeystroke(fileName: string, position: number, key: string, options: string): string;
-        getNavigateToItems(searchValue: string): string;
-        getScriptLexicalStructure(fileName: string): string;
-        getOutliningRegions(fileName: string): string;
-    }
-    interface ILanguageServiceShimHost extends TypeScript.ILogger {
-        getCompilationSettings(): string;
-        getScriptCount(): number;
-        getScriptId(scriptIndex: number): string;
-        getScriptSourceText(scriptIndex: number, start: number, end: number): string;
-        getScriptSourceLength(scriptIndex: number): number;
-        getScriptIsResident(scriptIndex: number): bool;
-        getScriptVersion(scriptIndex: number): number;
-        getScriptEditRangeSinceVersion(scriptIndex: number, scriptVersion: number): string;
-    }
-    class LanguageServiceShimHostAdapter implements ILanguageServiceHost {
-        private shimHost;
-        constructor(shimHost: ILanguageServiceShimHost);
-        public information(): bool;
-        public debug(): bool;
-        public warning(): bool;
-        public error(): bool;
-        public fatal(): bool;
-        public log(s: string): void;
-        public getCompilationSettings(): TypeScript.CompilationSettings;
-        public getScriptCount(): number;
-        public getScriptId(scriptIndex: number): string;
-        public getScriptSourceText(scriptIndex: number, start: number, end: number): string;
-        public getScriptSourceLength(scriptIndex: number): number;
-        public getScriptIsResident(scriptIndex: number): bool;
-        public getScriptVersion(scriptIndex: number): number;
-        public getScriptEditRangeSinceVersion(scriptIndex: number, scriptVersion: number): TypeScript.ScriptEditRange;
-    }
-    function simpleForwardCall(logger: TypeScript.ILogger, actionDescription: string, action: () => any): any;
-    function forwardCall(logger: TypeScript.ILogger, actionDescription: string, action: () => any, throwOnError?: bool): any;
-    function forwardJSONCall(logger: TypeScript.ILogger, actionDescription: string, action: () => any): string;
-    class LanguageServiceShim implements ILanguageServiceShim {
-        public host: ILanguageServiceShimHost;
-        public languageService: ILanguageService;
-        public logger: TypeScript.ILogger;
-        constructor(host: ILanguageServiceShimHost, languageService: ILanguageService);
-        public forwardCall(actionDescription: string, action: () => any, throwOnError?: bool): any;
-        public forwardJSONCall(actionDescription: string, action: () => any): string;
-        public dispose(dummy: any): void;
-        public refresh(throwOnError: bool): void;
-        public getErrors(maxCount: number): string;
-        public getScriptErrors(fileName: string, maxCount: number): string;
-        public getTypeAtPosition(fileName: string, pos: number): string;
-        public getNameOrDottedNameSpan(fileName: string, startPos: number, endPos: number): string;
-        public getBreakpointStatementAtPosition(fileName: string, pos: number): string;
-        public getSignatureAtPosition(fileName: string, pos: number): string;
-        public getDefinitionAtPosition(fileName: string, pos: number): string;
-        public getBraceMatchingAtPosition(fileName: string, pos: number): string;
-        public getSmartIndentAtLineNumber(fileName: string, lineNumber: number, options: string): string;
-        public getReferencesAtPosition(fileName: string, pos: number): string;
-        public getOccurrencesAtPosition(fileName: string, pos: number): string;
-        public getImplementorsAtPosition(fileName: string, pos: number): string;
-        private _referencesToResult(entries);
-        public getCompletionsAtPosition(fileName: string, pos: number, isMemberCompletion: bool): string;
-        public getFormattingEditsForRange(fileName: string, minChar: number, limChar: number, options: string): string;
-        public getFormattingEditsForDocument(fileName: string, minChar: number, limChar: number, options: string): string;
-        public getFormattingEditsOnPaste(fileName: string, minChar: number, limChar: number, options: string): string;
-        public getFormattingEditsAfterKeystroke(fileName: string, position: number, key: string, options: string): string;
-        public getNavigateToItems(searchValue: string): string;
-        public getScriptLexicalStructure(fileName: string): string;
-        public getOutliningRegions(fileName: string): string;
-        public logAST(fileName: string): void;
-        public logSyntaxAST(fileName: string): void;
-        public getEmitOutput(fileName: string): string;
-        private _navigateToItemsToString(items);
-    }
-    class ClassifierShim {
+    class Classifier {
         public host: IClassifierHost;
-        public classifier: Classifier;
         constructor(host: IClassifierHost);
-        public getClassificationsForLine(text: string, lexState: TypeScript.LexState): string;
+        private scanner;
+        public getClassificationsForLine(text: string, lexState: TypeScript.LexState): ClassificationResult;
     }
-    class CoreServicesShim {
-        public host: ICoreServicesHost;
-        public logger: TypeScript.ILogger;
-        public services: CoreServices;
-        constructor(host: ICoreServicesHost);
-        private forwardCall(actionDescription, action, throwOnError?);
-        private forwardJSONCall(actionDescription, action);
-        public getPreProcessedFileInfo(scriptId: string, sourceText: TypeScript.ISourceText): string;
-        public getDefaultCompilationSettings(): string;
-        public dumpMemory(dummy: any): string;
-        public getMemoryInfo(dummy: any): string;
+    interface IClassifierHost extends TypeScript.ILogger {
+    }
+    class ClassificationResult {
+        public initialState: TypeScript.LexState;
+        public finalLexState: TypeScript.LexState;
+        public entries: ClassificationInfo[];
+        constructor();
+    }
+    class ClassificationInfo {
+        public length: number;
+        public classification: TypeScript.TokenClass;
+        constructor(length: number, classification: TypeScript.TokenClass);
     }
 }
 module Formatting {
@@ -4699,6 +4070,7 @@ module Formatting {
         private RegisterIndentation(indent, sameLineIndent);
         public RegisterIndentation2(position: number, indent: string): void;
         private AdjustStartOffsetIfNeeded(token, node);
+        private IsMultiLineString(token);
     }
 }
 module Formatting {
@@ -5109,39 +4481,6 @@ module Formatting {
         public toString(): string;
     }
 }
-module Services {
-    function copyDataObject(dst: any, src: any): any;
-    function compareDataObjects(dst: any, src: any): bool;
-    class TypeScriptServicesFactory {
-        public createLanguageService(host: ILanguageServiceHost): ILanguageService;
-        public createLanguageServiceShim(host: ILanguageServiceShimHost): ILanguageServiceShim;
-        public createClassifier(host: IClassifierHost): Classifier;
-        public createClassifierShim(host: IClassifierHost): ClassifierShim;
-        public createCoreServices(host: ICoreServicesHost): CoreServices;
-        public createCoreServicesShim(host: ICoreServicesHost): CoreServicesShim;
-    }
-}
-module Services {
-    class Classifier {
-        public host: IClassifierHost;
-        constructor(host: IClassifierHost);
-        private scanner;
-        public getClassificationsForLine(text: string, lexState: TypeScript.LexState): ClassificationResult;
-    }
-    interface IClassifierHost extends TypeScript.ILogger {
-    }
-    class ClassificationResult {
-        public initialState: TypeScript.LexState;
-        public finalLexState: TypeScript.LexState;
-        public entries: ClassificationInfo[];
-        constructor();
-    }
-    class ClassificationInfo {
-        public length: number;
-        public classification: TypeScript.TokenClass;
-        constructor(length: number, classification: TypeScript.TokenClass);
-    }
-}
 var debugObjectHost;
 module Services {
     interface ICoreServicesHost {
@@ -5155,5 +4494,667 @@ module Services {
         public dumpMemory(): string;
         public getMemoryInfo(): any[];
         public collectGarbage(): void;
+    }
+}
+module Services {
+    class ScriptMap {
+        private map;
+        constructor();
+        public setEntry(id: string, isResident: bool, version: number): void;
+        public getEntry(id: string): ScriptMapEntry;
+    }
+    class ScriptMapEntry {
+        public isResident: bool;
+        public version: number;
+        constructor(isResident: bool, version: number);
+    }
+    class HostCacheEntry {
+        private host;
+        public hostUnitIndex: number;
+        public id: string;
+        public version: number;
+        public isResident: bool;
+        private _cachedSourceText;
+        private _sourceText;
+        constructor(host: ILanguageServiceHost, hostUnitIndex: number, id: string, version: number, isResident: bool);
+        public getSourceText(cached: bool): TypeScript.ISourceText;
+    }
+    class HostCache {
+        public host: ILanguageServiceHost;
+        private map;
+        private array;
+        constructor(host: ILanguageServiceHost);
+        private init();
+        public count(): number;
+        public getUnitIndex(scriptId: string): number;
+        public getVersion(scriptIndex: number): number;
+        public getIsResident(scriptIndex: number): bool;
+        public getScriptId(scriptIndex: number): string;
+        public getSourceText(scriptIndex: number, cached?: bool): TypeScript.ISourceText;
+    }
+    class CompilerCache {
+        public compiler: TypeScript.TypeScriptCompiler;
+        private map;
+        constructor(compiler: TypeScript.TypeScriptCompiler);
+        private init();
+        public getUnitIndex(scriptId: string): number;
+    }
+    class UnitErrors {
+        public parseErrors: TypeScript.ErrorEntry[];
+        public typeCheckErrors: TypeScript.ErrorEntry[];
+        constructor();
+    }
+    class CompilerErrorCollector {
+        public logger: TypeScript.ILogger;
+        private parseMode;
+        public fileMap: UnitErrors[];
+        constructor(logger: TypeScript.ILogger);
+        public startParsing(unitIndex: number): void;
+        public startTypeChecking(): void;
+        public reportError(pos: number, len: number, message: string, unitIndex: number): void;
+    }
+    class CompilerState {
+        public host: ILanguageServiceHost;
+        public logger: TypeScript.ILogger;
+        private compiler;
+        private errorCollector;
+        private unitIndexMap;
+        private scriptMap;
+        private hostCache;
+        private compilerCache;
+        private symbolTree;
+        private compilationSettings;
+        constructor(host: ILanguageServiceHost);
+        public getCompilationSettings(): TypeScript.CompilationSettings;
+        private setUnitMapping(unitIndex, hostUnitIndex);
+        private setUnitIndexMapping(unitIndex, hostUnitIndex);
+        private onTypeCheckStarting();
+        public getSymbolTree(): ISymbolTree;
+        public mapToHostUnitIndex(unitIndex: number): number;
+        public anyType(): TypeScript.Type;
+        public getScriptCount(): number;
+        public getScript(index: number): TypeScript.Script;
+        public getScripts(): TypeScript.Script[];
+        public getUnitIndex(fileName: string): number;
+        public getScriptVersion(fileName: string): number;
+        private addCompilerUnit(compiler, hostUnitIndex);
+        private updateCompilerUnit(compiler, hostUnitIndex, unitIndex);
+        private attemptIncrementalUpdateUnit(scriptId);
+        private getHostCompilationSettings();
+        private createCompiler();
+        public minimalRefresh(): void;
+        public refresh(throwOnError?: bool): void;
+        private fullRefresh();
+        private partialRefresh();
+        private attemptIncrementalTypeCheck(updateResult);
+        private applyUpdateResult(updateResult);
+        public getScriptAST(fileName: string): TypeScript.Script;
+        public getLineMap(fileName: string): number[];
+        public getScopeEntries(enclosingScopeContext: TypeScript.EnclosingScopeContext, getPrettyTypeName?: bool): TypeScript.ScopeEntry[];
+        public getErrorEntries(maxCount: number, filter: (unitIndex: number, error: TypeScript.ErrorEntry) => bool): TypeScript.ErrorEntry[];
+        public cleanASTTypesForReTypeCheck(ast: TypeScript.AST): void;
+        public getScriptEditRange(script: TypeScript.Script): TypeScript.ScriptEditRange;
+        public getScriptEditRangeSinceVersion(fileName: string, lastKnownVersion: number): TypeScript.ScriptEditRange;
+        public getSourceText(script: TypeScript.Script, cached?: bool): TypeScript.ISourceText;
+        public getSourceText2(fileName: string, cached?: bool): TypeScript.ISourceText;
+        public getScriptSyntaxAST(fileName: string): ScriptSyntaxAST;
+        public getEmitOutput(fileName: string): IOutputFile[];
+    }
+}
+module Services {
+    class ScriptSyntaxAST {
+        private logger;
+        private script;
+        private sourceText;
+        constructor(logger: TypeScript.ILogger, script: TypeScript.Script, sourceText: TypeScript.ISourceText);
+        public getLogger(): TypeScript.ILogger;
+        public getScriptId(): string;
+        public getScript(): TypeScript.Script;
+        public getSourceText(): TypeScript.ISourceText;
+        public getTokenStream(minChar?: number, limChar?: number): TokenStream;
+        public getTokenizationOffset(position: number): number;
+        public getAstPathToPosition(pos: number, options?: TypeScript.GetAstPathOptions): TypeScript.AstPath;
+    }
+    class TokenStream {
+        private scanner;
+        private offset;
+        private currentToken;
+        constructor(scanner: TypeScript.Scanner, offset: number);
+        public moveNext(): bool;
+        public sourceTextOffset(): number;
+        public tokenId(): TypeScript.TokenID;
+        public tokenStartPos(): number;
+        public tokenEndPos(): number;
+    }
+    class TokenStreamHelper {
+        public stream: TokenStream;
+        constructor(stream: TokenStream);
+        public moveNext(): bool;
+        public expect(token: TypeScript.TokenID): bool;
+        public skipToOffset(pos: number): bool;
+        public tokenId(): TypeScript.TokenID;
+        public tokenStartPos(): number;
+        public tokenEndPos(): number;
+    }
+}
+module Services {
+    class BraceMatchingManager {
+        private scriptSyntaxAST;
+        constructor(scriptSyntaxAST: ScriptSyntaxAST);
+        public getBraceMatchingAtPosition(position: number): TextRange[];
+        public getMatchingBraceForward(position: number, openToken: TypeScript.TokenID, closeToken: TypeScript.TokenID): number;
+        public getMatchingBraceBackward(position: number, closeToken: TypeScript.TokenID, openToken: TypeScript.TokenID): number;
+    }
+}
+module Services {
+    class SymbolSet {
+        private table;
+        constructor();
+        private isSymbolArraySet(value);
+        public add(sym: TypeScript.Symbol): bool;
+        public contains(sym: TypeScript.Symbol): bool;
+        public isEmpty(): bool;
+        public getAll(): TypeScript.Symbol[];
+        public forEach(callback: (x: TypeScript.Symbol) => void): void;
+        public union(other: SymbolSet): void;
+    }
+}
+module Services {
+    interface ISymbolTree {
+        findBaseTypesTransitiveClosure(sym: TypeScript.TypeSymbol): SymbolSet;
+        findDerivedTypesTransitiveClosure(sym: TypeScript.TypeSymbol): SymbolSet;
+        getOverride(container: TypeScript.TypeSymbol, memberSym: TypeScript.Symbol): TypeScript.Symbol;
+        isClass(sym: TypeScript.Symbol): bool;
+        isInterface(sym: TypeScript.Symbol): bool;
+        isMethod(sym: TypeScript.Symbol): bool;
+        isField(sym: TypeScript.Symbol): bool;
+    }
+    interface ISymbolTreeHost {
+        getScripts(): TypeScript.Script[];
+    }
+    class SymbolTree implements ISymbolTree {
+        public host: ISymbolTreeHost;
+        private _allTypes;
+        constructor(host: ISymbolTreeHost);
+        public findBaseTypesTransitiveClosure(sym: TypeScript.TypeSymbol): SymbolSet;
+        public findDerivedTypesTransitiveClosure(sym: TypeScript.TypeSymbol): SymbolSet;
+        public getOverride(container: TypeScript.TypeSymbol, memberSym: TypeScript.Symbol): TypeScript.Symbol;
+        public getAllTypes(): TypeScript.Symbol[];
+        public findBaseTypes(closure: SymbolSet, lastSet: SymbolSet): SymbolSet;
+        public findDerivedTypes(alreadyFound: SymbolSet, baseSymbols: SymbolSet): SymbolSet;
+        public addBaseTypes(closure: SymbolSet, syms: SymbolSet, bases: TypeScript.Type[]): void;
+        private isDefinition(sym);
+        public isClass(sym: TypeScript.Symbol): bool;
+        public isInterface(sym: TypeScript.Symbol): bool;
+        public isMethod(sym: TypeScript.Symbol): bool;
+        public isField(sym: TypeScript.Symbol): bool;
+        public isStatic(sym: TypeScript.Symbol): bool;
+    }
+}
+module Services {
+    class OverridesCollector {
+        public symbolTree: ISymbolTree;
+        constructor(symbolTree: ISymbolTree);
+        public findMemberOverrides(memberSym: TypeScript.Symbol): SymbolSet;
+        public findImplementors(sym: TypeScript.Symbol): SymbolSet;
+        private findMemberOverridesImpl(memberSym, lookInBases, lookInDerived);
+    }
+}
+module Services {
+    interface ILanguageServiceShim {
+        host: ILanguageServiceShimHost;
+        languageService: ILanguageService;
+        logger: TypeScript.ILogger;
+        dispose(dummy: any): void;
+        refresh(throwOnError: bool): void;
+        logAST(fileName: string): void;
+        logSyntaxAST(fileName: string): void;
+        getErrors(maxCount: number): string;
+        getScriptErrors(fileName: string, maxCount: number): string;
+        getTypeAtPosition(fileName: string, pos: number): string;
+        getSignatureAtPosition(fileName: string, pos: number): string;
+        getDefinitionAtPosition(fileName: string, pos: number): string;
+        getBraceMatchingAtPosition(fileName: string, pos: number): string;
+        getSmartIndentAtLineNumber(fileName: string, lineNumber: number, options: string): string;
+        getReferencesAtPosition(fileName: string, pos: number): string;
+        getOccurrencesAtPosition(fileName: string, pos: number): string;
+        getCompletionsAtPosition(fileName: string, pos: number, isMemberCompletion: bool);
+        getImplementorsAtPosition(fileName: string, pos: number): string;
+        getFormattingEditsForRange(fileName: string, minChar: number, limChar: number, options: string): string;
+        getFormattingEditsForDocument(fileName: string, minChar: number, limChar: number, options: string): string;
+        getFormattingEditsOnPaste(fileName: string, minChar: number, limChar: number, options: string): string;
+        getFormattingEditsAfterKeystroke(fileName: string, position: number, key: string, options: string): string;
+        getNavigateToItems(searchValue: string): string;
+        getScriptLexicalStructure(fileName: string): string;
+        getOutliningRegions(fileName: string): string;
+    }
+    interface ILanguageServiceShimHost extends TypeScript.ILogger {
+        getCompilationSettings(): string;
+        getScriptCount(): number;
+        getScriptId(scriptIndex: number): string;
+        getScriptSourceText(scriptIndex: number, start: number, end: number): string;
+        getScriptSourceLength(scriptIndex: number): number;
+        getScriptIsResident(scriptIndex: number): bool;
+        getScriptVersion(scriptIndex: number): number;
+        getScriptEditRangeSinceVersion(scriptIndex: number, scriptVersion: number): string;
+    }
+    class LanguageServiceShimHostAdapter implements ILanguageServiceHost {
+        private shimHost;
+        constructor(shimHost: ILanguageServiceShimHost);
+        public information(): bool;
+        public debug(): bool;
+        public warning(): bool;
+        public error(): bool;
+        public fatal(): bool;
+        public log(s: string): void;
+        public getCompilationSettings(): TypeScript.CompilationSettings;
+        public getScriptCount(): number;
+        public getScriptId(scriptIndex: number): string;
+        public getScriptSourceText(scriptIndex: number, start: number, end: number): string;
+        public getScriptSourceLength(scriptIndex: number): number;
+        public getScriptIsResident(scriptIndex: number): bool;
+        public getScriptVersion(scriptIndex: number): number;
+        public getScriptEditRangeSinceVersion(scriptIndex: number, scriptVersion: number): TypeScript.ScriptEditRange;
+    }
+    function simpleForwardCall(logger: TypeScript.ILogger, actionDescription: string, action: () => any): any;
+    function forwardCall(logger: TypeScript.ILogger, actionDescription: string, action: () => any, throwOnError?: bool): any;
+    function forwardJSONCall(logger: TypeScript.ILogger, actionDescription: string, action: () => any): string;
+    class LanguageServiceShim implements ILanguageServiceShim {
+        public host: ILanguageServiceShimHost;
+        public languageService: ILanguageService;
+        public logger: TypeScript.ILogger;
+        constructor(host: ILanguageServiceShimHost, languageService: ILanguageService);
+        public forwardCall(actionDescription: string, action: () => any, throwOnError?: bool): any;
+        public forwardJSONCall(actionDescription: string, action: () => any): string;
+        public dispose(dummy: any): void;
+        public refresh(throwOnError: bool): void;
+        public getErrors(maxCount: number): string;
+        public getScriptErrors(fileName: string, maxCount: number): string;
+        public getTypeAtPosition(fileName: string, pos: number): string;
+        public getNameOrDottedNameSpan(fileName: string, startPos: number, endPos: number): string;
+        public getBreakpointStatementAtPosition(fileName: string, pos: number): string;
+        public getSignatureAtPosition(fileName: string, pos: number): string;
+        public getDefinitionAtPosition(fileName: string, pos: number): string;
+        public getBraceMatchingAtPosition(fileName: string, pos: number): string;
+        public getSmartIndentAtLineNumber(fileName: string, lineNumber: number, options: string): string;
+        public getReferencesAtPosition(fileName: string, pos: number): string;
+        public getOccurrencesAtPosition(fileName: string, pos: number): string;
+        public getImplementorsAtPosition(fileName: string, pos: number): string;
+        private _referencesToResult(entries);
+        public getCompletionsAtPosition(fileName: string, pos: number, isMemberCompletion: bool): string;
+        public getFormattingEditsForRange(fileName: string, minChar: number, limChar: number, options: string): string;
+        public getFormattingEditsForDocument(fileName: string, minChar: number, limChar: number, options: string): string;
+        public getFormattingEditsOnPaste(fileName: string, minChar: number, limChar: number, options: string): string;
+        public getFormattingEditsAfterKeystroke(fileName: string, position: number, key: string, options: string): string;
+        public getNavigateToItems(searchValue: string): string;
+        public getScriptLexicalStructure(fileName: string): string;
+        public getOutliningRegions(fileName: string): string;
+        public logAST(fileName: string): void;
+        public logSyntaxAST(fileName: string): void;
+        public getEmitOutput(fileName: string): string;
+        private _navigateToItemsToString(items);
+    }
+    class ClassifierShim {
+        public host: IClassifierHost;
+        public classifier: Classifier;
+        constructor(host: IClassifierHost);
+        public getClassificationsForLine(text: string, lexState: TypeScript.LexState): string;
+    }
+    class CoreServicesShim {
+        public host: ICoreServicesHost;
+        public logger: TypeScript.ILogger;
+        public services: CoreServices;
+        constructor(host: ICoreServicesHost);
+        private forwardCall(actionDescription, action, throwOnError?);
+        private forwardJSONCall(actionDescription, action);
+        public getPreProcessedFileInfo(scriptId: string, sourceText: TypeScript.ISourceText): string;
+        public getDefaultCompilationSettings(): string;
+        public dumpMemory(dummy: any): string;
+        public getMemoryInfo(dummy: any): string;
+    }
+}
+module Services {
+    function copyDataObject(dst: any, src: any): any;
+    function compareDataObjects(dst: any, src: any): bool;
+    class TypeScriptServicesFactory {
+        public createLanguageService(host: ILanguageServiceHost): ILanguageService;
+        public createLanguageServiceShim(host: ILanguageServiceShimHost): ILanguageServiceShim;
+        public createClassifier(host: IClassifierHost): Classifier;
+        public createClassifierShim(host: IClassifierHost): ClassifierShim;
+        public createCoreServices(host: ICoreServicesHost): CoreServices;
+        public createCoreServicesShim(host: ICoreServicesHost): CoreServicesShim;
+    }
+}
+module Services {
+    interface ILanguageService {
+        host: ILanguageServiceHost;
+        refresh(): void;
+        logAST(fileName: string): void;
+        logSyntaxAST(fileName: string): void;
+        getErrors(maxCount: number): TypeScript.ErrorEntry[];
+        getScriptAST(fileName: string): TypeScript.Script;
+        getScriptErrors(fileName: string, maxCount: number): TypeScript.ErrorEntry[];
+        getCompletionsAtPosition(fileName: string, pos: number, isMemberCompletion: bool): CompletionInfo;
+        getTypeAtPosition(fileName: string, pos: number): TypeInfo;
+        getNameOrDottedNameSpan(fileName: string, startPos: number, endPos: number): SpanInfo;
+        getBreakpointStatementAtPosition(fileName: string, pos: number): SpanInfo;
+        getSignatureAtPosition(fileName: string, pos: number): SignatureInfo;
+        getDefinitionAtPosition(fileName: string, pos: number): DefinitionInfo;
+        getReferencesAtPosition(fileName: string, pos: number): ReferenceEntry[];
+        getOccurrencesAtPosition(fileName: string, pos: number): ReferenceEntry[];
+        getImplementorsAtPosition(fileName: string, pos: number): ReferenceEntry[];
+        getNavigateToItems(searchValue: string): NavigateToItem[];
+        getScriptLexicalStructure(fileName: string): NavigateToItem[];
+        getOutliningRegions(fileName: string): NavigateToItem[];
+        getScriptSyntaxAST(fileName: string): ScriptSyntaxAST;
+        getFormattingEditsForRange(fileName: string, minChar: number, limChar: number, options: FormatCodeOptions): TextEdit[];
+        getFormattingEditsForDocument(fileName: string, minChar: number, limChar: number, options: FormatCodeOptions): TextEdit[];
+        getFormattingEditsOnPaste(fileName: string, minChar: number, limChar: number, options: FormatCodeOptions): TextEdit[];
+        getFormattingEditsAfterKeystroke(fileName: string, position: number, key: string, options: FormatCodeOptions): TextEdit[];
+        getBraceMatchingAtPosition(fileName: string, position: number): TextRange[];
+        getSmartIndentAtLineNumber(fileName: string, lineNumber: number, options: EditorOptions): number;
+        getAstPathToPosition(script: TypeScript.AST, pos: number, options: TypeScript.GetAstPathOptions): TypeScript.AstPath;
+        getIdentifierPathToPosition(script: TypeScript.AST, pos: number): TypeScript.AstPath;
+        getSymbolAtPosition(script: TypeScript.AST, pos: number): TypeScript.Symbol;
+        getSymbolTree(): ISymbolTree;
+        getEmitOutput(fileName: string): IOutputFile[];
+    }
+    interface ILanguageServiceHost extends TypeScript.ILogger {
+        getCompilationSettings(): TypeScript.CompilationSettings;
+        getScriptCount(): number;
+        getScriptId(scriptIndex: number): string;
+        getScriptSourceText(scriptIndex: number, start: number, end: number): string;
+        getScriptSourceLength(scriptIndex: number): number;
+        getScriptIsResident(scriptIndex: number): bool;
+        getScriptVersion(scriptIndex: number): number;
+        getScriptEditRangeSinceVersion(scriptIndex: number, scriptVersion: number): TypeScript.ScriptEditRange;
+    }
+    function logInternalError(logger: TypeScript.ILogger, err: Error): void;
+    class SourceTextAdapter implements TypeScript.ISourceText {
+        private host;
+        private scriptIndex;
+        constructor(host: ILanguageServiceHost, scriptIndex: number);
+        public getText(start: number, end: number): string;
+        public getLength(): number;
+    }
+    class CachedSourceTextAdapter implements TypeScript.ISourceText {
+        private length;
+        private text;
+        constructor(host: ILanguageServiceHost, scriptIndex: number);
+        public getText(start: number, end: number): string;
+        public getLength(): number;
+    }
+    class SourceTextRange implements TypeScript.ISourceText {
+        private sourceText;
+        private minChar;
+        private limChar;
+        constructor(sourceText: TypeScript.ISourceText, minChar: number, limChar: number);
+        public getText(start: number, end: number): string;
+        public getLength(): number;
+    }
+    class ReferenceEntry {
+        public unitIndex: number;
+        public ast: TypeScript.AST;
+        public isWriteAccess: bool;
+        constructor(unitIndex: number, ast: TypeScript.AST, isWriteAccess: bool);
+        public getHashCode(): number;
+        public equals(other: ReferenceEntry): bool;
+    }
+    class ReferenceEntrySet {
+        private hashTable;
+        private entries;
+        constructor();
+        public getEntries(): ReferenceEntry[];
+        public addAst(unitIndex: number, ast: TypeScript.AST, isWriteAccess: bool): void;
+        public addSymbol(sym: TypeScript.Symbol): void;
+    }
+    class NavigateToItem {
+        public name: string;
+        public kind: string;
+        public kindModifiers: string;
+        public matchKind: string;
+        public unitIndex: number;
+        public minChar: number;
+        public limChar: number;
+        public containerName: string;
+        public containerKind: string;
+    }
+    class NavigateToContext {
+        public options: TypeScript.AstWalkOptions;
+        public unitIndex: number;
+        public containerSymbols: TypeScript.Symbol[];
+        public containerKinds: string[];
+        public containerASTs: TypeScript.AST[];
+        public path: TypeScript.AstPath;
+        public result: NavigateToItem[];
+    }
+    class TextRange {
+        public minChar: number;
+        public limChar: number;
+        constructor(minChar: number, limChar: number);
+    }
+    class TextEdit {
+        public minChar: number;
+        public limChar: number;
+        public text: string;
+        constructor(minChar: number, limChar: number, text: string);
+        static createInsert(pos: number, text: string): TextEdit;
+        static createDelete(minChar: number, limChar: number): TextEdit;
+        static createReplace(minChar: number, limChar: number, text: string): TextEdit;
+    }
+    class EditorOptions {
+        public IndentSize: number;
+        public TabSize: number;
+        public NewLineCharacter: string;
+        public ConvertTabsToSpaces: bool;
+    }
+    class FormatCodeOptions extends EditorOptions {
+        public InsertSpaceAfterCommaDelimiter: bool;
+        public InsertSpaceAfterSemicolonInForStatements: bool;
+        public InsertSpaceBeforeAndAfterBinaryOperators: bool;
+        public InsertSpaceAfterKeywordsInControlFlowStatements: bool;
+        public InsertSpaceAfterFunctionKeywordForAnonymousFunctions: bool;
+        public InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: bool;
+        public PlaceOpenBraceOnNewLineForFunctions: bool;
+        public PlaceOpenBraceOnNewLineForControlBlocks: bool;
+    }
+    class GetReferencesContext {
+        public scope: number[];
+    }
+    class DefinitionInfo {
+        public unitIndex: number;
+        public minChar: number;
+        public limChar: number;
+        public kind: string;
+        public name: string;
+        public containerKind: string;
+        public containerName: string;
+        constructor(unitIndex: number, minChar: number, limChar: number, kind: string, name: string, containerKind: string, containerName: string);
+    }
+    class TypeInfo {
+        public memberName: TypeScript.MemberName;
+        public docComment: string;
+        public fullSymbolName: string;
+        public kind: string;
+        public minChar: number;
+        public limChar: number;
+        constructor(memberName: TypeScript.MemberName, docComment: string, fullSymbolName: string, kind: string, minChar: number, limChar: number);
+    }
+    class SpanInfo {
+        public minChar: number;
+        public limChar: number;
+        public text: string;
+        constructor(minChar: number, limChar: number, text?: string);
+    }
+    class SignatureInfo {
+        public actual: ActualSignatureInfo;
+        public formal: FormalSignatureInfo;
+        public activeFormal: number;
+    }
+    class FormalSignatureInfo {
+        public name: string;
+        public isNew: bool;
+        public openParen: string;
+        public closeParen: string;
+        public docComment: string;
+        public signatureGroup: FormalSignatureItemInfo[];
+    }
+    class FormalSignatureItemInfo {
+        public parameters: FormalParameterInfo[];
+        public returnType: string;
+        public docComment: string;
+    }
+    class FormalParameterInfo {
+        public name: string;
+        public type: string;
+        public isOptional: bool;
+        public isVariable: bool;
+        public docComment: string;
+    }
+    class ActualSignatureInfo {
+        public openParenMinChar: number;
+        public closeParenLimChar: number;
+        public currentParameter: number;
+        public parameters: ActualParameterInfo[];
+    }
+    class ActualParameterInfo {
+        public minChar: number;
+        public limChar: number;
+    }
+    class CompletionInfo {
+        public maybeInaccurate: bool;
+        public isMemberCompletion: bool;
+        public entries: CompletionEntry[];
+    }
+    class CompletionEntry {
+        public name: string;
+        public type: string;
+        public kind: string;
+        public kindModifiers: string;
+        public fullSymbolName: string;
+        public docComment: string;
+    }
+    class ScriptElementKind {
+        static unknown: string;
+        static keyword: string;
+        static scriptElement: string;
+        static moduleElement: string;
+        static classElement: string;
+        static interfaceElement: string;
+        static enumElement: string;
+        static variableElement: string;
+        static localVariableElement: string;
+        static functionElement: string;
+        static localFunctionElement: string;
+        static memberFunctionElement: string;
+        static memberGetAccessorElement: string;
+        static memberSetAccessorElement: string;
+        static memberVariableElement: string;
+        static constructorImplementationElement: string;
+        static callSignatureElement: string;
+        static indexSignatureElement: string;
+        static constructSignatureElement: string;
+        static parameterElement: string;
+    }
+    class ScriptElementKindModifier {
+        static none: string;
+        static publicMemberModifier: string;
+        static privateMemberModifier: string;
+        static exportedModifier: string;
+        static ambientModifier: string;
+        static staticModifier: string;
+    }
+    class MatchKind {
+        static none: string;
+        static exact: string;
+        static subString: string;
+        static prefix: string;
+    }
+    class ScriptSyntaxASTState {
+        public version: number;
+        public syntaxAST: ScriptSyntaxAST;
+        public fileName: string;
+        constructor();
+    }
+    interface IOutputFile {
+        name: string;
+        useUTF8encoding: bool;
+        text: string;
+    }
+    interface TypeInfoAtPosition {
+        spanInfo: SpanInfo;
+        ast: TypeScript.AST;
+        symbol?: TypeScript.Symbol;
+        callSignature?: TypeScript.Signature;
+        isNew: bool;
+    }
+    class LanguageService implements ILanguageService {
+        public host: ILanguageServiceHost;
+        public logger: TypeScript.ILogger;
+        private compilerState;
+        private syntaxASTState;
+        private formattingRulesProvider;
+        constructor(host: ILanguageServiceHost);
+        public refresh(): void;
+        public minimalRefresh(): void;
+        public getSymbolTree(): ISymbolTree;
+        public getScriptSyntaxAST(fileName: string): ScriptSyntaxAST;
+        private _getScriptSyntaxAST(fileName);
+        private attemptIncrementalSyntaxAST(syntaxASTState);
+        public getScriptAST(fileName: string): TypeScript.Script;
+        private getTypeInfo(type, symbol, typeInfoAtPosition, enclosingScopeContext);
+        public getTypeAtPosition(fileName: string, pos: number): TypeInfo;
+        public getNameOrDottedNameSpan(fileName: string, startPos: number, endPos: number): SpanInfo;
+        private getBreakpointInStatement(pos, astSpan, verifyASTPos, existingResult, forceFirstStatement, isAst);
+        public getBreakpointStatementAtPosition(fileName: string, pos: number): SpanInfo;
+        public getSignatureAtPosition(fileName: string, pos: number): SignatureInfo;
+        public getDefinitionAtPosition(fileName: string, pos: number): DefinitionInfo;
+        public getSmartIndentAtLineNumber(fileName: string, lineNumber: number, options: EditorOptions): number;
+        public getBraceMatchingAtPosition(fileName: string, position: number): TextRange[];
+        private getFullNameOfSymbol(symbol, enclosingScopeContext);
+        private getSymbolElementKind(sym, scopeSymbol?, useConstructorAsClass?);
+        private getSymbolElementKindModifiers(sym);
+        private getSymbolContainerKind(sym);
+        private getSymbolContainerName(sym);
+        public getReferencesAtPosition(fileName: string, pos: number): ReferenceEntry[];
+        public getOccurrencesAtPosition(fileName: string, pos: number): ReferenceEntry[];
+        public getImplementorsAtPosition(fileName: string, position: number): ReferenceEntry[];
+        private getReferencesForSourceLocation(context, unitIndex, position);
+        private isWriteAccess(parent, cur);
+        private getReferencesForSymbol(context, sym);
+        private mapUnitIndexInReferenceEntrySet(references);
+        public getCompletionsAtPosition(fileName: string, pos: number, isMemberCompletion: bool): CompletionInfo;
+        private getQuickCompletionsAtPosition(fileName, pos, isMemberCompletion);
+        private getAccurateCompletionsAtPosition(fileName, pos, isMemberCompletion);
+        private getDocCommentOfSymbol(symbol);
+        private getCompletionsFromEnclosingScopeContext(enclosingScopeContext, result);
+        private isObjectLiteralMemberNameCompletion(enclosingScopeContext);
+        private isCompletionListBlocker(path);
+        private isCompletionListTriggerPoint(path);
+        public getFormattingEditsForRange(fileName: string, minChar: number, limChar: number, options: FormatCodeOptions): TextEdit[];
+        public getFormattingEditsForDocument(fileName: string, minChar: number, limChar: number, options: FormatCodeOptions): TextEdit[];
+        public getFormattingEditsOnPaste(fileName: string, minChar: number, limChar: number, options: FormatCodeOptions): TextEdit[];
+        public getFormattingEditsAfterKeystroke(fileName: string, position: number, key: string, options: FormatCodeOptions): TextEdit[];
+        public getNavigateToItems(searchValue: string): NavigateToItem[];
+        public getScriptLexicalStructure(fileName: string): NavigateToItem[];
+        public getOutliningRegions(fileName: string): NavigateToItem[];
+        public logAST(fileName: string): void;
+        public logSyntaxAST(fileName: string): void;
+        public getErrors(maxCount: number): TypeScript.ErrorEntry[];
+        public getScriptErrors(fileName: string, maxCount: number): TypeScript.ErrorEntry[];
+        public getEmitOutput(fileName: string): IOutputFile[];
+        private getTypeInfoAtPosition(pos, script, constructorIsValid?);
+        private getReferencesToField(context, symbolSet, match);
+        private getReferencesToType(context, symbolSet, match);
+        private getReferencesToParameter(context, symbolSet, match);
+        private getReferencesToVariable(context, symbolSet, match);
+        private getReferencesToSymbolSet(context, symbolSet, match);
+        private getDeclNodeElementKindModifiers(ast);
+        private getASTItems(unitIndex, ast, match, findMinChar?, findLimChar?);
+        public getAstPathToPosition(script: TypeScript.AST, pos: number, options?: TypeScript.GetAstPathOptions): TypeScript.AstPath;
+        public getIdentifierPathToPosition(script: TypeScript.AST, pos: number): TypeScript.AstPath;
+        public getSymbolAtPosition(script: TypeScript.AST, pos: number): TypeScript.Symbol;
+        private logFormatCodeOptions(options);
+        private logEditResults(syntaxAST, result);
     }
 }

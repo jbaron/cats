@@ -22,8 +22,12 @@ module Cats.Menu {
 
         private ctxmenu;
         private lastEvent: MouseEvent;
+        private initialized = false;
 
         constructor(private editor: Cats.TextEditor) {
+        }
+
+        init() {
             // Create a new menu
             this.ctxmenu = new GUI.Menu();
             var getCmd = Cats.Commands.getMenuCommand;
@@ -33,16 +37,15 @@ module Cats.Menu {
             this.ctxmenu.append(getCmd(CMDS.navigate_declaration));
             this.ctxmenu.append(getCmd(CMDS.navigate_references));
             this.ctxmenu.append(getCmd(CMDS.navigate_occurences));
-            this.ctxmenu.append(getCmd(CMDS.navigate_implementors));
-
+            this.ctxmenu.append(getCmd(CMDS.navigate_implementors));            
         }
 
         /**
          * Bind this context menu to an HTML element
          */ 
         bindTo(elem: HTMLElement) {
-
             elem.oncontextmenu = (ev: any) => {
+                if (! this.initialized) this.init();
                 ev.preventDefault();
                 if (this.editor.activeSession.mode === "typescript") {
                     this.lastEvent = ev;

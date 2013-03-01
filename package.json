@@ -2,7 +2,7 @@
   "name": "CATS",
   "main": "static/index.html",
   "description" : "TypeScript Editor",
-  "version" : "0.7.0",
+  "version" : "0.7.5",
   "window": { 
      "icon":"static/img/logo.png",	
      "toolbar": false,  
