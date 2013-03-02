@@ -101,6 +101,7 @@ module Ace {
         resize(force:bool);
 		keyBinding;
 		clearSelection();
+        centerSelection();
         onTextInput:Function;
         getSelectionRange(): Range;
 		remove(direction:string);

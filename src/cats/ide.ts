@@ -21,9 +21,7 @@
 ///<reference path='views/navigator.ts'/>
 ///<reference path='views/compilationresults.ts'/>
 
-
 module Cats {
-
 
     export interface IDEViews {
         navigation: View.Navigator;
@@ -35,7 +33,6 @@ module Cats {
         taskList: IView;
         editor: IView;
     }
-
 
     export class Ide extends ObservableImpl {
 
@@ -99,7 +96,6 @@ module Cats {
                 this.setFontSize(c.fontSize);
             }, 2000);
         }
-
 
         /**
          * Set the font size of the IDE

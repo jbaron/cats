@@ -51,7 +51,7 @@ module Cats {
         /**
          * Load the configuration for a certain project
          */
-        static load(projectRoot: string): Configuration {
+        static load(projectRoot: string): ProjectConfiguration {
             var fileName = ConfigLoader.getFileName(projectRoot);
             try {
                 var content = OS.File.readTextFile(fileName);
@@ -65,8 +65,9 @@ module Cats {
         /**
          * Load the default configuration for a project
          */
-        private static loadDefault():Configuration {
-            var result = {
+        private static loadDefault():ProjectConfiguration {
+            var result:ProjectConfiguration = {
+                version: "0.7",
                 main: "index.html",
                 sourcePath: null, //If not set, the whole project directory is searched for source files
                 buildOnSave: false,

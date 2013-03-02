@@ -53,11 +53,7 @@ module Cats.View {
                     var result: OutlineTreeElement[] = [];
                     for (var i = 0; i < data.length; i++) {
                         var o = data[i];
-                        
-                        // @BUG in TS, top level module has wrong name
-                        if ((o.kind === "module") && (o.containerKind==="")) {
-                            o.name += ".ts";
-                        }
+                                                
                         if ((o.containerKind === kind) && (o.containerName === name)) {
                             var fullName = o.name;
                             if (name) fullName = name + "." + fullName;

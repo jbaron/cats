@@ -35,7 +35,7 @@ module Cats {
         // The singleton TSWorker handler instance
         iSense: ISenseHandler;
         JSSense: ISenseHandler;
-        config: Configuration;
+        config: ProjectConfiguration;
 
 
         // Set the project to a new directory and make sure 

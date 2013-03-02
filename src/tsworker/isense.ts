@@ -15,7 +15,6 @@
 
 
 ///<reference path='harness.ts'/>
-///<reference path='../typings/ace.d.ts'/>
 ///<reference path='../typings/cats.d.ts'/>
 
 importScripts("../static/js/typescript.js")
@@ -93,7 +92,7 @@ module Cats.TSWorker {
         }
       
 
-        getDefinitionAtPosition(fileName: string, pos: Ace.Position):Cats.FileRange {
+        getDefinitionAtPosition(fileName: string, pos: Cats.Position):Cats.FileRange {
             var chars = this.getPositionFromCursor(fileName, pos);
             var info = this.ls.getDefinitionAtPosition(fileName, chars);        
             if (info) {
@@ -173,12 +172,15 @@ module Cats.TSWorker {
         }
 
 
-            
-        getScriptContent(id: string): string {
+        /**
+         * Get the content of a script
+         * @param name Script name
+         */ 
+        getScriptContent(name: string): string {
             var scripts = this.lsHost.scripts;
             var i = scripts.length;
             while (i--) {
-                if (scripts[i].name === id) return scripts[i].content;
+                if (scripts[i].name === name) return scripts[i].content;
             }
         }
      
@@ -249,7 +251,7 @@ module Cats.TSWorker {
         }
        
         // Get the chars offset based on the Ace position
-        private getPositionFromCursor(fileName: string, cursor: Ace.Position): number {
+        private getPositionFromCursor(fileName: string, cursor: Cats.Position): number {
             var script = this.ls.getScriptAST(fileName);
             var lineMap = script.locationInfo.lineMap;
 
@@ -315,7 +317,7 @@ module Cats.TSWorker {
         }
 
         // generic wrapper for info at a certain position 
-        public getInfoAtPosition(method: string, filename: string, cursor: Ace.Position): Cats.FileRange[] {
+        public getInfoAtPosition(method: string, filename: string, cursor: Cats.Position): Cats.FileRange[] {
             var pos = this.getPositionFromCursor(filename, cursor);
             var result:Cats.FileRange[] = [];
             var entries: Services.ReferenceEntry[] = this.ls[method](filename, pos);
@@ -331,7 +333,7 @@ module Cats.TSWorker {
             return result;
         }
 
-        public autoComplete(cursor: Ace.Position, filename: string): any {
+        public autoComplete(cursor: Cats.Position, filename: string): any {
             var pos = this.getPositionFromCursor(filename, cursor);
             var memberMode = false;
             var source = this.getScriptContent(filename);

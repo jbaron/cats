@@ -107,7 +107,6 @@ module Cats {
             if (this.activeSession === session) {
                 if (pos) {
                     this.moveCursorTo(pos);
-                    this.aceEditor.clearSelection();
                 }
                 return;
             }
@@ -119,7 +118,6 @@ module Cats {
             this.aceEditor.setSession(session.editSession);
             if (pos) {
                 this.moveCursorTo(pos);
-                this.aceEditor.clearSelection();
             }
             this.show();
             this.aceEditor.focus();
@@ -134,6 +132,8 @@ module Cats {
          */ 
         moveCursorTo(pos: Ace.Position = { column: 0, row: 0 }) {
             this.aceEditor.moveCursorToPosition(pos);
+            this.aceEditor.clearSelection();
+            this.aceEditor.centerSelection();
         }
 
         /**

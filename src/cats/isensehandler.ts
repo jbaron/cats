@@ -28,7 +28,7 @@ export class ISenseHandler {
     private registry = {};
 
     constructor() {
-        // Lets create a new worker
+        // Create a new webworker
         this.worker = new Worker("../lib/tsworker.js");
         this.init();
     }
