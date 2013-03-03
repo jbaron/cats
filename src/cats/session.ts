@@ -13,7 +13,6 @@
 // limitations under the License.
 //
 
-
 ///<reference path='project.ts'/>
 ///<reference path='../typings/typescript.d.ts'/>
 
@@ -38,7 +37,11 @@ module Cats {
             ".yaml": "yaml",
             ".yml": "yaml",
             ".xml": "xml",
-            ".json": "json"
+            ".json": "json",
+            ".png" : "binary",
+            ".gif" : "binary",
+            ".jpg" : "binary",
+            ".jpeg" : "binary"
         };
 
         private static DEFAULT_MODE = "text";
@@ -65,7 +68,7 @@ module Cats {
          */
         constructor(public name?: string, content?: string) {
             super("changed");
-            console.log("Creating new session for file " + name + " with content length " + content.length);
+            console.log("Creating new session for file " + name);
             this.mode = this.determineMode(name);
             this.editSession = new EditSession(content, "ace/mode/" + this.mode);
             this.editSession.setNewLineMode("unix");
@@ -84,6 +87,18 @@ module Cats {
             if (! this.name) return "untitled";
             return PATH.basename(this.name);
         }
+
+        getPosition():Position {
+             var c = this.editSession.getSelection().getCursor();
+                                
+            var pos = {
+                row: c.row,
+                column: c.column                    
+            };
+                
+            return pos;    
+        }
+
 
         /**
          * Setup some required listeners

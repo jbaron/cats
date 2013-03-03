@@ -20,7 +20,6 @@
 module Cats {
     
      function initTabBar() {
-
         IDE.tabbar = new UI.Tabbar();        
         IDE.tabbar.setAspect("name", (session: Session) => { return session.shortName });
         IDE.tabbar.setAspect("selected", (session: Session) => { return session === IDE.mainEditor.activeSession });
@@ -55,7 +54,13 @@ module Cats {
         IDE.resultbar.appendTo(IDE.resultbarElem);        
     }
  
-     function resizeOuter(name, state) {
+ 
+    /**
+     * Quickfix to deal with the fact that when the browser window is resized, by default the 
+     * filetree and outline divs are sized 25 pixels to heigh. This is due to the tabs
+     * above them.
+     */ 
+    function resizeOuter(name, state) {
         if (name === "west") {
             $("#filetree, #outlinenav").height(state.innerHeight()-25);
         }
@@ -68,6 +73,9 @@ module Cats {
         }
     }
 
+    /**
+     * Initialize and layout the various views of the IDE 
+     */ 
     export function layoutIDE() {
         
         initTabBar();

@@ -1,7 +1,7 @@
 {
   "name": "CATS",
   "main": "static/index.html",
-  "description" : "TypeScript Editor",
+  "description" : "Code Assistant for TypeScript",
   "version" : "0.7.5",
   "window": { 
      "icon":"static/img/logo.png",	

@@ -16,14 +16,13 @@
 
 /**
  * This module abstracts out the native File IO. Right now it uses Nodejs, but this
- * could be easily changed to another mechanism.
+ * could be easily changed to another implementation like a cloud storage API.
  * 
- * @TODO make this async
+ * @TODO make this using the async Nodejs api's. 
  */  
 module OS.File {
 
         var FS=require("fs");
-
 
         /**
          * Create recursively directories if they don't exist yet

@@ -35,7 +35,7 @@ To install CATS, just follow these steps:
         git clone https://github.com/jbaron/cats.git
 
 2. Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at: [Node-Webkit](https://github.com/rogerwang/node-webkit).
-   Make sure you have at least version 0.4.1 installed since in earlier versions there are some bugs.
+   Make sure you have at least version 0.4.2 installed since in earlier versions there are some bugs.
 
 3. Go to the cats directory and type: 
 
@@ -67,7 +67,7 @@ Building from source
 =====================
 There is normally no need to compile CATS yourself, since all the compiled files are already included. But if you want to play around with it, here are the steps:
 
-1. Make sure you have installed TypeScript 0.8.2 or later
+1. Make sure you have installed TypeScript 0.8.3 or later
 
 2. Go to the cats directory
 
@@ -86,11 +86,11 @@ Couldn't have done it without ....
 ==================================
 Some of the main 3rd party components that we have used within CATS and couldn't have done without:
 
-- TypeScript (of course), developed by Microsoft.
+- [TypeScript](http://www.typescriptlang.org) (of course), developed by Microsoft.
 
-- ACE, an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.
+- [ACE](http://ace.ajax.org), an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.
 
-- Node-webkit. This is a great initiative from Intel to allow Node libraries to be used within a web page. CATS use this to read and write local files without the need for a server-side component.
+- [Node-webkit](https://github.com/rogerwang/node-webkit). This is a great initiative from Intel to allow Node libraries to be used within a web page. CATS use this to read and write local files without the need for a server-side component.
 
 
 Todo

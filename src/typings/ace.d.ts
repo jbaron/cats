@@ -73,6 +73,7 @@ module Ace {
         setValue(value:string);
 		getDocument():Document;
 		setMode(mode:string);
+        getSelection():any;
         setNewLineMode(mode:string); // unix, windows or auto
         getNewLineMode():string;
         getMode():any;
@@ -95,6 +96,8 @@ module Ace {
 	interface Editor {
 		find(value:string,options,something);
 		focus();
+        setReadOnly(readOnly:bool);
+        getReadOnly():bool;
 		replace(value:string,options);
 		session:EditSession;
 		renderer;

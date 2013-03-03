@@ -79,6 +79,7 @@ module Cats {
         sessionBar = document.getElementById("sessionbar");
 
         mainMenu = null;
+        private config:IDEConfiguration;
 
         mainEditor: TextEditor;
 
@@ -90,11 +91,29 @@ module Cats {
         }
 
         private init() {
-            var c = this.loadConfig(true);
+            this.config = this.loadConfig(true);
+                        
             setTimeout(() => {
-                this.setTheme(c.theme);
-                this.setFontSize(c.fontSize);
+                this.setTheme(this.config.theme);
+                this.setFontSize(this.config.fontSize);
             }, 2000);
+        }
+
+        loadDefaultProjects() {
+            if (this.config.projects && this.config.projects.length) { 
+                this.addProject(this.config.projects[0]);
+            }
+            
+            if (this.config.sessions) {
+                this.config.sessions.forEach((session) => {
+                    try {
+                        this.openSession(session.path,session.pos);
+                    } catch (err) {
+                        console.error("error " + err);
+                        alert("Couldn't load session " + session.path);
+                    }
+                })
+            }            
         }
 
         /**
@@ -102,6 +121,7 @@ module Cats {
          * @param size the font size in pixels
          */
         setFontSize(size: number) {
+            this.config.fontSize = size;
             IDE.mainEditor.aceEditor.setFontSize(size + "px");
         }
 
@@ -138,36 +158,48 @@ module Cats {
          * Load the configuration for the IDE
          * @param project Also load the project
          */ 
-        loadConfig(project:bool) {
+        private loadConfig(project:bool) {
             var defaultConfig:IDEConfiguration = {
                 version: "1",
                 theme: "cats",
                 fontSize: 16,
                 sessions: [],
-                projects:[],
+                projects:[PATH.join(process.cwd(), "samples", "greeter")],
             };
             
+            var configStr = localStorage["cats.config"];
+            
+            if (configStr) {
+                    try {
+                        var config:IDEConfiguration = JSON.parse(configStr);
+                        if (config.version === "1") return config;
+                    } catch (err) {
+                        console.log("Error during parsing config " + err);
+                    }
+            }
+            
             return defaultConfig;
-            
-            var configStr = OS.File.readTextFile(".cats");
-            var config = JSON.parse(configStr);
-            
+                        
         }
 
         /**
          * Persist the current IDE configuration to file
          */ 
         saveConfig() {
-            var config = <IDEConfiguration>{};
-            config.theme = "cats";
-            config.fontSize = 16;
-            this.sessions.forEach((session)=>{
+            var config = this.config;
+            config.sessions = [];
+            config.projects = [];
+            
+            this.sessions.forEach((session)=>{               
                 config.sessions.push({
                     path: session.name,
-                    pos: null
+                    pos: session.getPosition()
                 });
             });
-            config.projects = [this.project.projectDir];                        
+
+            if (this.project) config.projects.push(this.project.projectDir);
+            var configStr = JSON.stringify(config);
+            localStorage["cats.config"] = configStr;
         }
 
 
@@ -217,6 +249,7 @@ module Cats {
          * @param theme The name of the new theme
          */
         setTheme(theme: string) {
+            this.config.theme = theme;
             IDE.mainEditor.setTheme(theme);
             setTimeout(function() {
                 var isDark = document.getElementsByClassName("ace_dark").length > 0;

@@ -20,12 +20,17 @@ module Cats.Menu {
         // Create an empty menu
         var ctxmenu = new GUI.Menu();
         // Add some items
+        ctxmenu.append(new GUI.MenuItem({ label: 'Refresh', click: refresh }));
         ctxmenu.append(new GUI.MenuItem({ label: 'Rename', click: rename }));
         ctxmenu.append(new GUI.MenuItem({ label: 'New file', click: newFile }));
         ctxmenu.append(new GUI.MenuItem({ label: 'Delete', click: deleteFile }));
         return ctxmenu;
     }
 
+
+    function refresh() {
+        UI.TreeView.refreshElem(data.element);
+    }
 
 
     function deleteFile() {
@@ -69,7 +74,8 @@ module Cats.Menu {
 
     var data = {
         key: "",
-        isFolder: true
+        isFolder: true,
+        element: null
     }
 
     export function initFileContextMenu() {
@@ -79,6 +85,7 @@ module Cats.Menu {
         var d = UI.TreeView.getValueFromElement(ev.srcElement);
         data.key = d.path;
         data.isFolder = d.isFolder;
+        data.element = ev.srcElement;
         // console.log(data.key);
         ev.preventDefault();
         fileContextMenu.popup(ev.x, ev.y);

@@ -14,35 +14,45 @@
 //
 
 
-// This module contains all the global commands pertaining to the edit functionality
-// Much of it is already provided by the Ace editor and just wraps this functionality
-
+/** 
+ * This module contains all the global commands pertaining to IDE functionality
+ */
 module Cats.Commands {
 
-
+    /**
+     * Quit CATS
+     */ 
     function quit() {
          if (IDE.hasUnsavedSessions()) {
             if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
         }
+        IDE.saveConfig();
         GUI.App.quit();
     }
 
+    /**
+     * Set the theme
+     */ 
     function setTheme(theme:string) {
         IDE.setTheme(theme);
     }
 
-
+    /**
+     * Set the font size
+     */ 
     function setFontSize(size:number) {
         IDE.setFontSize(size);
     }
 
+    /**
+     * Register the IDE commands
+     */ 
     export class IdeCommands {
         static init(registry:(cmd:Command)=>void) {
             registry({ name: CMDS.ide_quit, label: "Quit", command: quit });
             registry({ name: CMDS.ide_theme, label: "Theme", command: setTheme });
             registry({ name: CMDS.ide_fontSize, label: "Font Size", command: setFontSize });
         }
-
     }
 
 

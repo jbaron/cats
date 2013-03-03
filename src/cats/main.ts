@@ -60,10 +60,7 @@ module Cats {
         var projectName = getParameterByName("project");
         if (!projectName) {
             var args = GUI.App.argv;
-            if (args && (args.length > 0))
-                projectName = args[0];
-            else
-                projectName = PATH.join(process.cwd(), "samples", "greeter");
+            if (args && (args.length > 0)) projectName = args[0];
         }
         return projectName;
     }
@@ -78,7 +75,14 @@ module Cats {
     IDE = new Ide();     
     // IDE.mainEditor = new TextEditor(IDE.editor);
     // mainEditor.on("activeSession",()=>{console.log("active session changed")})
-    IDE.addProject(determineProject());
+    var prjName = determineProject();
+    if (prjName) {
+        IDE.addProject(prjName);
+    } else {
+        IDE.loadDefaultProjects();
+    }
+
+    
     Cats.Commands.init();
     Cats.Menu.createMenuBar();
     IDE.initViews();

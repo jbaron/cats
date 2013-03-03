@@ -18,12 +18,11 @@
 ///<reference path='configloader.ts'/>
 ///<reference path='session.ts'/>
 ///<reference path='ui/tooltip.ts'/>
-///<reference path='ui/filetree.ts'/>
+///<reference path='ui/tree.ts'/>
 ///<reference path='../typings/ace.d.ts'/>
 
 
 module Cats {
-
 
     export class Project {
 
@@ -46,8 +45,6 @@ module Cats {
 
             this.refresh();
         }
-
-       
 
         private initJSSense() {
             this.JSSense = new ISenseHandler();
@@ -86,7 +83,6 @@ module Cats {
             });
 
         }
-
        
         /**
          * Get the URl for running the project
@@ -95,7 +91,6 @@ module Cats {
             var url = PATH.join(this.projectDir, this.config.main);
             return "file://" + url;
         }
-
         
         /**
          * @BUG Somehow TS LanguageServices are not ready by default.

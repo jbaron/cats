@@ -93,6 +93,21 @@ module Cats.UI {
             this.rootElem.appendChild(elem);
         }
 
+        public static refreshElem(elem: HTMLElement) {
+            if (elem.tagName !== "LI") {
+                elem = elem.parentElement;
+            }
+            
+            if (elem.childElementCount > 1) {
+                elem.removeChild(elem.children[1]);
+                if ($(elem).hasClass(TreeView.OPENED)) {
+                    $(elem).removeClass(TreeView.OPENED);
+                    $(elem).addClass(TreeView.COLLAPSED);
+                }
+            }
+        }
+
+
         appendTo(elem: HTMLElement) {
             elem.appendChild(this.rootElem);
         }
@@ -136,13 +151,22 @@ module Cats.UI {
             if ($(li).hasClass(TreeView.OPENED)) {
                 li.className = TreeView.COLLAPSED;
                 this.decorate(li);
-                li.removeChild(li.childNodes[1]);
+                // li.removeChild(li.childNodes[1]);
+                var elem = <HTMLElement>li.childNodes[1];
+                elem.style.display = "none";
                 return;
             }
             
             if ($(li).hasClass(TreeView.COLLAPSED)) {
                 li.className = TreeView.OPENED;
                 this.decorate(li);
+                
+                var elem = <HTMLElement>li.childNodes[1];
+                if (elem) {
+                    elem.style.display = "block";
+                    return;
+                }
+                
                 var entry = li["_value"];
                 var entries = this.getValue(entry, "children");
                 var ul = this.render(entries);

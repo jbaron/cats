@@ -77,7 +77,6 @@ module Cats.View {
 
     export class Navigator extends BaseView {
 
-
         constructor() {
             super(document.getElementById("filetree"));
             this.icon = "icon-files";

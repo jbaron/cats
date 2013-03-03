@@ -13,7 +13,6 @@
 // limitations under the License.
 //
 
-
 ///<reference path='session.ts'/>
 ///<reference path='menu/editorcontextmenu.ts'/>
 ///<reference path='ui/autocompleteview.ts'/>
@@ -116,13 +115,19 @@ module Cats {
             this.activeSession = session;
             
             this.aceEditor.setSession(session.editSession);
+            if (session.mode === "binary") {
+                this.aceEditor.setReadOnly(true);
+            } else {
+                this.aceEditor.setReadOnly(false);                
+            }
+            
             if (pos) {
                 this.moveCursorTo(pos);
             }
             this.show();
             this.aceEditor.focus();
             session.showErrors();
-            IDE.tabbar.refresh();
+            if (IDE.tabbar) IDE.tabbar.refresh();
             this.editMode = PATH.basename(session.mode); 
          
         }
