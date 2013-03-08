@@ -29,7 +29,7 @@ module Cats.Menu {
         private ctxmenu;
         private lastEvent: MouseEvent;
 
-        constructor(private editor: Cats.TextEditor) {
+        constructor() {
             // Create a new menu
             this.ctxmenu = new GUI.Menu();
 
@@ -57,17 +57,30 @@ module Cats.Menu {
         }
 
         // Bind this context menu to an HTML element
-        bindTo(elem: HTMLElement) {
-
-            elem.oncontextmenu = (ev: any) => {
-                ev.preventDefault();
-                this.ctxmenu.popup(ev.x, ev.y);                
-                return false;
-            };
+        popup(x,y) {          
+                this.ctxmenu.popup(x, y);                            
         }
 
 
     }
 
+
+    export function initTabContextMenu() {
+        return;
+        var contextMenu = new TabContextMenu();
+
+        IDE.sessionBar.addEventListener('contextmenu', function(ev: any) {
+            /*
+            var d = UI.TreeView.getValueFromElement(ev.srcElement);
+            data.key = d.path;
+            data.isFolder = d.isFolder;
+            data.element = ev.srcElement;
+            */
+            // console.log(data.key);
+            ev.preventDefault();
+            contextMenu.popup(ev.x, ev.y);
+            return false;
+        });
+    }
 
 }

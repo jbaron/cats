@@ -291,7 +291,18 @@ Tab section
   background-image: url("../img/outline_co.gif");
 }
 
+.tabbar li span {
+    display:none;
+}
 
+.tabbar li:hover span, .tabbar li.active span {
+    float: right;
+    display: block;
+    font-size: 70%;
+    margin-left: 5px;
+    vertical-align: top;
+    font-weight: bold;
+}
 
 /*********************************************************
 Auto complete styling
@@ -394,9 +405,6 @@ Auto complete styling
 .icon-folder {
     background: url('../img/fldr_obj.gif') no-repeat; 
 }
-
-
-
 
 /*******************************************************************        
   Find Area styling

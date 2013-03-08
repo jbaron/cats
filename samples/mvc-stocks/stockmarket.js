@@ -93,3 +93,4 @@ function nextDay() {
 }
 var stockMarket = initStockMarket();
 simulate();
+//@ sourceMappingURL=stockmarket.js.map

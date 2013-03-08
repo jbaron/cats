@@ -236,11 +236,13 @@ module Cats {
                     result.push(s);
                 }
             })
+            
             // Check if was the current session displayed
-            if (IDE.mainEditor.activeSession === session) {
-                IDE.mainEditor.activeSession = null;
+            if (IDE.activeSession === session) {
+                IDE.activeSession = null;
                 IDE.mainEditor.hide();
             }
+            
             this.sessions = result;
         }
 

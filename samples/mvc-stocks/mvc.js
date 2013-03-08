@@ -95,3 +95,4 @@ var MVC;
     })();
     MVC.Model = Model;    
 })(MVC || (MVC = {}));
+//@ sourceMappingURL=mvc.js.map

@@ -132,8 +132,8 @@ module Cats.UI {
     }
   
     var label = new LabelView("text");
-    var label2 = new LabelView(IDE.mainEditor.activeSession.name);
-    var label3 = new LabelView(() => IDE.mainEditor.activeSession.name);
+    var label2 = new LabelView(IDE.activeSession.name);
+    var label3 = new LabelView(() => IDE.activeSession.name);
   
     
     class LabelView extends MVC.View {

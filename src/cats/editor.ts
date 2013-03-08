@@ -24,7 +24,7 @@ module Cats {
 
 
     function setOverwrite() {
-        IDE.mainEditor.overwrite = IDE.mainEditor.activeSession.editSession.getOverwrite();
+        IDE.mainEditor.overwrite = IDE.activeSession.editSession.getOverwrite();
     }
 
     /**
@@ -42,13 +42,10 @@ module Cats {
         editMode:string;
         overwrite:bool;
 
-        /** The session that is currently being edited */
-        public activeSession: Session;
-
         private editorContextMenu: Cats.Menu.EditorContextMenu;
 
         constructor(private rootElement: HTMLElement) {
-            super("activeSession", "editMode", "overwrite");
+            super("editMode", "overwrite");
             this.aceEditor = this.createAceEditor();
             this.hide();
             this.init();
@@ -56,7 +53,6 @@ module Cats {
 
         // Small wrappers to make the observers a bit more typed.
         onEditMode(fn:(mode:string)=>void) { this.on("editMode",fn); }
-        onActiveSession(fn:(session:Session)=>void) { this.on("activeSession",fn); }
         onOverwrite(fn:(mode:bool)=>void) { this.on("overwrite",fn); }
 
 
@@ -103,16 +99,16 @@ module Cats {
          */ 
         setSession(session: Session, pos?: Ace.Position) {
 
-            if (this.activeSession === session) {
+            if (IDE.activeSession === session) {
                 if (pos) {
                     this.moveCursorTo(pos);
                 }
                 return;
             }
            
-            this.swapListeners(this.activeSession,session); 
+            this.swapListeners(IDE.activeSession,session); 
 
-            this.activeSession = session;
+            IDE.activeSession = session;
             
             this.aceEditor.setSession(session.editSession);
             if (session.mode === "binary") {
@@ -178,7 +174,7 @@ module Cats {
         autoComplete() {
             // if (this.activeSession.mode === "typescript") {
                 var cursor = this.aceEditor.getCursorPosition();
-                this.activeSession.autoComplete(cursor, this.autoCompleteView);
+                IDE.activeSession.autoComplete(cursor, this.autoCompleteView);
             // }                        
         }
 
@@ -188,7 +184,7 @@ module Cats {
             clearTimeout(this.mouseMoveTimer);
             var elem = <HTMLElement>ev.srcElement;
             if (elem.className !== "ace_content") return;
-            var session = this.activeSession;
+            var session = IDE.activeSession;
             this.mouseMoveTimer = setTimeout(() => {
                 session.showInfoAt(ev);
             }, 800);

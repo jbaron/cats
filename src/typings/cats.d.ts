@@ -19,7 +19,8 @@ module Cats {
         hide();
         show();
     }
-
+    
+    
     interface IView {
         icon: string;
         name: string;
@@ -36,12 +37,12 @@ module Cats {
     }
 
     interface ISession {
-        id: string;
+        name: string;
         project: any;
         changed: bool;
+        shortName: string;
         getValue(): string;
         setValue(value: string);
-        getEditor(): Editor;
         persist();
     }
 

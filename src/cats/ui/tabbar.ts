@@ -73,7 +73,7 @@ class SessionsBar extends MVC.View {
             var optionElem = <HTMLOptionElement>document.createElement("option");
             optionElem.innerText = session.shortName;
             optionElem.value = session.name;
-            if (session === IDE.mainEditor.activeSession) optionElem.selected = true;
+            if (session === IDE.activeSession) optionElem.selected = true;
             optionElem["_value"] = session;
             this.selectElem.appendChild(optionElem);
         });
@@ -90,7 +90,7 @@ class SessionsBar extends MVC.View {
         IDE.sessions.forEach((session) => {
             var li = document.createElement("li");
             li.innerText = session.shortName;
-            if (session === IDE.mainEditor.activeSession) li.className += " active";            
+            if (session === IDE.activeSession) li.className += " active";            
             if (session.changed) li.className += " changed "
             
             this.ul.appendChild(li);         
@@ -115,6 +115,7 @@ export class Tabbar extends AspectWidget {
     private selectElem: HTMLElement;
 
     onselect:(option)=> void;
+    ondelete:(option)=>void;
     options = [];
 
     constructor() {
@@ -174,15 +175,21 @@ export class Tabbar extends AspectWidget {
                 optionElem.className += " " + decorator;
              }
 
-             /*
-             var closeButton = document.createElement("span");
-             closeButton.innerHTML = "X";
-             optionElem.appendChild(closeButton);
-
-            */
+             // Create the delete button
+             if (this.ondelete) {
+                 var closeButton = document.createElement("span");
+                 closeButton.innerHTML = "X";
+                 closeButton.onclick = () => {
+                     if (this.ondelete) {
+                         this.ondelete(option);
+                     }
+                 }
+                 optionElem.appendChild(closeButton);
+             }
+            
              this.ul.appendChild(optionElem);
         });
-        // console.log("Overflow: " + this.isOverflowed());
+        // Check if overflow occured and if so render an additional dropdown.
         if (this.isOverflowed()) { 
             this.renderDropDown();
         } else {

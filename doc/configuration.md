@@ -4,7 +4,7 @@ Cats has two level of configuration.
 
 1) Project configuration that contains all settings for a particular project. These settings are stored within the project directoty under .settings/config.json.
 
-2) CATS configuration that contains all the settins for the IDE (like what theme to use). These settings are stored in the user home directory under .cats.json
+2) IDE configuration that contains all the settins for the IDE (like what theme to use). These settings are stored using the localStorage API
 
 
 Project Configuration
@@ -30,8 +30,11 @@ Project Configuration
 			};
 
 
-
-
-CATS Configuration
+IDE Configuration
 ==================
-Typically the CATS configuration file will be automatically updated when you change a setting within CATS. You can always delete this file and CATS will use some sensible defaults. 
+Typically the IDE configuration file will be automatically updated when you exit the IDE with the latest status. For now it stores:
+- Theme
+- Font size
+- Open project(s)
+- Open file(s)
+

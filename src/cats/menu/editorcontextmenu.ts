@@ -47,7 +47,7 @@ module Cats.Menu {
             elem.oncontextmenu = (ev: any) => {
                 if (! this.initialized) this.init();
                 ev.preventDefault();
-                if (this.editor.activeSession.mode === "typescript") {
+                if (IDE.activeSession.mode === "typescript") {
                     this.lastEvent = ev;
                     this.ctxmenu.popup(ev.x, ev.y);
                 }

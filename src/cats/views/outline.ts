@@ -83,7 +83,7 @@ module Cats.View {
         }
 
         initOutlineView() {
-            IDE.mainEditor.on("activeSession", (session: Session) => {
+            IDE.on("activeSession", (session: Session) => {
                 if (session && (session.mode === "typescript"))
                     this.handleOutlineEvent(session);
                 else

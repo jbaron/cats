@@ -20,13 +20,15 @@
 module Cats {
     
      function initTabBar() {
-        IDE.tabbar = new UI.Tabbar();        
-        IDE.tabbar.setAspect("name", (session: Session) => { return session.shortName });
-        IDE.tabbar.setAspect("selected", (session: Session) => { return session === IDE.mainEditor.activeSession });
-        IDE.tabbar.setAspect("longname", (session: Session) => { return session.name });
-        IDE.tabbar.setAspect("changed", (session: Session) => { return session.changed });
-        IDE.tabbar.onselect = (session) => IDE.mainEditor.setSession(session);
-        IDE.tabbar.appendTo(IDE.sessionBar);
+        IDE.tabbar = new UI.Tabbar();
+        var tb = IDE.tabbar;
+        tb.setAspect("name", (session: Session) => { return session.shortName });
+        tb.setAspect("selected", (session: Session) => { return session === IDE.activeSession });
+        tb.setAspect("longname", (session: Session) => { return session.name });
+        tb.setAspect("changed", (session: Session) => { return session.changed });
+        tb.onselect = (session:Session) => IDE.mainEditor.setSession(session);
+        tb.ondelete = (session:Session) => IDE.closeSession(session);
+        tb.appendTo(IDE.sessionBar);
         IDE.on("sessions", (sessions) => {IDE.tabbar.setOptions(sessions)} );
     }
 

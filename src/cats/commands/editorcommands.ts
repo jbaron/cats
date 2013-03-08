@@ -28,7 +28,7 @@ module Cats.Commands {
 
  // Perform code autocompletion
      function autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
-            var session = IDE.mainEditor.activeSession;
+            var session = IDE.activeSession;
             if (! session) return;
             
             if (session.mode !== "typescript") return;
@@ -40,7 +40,7 @@ module Cats.Commands {
         }
 
       function formatText() {
-            var session = IDE.mainEditor.activeSession;
+            var session = IDE.activeSession;
             if (session) {
                 session.project.iSense.perform("getFormattedTextForRange", session.name, 0, session.getValue().length, (err, result) => {                    
                     if (!err) {

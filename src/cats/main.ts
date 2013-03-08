@@ -25,6 +25,7 @@ var IDE:Cats.Ide;
 ///<reference path='commands/commander.ts'/>
 ///<reference path='menu/menubar.ts'/>
 ///<reference path='menu/filecontextmenu.ts'/>
+///<reference path='menu/tabcontextmenu.ts'/>
 ///<reference path='project.ts'/>
 ///<reference path='ui/tabbar.ts'/>
 ///<reference path='ui/elemtabadapter.ts'/>
@@ -89,6 +90,7 @@ module Cats {
     layoutIDE(); 
     
     Cats.Menu.initFileContextMenu();
+    Cats.Menu.initTabContextMenu();
     // IDE.mainEditor.init();
     
 

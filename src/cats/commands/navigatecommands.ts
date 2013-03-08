@@ -20,7 +20,7 @@ module Cats.Commands {
     }
 
     export function gotoDeclaration() {        
-        var session = IDE.mainEditor.activeSession;
+        var session = IDE.activeSession;
         if (! session) return;
         var cursor = getCursor();
         session.project.iSense.perform("getDefinitionAtPosition", session.name, cursor, (err, data:FileRange) => {
@@ -30,7 +30,7 @@ module Cats.Commands {
     }
 
     function getInfoAt(type: string) {        
-        var session = IDE.mainEditor.activeSession;
+        var session = IDE.activeSession;
         if (! session) return;
         IDE.resultbar.selectOption(1);
         var cursor = getCursor();
