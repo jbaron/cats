@@ -31,8 +31,7 @@ module Cats.Commands {
         var i = rows.length;
         while (i--) {
             var data = rows[i];
-            var session = IDE.openSession(data.unitName);
-            // console.log(session.name);
+            var session = <AceSession>IDE.openSession(data.unitName);
             var r = data.range;
             var range: Ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
             session.editSession.replace(range, newName);

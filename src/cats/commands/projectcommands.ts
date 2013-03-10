@@ -59,12 +59,10 @@ module Cats.Commands {
     function buildProject() {
         // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
         var project = IDE.project;
-        var compilationResultsElem = IDE.compilationResult;
-        IDE.resultbar.selectOption(0);
-        compilationResultsElem.innerHTML = "";
-        $(compilationResultsElem).addClass("busy");
+        IDE.compilationResult.innerHTML = "";
+
         project.iSense.compile((err, data:Cats.CompileResults) => {                        
-            $(compilationResultsElem).removeClass("busy");            
+
             View.showCompilationResults(data);
             if (data.errors && (data.errors.length > 0)) return;
             
@@ -95,7 +93,7 @@ module Cats.Commands {
             IDE.openSession(name);
         } else {
             var content = JSON.stringify(project.config, null, 4);
-            var session = new Session(name,content);
+            var session = new AceSession(name,content);
             IDE.addSession(session);
             IDE.openSession(name);
         }

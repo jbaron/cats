@@ -18,7 +18,7 @@ module Cats.View {
 
 function showErrors(errors: Cats.FileRange[]) {
 
-
+        IDE.resultbar.selectOption(0);
         var grid = new Cats.UI.Grid();
         grid.setColumns(["message", "unitName", "position"]);
         grid.setAspect("position", (data:FileRange) => { return (data.range.start.row + 1) + ":" + (data.range.start.column + 1) });
@@ -39,15 +39,16 @@ function showErrors(errors: Cats.FileRange[]) {
 
 export function showCompilationResults(data:Cats.CompileResults) {
 
-            if (data.errors && (data.errors.length > 0)) {                
+            if (data.errors && (data.errors.length > 0)) {
                 showErrors(data.errors);
                 return;
             }
 
             // Lets puts a timestamp so it is clear we did something
+            IDE.resultbar.selectOption(2);
             var time = new Date();
             var stamp = time.toLocaleTimeString();
-            IDE.compilationResult.innerText = stamp + " Successfully generated " + Object.keys(data.source).length + " file(s).";
+            IDE.console.innerText += "\n" + stamp + " Successfully generated " + Object.keys(data.source).length + " file(s).";
 
     }
     

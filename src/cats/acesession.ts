@@ -21,7 +21,7 @@ module Cats {
     var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
     var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
 
-    export class Session extends ObservableImpl  {
+    export class AceSession extends ObservableImpl implements Session {
 
         private static MODES = {
             ".js": "javascript",
@@ -195,7 +195,7 @@ module Cats {
          */
         private determineMode(name: string): string {
             var ext = PATH.extname(name);
-            var result = Session.MODES[ext] || Session.DEFAULT_MODE;
+            var result = AceSession.MODES[ext] || AceSession.DEFAULT_MODE;
             return result;
         }
 

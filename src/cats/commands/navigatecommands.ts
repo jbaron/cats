@@ -36,9 +36,7 @@ module Cats.Commands {
         var cursor = getCursor();
         var searchResultsElem = IDE.searchResult;
         searchResultsElem.innerHTML = "";
-        $(searchResultsElem).addClass("busy");        
         session.project.iSense.perform("getInfoAtPosition", type, session.name, cursor, (err, data:Cats.FileRange[]) => {
-            $(searchResultsElem).removeClass("busy");
             IDE.views.searchResults.render(data);
         });
     }

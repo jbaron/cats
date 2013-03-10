@@ -26,7 +26,7 @@ module Cats {
         tb.setAspect("selected", (session: Session) => { return session === IDE.activeSession });
         tb.setAspect("longname", (session: Session) => { return session.name });
         tb.setAspect("changed", (session: Session) => { return session.changed });
-        tb.onselect = (session:Session) => IDE.mainEditor.setSession(session);
+        tb.onselect = (session:Session) => IDE.openSession(session.name);
         tb.ondelete = (session:Session) => IDE.closeSession(session);
         tb.appendTo(IDE.sessionBar);
         IDE.on("sessions", (sessions) => {IDE.tabbar.setOptions(sessions)} );
@@ -50,9 +50,10 @@ module Cats {
     }
       
     function initResultBar() {
-        var t  = new UI.ElemTabAdapter(IDE.resultbar, [IDE.compilationResult, IDE.searchResult], IDE.compilationResult);
+        var t  = new UI.ElemTabAdapter(IDE.resultbar, [IDE.compilationResult, IDE.searchResult, IDE.console], IDE.compilationResult);
         t.setAspect(IDE.compilationResult, "decorator", "icon-errors");
         t.setAspect(IDE.searchResult, "decorator", "icon-search");
+        t.setAspect(IDE.console, "decorator", "icon-search");
         IDE.resultbar.appendTo(IDE.resultbarElem);        
     }
  

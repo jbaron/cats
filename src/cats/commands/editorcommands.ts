@@ -28,7 +28,7 @@ module Cats.Commands {
 
  // Perform code autocompletion
      function autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
-            var session = IDE.activeSession;
+            var session = <AceSession>IDE.activeSession;
             if (! session) return;
             
             if (session.mode !== "typescript") return;

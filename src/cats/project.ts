@@ -16,7 +16,6 @@
 
 ///<reference path='isensehandler.ts'/>
 ///<reference path='configloader.ts'/>
-///<reference path='session.ts'/>
 ///<reference path='ui/tooltip.ts'/>
 ///<reference path='ui/tree.ts'/>
 ///<reference path='../typings/ace.d.ts'/>

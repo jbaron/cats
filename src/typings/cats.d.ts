@@ -18,8 +18,8 @@ module Cats {
     interface Editor {
         hide();
         show();
+        edit(session, position);
     }
-    
     
     interface IView {
         icon: string;
@@ -36,13 +36,15 @@ module Cats {
         isDirectory: bool; // is this a folder or a file
     }
 
-    interface ISession {
+    interface Session {
         name: string;
         project: any;
+        mode: string;
         changed: bool;
         shortName: string;
         getValue(): string;
         setValue(value: string);
+        getPosition():any;
         persist();
     }
 

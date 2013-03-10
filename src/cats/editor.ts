@@ -13,18 +13,18 @@
 // limitations under the License.
 //
 
-///<reference path='session.ts'/>
 ///<reference path='menu/editorcontextmenu.ts'/>
 ///<reference path='ui/autocompleteview.ts'/>
-///<reference path='session.ts'/>
+
 
 declare var $;
 
 module Cats {
 
 
-    function setOverwrite() {
-        IDE.mainEditor.overwrite = IDE.activeSession.editSession.getOverwrite();
+    function setOverwrite() {        
+        var s = <AceSession>IDE.activeSession;
+        IDE.mainEditor.overwrite = s.editSession.getOverwrite();
     }
 
     /**
@@ -68,7 +68,7 @@ module Cats {
          * @param oldSession The current active session that will de activated
          * @param newSession The session that will be the new active session
          */ 
-        private swapListeners(oldSession:Session, newSession:Session) {
+        private swapListeners(oldSession:AceSession, newSession:AceSession) {
             var listeners = {
                "changeOverwrite" : setOverwrite                 
             };
@@ -88,16 +88,14 @@ module Cats {
                     
         }
 
-        edit(session: Session) {
-            this.setSession(session);
-        }
 
         /**
          * Make a session the active one
          * @param session the session to make active
          * @param pos The position to scroll to
-         */ 
-        setSession(session: Session, pos?: Ace.Position) {
+         */
+        edit(session: Session, pos?: Ace.Position); 
+        edit(session: AceSession, pos?: Ace.Position) {
 
             if (IDE.activeSession === session) {
                 if (pos) {
@@ -106,11 +104,13 @@ module Cats {
                 return;
             }
            
-            this.swapListeners(IDE.activeSession,session); 
+            this.swapListeners(<AceSession>IDE.activeSession,session); 
 
             IDE.activeSession = session;
             
-            this.aceEditor.setSession(session.editSession);
+            var aceSession = <AceSession>session;
+            
+            this.aceEditor.setSession(aceSession.editSession);
             if (session.mode === "binary") {
                 this.aceEditor.setReadOnly(true);
             } else {
@@ -122,7 +122,7 @@ module Cats {
             }
             this.show();
             this.aceEditor.focus();
-            session.showErrors();
+            aceSession.showErrors();
             if (IDE.tabbar) IDE.tabbar.refresh();
             this.editMode = PATH.basename(session.mode); 
          
@@ -174,7 +174,8 @@ module Cats {
         autoComplete() {
             // if (this.activeSession.mode === "typescript") {
                 var cursor = this.aceEditor.getCursorPosition();
-                IDE.activeSession.autoComplete(cursor, this.autoCompleteView);
+                var aceSession = <AceSession>IDE.activeSession;
+                aceSession.autoComplete(cursor, this.autoCompleteView);
             // }                        
         }
 
@@ -184,7 +185,7 @@ module Cats {
             clearTimeout(this.mouseMoveTimer);
             var elem = <HTMLElement>ev.srcElement;
             if (elem.className !== "ace_content") return;
-            var session = IDE.activeSession;
+            var session = <AceSession>IDE.activeSession;
             this.mouseMoveTimer = setTimeout(() => {
                 session.showInfoAt(ev);
             }, 800);

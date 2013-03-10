@@ -72,7 +72,10 @@ export class ISenseHandler {
         }
         this.worker.postMessage(message);
         console.log("Send message: " + message.method);
-        if (handler) this.registry[this.messageId] = handler;
+        if (handler) {
+            IDE.busy(true);
+            this.registry[this.messageId] = handler;
+        }
     }
 
     /**
@@ -98,6 +101,7 @@ export class ISenseHandler {
             // @TODO handle exceptions better and call callback
             var id = msg.id;
             if (id) {
+                IDE.busy(false);
                 var handler = this.registry[id];
                 if (handler) {
                     delete this.registry[id];

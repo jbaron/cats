@@ -158,10 +158,11 @@ body .ui-layout-pane {
   border-top: 0px;
 }
 
-#result .busy {
+.busy {
   background-image:url('../img/loader.gif');
   background-repeat:no-repeat;
   background-position:center; 
+  background-size: contain;
 }
 
 #result table tbody tr:hover {

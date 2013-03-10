@@ -18,6 +18,7 @@
 ///<reference path='views/statusbar.ts'/>
 ///<reference path='views/searchresults.ts'/>
 ///<reference path='views/outline.ts'/>
+///<reference path='acesession.ts'/>
 ///<reference path='views/navigator.ts'/>
 ///<reference path='views/compilationresults.ts'/>
 
@@ -38,12 +39,14 @@ module Cats {
 
         sessions: Session[] = [];
         project: Project;
+
         activeSession: Session;
 
         views: IDEViews = {
             navigation: null,
             outline: null,
             searchResults: null,
+            console:null,
             compilationResults: null,
             toolBar: null,
             statusBar: null,
@@ -72,6 +75,7 @@ module Cats {
         resultbarElem = document.getElementById("resultbar");
         compilationResult = document.getElementById("errorresults");
         searchResult = document.getElementById("searchresults");
+        console = document.getElementById("console");
 
         taskBar = document.getElementById("infobar");
 
@@ -99,6 +103,11 @@ module Cats {
             }, 2000);
         }
 
+
+        /**
+         * Load the projects and files that were open last time the user
+         * quit.
+         */ 
         loadDefaultProjects() {
             if (this.config.projects && this.config.projects.length) { 
                 this.addProject(this.config.projects[0]);
@@ -110,9 +119,9 @@ module Cats {
                         this.openSession(session.path,session.pos);
                     } catch (err) {
                         console.error("error " + err);
-                        alert("Couldn't load session " + session.path);
+                        alert("Couldn't open file " + session.path);
                     }
-                })
+                });
             }            
         }
 
@@ -154,6 +163,16 @@ module Cats {
             }
         }
 
+
+        public busy(isBusy:bool) {
+            if (isBusy) {
+               $("#activity").addClass("busy"); 
+            } else {
+                $("#activity").removeClass("busy"); 
+            }
+        }
+
+
         /**
          * Load the configuration for the IDE
          * @param project Also load the project
@@ -183,7 +202,7 @@ module Cats {
         }
 
         /**
-         * Persist the current IDE configuration to file
+         * Persist the current IDE configuration to a file
          */ 
         saveConfig() {
             var config = this.config;
@@ -193,7 +212,7 @@ module Cats {
             this.sessions.forEach((session)=>{               
                 config.sessions.push({
                     path: session.name,
-                    pos: session.getPosition()
+                    pos: session.getPosition() //TODO make session fully responsible
                 });
             });
 
@@ -212,16 +231,17 @@ module Cats {
             if (! session) {
                 var content;
                 if (name) content = OS.File.readTextFile(name);
-                session = new Session(name, content);
+                session = new AceSession(name, content);
                 this.addSession(session);
             }
-            this.mainEditor.setSession(session,pos);
+            this.mainEditor.edit(session,pos);
             this.activeSession = session;
             return session;
         }
 
         /**
          * Close a session
+         * @para session The session to close
          */
         closeSession(session: Session) {
             var result = [];
