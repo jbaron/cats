@@ -53,7 +53,7 @@ module Cats {
         var t  = new UI.ElemTabAdapter(IDE.resultbar, [IDE.compilationResult, IDE.searchResult, IDE.console], IDE.compilationResult);
         t.setAspect(IDE.compilationResult, "decorator", "icon-errors");
         t.setAspect(IDE.searchResult, "decorator", "icon-search");
-        t.setAspect(IDE.console, "decorator", "icon-search");
+        t.setAspect(IDE.console, "decorator", "icon-console");
         IDE.resultbar.appendTo(IDE.resultbarElem);        
     }
  

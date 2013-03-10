@@ -158,7 +158,10 @@ body .ui-layout-pane {
   border-top: 0px;
 }
 
+
+
 .busy {
+  min-width: 50px;
   background-image:url('../img/loader.gif');
   background-repeat:no-repeat;
   background-position:center; 
@@ -283,6 +286,11 @@ Tab section
 .tabbar li.icon-search {
   background-image: url("../img/search_ref_obj.gif");
 }
+
+.tabbar li.icon-console {
+  background-image: url("../img/console_view.gif");
+}
+
 
 .tabbar li.icon-files {
   background-image: url("../img/filenav_nav.gif");
