@@ -76,6 +76,10 @@ body {
   font-family: Geneva, Arial, Helvetica, sans-serif;    
   background-color: rgba(100, 100, 100, 0.3);
   font-size: 14px;
+  
+  /* CSS rule to disable text selection highlighting on editor window */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
 }
 
 body #center {
