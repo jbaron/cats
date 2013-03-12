@@ -36,7 +36,7 @@ module Cats {
 
     /**
      *  Loads the configuration for a project. If no configuration file is found, it  
-     *  returns sensible defaults that will be used instead
+     *  returns sensible defaults that will be used instead.
      */
     export class ConfigLoader {
 

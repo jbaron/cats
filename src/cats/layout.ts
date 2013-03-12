@@ -15,7 +15,7 @@
 
 /**
  * This file layout the different views that make up the IDE. The views themselves
- * are not in this file.
+ * are not declared in this file.
  */ 
 module Cats {
     

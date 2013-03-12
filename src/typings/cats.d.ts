@@ -13,6 +13,10 @@
 // limitations under the License.
 //
 
+
+// Declare the global JQuery $
+declare var $;
+
 module Cats {
 
     interface Editor {
@@ -38,6 +42,7 @@ module Cats {
 
     interface Session {
         name: string;
+        type: string;
         project: any;
         mode: string;
         changed: bool;

@@ -17,7 +17,6 @@
 ///<reference path='ui/autocompleteview.ts'/>
 
 
-declare var $;
 
 module Cats {
 
@@ -108,9 +107,9 @@ module Cats {
 
             IDE.activeSession = session;
             
-            var aceSession = <AceSession>session;
+            // var aceSession = <AceSession>session;
             
-            this.aceEditor.setSession(aceSession.editSession);
+            this.aceEditor.setSession(session.editSession);
             if (session.mode === "binary") {
                 this.aceEditor.setReadOnly(true);
             } else {
@@ -122,7 +121,7 @@ module Cats {
             }
             this.show();
             this.aceEditor.focus();
-            aceSession.showErrors();
+            session.showErrors();
             if (IDE.tabbar) IDE.tabbar.refresh();
             this.editMode = PATH.basename(session.mode); 
          

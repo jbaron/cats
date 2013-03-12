@@ -45,6 +45,8 @@ module Cats {
         };
 
         private static DEFAULT_MODE = "text";
+        
+        type = "ACE";
 
         // The Ace EditSession object
         editSession: Ace.EditSession;
