@@ -82,7 +82,7 @@ module Cats.Commands {
         ide_quit,
         ide_theme,
         ide_fontSize,
-        
+        ide_toggleView,
         
     }
 

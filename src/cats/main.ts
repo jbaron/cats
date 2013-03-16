@@ -38,7 +38,11 @@ var IDE:Cats.Ide;
 /**
  * This is the file that is included in the index.html and 
  * bootstraps the starting of CATS.
- */ 
+ */
+ 
+/**
+ * Main module of the CATS IDE
+ */  
 module Cats {
            
 
@@ -87,7 +91,7 @@ module Cats {
     Cats.Commands.init();
     Cats.Menu.createMenuBar();
     IDE.initViews();
-    layoutIDE(); 
+    IDE.layout();
     
     Cats.Menu.initFileContextMenu();
     Cats.Menu.initTabContextMenu();

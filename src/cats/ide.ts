@@ -39,6 +39,7 @@ module Cats {
 
         sessions: Session[] = [];
         project: Project;
+        layoutConfig;
 
         activeSession: Session;
 
@@ -172,6 +173,10 @@ module Cats {
             }
         }
 
+
+        public layout() {
+             this.layoutConfig = layoutIDE();
+        }
 
         /**
          * Load the configuration for the IDE

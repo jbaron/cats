@@ -13,10 +13,11 @@
 // limitations under the License.
 //
 
-/**
+/*
  * This file layout the different views that make up the IDE. The views themselves
  * are not declared in this file.
  */ 
+ 
 module Cats {
     
      function initTabBar() {
@@ -79,7 +80,7 @@ module Cats {
     /**
      * Initialize and layout the various views of the IDE 
      */ 
-    export function layoutIDE() {
+    export function layoutIDE():any {
         
         initTabBar();
         initNavBar();
@@ -87,7 +88,7 @@ module Cats {
         initResultBar();
 
 		// OUTER-LAYOUT
-		$('body').layout({
+		var layout = $('body').layout({
             onresize: resizeOuter  
 		,	center__paneSelector:	"#center"
 		,	west__paneSelector:		"#navigator"
@@ -95,7 +96,7 @@ module Cats {
 		,	south__paneSelector:	"#statusbar"
 		,	west__size:				.20
 		,	spacing_open:			4  // ALL panes
-		,	spacing_closed:			12 // ALL panes
+		,	spacing_closed:			4 // ALL panes
 		,	north__maxSize:			25
 		,	south__maxSize:			25
 
@@ -108,11 +109,11 @@ module Cats {
 			,	east__size:				.20
 			,	south__size:			.20
 			,	spacing_open:			4  // ALL panes
-			,	spacing_closed:			12 // ALL panes
+			,	spacing_closed:			4 // ALL panes
 
 			}
 		});
-		
+	return layout;	
 	};
         
 }

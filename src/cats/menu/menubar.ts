@@ -135,7 +135,7 @@ module Cats.Menu {
             var window = new GUI.Menu();
             window.append(new GUI.MenuItem({ label: 'Theme', submenu: this.createThemeMenu() }));
             window.append(new GUI.MenuItem({ label: 'Font size', submenu: this.createFontSizeMenu() }));
-            
+            window.append(new GUI.MenuItem({ label: 'Views', submenu: this.createViewMenu() }));
 
             var help = new GUI.Menu();
             help.append(getCmd(CMDS.help_shortcuts));
@@ -183,6 +183,21 @@ module Cats.Menu {
             this.fontSizes.forEach((size: number) => {
                 var item = getCmd(CMDS.ide_fontSize,size+"px",size);
                 menu.append(item);
+            });
+            return menu;
+        }
+
+        private createViewMenu() {
+            var getCmd = Cats.Commands.getMenuCommand;
+            var CMDS = Cats.Commands.CMDS;
+            var menu = new GUI.Menu();
+            var views = [
+                {id:"north",name:"Toolbar"},    
+                {id:"south",name:"Statusbar"}
+            ]
+            views.forEach((view) => {
+                    var item = getCmd(CMDS.ide_toggleView,view.name,view.id);
+                    menu.append(item);
             });
             return menu;
         }
