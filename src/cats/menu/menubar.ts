@@ -125,6 +125,7 @@ module Cats.Menu {
             }
             proj.append(getCmd(CMDS.project_refresh));
             proj.append(getCmd(CMDS.project_properties));
+            proj.append(getCmd(CMDS.project_dependencies));
 
 
             var run = new GUI.Menu();

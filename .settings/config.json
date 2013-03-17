@@ -1,11 +1,11 @@
 {
-    "version" : "0.7",
+    "version" : "0.8",
     "main": "static/index.html",
-    "sourcePath": "src",
+    "srcPath": "src",
     "compiler": {
         "useDefaultLib": true,
-        "outputOption": "tmp",
         "emitComments": false,
+        "outputOption": "tmp",        
         "generateDeclarationFiles": false,
         "mapSourceFiles": false,
         "codeGenTarget": 1,

@@ -25,6 +25,7 @@ module Cats {
 
     export class Project {
 
+
         // The home directory of the project
         projectDir: string;
         name: string;
@@ -41,7 +42,6 @@ module Cats {
         constructor(projectDir: string) {
             IDE.project = this;
             this.projectDir = PATH.resolve(projectDir);
-
             this.refresh();
         }
 
@@ -66,6 +66,12 @@ module Cats {
 
             // this.initJSSense();
             this.iSense = new ISenseHandler();
+            
+            if (this.config.compiler.outputOption) {
+                this.config.compiler.outputOption = PATH.join(this.projectDir,this.config.compiler.outputOption);
+                console.log("Compiler output: " + this.config.compiler.outputOption);
+            }
+                
             this.iSense.setCompilationSettings(this.config.compiler);
 
             if (this.config.compiler.useDefaultLib) {
@@ -74,7 +80,7 @@ module Cats {
                 this.iSense.addScript(fullName, libdts, true);
             }
 
-            var srcPaths = [].concat(<any>this.config.sourcePath);
+            var srcPaths = [].concat(<any>this.config.srcPath);
             srcPaths.forEach((srcPath: string) => {
                 var fullPath = PATH.join(this.projectDir, srcPath);
                 this.loadTypeScriptFiles(fullPath);
@@ -114,7 +120,7 @@ module Cats {
                     if (file.isFile) {                       
                         console.log("FullName: " + fullName);
                         var ext = PATH.extname(fullName);
-                        if (ext === ".ts") {
+                        if (ext === ".ts") {                            
                             var content = OS.File.readTextFile(fullName);
                             this.iSense.addScript(fullName, content);
                             this.tsFiles.push(fullName);

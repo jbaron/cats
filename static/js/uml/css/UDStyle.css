@@ -1,0 +1,195 @@
+/**
+ ** MODULE NAME: 
+ **	  core.css
+ **
+ ** DESCRIPTION:
+ **   Styles necessary to position the layers of canvas html5 elements
+ **
+ ** DEVELOPED BY:
+ **   Martin Vega-Leal Ordonez (MVL)
+ **
+ ** SUPERVISED BY:
+ **		José Raúl Romero, PhD (Associate Professor, University of Córdoba, Spain)
+ **
+ ** HISTORY:
+ ** 	000 - Feb 2011 - MVL - First version release
+ **
+ ** CONTACT INFO:
+ ** 	José Raúl Romero, http://www.jrromero.net
+ **
+ ** NOTES:
+ **
+ ** LICENSE & DISCLAIMER:
+ **    Copyright (C) 2011 The authors
+ **
+ **    This program is free software: you can redistribute it and/or modify
+ **    it under the terms of the GNU General Public License as published by
+ **    the Free Software Foundation, either version 3 of the License, or
+ **    (at your option) any later version.
+ **
+ **    This program is distributed in the hope that it will be useful,
+ **    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ **    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ **    GNU General Public License for more details.
+ **
+ **    You should have received a copy of the GNU General Public License
+ **    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **
+**/
+
+
+
+/*****************************************
+ [UDCore] Div container for Canvas
+*****************************************/
+div.ud_diagram_div {
+  position: relative;
+  float: left;
+  background: #ffffff;
+  border: 1px solid black;
+}
+
+
+
+/*****************************************
+ [UDCore] Canvas elements style
+*****************************************/
+canvas.ud_diagram_canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+}
+
+
+
+/*****************************************
+  [UDCore] Pop-up Windows Styles
+*****************************************/
+.ud_popup {
+  min-width: 300px;
+  margin: .4em 0;
+  top: 0px;
+  left: 0px;
+  position: fixed;
+  padding: 10px;
+  background: #b1cad5;
+  border: 1px solid black;
+  font-size: 0.8em;  
+}
+
+.ud_popupDirection {
+  min-width: 200px;
+  height: 100px;
+  margin: .4em 0;
+  aling: center;
+  top: 0px;
+  left: 0px;
+  position: fixed;
+  padding: 10px;
+  background: #b1cad5;
+  border: 1px solid black;
+  font-size: 0.8em;  
+}
+
+.ud_popupColor {
+  min-width: 150px;
+  height: 120px;
+  margin: .4em 0;
+  top: 0px;
+  left: 0px;
+  position: fixed;
+  padding: 10px;
+  background: #b1cad5;
+  border: 1px solid black;
+  font-size: 0.8em;  
+  clear: both;
+}
+
+.ud_popupStyle {
+  min-width: 150px;
+  height: 200px;
+  margin: .4em 0;
+  top: 0px;
+  left: 0px;
+  position: fixed;
+  padding: 10px;
+  background: #b1cad5;
+  border: 1px solid black;
+  font-size: 0.8em;  
+  clear: both;
+}
+
+.ud_popupLineStyle {
+  min-width: 150px;
+  height: 190px;
+  margin: .4em 0;
+  top: 0px;
+  left: 0px;
+  position: fixed;
+  padding: 20px;
+  background: #b1cad5;
+  border: 1px solid black;
+  font-size: 0.8em;  
+  clear: both;
+}
+
+#divBlock1 {
+  float: left;
+  display: inline;
+  min-width: 150px;
+  height: 100px;
+}
+
+#divBlock2 {
+  float: left;
+  display: inline;
+  min-width: 100px;
+  height: 100px;
+}
+
+#divNavegability {
+  float: center;
+  margin: .4em 0;
+}  
+
+.ud_contextualMenu {
+  min-width: 100px;
+  margin: .4em 0;
+  top: 0px;
+  left: 0px;
+  position: fixed;
+  background: #b1cad5;
+  border: 1px solid black;
+  font-size: 0.8em;  
+}
+
+.ud_contextualMenuItem {
+  min-height: 20px;
+  min-width: 100px;
+  padding: 1px;
+}
+
+.ud_contextualMenuItem span{
+  min-height: 20px;
+  min-width: 100px;
+  padding: 3px;
+}
+
+.ud_contextualMenuItem:hover{
+  background: #ccccff;
+}
+
+.ud_popup label {
+  width: 30%;
+  float: left;
+}
+
+.ud_popupLineStyle input{
+  margin: 10px 10px;
+}
+
+#divNavegability input{
+  margin: 10px;
+  
+ }

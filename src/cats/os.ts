@@ -66,6 +66,10 @@ module OS.File {
             FS.writeFileSync(name, value, "utf8");
         }
         
+        export function switchToForwardSlashes(path:string):string {
+            return path.replace(/\\/g, "/");
+        }
+        
         /**
          * Read the files from a directory
          * @param directory The directory name that should be read
@@ -78,7 +82,7 @@ module OS.File {
                 var stats = FS.statSync(fullName);
                 result.push({
                    name:file,
-                   fullName:fullName,
+                   fullName: switchToForwardSlashes(fullName),
                    isFile: stats.isFile() ,
                    isDirectory: stats.isDirectory()
                 });

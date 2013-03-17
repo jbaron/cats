@@ -74,7 +74,8 @@ module Cats {
         version: string;
         name?: string;
         main?: string;
-        sourcePath?: string;
+        srcPath?: string;
+        destPath?: string;
         buildOnSave?: bool;
         compiler: {
             useDefaultLib: bool;

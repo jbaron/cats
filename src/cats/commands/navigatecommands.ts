@@ -61,7 +61,7 @@ module Cats.Commands {
             registry({name:CMDS.navigate_references, label:"Find References", command:findReferences});
             registry({name:CMDS.navigate_implementors, label:"Find Implementations", command:findImplementors});
             registry({name:CMDS.navigate_occurences, label:"Find Occurences", command:findOccurences});
-            registry({name:CMDS.navigate_declaration, label:"Goto declaration", command: gotoDeclaration});
+            registry({name:CMDS.navigate_declaration, label:"Goto Declaration", command: gotoDeclaration});
             
             
         }

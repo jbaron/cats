@@ -51,7 +51,29 @@ module Cats.Commands {
         // win2.reloadIgnoringCache()
     };
 
-   
+    /**
+     * Run the project
+     */ 
+    function showDependency() {
+        IDE.project.iSense.getDependencyGraph((err,data:any[])=>{
+            
+            data.forEach((entry) =>{
+               var refs:any[] = entry.ref;
+               var d = PATH.dirname(entry.src);
+               for (var i=0;i<refs.length;i++) {                   
+                   refs[i] = OS.File.switchToForwardSlashes(PATH.join(d,refs[i]));
+               };               
+            });
+            
+            
+            window["dependencies"] = data;
+            var startPage = "uml.html";
+            console.log("Opening file: " + startPage);
+            var win2 = window.open(startPage);
+            win2["dependencies"] = data;
+        })
+        // win2.reloadIgnoringCache()
+    };
 
     /**
      * Build the project
@@ -60,6 +82,15 @@ module Cats.Commands {
         // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
         var project = IDE.project;
         IDE.compilationResult.innerHTML = "";
+        
+        var translate = false;
+        
+        /*
+        if (project.config.destPath != null) {
+                var srcPath = PATH.join(project.projectDir,project.config.srcPath);
+                var destPath = PATH.join(project.projectDir,project.config.destPath);
+        }
+        */
 
         project.iSense.compile((err, data:Cats.CompileResults) => {                        
 
@@ -71,11 +102,16 @@ module Cats.Commands {
                 var src = sources[name];
                 console.log(name);
                 
+               /*
+               if (destPath) {
+                   name = destPath + name.substring(srcPath.lenght);
+               } 
                 // We might get a relative path back. Lets make sure it 
                 // is absolute before we save it
                 if (name.indexOf(project.projectDir) !== 0 ) {
                     name = PATH.join(project.projectDir, name);
                 }
+                */
                 
                 OS.File.writeTextFile(name, src);
             }
@@ -130,7 +166,7 @@ module Cats.Commands {
             registry({ name: CMDS.project_run, label: "Run Project", command: runProject });
             registry({ name: CMDS.project_debug, label: "Debug Project", command: null });
             registry({ name: CMDS.project_properties, label: "Properties", command: propertiesProject });
-
+            registry({ name: CMDS.project_dependencies, label: "Show Dependencies", command: showDependency });
         }
 
     }

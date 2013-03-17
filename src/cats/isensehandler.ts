@@ -46,6 +46,9 @@ export class ISenseHandler {
         this.perform("getCompletions", unitName, cursor,cb);
     }
 
+    getDependencyGraph(cb) {
+        this.perform("getDependencyGraph",cb);
+    }
 
     setCompilationSettings(settings) {
          this.perform("setCompilationSettings", settings, null);

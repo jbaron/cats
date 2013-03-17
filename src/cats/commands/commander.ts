@@ -71,6 +71,7 @@ module Cats.Commands {
         project_debug,
         project_refresh,
         project_properties,
+        project_dependencies,
         
         navigate_references,
         navigate_occurences,

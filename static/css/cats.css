@@ -31,12 +31,14 @@
 
 #navigator .treeview {
   padding: 4px;
+  padding-left: 10px;
 }
 
 .treeview ul {
   list-style: none;
-  padding-left: 0.5em;
-  margin: 0px;
+  padding-left: 3em;
+  margin-left: -3em;
+  margin-top: 0;
 }
 
 .treeview li {

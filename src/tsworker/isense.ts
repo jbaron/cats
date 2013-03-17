@@ -48,6 +48,7 @@ module Cats.TSWorker {
         private maxErrors = 20;
         ls: Services.ILanguageService;
         private lsHost: LanguageServiceHost;
+        private projectDir:string;
 
         /**
          * Create a new TypeScript ISense instance.
@@ -59,8 +60,8 @@ module Cats.TSWorker {
         }
 
         /**
-         * Sometimes the TS langugaeservices don't work
-         * This tries to fix that 
+         * Sometimes of the TS language services don't work first time
+         * This method tries to fix that 
          */ 
         initialize() {
             try {
@@ -171,6 +172,27 @@ module Cats.TSWorker {
             this.lsHost.setCompilationSettings(compOptions);
         }
 
+
+        getDependencyGraph(): any[] {
+            var result = [];
+            this.lsHost.scripts.forEach((script) => {
+                var entry = {
+                    src: script.name,
+                    ref:[]
+                };
+                
+                var refs = TypeScript.getReferencedFiles(new TypeScript.StringSourceText(script.content));
+                
+                
+                // ast.buildControlFlow();
+                // var ast = this.ls.getScriptSyntaxAST(script.name).getScript();
+                refs.forEach((file) => {
+                    entry.ref.push(file.path);
+                });
+                result.push(entry);
+            })
+            return result;
+        }
 
         /**
          * Get the content of a script
@@ -376,6 +398,8 @@ module Cats.TSWorker {
             postMessage({ id: id, error: error }, null);
         }
     }, false);
+
+
 
 
 }
