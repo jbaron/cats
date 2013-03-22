@@ -5,8 +5,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>Dependency Graph</title>
 
-      <link type="text/css" rel="stylesheet" href="js/uml/css/UDStyle.css" media="screen" />
-
+    <link type="text/css" rel="stylesheet" href="js/uml/css/UDStyle.css" media="screen" />
+    <script  type="text/javascript" src="js/jquery-latest.js"></script>
+    <script  type="text/javascript" src="js/arbor.js"></script>
     <script type="text/javascript" src="js/uml/UDCore.js"></script>
     <script type="text/javascript" src="js/uml/UDModules.js"></script>
 
@@ -15,7 +16,9 @@
             var x = 5;
             var y = 50;
             var diagram;
-    
+            var layoutEngine;
+            var iter = 1000;
+            
             var dict = {};
             
             function getLabel(name) {
@@ -27,12 +30,13 @@
             }
             
             function draw(name) {
-              if (dict[name]) return dict[name];
+              if (dict[name]) return dict[name];               
                var c = new UMLPackage({ x:x, y:y });
                c.setName(getLabel(name));
                c.notifyChange();
                diagram.addElement(c);               
                dict[name]=c;
+               layoutEngine.addNode(name, {node:c});
                next();
                return c;
             }
@@ -47,8 +51,11 @@
             }
     
     window.onload = function(){
-
-            diagram = new UMLClassDiagram({id: 'classDiagram', width: 3000, height: 3000 });
+            layoutEngine = arbor.ParticleSystem();
+            layoutEngine.screenSize(1000,1000);
+            layoutEngine.parameters({repulsion:2000, gravity:true});
+            
+            diagram = new UMLClassDiagram({id: 'classDiagram', width: 2000, height: 2000 });
             diagram.setName("Module Dependencies");
             var deps = window.dependencies;
             deps.forEach(function (file){
@@ -60,18 +67,27 @@
                  var b = draw(ref);
                  var depLine = new UMLDependency({a:a,b:b});                
                  diagram.addElement(depLine);
+                 layoutEngine.addEdge(file.src,ref,{});
                });
-               
-
-
-    
-             
-               
+                             
             });
-
-            //Draw the diagram
-            diagram.draw();
-
+            
+            var myRenderer = {
+                init:  function(system){ },
+                redraw:function(){ 
+                    // alert("redraw");
+                    iter--;
+                    if (iter < 0) layoutEngine.stop(); 
+                    layoutEngine.eachNode(function(node, pt){
+                        var n = node.data.node;
+                        n.position(2*pt.x,2*pt.y);
+                     });
+                    diagram.draw();
+                }
+            };
+  
+            layoutEngine.renderer = myRenderer;
+            
             //Interaction is possible (editable)
             diagram.interaction(true);
         }

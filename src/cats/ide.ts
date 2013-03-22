@@ -300,6 +300,16 @@ module Cats {
         addProject(projectDir: string) {
             this.project = new Project(projectDir);
         }
+        
+        
+         /**
+         * Add a new project to the IDE
+         * @param projectDir the directory of the new project
+         */
+        closeProject(project) {
+            this.project.close();
+            this.project = null;
+        }
 
     }
 

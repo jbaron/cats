@@ -18,12 +18,13 @@
  * This module abstracts out the native File IO. Right now it uses Nodejs, but this
  * could be easily changed to another implementation like a cloud storage API.
  * 
- * @TODO make this using the async Nodejs api's. 
- */  
+ * @TODO make this an async api. 
+ */
+
 module OS.File {
 
         var FS=require("fs");
-
+        
         /**
          * Create recursively directories if they don't exist yet
          * @param path The directory path to create
@@ -107,11 +108,6 @@ module OS.File {
             return data;
         }
 
-
-        // export var join = PATH.join;
-        // export var basename = PATH.basename;
-        // export var dirname = PATH.dirname;
-
-
+      
 }
 

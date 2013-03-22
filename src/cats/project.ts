@@ -54,6 +54,11 @@ module Cats {
 
         }
 
+
+        close() {
+            
+        }
+
         /**
          *  Refreshes the project and loads required artifacts
          *  again from the filesystem to be fully in sync
@@ -106,6 +111,7 @@ module Cats {
                 this.iSense.perform("initialize", null);
             }
         }
+
 
         /**
          * Load all the script that are part of the project into the tsworker

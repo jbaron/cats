@@ -2,6 +2,22 @@
     "version" : "0.8",
     "main": "static/index.html",
     "srcPath": "src",
+    "builds" : [
+        
+        { 
+          "name" : "worker",
+          "main" : "cats/tsworker/isense.ts",
+          "output": "lib/worker.js"
+        },
+        
+        { 
+          "name" : "ide",
+          "main" : "cats/main.ts",
+          "output": "lib/main.js"
+        }
+        
+        
+    ],
     "compiler": {
         "useDefaultLib": true,
         "emitComments": false,

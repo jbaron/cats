@@ -28,7 +28,7 @@ module Cats.Commands {
      * Close the project
      */ 
     function closeProject() {        
-        window.close();
+        IDE.closeProject(IDE.project);
     }
 
     /**
@@ -69,7 +69,7 @@ module Cats.Commands {
             window["dependencies"] = data;
             var startPage = "uml.html";
             console.log("Opening file: " + startPage);
-            var win2 = window.open(startPage);
+            var win2 = window.open(startPage,"dependencies","status=1,resizable=1,menubar=1,location=1,toolbar=1,titlebar=1,scrollbars=1");
             win2["dependencies"] = data;
         })
         // win2.reloadIgnoringCache()

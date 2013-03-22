@@ -17,9 +17,7 @@
 ///<reference path='ui/autocompleteview.ts'/>
 
 
-
 module Cats {
-
 
     function setOverwrite() {        
         var s = <AceSession>IDE.activeSession;
@@ -145,7 +143,7 @@ module Cats {
         }
 
         /**
-         * Hide the editor
+         * Hide the edit        or
          */ 
         hide() {
             this.rootElement.style.display = "none";

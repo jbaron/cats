@@ -42,8 +42,7 @@ module Cats.UI {
 
 
     // Created a file tree view based on a directory.
-    // Very simple and fast implementation that refreshes a directory
-    // every time you open it.
+    // Very simple and fast implementation
     export class TreeView {
 
         private aspects = {};

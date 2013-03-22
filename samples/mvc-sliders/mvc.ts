@@ -92,7 +92,7 @@ module MVC {
 
             }, 0);
         }
-
+ 
         /**
          * Is this property accessed by a viewer. If that is the case and this is the first time,
          * lets register the viewer as an observer of the property
