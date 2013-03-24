@@ -47,7 +47,7 @@ module MVC {
         }
 
         /**
-         * Called whenever a model change happens
+         * Called whenever a model changes
          */
         update() {
             this._render();
@@ -76,7 +76,6 @@ module MVC {
     }
 
 
-
     var __OBSERVER_CURRENT:Function;
     
     
@@ -87,8 +86,8 @@ module MVC {
         return __OBSERVER_CURRENT;
     }
     /**
-     * Make a function an observer. This means when you run this function
-     * models keeps track of the interest and will invoke this function when 
+     * Make a function an observer. This means when you run this function,
+     * the models keeps track of the interest and will invoke this function when 
      * the model state changes.
      * 
      * @param fn The function that should become the observer

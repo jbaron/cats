@@ -13,7 +13,11 @@
 // limitations under the License.
 //
 
-var PATH=require("path");
+///<reference path='../typings/cats.d.ts'/>
+///<reference path='../typings/typescript.d.ts'/>
+///<reference path='../typings/node-webkit.d.ts'/>
+
+var PATH = require("path");
 var GUI = require('nw.gui');
 var IDE:Cats.Ide;
 
@@ -21,7 +25,7 @@ var IDE:Cats.Ide;
 ///<reference path='observable.ts'/>
 ///<reference path='ide.ts'/>
 ///<reference path='layout.ts'/>
-///<reference path='../typings/cats.d.ts'/>
+
 ///<reference path='commands/commander.ts'/>
 ///<reference path='menu/menubar.ts'/>
 ///<reference path='menu/filecontextmenu.ts'/>
@@ -30,9 +34,9 @@ var IDE:Cats.Ide;
 ///<reference path='ui/tabbar.ts'/>
 ///<reference path='ui/elemtabadapter.ts'/>
 ///<reference path='editor.ts'/>
-///<reference path='../typings/node-webkit.d.ts'/>
+
 ///<reference path='ui/grid.ts'/>
-///<reference path='../typings/typescript.d.ts'/>
+
 
 
 /**

@@ -65,15 +65,13 @@ There is normally no need to compile CATS yourself, since all the compiled files
 
 2. Go to the cats directory
 
-3. The following will compile the required tsworker.js file:
+3. The following will compile the required files:
 
         tsc "@build"
-
-4. Now the only thing left is to compile the main.js file: 
-
         tsc "@build2"
-   
-That is all there is to it. The lib directory should now have an updated main.js and tsworker.js file and you are ready to run CATS editor.
+        tsc "@build3"
+
+That is all there is to it. The lib directory should now have an updated main.js, tsworker.js and uml.js files and you are ready to run CATS editor.
 
 
 Couldn't have done it without ....

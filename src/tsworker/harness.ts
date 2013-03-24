@@ -71,7 +71,8 @@ module Cats.TSWorker {
                 return TypeScript.ScriptEditRange.unknown();
             }
 
-            var entries = this.editRanges.slice(initialEditRangeIndex);
+            // @BUG in TS 0.9.x map is not callable, so cast to any
+            var entries:any = this.editRanges.slice(initialEditRangeIndex);
 
             var minDistFromStart = entries.map(x => x.editRange.minChar).reduce((prev, current) => Math.min(prev, current));
             var minDistFromEnd = entries.map(x => x.length - x.editRange.limChar).reduce((prev, current) => Math.min(prev, current));

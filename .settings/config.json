@@ -14,8 +14,13 @@
           "name" : "ide",
           "main" : "cats/main.ts",
           "output": "lib/main.js"
+        },
+
+        { 
+          "name" : "uml",
+          "main" : "cats/uml/layout.ts",
+          "output": "lib/uml.js"
         }
-        
         
     ],
     "compiler": {

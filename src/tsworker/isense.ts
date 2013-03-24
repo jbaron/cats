@@ -57,6 +57,7 @@ module Cats.TSWorker {
         constructor() {
             this.lsHost = new LanguageServiceHost();
             this.ls = new Services.TypeScriptServicesFactory().createLanguageService(this.lsHost);
+            // this.ls = new Services.TypeScriptServicesFactory().createPullLanguageService(this.lsHost);
         }
 
         /**
@@ -254,7 +255,7 @@ module Cats.TSWorker {
                 errors = this.ls.getErrors(this.maxErrors);
 
             return this.convertErrors(errors);
-        };
+        }
         
           
 

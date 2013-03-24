@@ -88,28 +88,28 @@ module Cats {
         };
     };
 
-    declare interface Position {
+    interface Position {
         row: number;
         column: number;
     }
 
-    declare interface Range {
+    interface Range {
         start: Position;
         end: Position;
     }
 
-    declare class TypeInfo extends Services.TypeInfo {
+    class TypeInfo extends Services.TypeInfo {
         description: string;
     }
 
-    declare interface FileRange {
+    interface FileRange {
         unitName: string;
         range: Range;
         message?: string;
         context?: string;
     }
 
-    declare interface CompileResults {
+    interface CompileResults {
         source: any;
         errors: FileRange[];
     }
