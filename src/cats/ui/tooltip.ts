@@ -21,7 +21,7 @@ export class ToolTip {
 
     constructor() {    
         this.element = this.createElement();
-    };
+    }
     
     show(x:number, y:number, tip:string) {
         this.element.innerHTML = tip;
@@ -31,7 +31,7 @@ export class ToolTip {
         st.top =  (y + 10).toString(10) + "px";
         
         st.display = "block";
-    };
+    }
 
     hide() {
         this.element.style.display = "none";
@@ -53,7 +53,7 @@ export class ToolTip {
         st.fontFamily = "monospace";
         st.whiteSpace = "pre-line";
         return tooltipNode;
-    };
+    }
 
 
 }

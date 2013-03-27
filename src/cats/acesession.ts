@@ -290,7 +290,7 @@ module Cats {
                 if (this.pendingWorkerUpdate) this.update();
                 this.showErrors();
             }, 1000);
-        };
+        }
     }
 
 }

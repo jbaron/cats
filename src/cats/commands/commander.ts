@@ -94,11 +94,11 @@ module Cats.Commands {
 		command: Function;
 		icon?: string;
 		shortcut?: string;
-	};
+	}
 
  
-	private commands:Command[] = [];
-    private commandList:Command[] =[];
+	var commands:Command[] = [];
+    var commandList:Command[] =[];
 
 
     export function getAllCommands() {

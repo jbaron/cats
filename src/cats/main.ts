@@ -19,12 +19,12 @@
 
 var PATH = require("path");
 var GUI = require('nw.gui');
-var IDE:Cats.Ide;
 
 ///<reference path='os.ts'/>
 ///<reference path='observable.ts'/>
 ///<reference path='ide.ts'/>
 ///<reference path='layout.ts'/>
+
 
 ///<reference path='commands/commander.ts'/>
 ///<reference path='menu/menubar.ts'/>
@@ -37,7 +37,7 @@ var IDE:Cats.Ide;
 
 ///<reference path='ui/grid.ts'/>
 
-
+var IDE:Cats.Ide;
 
 /**
  * This is the file that is included in the index.html and 

@@ -22,11 +22,12 @@ export interface Tab {
 }
     
 export class ElemTabAdapter {
+    
     constructor(private tab:Cats.UI.Tabbar, private elems:HTMLElement[], selected?:HTMLElement ) {
         tab.setOptions(this.convert(elems));
         if (selected) this.onSelect(this.getTab(selected));
         tab.onselect = (elem:Tab) => this.onSelect(elem);        
-    };
+    }
 
     setAspect(elem:HTMLElement,name:string,value) {
         var tab = this.getTab(elem);

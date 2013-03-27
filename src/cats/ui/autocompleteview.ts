@@ -57,7 +57,7 @@ module Cats.UI {
             this.listElement = document.createElement('ul');
             this.wrap.className = AutoCompleteView.className;
             this.wrap.appendChild(this.listElement);
-        };
+        }
 
         /**
          * Get the text between cursor and start
@@ -71,7 +71,7 @@ module Cats.UI {
                 return matches[0];
             else
                 return "";
-        };
+        }
 
 
         // ALternative immplementation to get the text between cursor and start
@@ -139,7 +139,7 @@ module Cats.UI {
             // this.editor.getSession().removeAllListeners('change');
             this.editor.getSession().on("change", this.changeListener);
             this.active = true;
-        };
+        }
 
         /**
          * Hide the popup and remove all keybindings
@@ -153,7 +153,7 @@ module Cats.UI {
             this.active = false;
             // this.editor.getSession().on("change",CATS.onChangeHandler);
             // this.editor.getSession().removeAllListeners('change');
-        };
+        }
 
         /**
          * Check wether the typed character is reason to stop
@@ -225,7 +225,7 @@ module Cats.UI {
             this.setPosition(coords);
             this.render();
             this.show();
-        };
+        }
 
 
         private highLite() {
@@ -265,7 +265,7 @@ module Cats.UI {
                 this.wrap.style.top = (top - $(this.wrap).height() - 20) + 'px';
                 return this.wrap.style.left = coords.pageX + 'px';
             }
-        };
+        }
 
     
         private current(): HTMLElement {
@@ -273,7 +273,7 @@ module Cats.UI {
                 return <HTMLElement>this.listElement.childNodes[this.cursor];
             else
                 return null;
-        };
+        }
        
 
         private hideRow(index) {
@@ -304,7 +304,7 @@ module Cats.UI {
                 this.offset--;
             }
             this.highLite();
-        };
+        }
 
     }
 

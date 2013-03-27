@@ -13,12 +13,11 @@
 // limitations under the License.
 //
 
-declare var process: any;
-declare var global: any;
-declare var require: any;
+var process: any;
+var global: any;
+var require: any;
     
-declare module "nw.gui" {
-
+module nw.gui {
 
 	interface EventEmitter {
 	    addListener(event: string, listener: Function);
@@ -69,13 +68,13 @@ declare module "nw.gui" {
         close(force:bool);
 	}
 
-	declare var MenuItem:MenuItem;
-	declare var Menu:Menu
-	declare var Window: { 
+	var MenuItem:MenuItem;
+	var Menu:Menu
+	var Window: { 
         get() : IWindow; 
         open(url:string, options):IWindow;
     };
-	declare var App : {
+	var App : {
         argv: any;  
         closeAllWindows();
         quit();

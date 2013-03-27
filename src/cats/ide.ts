@@ -22,6 +22,7 @@
 ///<reference path='views/navigator.ts'/>
 ///<reference path='views/compilationresults.ts'/>
 
+
 module Cats {
 
     export interface IDEViews {
