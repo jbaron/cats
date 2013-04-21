@@ -33,8 +33,8 @@ export class ISenseHandler {
         this.init();
     }
 
-    getErrors(unitName:string,cb:(err, result: FileRange[]) => void) {
-        this.perform("getErrors",unitName, cb);
+    getErrors(fileName:string,cb:(err, result: FileRange[]) => void) {
+        this.perform("getErrors",fileName, cb);
     }
 
     compile(cb:(err, data:Cats.CompileResults)=>void) {
@@ -42,8 +42,8 @@ export class ISenseHandler {
     }
 
 
-    getCompletions(unitName:string,cursor,cb) {
-        this.perform("getCompletions", unitName, cursor,cb);
+    getCompletions(fileName:string,cursor,cb) {
+        this.perform("getCompletions", fileName, cursor,cb);
     }
 
     getDependencyGraph(cb) {
@@ -54,18 +54,18 @@ export class ISenseHandler {
          this.perform("setCompilationSettings", settings, null);
     }
 
-    addScript(unitName:string,content:string,persistent?:bool) {
-        this.perform("addScript",unitName, content, persistent, null);
+    addScript(fileName:string,content:string) {
+        this.perform("addScript",fileName, content, null);
     }
     
-    updateScript(unitName:string,content:string,persistent?:bool) {
-        this.perform("updateScript",unitName, content, persistent, null);
+    updateScript(fileName:string,content:string) {
+        this.perform("updateScript",fileName, content, null);
     }
 
     /**
      * Invoke a method on the worker using JSON-RPC message structure
      */ 
-    perform(method:string, ...data:any[]) {
+    perform(method:string, ...data:Array<any>) {
         var handler = data.pop();
         this.messageId++;
         var message = {

@@ -20,12 +20,12 @@ function showErrors(errors: Cats.FileRange[]) {
 
         IDE.resultbar.selectOption(0);
         var grid = new Cats.UI.Grid();
-        grid.setColumns(["message", "unitName", "position"]);
+        grid.setColumns(["message", "fileName", "position"]);
         grid.setAspect("position", (data:FileRange) => { return (data.range.start.row + 1) + ":" + (data.range.start.column + 1) });
 
         grid.setRows(errors);
         grid.onselect = function(data:FileRange) {
-            IDE.openSession(data.unitName, data.range.start);
+            IDE.openSession(data.fileName, data.range.start);
         };
 
         grid.render();

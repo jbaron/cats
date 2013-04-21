@@ -35,7 +35,7 @@ module Cats.View {
             });
 
             var overwriteMode = document.getElementById("overwritemode");
-            IDE.mainEditor.onOverwrite((mode: bool) => {
+            IDE.mainEditor.onOverwrite((mode: boolean) => {
                 overwriteMode.innerText = mode ? "overwrite" : "insert";
             });
         }

@@ -17,7 +17,12 @@
 // Declare the global JQuery $
 declare var $;
 
-module Cats {
+declare module Cats {
+
+    interface Map<T>  {
+        [index:string]:T;
+    }
+
 
     interface Editor {
         hide();
@@ -36,8 +41,8 @@ module Cats {
     interface FileEntry {
         name: string; // Just the file/directory name without path
         fullName: string; // fullName including path
-        isFile: bool; // is this a folder or a file
-        isDirectory: bool; // is this a folder or a file
+        isFile: boolean; // is this a folder or a file
+        isDirectory: boolean; // is this a folder or a file
     }
 
     interface Session {
@@ -45,7 +50,7 @@ module Cats {
         type: string;
         project: any;
         mode: string;
-        changed: bool;
+        changed: boolean;
         shortName: string;
         getValue(): string;
         setValue(value: string);
@@ -76,17 +81,17 @@ module Cats {
         main?: string;
         srcPath?: string;
         destPath?: string;
-        buildOnSave?: bool;
+        buildOnSave?: boolean;
         compiler: {
-            useDefaultLib: bool;
+            useDefaultLib: boolean;
             outputOption: string;
-            emitComments: bool;
-            generateDeclarationFiles: bool;
-            mapSourceFiles: bool;
+            emitComments: boolean;
+            generateDeclarationFiles: boolean;
+            mapSourceFiles: boolean;
             codeGenTarget: number;
             moduleGenTarget: number;
         };
-    };
+    }
 
     interface Position {
         row: number;
@@ -103,20 +108,19 @@ module Cats {
     }
 
     interface FileRange {
-        unitName: string;
+        fileName: string;
         range: Range;
         message?: string;
         context?: string;
     }
 
     interface CompileResults {
-        source: any;
+        source: { fileName: string; content: string; }[];
         errors: FileRange[];
     }
 
-    declare class NavigateToItem extends Services.NavigateToItem {
+    class NavigateToItem extends Services.NavigateToItem {
         range: Range;
-        unitName: string;
     }
 
 }

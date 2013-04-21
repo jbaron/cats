@@ -70,7 +70,7 @@ module OS.File {
         export function switchToForwardSlashes(path:string):string {
             return path.replace(/\\/g, "/");
         }
-        
+                
         /**
          * Read the files from a directory
          * @param directory The directory name that should be read
@@ -90,8 +90,28 @@ module OS.File {
             });
             return result;
         }
-                   
-        /**
+        
+         /**
+         * Read the files from a directory
+         * @param directory The directory name that should be read
+         */ 
+        export function readDir2(directory:string,cb:(param:Cats.FileEntry[])=>any){
+            var files:string[] = FS.readdirSync(directory);
+            var result = [];
+            files.forEach((file) => {
+                var fullName = PATH.join(directory, file);
+                var stats = FS.statSync(fullName);
+                result.push({
+                   name:file,
+                   fullName: switchToForwardSlashes(fullName),
+                   isFile: stats.isFile() ,
+                   isDirectory: stats.isDirectory()
+                });
+            });
+            cb(result);
+        }
+        
+         /**
          * Read the content from a text file
          * @param name The full name/path of the file
          */ 
@@ -106,6 +126,23 @@ module OS.File {
             // Remove the BOM (only MS uses BOM for UTF8)
             data = data.replace(/^\uFEFF/, '');
             return data;
+        } 
+                   
+        /**
+         * Read the content from a text file
+         * @param name The full name/path of the file
+         */ 
+        export function readTextFile2(name: string, cb:(param:string)=>any) {
+            if (name === "untitled") return "";
+
+            var data = FS.readFileSync(name, "utf8");
+
+            // Use single character line returns
+            data = data.replace(/\r\n?/g, "\n");
+
+            // Remove the BOM (only MS uses BOM for UTF8)
+            data = data.replace(/^\uFEFF/, '');
+            cb(data);
         }
 
       

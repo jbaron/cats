@@ -49,7 +49,6 @@ var IDE:Cats.Ide;
  */  
 module Cats {
            
-
     function getParameterByName(name):string {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regexS = "[\\?&]" + name + "=([^&#]*)";
@@ -78,6 +77,7 @@ module Cats {
     process.on('uncaughtException', function (err) {
         console.error("Uncaught exception occured: " + err);
         console.error(err.stack);
+        alert(err);
     });
    
    

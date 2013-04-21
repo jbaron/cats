@@ -16,7 +16,7 @@
 
 // Right now only defined what CATS is actually using
 
-module Ace {
+declare module Ace {
 
 	interface EditorCommand {
 		name:string;
@@ -54,11 +54,11 @@ module Ace {
 
 	interface UndoManager {
 		new();
-		undo(dontSelect?: bool);
-		redo(dontSelect?:bool): Range;
+		undo(dontSelect?: boolean);
+		redo(dontSelect?:boolean): Range;
 		reset():void;
-		hasUndo(): bool;
-		hasRedo(): bool;
+		hasUndo(): boolean;
+		hasRedo(): boolean;
 	}
 
 	interface TokenInfo {
@@ -69,7 +69,7 @@ module Ace {
 		new(content:string, mode:string);
 		getUndoManager():UndoManager;
 		getValue():string;
-        getOverwrite():bool;
+        getOverwrite():boolean;
         setValue(value:string);
 		getDocument():Document;
 		setMode(mode:string);
@@ -96,12 +96,12 @@ module Ace {
 	interface Editor {
 		find(value:string,options,something);
 		focus();
-        setReadOnly(readOnly:bool);
-        getReadOnly():bool;
+        setReadOnly(readOnly:boolean);
+        getReadOnly():boolean;
 		replace(value:string,options);
 		session:EditSession;
 		renderer;
-        resize(force:bool);
+        resize(force:boolean);
 		keyBinding;
 		clearSelection();
         centerSelection();
@@ -117,7 +117,7 @@ module Ace {
 		getSession():EditSession;
 		setTheme(theme:string);
 		getTheme():string;
-		moveCursorTo(row:number, column:number, animate?:bool);
+		moveCursorTo(row:number, column:number, animate?:boolean);
         moveCursorToPosition(position:Position);
 		setFontSize(cssSize: string);
 	}

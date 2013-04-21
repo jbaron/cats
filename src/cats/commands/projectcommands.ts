@@ -98,23 +98,12 @@ module Cats.Commands {
             if (data.errors && (data.errors.length > 0)) return;
             
             var sources = data.source
-            for (var name in sources) {
-                var src = sources[name];
-                console.log(name);
-                
-               /*
-               if (destPath) {
-                   name = destPath + name.substring(srcPath.lenght);
-               } 
-                // We might get a relative path back. Lets make sure it 
-                // is absolute before we save it
-                if (name.indexOf(project.projectDir) !== 0 ) {
-                    name = PATH.join(project.projectDir, name);
-                }
-                */
-                
-                OS.File.writeTextFile(name, src);
-            }
+
+                sources.forEach((source) => {
+                    console.log(source.fileName);
+                    OS.File.writeTextFile(source.fileName, source.content);
+                });
+            
         });
     }
 

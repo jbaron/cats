@@ -33,13 +33,13 @@ module Cats.View {
         searchResultsElem.innerHTML = "";
         if (data) {
             var grid = new Cats.UI.Grid();
-            grid.setColumns(["message", "unitName", "position"]);
+            grid.setColumns(["message", "fileName", "position"]);
             grid.setRows(data);
             grid.setAspect("position", (row) => { return rangeToPosition(row.range) });
             grid.render();
             grid.appendTo(searchResultsElem);
             grid.onselect = (sel: Cats.FileRange) => {
-                IDE.openSession(sel.unitName, sel.range.start);
+                IDE.openSession(sel.fileName, sel.range.start);
             };
 
         }

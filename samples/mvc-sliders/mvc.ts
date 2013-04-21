@@ -11,7 +11,7 @@
  * MVC does require support for JavaScript Getters and Setters. 
  */ 
 module MVC {
-
+    
     export class View {
 
         private static ID = 0;

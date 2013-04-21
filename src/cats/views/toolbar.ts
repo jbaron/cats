@@ -45,8 +45,8 @@ module Cats.View {
         initToolBar() {
             var t = document.getElementById("toolbar");
             t.innerHTML = "";
-            var cmd = Cats.Commands.getAllCommands();
-            cmd.forEach((cmd) => {
+            var cmds = Cats.Commands.getAllCommands();
+            cmds.forEach((cmd) => {
                 if (cmd.icon) {
                     var button = <HTMLElement>document.createElement("button");
                     button.style.backgroundImage = "url(../" + cmd.icon + ")";

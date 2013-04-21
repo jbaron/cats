@@ -28,7 +28,7 @@ module Cats.Commands {
      * Show the version of CATS
      */ 
     function showAbout() {
-        alert("Code Assisitant for TypeScript\nversion 0.7.5\nCreated by JBaron");
+        alert("Code Assisitant for TypeScript\nversion 0.9.0.alpha\nCreated by JBaron");
     }
 
     /**

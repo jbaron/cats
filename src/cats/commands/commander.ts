@@ -91,7 +91,7 @@ module Cats.Commands {
 	export interface Command {
 		name:CMDS;
 		label?: string;
-		command: Function;
+		command: any;
 		icon?: string;
 		shortcut?: string;
 	}
@@ -141,8 +141,8 @@ module Cats.Commands {
      * Create a menu item for a certain command.
      */
     export function getMenuCommand(name); 
-    export function getMenuCommand(name,label:string, ...params:any[]);     
-    export function getMenuCommand(name,label?:string, ...params:any[]) {
+    export function getMenuCommand(name,label:string, ...params:Array<any>);     
+    export function getMenuCommand(name,label?:string, ...params:Array<any>) {
         var cmd = commands[name];
         if (! cmd) {
             console.error("No implementation available for command " + name);

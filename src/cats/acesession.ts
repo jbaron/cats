@@ -69,7 +69,7 @@ module Cats {
          * @param content The content of the session
          */
         constructor(public name?: string, content?: string) {
-            super("changed");
+            super(["changed"]);
             console.log("Creating new session for file " + name);
             this.mode = this.determineMode(name);
             this.editSession = new EditSession(content, "ace/mode/" + this.mode);
@@ -201,7 +201,9 @@ module Cats {
             return result;
         }
 
-        // Perform code autocompletion for JS
+        /**
+         * Perform code autocompletion for plain JS
+         */ 
         autoCompleteJS(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
             var editSession = this.editSession;
 

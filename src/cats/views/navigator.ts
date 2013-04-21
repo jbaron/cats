@@ -19,7 +19,7 @@ module Cats.View {
     export interface ListEntry {
         name: string; // Just the file/directory name without path
         path: string; // fullName including path
-        isFolder: bool; // is this a folder or a file
+        isFolder: boolean; // is this a folder or a file
         decorator?: string;
     }
 

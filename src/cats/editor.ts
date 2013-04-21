@@ -37,12 +37,12 @@ module Cats {
         private mouseMoveTimer: number;
         
         editMode:string;
-        overwrite:bool;
+        overwrite:boolean;
 
         private editorContextMenu: Cats.Menu.EditorContextMenu;
 
         constructor(private rootElement: HTMLElement) {
-            super("editMode", "overwrite");
+            super(["editMode", "overwrite"]);
             this.aceEditor = this.createAceEditor();
             this.hide();
             this.init();
@@ -50,7 +50,7 @@ module Cats {
 
         // Small wrappers to make the observers a bit more typed.
         onEditMode(fn:(mode:string)=>void) { this.on("editMode",fn); }
-        onOverwrite(fn:(mode:bool)=>void) { this.on("overwrite",fn); }
+        onOverwrite(fn:(mode:boolean)=>void) { this.on("overwrite",fn); }
 
 
         init() {
@@ -66,18 +66,19 @@ module Cats {
          * @param newSession The session that will be the new active session
          */ 
         private swapListeners(oldSession:AceSession, newSession:AceSession) {
+            var event;
             var listeners = {
                "changeOverwrite" : setOverwrite                 
             };
             
             if (oldSession) {
-                for (var event in listeners) {
+                for (event in listeners) {
                     oldSession.editSession.removeListener(event,listeners[event]);
                 }
             }
             
             if (newSession) {
-                for (var event in listeners) {
+                for (event in listeners) {
                     newSession.editSession.on(event,listeners[event]);
                 }
 

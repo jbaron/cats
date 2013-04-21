@@ -31,7 +31,7 @@ export class Grid  {
 
 	defaultHandler = (row,name:string) => { return row[name];};
 
-	onselect:Function;
+	onselect:(event:any)=>void;
 
 	constructor() {
 		this.rootElement = <HTMLTableElement>document.createElement("table");

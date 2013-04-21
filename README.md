@@ -61,7 +61,7 @@ Building from source
 =====================
 There is normally no need to compile CATS yourself, since all the compiled files are already included. But if you want to play around with it, here are the steps:
 
-1. Make sure you have installed TypeScript 0.8.3 or later
+1. Make sure you have installed TypeScript 0.9.0 or later
 
 2. Go to the cats directory
 

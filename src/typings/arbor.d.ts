@@ -1,1 +1,1 @@
-var arbor;
+declare var arbor;

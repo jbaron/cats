@@ -50,7 +50,7 @@ module Cats {
 
             var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
             var libdts = OS.File.readTextFile(fullName);
-            this.JSSense.addScript(fullName, libdts, true);
+            this.JSSense.addScript(fullName, libdts);
 
         }
 
@@ -82,14 +82,14 @@ module Cats {
             if (this.config.compiler.useDefaultLib) {
                 var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
                 var libdts = OS.File.readTextFile(fullName);
-                this.iSense.addScript(fullName, libdts, true);
+                this.iSense.addScript(fullName, libdts);
             }
 
             var srcPaths = [].concat(<any>this.config.srcPath);
             srcPaths.forEach((srcPath: string) => {
                 var fullPath = PATH.join(this.projectDir, srcPath);
                 this.loadTypeScriptFiles(fullPath);
-                this.initTSWorker();
+                // this.initTSWorker(); @TODO still needed ?
             });
 
         }
@@ -119,7 +119,7 @@ module Cats {
          * @param directory The source directory where to start the scan
          */
         private loadTypeScriptFiles(directory: string) {
-            var files = OS.File.readDir(directory);
+            OS.File.readDir2(directory, (files) => {
             files.forEach((file) => {
                 try {
                     var fullName = file.fullName;
@@ -127,10 +127,11 @@ module Cats {
                         console.log("FullName: " + fullName);
                         var ext = PATH.extname(fullName);
                         if (ext === ".ts") {                            
-                            var content = OS.File.readTextFile(fullName);
-                            this.iSense.addScript(fullName, content);
-                            this.tsFiles.push(fullName);
-                            console.log("Found TypeScript file: " + fullName);
+                            OS.File.readTextFile2(fullName,(content) => {
+                                this.iSense.addScript(fullName, content);
+                                this.tsFiles.push(fullName);
+                                console.log("Found TypeScript file: " + fullName);
+                            });
                         }
                     }
                     if (file.isDirectory) {
@@ -140,6 +141,7 @@ module Cats {
                     console.log("Got error while handling file " + fullName);
                     console.error(err);
                 }
+            });
             });
         }
 

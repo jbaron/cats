@@ -1013,7 +1013,7 @@ var TypeScriptHighlightRules = function() {
         }, 
         {
             "token": ["storage.type.variable.ts"],
-            "regex": "(?:\\b(this\\.|string\\b|bool\\b|number)\\b)"
+            "regex": "(?:\\b(this\\.|string\\b|boolean\\b|number)\\b)"
         }, 
         {
             "token": ["keyword.operator.ts", "storage.type.variable.ts", "keyword.operator.ts", "storage.type.variable.ts"],

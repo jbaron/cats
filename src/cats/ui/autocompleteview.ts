@@ -172,7 +172,6 @@ module Cats.UI {
 
         /**
          * Render a single row
-         * 
          */ 
         private renderRow() {
             var index = this.listElement.children.length;
@@ -183,12 +182,12 @@ module Cats.UI {
             span1.innerText = info.name;
             li.appendChild(span1);
 
-            if (info.name !== info.type) {
-                var span2 = document.createElement("span");
-                span2.className = "type";
-                span2.innerText = info.type;
-                li.appendChild(span2);
-            }
+            // if (info.name !== info.type) {
+            var span2 = document.createElement("span");
+            span2.className = "type";
+            span2.innerText = info.type;
+            li.appendChild(span2);
+            // }
 
             this.listElement.appendChild(li);
         }
@@ -249,7 +248,7 @@ module Cats.UI {
         }
 
         /**
-         * Determine the location  of the popup. Copied fromt he Ace playground
+         * Determine the location of the popup. Copied from the Ace playground
          * editor. 
          * @TODO remove jQuery dependency
          */ 

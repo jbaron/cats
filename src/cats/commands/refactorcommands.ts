@@ -17,6 +17,18 @@ module Cats.Commands {
 
     var Range: Ace.Range = ace.require("ace/range").Range;
 
+    function refactor(rows:FileRange[],name:string, i=0) {
+            if (i >= rows.length) return;
+            var data = rows[i];
+            IDE.openSession(data.fileName,null, (session) => {
+                var r = data.range;
+                var range: Ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
+                session.editSession.replace(range, name);
+                refactor(rows,name,++i);
+            });        
+    }
+
+
     function rename() {
         var table = <HTMLElement>document.querySelector("#searchresults table");
         if (!table) {
@@ -28,15 +40,7 @@ module Cats.Commands {
         var msg = "Going to rename " + rows.length + " instances.\nPlease enter new name";
         var newName = prompt(msg);
         if (!newName) return;
-        var i = rows.length;
-        while (i--) {
-            var data = rows[i];
-            var session = <AceSession>IDE.openSession(data.unitName);
-            var r = data.range;
-            var range: Ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
-            session.editSession.replace(range, newName);
-        }
-
+        refactor(rows,newName);
     }
 
 

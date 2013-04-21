@@ -14,13 +14,13 @@
 //
 
 
-///<reference path='harness.ts'/>
+///<reference path='languageservicehost.ts'/>
 ///<reference path='../typings/cats.d.ts'/>
 
 importScripts("../static/js/typescript.js")
 
 module Cats.TSWorker {
-
+    
     /**
      * Simple function to stub console.log functionality since this is 
      * not available in a worker.
@@ -42,7 +42,7 @@ module Cats.TSWorker {
         if (a.name > b.name) return 1;
         return 0;
     }
-
+    
     class ISense {
 
         private maxErrors = 20;
@@ -56,8 +56,8 @@ module Cats.TSWorker {
          */ 
         constructor() {
             this.lsHost = new LanguageServiceHost();
-            this.ls = new Services.TypeScriptServicesFactory().createLanguageService(this.lsHost);
-            // this.ls = new Services.TypeScriptServicesFactory().createPullLanguageService(this.lsHost);
+            // this.ls = new Services.TypeScriptServicesFactory().createLanguageService(this.lsHost);
+            this.ls = new Services.TypeScriptServicesFactory().createPullLanguageService(this.lsHost);
         }
 
         /**
@@ -73,35 +73,31 @@ module Cats.TSWorker {
             }
         }
 
+
+        private getScript(fileName:string) : ScriptInfo {
+            return this.lsHost.scripts[fileName];
+        }
      
         /**
          * Convert a TS offset position to a Cats Position
          */
         private positionToLineCol(fileName: string, position: number): Position {
-            var script = this.ls.getScriptAST(fileName);
-            var result = TypeScript.getLineColumnFromPosition(script, position);
+            var script = this.getScript(fileName);
+            var result = script.getLineMap().getLineAndCharacterFromPosition(position);
             return {
-                row: result.line -1,
-                column: result.col -1
+                row: result.line(),
+                column: result.character() 
             };
         }
 
-        /**
-         * Get the name of a TS unit based on its name
-         */ 
-        private getUnitName(index: number): string {
-            return this.lsHost.scripts[index].name;
-        }
-      
-
+ 
         getDefinitionAtPosition(fileName: string, pos: Cats.Position):Cats.FileRange {
             var chars = this.getPositionFromCursor(fileName, pos);
             var info = this.ls.getDefinitionAtPosition(fileName, chars);        
-            if (info) {
-                var unitName = this.getUnitName(info.unitIndex);
+            if (info) {                
                 return {
-                    unitName: unitName,
-                    range: this.getRange(unitName,info.minChar,info.limChar)                    
+                    fileName: info.fileName,
+                    range: this.getRange(info.fileName,info.minChar,info.limChar)                    
                 };
             } else {
                 return null;
@@ -117,26 +113,40 @@ module Cats.TSWorker {
             var results= <NavigateToItem[]>items;
             for (var i = 0; i < results.length; i++) {
                 var result = results[i];
-                var fileName = this.getUnitName(result.unitIndex);
-                result.range = this.getRange(fileName, result.minChar, result.limChar);
-                result.unitName = fileName;
+                result.range = this.getRange(result.fileName, result.minChar, result.limChar);
             }
             return results;
         }
+        
+        /**
+         * Convert Services to Cats NavigateToItems
+         * @todo properly do this conversion
+         */ 
+        private convertNavigateTo2(fileName:string,items:TypeScript.TextSpan[]):Range[] {
+            var result= new Array<Range>();
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var entry  = this.getRange(fileName, item.start(), item.end());
+                result.push(entry);
+            }
+            return result;
+        }
+        
+        
+        
 
         /**
-         * Convert the errors from a TypeScript format into Cats format
-         * 
+         * Convert the errors from a TypeScript format into Cats format 
          */ 
-        private convertErrors(errors: TypeScript.ErrorEntry[]) :Cats.FileRange[]{
-            var result:Cats.FileRange[] = []
+        private convertErrors(errors: TypeScript.IDiagnostic[]) :Cats.FileRange[]{
+            var result:Cats.FileRange[] = [];
             errors.forEach((error) => {
-                var scriptName = this.getUnitName(error.unitIndex);
-                var r = this.getRange(scriptName, error.minChar, error.limChar);
+    
+                var r = this.getRange(error.fileName(), error.start(), error.start() + error.length());
                 result.push({
                     range:r,
-                    message:error.message,
-                    unitName: scriptName
+                    message:error.message(),
+                    fileName: error.fileName()
                 });             
             });
             return result;
@@ -147,18 +157,31 @@ module Cats.TSWorker {
          * compiles JS sources and errors (if any).
          */ 
         compile(): Cats.CompileResults {
+
             var scripts = this.lsHost.scripts;
-            var result = {}
-            scripts.forEach((script) => {
-                var files = this.ls.getEmitOutput(script.name);
-                files.forEach((file) => {
-                    result[file.name] = file.text;
-                });
-            })
+            
+            var result:{ fileName: string; content: string; }[] = [];
+            var errors = [];
+            
+            var compilerState = this.ls["compilerState"];
+            if (! compilerState.compiler) {
+                compilerState.createCompiler();
+            }
+            
+            var compiler = compilerState.compiler;
+            
+            var emitterIO = new Compiler.EmitterIOHost();
+            compiler.emitAll(emitterIO);
+            
+            result = emitterIO.toArray();
+            
+            for (var fileName in scripts) {              
+                errors = errors.concat(this.getErrors(fileName));
+            };
                         
             return {
                 source: result,
-                errors: this.getErrors()
+                errors: errors
             };
         }
 
@@ -174,15 +197,18 @@ module Cats.TSWorker {
         }
 
 
-        getDependencyGraph(): any[] {
+        public getDependencyGraph() {
             var result = [];
-            this.lsHost.scripts.forEach((script) => {
+            var scripts = this.lsHost.scripts;
+            for (var fileName in scripts) {
+                var script = scripts[fileName];
                 var entry = {
-                    src: script.name,
+                    src: script.fileName,
                     ref:[]
                 };
                 
-                var refs = TypeScript.getReferencedFiles(new TypeScript.StringSourceText(script.content));
+                var i = TypeScript.ScriptSnapshot.fromString(script.content);
+                var refs = TypeScript.getReferencedFiles(script.fileName,i);
                 
                 
                 // ast.buildControlFlow();
@@ -191,7 +217,7 @@ module Cats.TSWorker {
                     entry.ref.push(file.path);
                 });
                 result.push(entry);
-            })
+            };
             return result;
         }
 
@@ -199,12 +225,9 @@ module Cats.TSWorker {
          * Get the content of a script
          * @param name Script name
          */ 
-        getScriptContent(name: string): string {
-            var scripts = this.lsHost.scripts;
-            var i = scripts.length;
-            while (i--) {
-                if (scripts[i].name === name) return scripts[i].content;
-            }
+        getScriptContent(fileName: string): string {
+            var script = this.lsHost.scripts[fileName];
+            if (script) return script.content;
         }
      
         private splice(str, start, max, replacement) {
@@ -235,51 +258,48 @@ module Cats.TSWorker {
         /**
          * Add a new script to the compiler environment
          */ 
-        addScript(name: string, source: string, resident?: bool) {
-            this.lsHost.addScript(name, source, resident);
+        addScript(fileName: string, content: string) {
+            this.lsHost.addScript(fileName, content);
         }
 
 
         /**
          * Get the errors for either one script or for 
          * all the scripts
-         * @param unitName name of the script. If none provided the errors
+         * @param fileName name of the script. If none provided the errors
          * for all scripts will be returned.
          */ 
-        getErrors(unitName?: string) : Cats.FileRange[]{
-            var result = [];
-            var errors;
-            if (unitName)
-                errors = this.ls.getScriptErrors(unitName, this.maxErrors);
-            else
-                errors = this.ls.getErrors(this.maxErrors);
-
-            return this.convertErrors(errors);
+        getErrors(fileName: string) : Cats.FileRange[]{
+            var result:Cats.FileRange[];
+            var errors = this.ls.getSemanticDiagnostics(fileName);
+            var errors2 = this.ls.getSyntacticDiagnostics(fileName);
+            result = this.convertErrors(errors);
+            result = result.concat(this.convertErrors(errors2));
+            return result;
         }
         
           
-
         // updated the content of a script
-        updateScript(unitName: string, src: string, resident?: bool) {
-            this.lsHost.updateScript(unitName, src, resident);
+        updateScript(fileName: string, content: string) {
+            this.lsHost.updateScript(fileName, content);
         }
 
         // Get an Ace Range from TS minChars and limChars
-        private getRange(script: string, minChar: number, limChar: number):Cats.Range {
+        private getRange(fileName: string, minChar: number, limChar: number):Cats.Range {
             var result = {
-                start : this.positionToLineCol(script, minChar),        
-                end :  this.positionToLineCol(script, limChar)
+                start : this.positionToLineCol(fileName, minChar),        
+                end :  this.positionToLineCol(fileName, limChar)
             };
             return result;
         }
        
         // Get the chars offset based on the Ace position
         private getPositionFromCursor(fileName: string, cursor: Cats.Position): number {
-            var script = this.ls.getScriptAST(fileName);
-            var lineMap = script.locationInfo.lineMap;
-
+            var script = this.getScript(fileName);
+            var pos = script.getLineMap().getPosition(cursor.row,cursor.column);
+                        
             // Determine the position
-            var pos = lineMap[cursor.row + 1] + cursor.column;
+            // var pos = lineMap[cursor.row + 1] + cursor.column;
             // console.log(pos);
             return pos;
         }
@@ -316,8 +336,8 @@ module Cats.TSWorker {
         /**
          * Retieve the line that contains a certain range
          */
-        private getLine(scriptName: string, minChar: number, limChar: number) {
-            var content = this.getScriptContent(scriptName);
+        private getLine(fileName: string, minChar: number, limChar: number) {
+            var content = this.getScriptContent(fileName);
             var min = content.substring(0, minChar).lastIndexOf("\n");
             var max = content.substring(limChar).indexOf("\n");
             return content.substring(min + 1, limChar + max);
@@ -329,37 +349,37 @@ module Cats.TSWorker {
             return this.convertNavigateTo(results);
         }
 
-        public getScriptLexicalStructure(unitName: string):NavigateToItem[] {
-            var results = this.ls.getScriptLexicalStructure(unitName);
-            return this.convertNavigateTo(results);
+        public getScriptLexicalStructure(fileName: string):NavigateToItem[] {
+            var results = this.ls.getScriptLexicalStructure(fileName);
+            var finalResults = results.filter((entry)=>{return entry.fileName === fileName});
+            return this.convertNavigateTo(finalResults);
         }
 
-        public getOutliningRegions(unitName: string):NavigateToItem[] {
-            var results = this.ls.getOutliningRegions(unitName);
-            return this.convertNavigateTo(results);
+        public getOutliningRegions(fileName: string):Range[] {
+            var results = this.ls.getOutliningRegions(fileName);
+            return this.convertNavigateTo2(fileName,results);
         }
 
         // generic wrapper for info at a certain position 
-        public getInfoAtPosition(method: string, filename: string, cursor: Cats.Position): Cats.FileRange[] {
-            var pos = this.getPositionFromCursor(filename, cursor);
+        public getInfoAtPosition(method: string, fileName: string, cursor: Cats.Position): Cats.FileRange[] {
+            var pos = this.getPositionFromCursor(fileName, cursor);
             var result:Cats.FileRange[] = [];
-            var entries: Services.ReferenceEntry[] = this.ls[method](filename, pos);
+            var entries: Services.ReferenceEntry[] = this.ls[method](fileName, pos);
             for (var i = 0; i < entries.length; i++) {
                 var ref = entries[i];
-                var name = this.lsHost.scripts[ref.unitIndex].name;
                 result.push({
-                    unitName: name,
-                    range: this.getRange(name, ref.ast.minChar, ref.ast.limChar),
-                    message: this.getLine(name, ref.ast.minChar, ref.ast.limChar)
+                    fileName: ref.fileName,
+                    range: this.getRange(ref.fileName, ref.ast.minChar, ref.ast.limChar),
+                    message: this.getLine(ref.fileName, ref.ast.minChar, ref.ast.limChar)
                 });
             }
             return result;
         }
 
-        public autoComplete(cursor: Cats.Position, filename: string): any {
-            var pos = this.getPositionFromCursor(filename, cursor);
+        public autoComplete(cursor: Cats.Position, fileName: string): Services.CompletionInfo {
+            var pos = this.getPositionFromCursor(fileName, cursor);
             var memberMode = false;
-            var source = this.getScriptContent(filename);
+            var source = this.getScriptContent(fileName);
             var type = this.determineAutoCompleteType(source, pos);
             /*
             if (type === "member") {
@@ -367,7 +387,7 @@ module Cats.TSWorker {
             }
             */
             // Lets find out what autocompletion there is possible		
-            var completions = this.ls.getCompletionsAtPosition(filename, type.pos, type.memberMode);
+            var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode);
 
             completions.entries.sort(caseInsensitiveSort); // Sort case insensitive
             return completions;
@@ -396,6 +416,7 @@ module Cats.TSWorker {
                 description: err.description,
                 stack: err.stack
             }
+            console.log("Error during processing message " + method);
             postMessage({ id: id, error: error }, null);
         }
     }, false);

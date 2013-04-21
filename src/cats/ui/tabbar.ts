@@ -201,7 +201,7 @@ export class Tabbar extends AspectWidget {
         this.render();
     }
 
-    private isOverflowed():bool{
+    private isOverflowed():boolean{
         var element = this.ul;
         return element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth;
     }

@@ -20,10 +20,13 @@ module Cats.View {
         decorator: string;
         qualifyer: string;
         kind: string;
-        isFolder?: bool;
+        isFolder?: boolean;
     }
 
-    function navigateToItemHasChildren(name: string, kind: string, data: NavigateToItem[]): bool {
+    /**
+     * Determine if a item has any children or not
+     */ 
+    function navigateToItemHasChildren(name: string, kind: string, data: NavigateToItem[]): boolean {
         for (var i = 0; i < data.length; i++) {
             var item = data[i];
             if ((item.containerName === name) && (item.containerKind === kind)) return true;
@@ -49,7 +52,7 @@ module Cats.View {
                 var outliner = new Cats.UI.TreeView();
                 outliner.setAspect("children", (parent: OutlineTreeElement): OutlineTreeElement[] => {
                     var name = parent ? parent.qualifyer : "";
-                    var kind = parent ? parent.kind : "";
+                    var kind = parent ? parent.kind : "script";
                     var result: OutlineTreeElement[] = [];
                     for (var i = 0; i < data.length; i++) {
                         var o = data[i];
@@ -75,7 +78,7 @@ module Cats.View {
                 outliner.appendTo(IDE.outlineNavigation);
                 outliner.onselect = (value) => {
                     var data: NavigateToItem = value.outline;
-                    IDE.openSession(data.unitName, { row: data.range.start.row, column: data.range.start.column });
+                    IDE.openSession(data.fileName, data.range.start);
                 };
                 outliner.refresh();
             });

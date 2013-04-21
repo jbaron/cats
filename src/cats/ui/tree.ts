@@ -20,7 +20,7 @@ module Cats.UI {
     export interface ListEntry {
         name: string;
         path: string;
-        isFolder: bool;
+        isFolder: boolean;
     }
 
     class AspectWidget {
@@ -58,8 +58,8 @@ module Cats.UI {
             return fn(data, name);
         }
 
-       private static COLLAPSED = "collapsed";
-        private static OPENED = "opened";
+        static COLLAPSED = "collapsed";
+        static OPENED = "opened";
         private openFolders = [];
 
         private rootElem: HTMLElement;
@@ -146,12 +146,14 @@ module Cats.UI {
         }
 
         private handleClick(li: HTMLElement) {
+            
+            var elem;
 
             if ($(li).hasClass(TreeView.OPENED)) {
                 li.className = TreeView.COLLAPSED;
                 this.decorate(li);
                 // li.removeChild(li.childNodes[1]);
-                var elem = <HTMLElement>li.childNodes[1];
+                elem = <HTMLElement>li.childNodes[1];
                 elem.style.display = "none";
                 return;
             }
@@ -160,7 +162,7 @@ module Cats.UI {
                 li.className = TreeView.OPENED;
                 this.decorate(li);
                 
-                var elem = <HTMLElement>li.childNodes[1];
+                elem = <HTMLElement>li.childNodes[1];
                 if (elem) {
                     elem.style.display = "block";
                     return;

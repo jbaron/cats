@@ -133,7 +133,7 @@ module MVC {
             Model.Waiting = setTimeout(() => {
                 var waiters = Model.Waiters;
                 Model.Waiting = null;
-                waiters.forEach((waiter) => {
+                waiters.forEach((waiter:()=>any) => {
                     try { waiter() } catch (err) { console.error(err); }
                 })}, 0);
         }

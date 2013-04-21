@@ -90,7 +90,7 @@ module Cats {
         mainEditor: TextEditor;
 
         constructor() {
-            super("sessions","activeSession","project");
+            super(["sessions","activeSession","project"]);
             this.mainEditor = new TextEditor(this.editor);
             this.mainEditor.init();
             this.init();
@@ -147,7 +147,7 @@ module Cats {
         /**
          * Are there any session that have unsaved changes 
          */
-        hasUnsavedSessions(): bool {
+        hasUnsavedSessions(): boolean {
             for (var i = 0; i < this.sessions.length; i++) {
                 if (this.sessions[i].changed) return true;
             }
@@ -166,7 +166,7 @@ module Cats {
         }
 
 
-        public busy(isBusy:bool) {
+        public busy(isBusy:boolean) {
             if (isBusy) {
                $("#activity").addClass("busy"); 
             } else {
@@ -183,7 +183,7 @@ module Cats {
          * Load the configuration for the IDE
          * @param project Also load the project
          */ 
-        private loadConfig(project:bool) {
+        private loadConfig(project:boolean) {
             var defaultConfig:IDEConfiguration = {
                 version: "1",
                 theme: "cats",
@@ -232,7 +232,7 @@ module Cats {
          * Open an existing session or if it doesn't exist yet create
          * a new one.
          */ 
-        openSession(name: string, pos?:Ace.Position): Session {
+        openSession(name: string, pos?:Ace.Position, cb?:Function):void {
             var session = this.getSession(name);
             if (! session) {
                 var content;
@@ -242,7 +242,7 @@ module Cats {
             }
             this.mainEditor.edit(session,pos);
             this.activeSession = session;
-            return session;
+            if (cb) cb(session);
         }
 
         /**

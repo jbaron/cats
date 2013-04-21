@@ -24,8 +24,8 @@ module Cats.Commands {
         if (! session) return;
         var cursor = getCursor();
         session.project.iSense.perform("getDefinitionAtPosition", session.name, cursor, (err, data:FileRange) => {
-            if (data && data.unitName)
-                IDE.openSession(data.unitName, data.range.start);
+            if (data && data.fileName)
+                IDE.openSession(data.fileName, data.range.start);
         });
     }
 

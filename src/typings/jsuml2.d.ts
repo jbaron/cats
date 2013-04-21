@@ -1,10 +1,10 @@
 
  
-var UMLDependency;
-var UMLClassDiagram;
-var UMLPackage;
+declare var UMLDependency;
+declare var UMLClassDiagram;
+declare var UMLPackage;
 
-module JSUML2 {
+declare module JSUML2 {
     
     
     class Node {

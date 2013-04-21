@@ -16,7 +16,7 @@
 module Cats {
 
 export interface Observable {
-    emit(event: string, ...args: any[]);
+    emit(event: string, ...args: Array<any>);
     listeners(event: string): Observer[];
     removeListener(event: string, listener: Function);
     on(event: string, listener: Observer);
@@ -37,10 +37,18 @@ export class ObservableImpl implements Observable {
     private _observerRegistry = {};
 
 
-    constructor(...props: string[]) {
+    /*
+    constructor(...props: Array<string>) {
         if (props.length)
             this.makeObservable.apply(this, props);
     }
+    */
+
+    constructor(args : string[]) {
+        if (args.length)
+            this.makeObservable.apply(this, args);
+    }
+
 
     removeListener(event:string, listener:Function) {
         var o:Function[] = this._observerRegistry[event];
@@ -105,7 +113,7 @@ export class ObservableImpl implements Observable {
      * Make a number of plain properties observable
      * @param props The list of properties to be observable
      */
-    makeObservable(...props: string[]) {
+    makeObservable(...props: Array<string>) {
         props.forEach((prop) => {
             var privateVar = this[prop];
             var timer = null;
@@ -125,7 +133,7 @@ export class ObservableImpl implements Observable {
         })
     }
 
-    makeObservable2(...props: string[]) {
+    makeObservable2(...props: Array<string>) {
         props.forEach((prop) => {
             var name = "_$_" + prop;
             this[name] = this[prop];

@@ -17,8 +17,8 @@ module Cats.UI {
 
 export interface Tab {
     elem: HTMLElement;
-    selected: bool;
-    name: bool;
+    selected: boolean;
+    name: boolean;
 }
     
 export class ElemTabAdapter {

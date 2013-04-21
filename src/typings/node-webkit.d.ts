@@ -13,11 +13,11 @@
 // limitations under the License.
 //
 
-var process: any;
-var global: any;
-var require: any;
+declare var process: any;
+// declare var global: any; // Also defined in typescript.d.ts
+declare var require: any;
     
-module nw.gui {
+declare module nw.gui {
 
 	interface EventEmitter {
 	    addListener(event: string, listener: Function);
@@ -53,8 +53,8 @@ module nw.gui {
 		submenu?:Menu;
 		icon?:string;
 		tooltip?:string;
-		checked?:bool;
-		enabled?:bool;		
+		checked?:boolean;
+		enabled?:boolean;		
 	}
 
 	interface MenuItem extends MenuItemConfig, EventEmitter {
@@ -65,7 +65,7 @@ module nw.gui {
 		menu:Menu;
 		showDevTools();	
         on(event:string,handler:Function);
-        close(force:bool);
+        close(force:boolean);
 	}
 
 	var MenuItem:MenuItem;
