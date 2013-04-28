@@ -85,9 +85,9 @@ module Cats {
                 this.iSense.addScript(fullName, libdts);
             }
 
-            var srcPaths = [].concat(<any>this.config.srcPath);
+            var srcPaths = [].concat(<any>this.config.sourcePath);
             srcPaths.forEach((srcPath: string) => {
-                var fullPath = PATH.join(this.projectDir, srcPath);
+                var fullPath = PATH.join(this.projectDir, srcPath || '');
                 this.loadTypeScriptFiles(fullPath);
                 // this.initTSWorker(); @TODO still needed ?
             });
