@@ -1,7 +1,7 @@
 {
     "version" : "0.8",
     "main": "static/index.html",
-    "srcPath": "src",
+    "sourcePath": "src",
     "builds" : [
         
         { 

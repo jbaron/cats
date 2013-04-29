@@ -29,7 +29,7 @@ To install CATS, just follow these steps:
         git clone https://github.com/jbaron/cats.git
 
 2. Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at: [Node-Webkit](https://github.com/rogerwang/node-webkit).
-   Make sure you have at least version 0.4.2 installed.
+   Make sure you have at least version 0.5.0 installed.
 
 3. Go to the cats directory and type: 
 
