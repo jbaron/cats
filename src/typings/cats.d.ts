@@ -79,7 +79,7 @@ declare module Cats {
         version: string;
         name?: string;
         main?: string;
-        srcPath?: string;
+        sourcePath?: string;
         destPath?: string;
         buildOnSave?: boolean;
         compiler: {

@@ -1,9 +1,10 @@
+////[d:/ts/cats/samples/mvc-sliders/mvc.js]
 var MVC;
 (function (MVC) {
     var View = (function () {
         function View(id) {
             this.id = id;
-            if(!this.id) {
+            if (!this.id) {
                 this.id = "view#" + View.ID++;
             }
         }
@@ -19,7 +20,7 @@ var MVC;
             View.VIEWER = this;
             try  {
                 this.render();
-            }finally {
+            } finally {
                 View.VIEWER = oldViewer;
             }
         };
@@ -32,7 +33,7 @@ var MVC;
         function Model() { }
         Model.Waiters = null;
         Model.notify = function notify(newWaiters) {
-            if(Model.Waiting) {
+            if (Model.Waiting) {
                 for(var id in newWaiters) {
                     Model.Waiters[id] = newWaiters[id];
                 }
@@ -54,24 +55,22 @@ var MVC;
         };
         Model.registerViewer = function registerViewer(obj, prop) {
             var viewer = View.GetViewer();
-            if(viewer) {
-                if(!obj.__observers[prop][viewer.id]) {
+            if (viewer) {
+                if (!obj.__observers[prop][viewer.id]) {
                     console.log("registering viewer " + viewer.id + " for property " + prop);
                     obj.__observers[prop][viewer.id] = viewer;
                 }
             }
         };
         Model.makeObservable = function makeObservable(obj, props) {
-            if(!obj.__observers) {
-                obj.__observers = {
-                };
+            if (!obj.__observers) {
+                obj.__observers = {};
             }
             props.forEach(function (prop) {
-                if(obj.__observers[prop]) {
+                if (obj.__observers[prop]) {
                     return;
                 }
-                obj.__observers[prop] = {
-                };
+                obj.__observers[prop] = {};
                 var privateVar = obj[prop];
                 Object.defineProperty(obj, prop, {
                     get: function () {
@@ -79,7 +78,7 @@ var MVC;
                         return privateVar;
                     },
                     set: function (val) {
-                        if(val === privateVar) {
+                        if (val === privateVar) {
                             return;
                         }
                         privateVar = val;

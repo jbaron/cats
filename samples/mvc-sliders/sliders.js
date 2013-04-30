@@ -1,3 +1,4 @@
+////[d:/ts/cats/samples/mvc-sliders/sliders.js]
 var __extends = this.__extends || function (d, b) {
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
