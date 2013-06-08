@@ -14,7 +14,7 @@
 //
 
 ///<reference path='project.ts'/>
-///<reference path='../typings/typescript.d.ts'/>
+///<reference path='../typings/typescriptServices.d.ts'/>
 
 module Cats {
 

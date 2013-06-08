@@ -1,3 +1,6 @@
+///<reference path='../typings/typescriptServices.d.ts' />
+///<reference path='emitteriohost.ts' />
+
 //
 // Copyright (c) JBaron.  All rights reserved.
 // 
@@ -13,9 +16,6 @@
 // limitations under the License.
 //
 
-
-///<reference path='../typings/typescript.d.ts' />
-///<reference path='emitteriohost.ts' />
 
 // This is based on the harness.ts file from TypeScript (80% identical)
 // Major difference is that this module uses real language services API and not the Shim.

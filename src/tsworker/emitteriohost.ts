@@ -1,3 +1,5 @@
+///<reference path='../typings/typescriptServices.d.ts' />
+
 //
 // Copyright (c) Microsoft Corporation.  All rights reserved.
 // 
@@ -12,8 +14,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-
-///<reference path='../typings/typescript.d.ts' />
 
 
 
@@ -51,9 +51,14 @@ module Compiler {
 
             private fileCollection = {};
 
+            public writeFile(path: string, contents: string, writeByteOrderMark: boolean): void {
+                var writer = this.createFile(path, writeByteOrderMark);
+                writer.Write(contents);
+                writer.Close();
+            }
+
             /** create file gets the whole path to create, so this works as expected with the --out parameter */
             public createFile(s: string, useUTF8?: boolean): ITextWriter {
-
                 if (this.fileCollection[s]) {
                     return <ITextWriter>this.fileCollection[s];
                 }

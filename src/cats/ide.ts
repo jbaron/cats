@@ -189,7 +189,7 @@ module Cats {
                 theme: "cats",
                 fontSize: 16,
                 sessions: [],
-                projects:[PATH.join(process.cwd(), "samples", "greeter")],
+                projects:[PATH.join((<any>process).cwd(), "samples", "greeter")],
             };
             
             var configStr = localStorage["cats.config"];

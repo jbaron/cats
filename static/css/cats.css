@@ -219,6 +219,7 @@ body .ui-layout-toggler {
         bottom: 0;
         left: 0;
         font-size: 16px;
+        border-top: solid 1px rgb(180,180,180);
 }
 
 
@@ -226,12 +227,13 @@ body .ui-layout-toggler {
 Tab section
 ************************************************************/
 
- .tabbar ul {
+.tabbar ul {
   padding: 0px;
   margin: 0px;
   list-style: none;
   overflow: hidden;
   height: 100%;
+  margin-bottom: 1px;
 }
 
 .tabbar li.changed:before {
@@ -254,20 +256,25 @@ Tab section
   padding: 2px 5px 2px 2px;
   margin-right: 5px;  
   cursor: pointer;
-}
 
-.tabbar li.active, .tabbar li:hover {
   border: 1px solid rgba(100,100,100,0.5);
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   border-bottom: 0px;
-  background-color: rgba(250, 250, 250, 0.5);
+  background-color: rgba(200, 200, 200, 0.5);
   text-decoration:none;
-  margin-top: -1px;
-  margin-left: -1px;
+  margin-top: 2px;
+  margin-left: 1px;
+}
+
+.tabbar li.active, .tabbar li:hover {
+  background-color: rgba(220, 220, 220, 0.5);
 }
 
 .tabbar li.active {
+  margin-top: 1px;
+  margin-bottom: -2px;
+  background-color: rgba(250, 250, 250, 0.5);
   background-repeat: no-repeat;
   padding-left: 20px;
   background-position: 1px 3px;

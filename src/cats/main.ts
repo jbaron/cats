@@ -14,7 +14,7 @@
 //
 
 ///<reference path='../typings/cats.d.ts'/>
-///<reference path='../typings/typescript.d.ts'/>
+///<reference path='../typings/typescriptServices.d.ts'/>
 ///<reference path='../typings/node-webkit.d.ts'/>
 
 var PATH = require("path");

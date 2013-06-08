@@ -1,3 +1,6 @@
+///<reference path='languageservicehost.ts'/>
+///<reference path='../typings/cats.d.ts'/>
+
 //
 // Copyright (c) JBaron.  All rights reserved.
 // 
@@ -14,10 +17,7 @@
 //
 
 
-///<reference path='languageservicehost.ts'/>
-///<reference path='../typings/cats.d.ts'/>
-
-importScripts("../static/js/typescript.js")
+importScripts("../static/js/typescriptServices.js")
 
 module Cats.TSWorker {
     
@@ -93,11 +93,11 @@ module Cats.TSWorker {
  
         getDefinitionAtPosition(fileName: string, pos: Cats.Position):Cats.FileRange {
             var chars = this.getPositionFromCursor(fileName, pos);
-            var info = this.ls.getDefinitionAtPosition(fileName, chars);        
-            if (info) {                
+            var infos = this.ls.getDefinitionAtPosition(fileName, chars);        
+            if (infos && infos.length) {                
                 return {
-                    fileName: info.fileName,
-                    range: this.getRange(info.fileName,info.minChar,info.limChar)                    
+                    fileName: infos[0].fileName,
+                    range: this.getRange(infos[0].fileName,infos[0].minChar,infos[0].limChar)                    
                 };
             } else {
                 return null;
@@ -369,8 +369,8 @@ module Cats.TSWorker {
                 var ref = entries[i];
                 result.push({
                     fileName: ref.fileName,
-                    range: this.getRange(ref.fileName, ref.ast.minChar, ref.ast.limChar),
-                    message: this.getLine(ref.fileName, ref.ast.minChar, ref.ast.limChar)
+                    range: this.getRange(ref.fileName, ref.minChar, ref.limChar),
+                    message: this.getLine(ref.fileName, ref.minChar, ref.limChar)
                 });
             }
             return result;

@@ -48,7 +48,7 @@ module Cats {
         private initJSSense() {
             this.JSSense = new ISenseHandler();
 
-            var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
+            var fullName = PATH.join((<any>process).cwd(), "typings/lib.d.ts");
             var libdts = OS.File.readTextFile(fullName);
             this.JSSense.addScript(fullName, libdts);
 
@@ -80,7 +80,7 @@ module Cats {
             this.iSense.setCompilationSettings(this.config.compiler);
 
             if (this.config.compiler.useDefaultLib) {
-                var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
+                var fullName = PATH.join((<any>process).cwd(), "typings/lib.d.ts");
                 var libdts = OS.File.readTextFile(fullName);
                 this.iSense.addScript(fullName, libdts);
             }

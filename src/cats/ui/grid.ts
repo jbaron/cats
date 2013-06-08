@@ -84,7 +84,7 @@ export class Grid  {
 	  });
 	}
 
-	private createRow(parent:HTMLTableElement, rowData) {
+	private createRow(parent:HTMLTableSectionElement, rowData) {
 		var row = <HTMLTableRowElement>parent.insertRow(-1);
 		this.columns.forEach((column) => {
 			row.insertCell(-1).innerText = this.getValue(rowData,column); 
@@ -104,7 +104,7 @@ export class Grid  {
 	    table.innerHTML = "";
 	    this.createHeader();
 
-	    var tbody = <HTMLTableElement>document.createElement("tbody");
+	    var tbody = document.createElement("tbody");
 	    table.appendChild(tbody); 
 
 	    this.rows.forEach( (row) => {      

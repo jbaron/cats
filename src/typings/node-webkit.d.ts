@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-declare var process: any;
+// declare var process: any; // Also defined in typescript.d.ts
 // declare var global: any; // Also defined in typescript.d.ts
 declare var require: any;
     

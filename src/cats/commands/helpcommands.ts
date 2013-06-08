@@ -42,11 +42,11 @@ module Cats.Commands {
      * Show process info like current memory usage
      */ 
     function showProcess() {
-            var mem = process.memoryUsage();
+            var mem = (<any>process).memoryUsage();
             var display = "memory used: " + mem.heapUsed;
             display += "\nmemory total: " + mem.heapTotal;
             display += "\nplatform: " + process.platform;
-            display += "\nworking directory: " + process.cwd();
+            display += "\nworking directory: " + (<any>process).cwd();
             alert(display);
     }
 

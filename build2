@@ -5,7 +5,7 @@ src/typings/arbor.d.ts
 src/typings/cats.d.ts
 src/typings/jsuml2.d.ts
 src/typings/node-webkit.d.ts
-src/typings/typescript.d.ts
+src/typings/typescriptServices.d.ts
 src/cats/promise.ts
 src/cats/os.ts
 src/cats/observable.ts
