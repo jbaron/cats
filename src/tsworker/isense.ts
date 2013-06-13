@@ -17,7 +17,7 @@
 ///<reference path='languageservicehost.ts'/>
 ///<reference path='../typings/cats.d.ts'/>
 
-importScripts("../static/js/typescript.js")
+importScripts("../static/js/typescript.js");
 
 module Cats.TSWorker {
     
@@ -93,8 +93,9 @@ module Cats.TSWorker {
  
         getDefinitionAtPosition(fileName: string, pos: Cats.Position):Cats.FileRange {
             var chars = this.getPositionFromCursor(fileName, pos);
-            var info = this.ls.getDefinitionAtPosition(fileName, chars);        
-            if (info) {                
+            var infos = this.ls.getDefinitionAtPosition(fileName, chars);        
+            if (infos) {                
+                var info = infos[0]; // TODO handle better
                 return {
                     fileName: info.fileName,
                     range: this.getRange(info.fileName,info.minChar,info.limChar)                    
@@ -155,10 +156,13 @@ module Cats.TSWorker {
         /**
          * Compile the loaded TS files and return the 
          * compiles JS sources and errors (if any).
-         */ 
-        compile(): Cats.CompileResults {
+         */
+        /* 
+        compile2(): Cats.CompileResults {
 
             var scripts = this.lsHost.scripts;
+            
+            
             
             var result:{ fileName: string; content: string; }[] = [];
             var errors = [];
@@ -172,15 +176,56 @@ module Cats.TSWorker {
             
             var emitterIO = new Compiler.EmitterIOHost();
             compiler.emitAll(emitterIO);
-            
+
+
+
             result = emitterIO.toArray();
             
-            for (var fileName in scripts) {              
+            for (var fileName in scripts) {
+                this.ls.getEmitOutput(fileName);
                 errors = errors.concat(this.getErrors(fileName));
             };
                         
             return {
                 source: result,
+                errors: errors
+            };
+        }
+        */
+
+        /**
+         * Compile the loaded TS files and return the 
+         * compiles JS sources and errors (if any).
+         */ 
+        compile(): Cats.CompileResults {
+            var scripts = this.lsHost.scripts;
+                                    
+            var result:{ fileName: string; content: string; }[] = [];
+            var errors = [];
+            var hasErrors = false;
+            
+            for (var fileName in scripts) {
+                var emitOutput = this.ls.getEmitOutput(fileName);
+                
+                 if (emitOutput.diagnostics && emitOutput.diagnostics.length) {
+                    var newErrors = this.convertErrors(emitOutput.diagnostics);
+                    errors = errors.concat(newErrors);
+                    hasErrors = true;
+                }
+                
+                emitOutput.outputFiles.forEach((file:Services.IOutputFile)=>{
+                     result.push({
+                        fileName : file.name,
+                        content: file.text
+                    });
+                });
+                
+               
+                               
+            };
+                        
+            return {
+                source: hasErrors ? [] : result,
                 errors: errors
             };
         }
@@ -369,8 +414,8 @@ module Cats.TSWorker {
                 var ref = entries[i];
                 result.push({
                     fileName: ref.fileName,
-                    range: this.getRange(ref.fileName, ref.ast.minChar, ref.ast.limChar),
-                    message: this.getLine(ref.fileName, ref.ast.minChar, ref.ast.limChar)
+                    range: this.getRange(ref.fileName, ref.minChar, ref.limChar),
+                    message: this.getLine(ref.fileName, ref.minChar, ref.limChar)
                 });
             }
             return result;

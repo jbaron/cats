@@ -48,7 +48,7 @@ var IDE:Cats.Ide;
  * Main module of the CATS IDE
  */  
 module Cats {
-           
+         
     function getParameterByName(name):string {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regexS = "[\\?&]" + name + "=([^&#]*)";

@@ -16,7 +16,6 @@
 ///<reference path='menu/editorcontextmenu.ts'/>
 ///<reference path='ui/autocompleteview.ts'/>
 
-
 module Cats {
 
     function setOverwrite() {        

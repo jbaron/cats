@@ -17,10 +17,10 @@
 ///<reference path='../typings/typescript.d.ts'/>
 
 module Cats {
-
+    
     var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
     var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
-
+    
     export class AceSession extends ObservableImpl implements Session {
 
         private static MODES = {
@@ -70,6 +70,7 @@ module Cats {
          */
         constructor(public name?: string, content?: string) {
             super(["changed"]);
+            
             console.log("Creating new session for file " + name);
             this.mode = this.determineMode(name);
             this.editSession = new EditSession(content, "ace/mode/" + this.mode);

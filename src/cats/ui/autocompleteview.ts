@@ -99,6 +99,23 @@ module Cats.UI {
             }
         }
 
+       /**
+         * Fitler the available completetions based on the users input 
+         * so far. This one is case insensitive a find any matching string
+         */ 
+        private filter2() {
+            var text = this.getInputText();
+            if (!text) {
+                this.filteredCompletions = this.completions;
+            } else {
+                text = text.toLowerCase();
+                this.filteredCompletions = this.completions.filter(function(entry) {
+                    return (entry.name.toLowerCase().indexOf(text) > -1);
+                });
+            }
+        }
+
+
         /**
          * Setup the different keybindings that would go to the 
          * popup window and not the editor

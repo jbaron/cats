@@ -15,7 +15,7 @@
 
 
 ///<reference path='../typings/typescript.d.ts' />
-///<reference path='emitteriohost.ts' />
+
 
 // This is based on the harness.ts file from TypeScript (80% identical)
 // Major difference is that this module uses real language services API and not the Shim.
@@ -88,7 +88,6 @@ export class ScriptInfo {
 
         public scripts:Map<ScriptInfo> = {};
         public maxScriptVersions = 100;
-
         
         public getScriptFileNames():string[] {
             return Object.keys(this.scripts);
@@ -167,7 +166,7 @@ export class ScriptInfo {
 
         
         public getScriptVersion(fileName: string): number {
-            return null;
+            // return null;
             var script = this.scripts[fileName];            
             return script.version;
         }

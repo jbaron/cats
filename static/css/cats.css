@@ -256,12 +256,14 @@ Tab section
   cursor: pointer;
 }
 
+
 .tabbar li.active, .tabbar li:hover {
   border: 1px solid rgba(100,100,100,0.5);
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   border-bottom: 0px;
-  background-color: rgba(250, 250, 250, 0.5);
+  /* background-color: rgba(250, 250, 250, 0.5); */
+  background-color: #ffffff;
   text-decoration:none;
   margin-top: -1px;
   margin-left: -1px;
@@ -437,4 +439,3 @@ Auto complete styling
 #findArea button, #replaceArea button {
   width: 100px;
 }
-
