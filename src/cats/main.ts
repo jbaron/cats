@@ -48,7 +48,10 @@ var IDE:Cats.Ide;
  * Main module of the CATS IDE
  */  
 module Cats {
-         
+    
+    /**
+     * Get a parameter from the URL
+     */ 
     function getParameterByName(name):string {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regexS = "[\\?&]" + name + "=([^&#]*)";
@@ -90,7 +93,6 @@ module Cats {
     } else {
         IDE.loadDefaultProjects();
     }
-
     
     Cats.Commands.init();
     Cats.Menu.createMenuBar();
@@ -106,7 +108,5 @@ module Cats {
     win.on("close", function() {
         Cats.Commands.get(Cats.Commands.CMDS.ide_quit).command();
     });
-
-    
 
 }

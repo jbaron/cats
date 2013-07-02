@@ -43,7 +43,7 @@ module Cats {
         layoutConfig;
 
         activeSession: Session;
-
+    
         views: IDEViews = {
             navigation: null,
             outline: null,
@@ -247,7 +247,7 @@ module Cats {
 
         /**
          * Close a session
-         * @para session The session to close
+         * @param session The session to close
          */
         closeSession(session: Session) {
             var result = [];

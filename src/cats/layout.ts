@@ -78,7 +78,7 @@ module Cats {
     }
 
     /**
-     * Initialize and layout the various views of the IDE 
+     * Initialize and layout the various components of the IDE 
      */ 
     export function layoutIDE():any {
         

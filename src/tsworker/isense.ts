@@ -17,7 +17,7 @@
 ///<reference path='languageservicehost.ts'/>
 ///<reference path='../typings/cats.d.ts'/>
 
-importScripts("../static/js/typescript.js");
+importScripts("../static/js/typescriptServices.js");
 
 module Cats.TSWorker {
     
@@ -152,46 +152,6 @@ module Cats.TSWorker {
             });
             return result;
         }
-
-        /**
-         * Compile the loaded TS files and return the 
-         * compiles JS sources and errors (if any).
-         */
-        /* 
-        compile2(): Cats.CompileResults {
-
-            var scripts = this.lsHost.scripts;
-            
-            
-            
-            var result:{ fileName: string; content: string; }[] = [];
-            var errors = [];
-            
-            var compilerState = this.ls["compilerState"];
-            if (! compilerState.compiler) {
-                compilerState.createCompiler();
-            }
-            
-            var compiler = compilerState.compiler;
-            
-            var emitterIO = new Compiler.EmitterIOHost();
-            compiler.emitAll(emitterIO);
-
-
-
-            result = emitterIO.toArray();
-            
-            for (var fileName in scripts) {
-                this.ls.getEmitOutput(fileName);
-                errors = errors.concat(this.getErrors(fileName));
-            };
-                        
-            return {
-                source: result,
-                errors: errors
-            };
-        }
-        */
 
         /**
          * Compile the loaded TS files and return the 
