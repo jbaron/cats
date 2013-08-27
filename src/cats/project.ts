@@ -15,6 +15,7 @@
 
 
 ///<reference path='isensehandler.ts'/>
+///<reference path='treewatcher.ts'/>
 ///<reference path='configloader.ts'/>
 ///<reference path='ui/tooltip.ts'/>
 ///<reference path='ui/tree.ts'/>
@@ -23,6 +24,56 @@
 
 module Cats {
 
+    class ProjectWatcher extends TreeWatcher {
+        
+        private _treeView: Cats.UI.TreeView;
+        
+        constructor(public path) {
+            super();
+            this.setDirectory(path);
+        }
+        
+        public setTreeView(view: Cats.UI.TreeView) {
+            this._treeView = view;
+        }
+        
+        public onFileCreate(path: string): void {
+            if (this._treeView != null) {
+                this._treeView.refresh();
+            }
+        }
+        public onFileDelete(path: string): void {
+            if (this._treeView != null) {
+                this._treeView.refresh();
+            }
+        }
+        public onDirectoryCreate(path: string): void {
+            if (this._treeView != null) {
+                this._treeView.refresh();
+            }
+        }
+        public onDirectoryDelete(path: string): void {
+            if (this._treeView != null) {
+                this._treeView.refresh();
+            }
+        }
+        public onFileChange(filepath: any): void {
+            var session = IDE.getSession(filepath);
+            if (session) {
+                if (confirm('File ' + filepath + ' modifed out of the editor, reload it ?')) {
+                    IDE.getSession(filepath).setValue(OS.File.readTextFile(filepath));
+                    session.changed = false;
+                } else {
+                    session.changed = true;
+                }
+            }
+        }
+        public onError(error: any): void {
+            console.log('Watcher error');
+            console.log(error);
+        }
+    }
+
     export class Project {
 
 
@@ -30,6 +81,19 @@ module Cats {
         projectDir: string;
         name: string;
         private tsFiles: string[] = [];
+        
+        private watcher: ProjectWatcher;
+        private _treeView: Cats.UI.TreeView;
+        public setTreeView(view: Cats.UI.TreeView): void {
+            this._treeView = view;
+            this.watcher.setTreeView(view);
+        }
+        public getTreeView(): Cats.UI.TreeView {
+            return this._treeView;
+        }
+        public getWatcher(): TreeWatcher {
+            return this.watcher;
+        }
 
         // The singleton TSWorker handler instance
         iSense: ISenseHandler;
@@ -42,6 +106,7 @@ module Cats {
         constructor(projectDir: string) {
             IDE.project = this;
             this.projectDir = PATH.resolve(projectDir);
+            this.watcher = new ProjectWatcher(this.projectDir);
             this.refresh();
         }
 

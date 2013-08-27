@@ -245,6 +245,11 @@ module Cats {
             if (cb) cb(session);
         }
 
+        persistSession(session: Session) {
+            this.project.getWatcher().preventFileChange(session.name);
+            session.persist();
+        }
+
         /**
          * Close a session
          * @param session The session to close
@@ -254,7 +259,7 @@ module Cats {
 
             if (session.changed) {
                 var c = confirm("Save " + session.name + " before closing ?");
-                if (c) session.persist();
+                if (c) this.persistSession(session);
             }
 
             this.sessions.forEach((s) => {
