@@ -95,10 +95,11 @@ module Cats.UI {
         }
  
         public refresh() {
+            var openFolders = this.findOpenFolders();
             this.rootElem.innerHTML = "";
             var elem = this.render(this.getValue(null, "children"));
             this.rootElem.appendChild(elem);
-            this.findOpenFolders().forEach(path => {
+            openFolders.forEach(path => {
                 this.handleClick($('li[data-value="' + path + '"]')[0]);
             });
         }
