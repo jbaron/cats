@@ -58,9 +58,9 @@ class SessionsBar extends MVC.View {
         this.root.appendChild(this.selectElem);
         this.root.className = "tabbar";
         this.ul.className = "tabbar";
-        this.ul.onclick = (ev) => {
+        this.ul.addEventListener('click', (ev: MouseEvent) => {
             IDE.activeSession = ev.srcElement["_value"];
-        };
+        });
         // this.onClickHandler.bind(this);
 
     }
@@ -184,6 +184,12 @@ export class Tabbar extends AspectWidget {
                          this.ondelete(option);
                      }
                  }
+                 optionElem.addEventListener('click', (evt: MouseEvent) => {
+                     if (evt.which == 2 && this.ondelete) {
+                         this.ondelete(option);
+                         evt.stopPropagation();
+                     }
+                 });
                  optionElem.appendChild(closeButton);
              }
             

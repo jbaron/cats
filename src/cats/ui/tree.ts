@@ -61,6 +61,14 @@ module Cats.UI {
         static COLLAPSED = "collapsed";
         static OPENED = "opened";
         private openFolders = [];
+        
+        private findOpenFolders() {
+            var a = [];
+            $(this.rootElem).find('.opened').each((index: number, node: HTMLLIElement) => {
+                a.push(node.getAttribute('data-value'));
+            });
+            return a;
+        }
 
         private rootElem: HTMLElement;
         public onselect: (value) => void;
@@ -87,9 +95,13 @@ module Cats.UI {
         }
  
         public refresh() {
+            var openFolders = this.findOpenFolders();
             this.rootElem.innerHTML = "";
             var elem = this.render(this.getValue(null, "children"));
             this.rootElem.appendChild(elem);
+            openFolders.forEach(path => {
+                this.handleClick($('li[data-value="' + path + '"]')[0]);
+            });
         }
 
         public static refreshElem(elem: HTMLElement) {
@@ -120,6 +132,7 @@ module Cats.UI {
                 li.appendChild(span);
 
                 // li.innerText = this.getValue(entry,"name");
+                li.setAttribute('data-value', encodeURIComponent(entry.path));
                 li["_value"] = entry;
 
                 if (this.getValue(entry, "isFolder")) {

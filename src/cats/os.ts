@@ -144,6 +144,21 @@ module OS.File {
             cb(data);
         }
 
+        /**
+         * Return stats info about a path
+         * @param name The fulle name/path of the file
+         */
+        export function stat(path: string) {
+            return FS.statSync(path);
+        }
+        
+        /**
+         * Return a watcher object on a file
+         * @param name The fulle name/path of the file
+         */
+        export function watch(path: string) {
+            return FS.watch(path);
+        }
       
 }
 

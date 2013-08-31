@@ -267,6 +267,7 @@ Tab section
   text-decoration:none;
   margin-top: -1px;
   margin-left: -1px;
+  margin-right: 4px;
 }
 
 .tabbar li.active {
@@ -308,17 +309,18 @@ Tab section
   background-image: url("../img/outline_co.gif");
 }
 
-.tabbar li span {
-    display:none;
+.tabbar li span {    float: right;
+    display: block;
+    font-size: 70%;
+    padding-left: 5px;
+    vertical-align: top;
+    font-weight: bold;
+    height: 100%;
+    visibility: hidden;
 }
 
 .tabbar li:hover span, .tabbar li.active span {
-    float: right;
-    display: block;
-    font-size: 70%;
-    margin-left: 5px;
-    vertical-align: top;
-    font-weight: bold;
+    visibility: visible;
 }
 
 /*********************************************************
