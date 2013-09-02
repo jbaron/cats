@@ -228,6 +228,31 @@ module Cats {
         }
 
 
+        private sessionStack: {name: string; pos: Ace.Position; cb: Function}[] = [];
+        
+        private addToSessionStack(name: string, pos: Ace.Position, cb: Function) {
+            this.removeFromSessionStack(name);
+            this.sessionStack.push({
+                name: name,
+                pos: pos,
+                cb: cb
+            });
+        }
+        
+        private removeFromSessionStack (name: string): void {
+            this.sessionStack = this.sessionStack.filter(session => {
+                return session.name != name;
+            });
+        }
+        
+        private hasPreviousSession(): boolean {
+            return this.sessionStack.length > 0;
+        }
+        
+        private previousSession() {
+            return this.sessionStack[this.sessionStack.length - 1];
+        }
+
         /**
          * Open an existing session or if it doesn't exist yet create
          * a new one.
@@ -242,7 +267,13 @@ module Cats {
             }
             this.mainEditor.edit(session,pos);
             this.activeSession = session;
+            this.addToSessionStack(name, pos, cb);
             if (cb) cb(session);
+        }
+
+        persistSession(session: Session) {
+            this.project.getWatcher().preventFileChange(session.name);
+            session.persist();
         }
 
         /**
@@ -254,7 +285,7 @@ module Cats {
 
             if (session.changed) {
                 var c = confirm("Save " + session.name + " before closing ?");
-                if (c) session.persist();
+                if (c) this.persistSession(session);
             }
 
             this.sessions.forEach((s) => {
@@ -263,10 +294,18 @@ module Cats {
                 }
             })
             
+            this.removeFromSessionStack(session.name);
+            
             // Check if was the current session displayed
             if (IDE.activeSession === session) {
                 IDE.activeSession = null;
                 IDE.mainEditor.hide();
+                if (this.hasPreviousSession()) {
+                    var prevSession = this.previousSession();
+                    setTimeout(() => {
+                        this.openSession(prevSession.name, prevSession.pos, prevSession.cb);
+                    }, 0);
+                }
             }
             
             this.sessions = result;

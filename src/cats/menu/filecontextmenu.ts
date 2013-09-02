@@ -29,7 +29,7 @@ module Cats.Menu {
 
 
     function refresh() {
-        UI.TreeView.refreshElem(data.element);
+        IDE.project.getTreeView().refresh();
     }
 
 

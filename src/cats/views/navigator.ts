@@ -96,6 +96,8 @@ module Cats.View {
                 var dirReader = new DirectoryReader();
                 var fileTree = new Cats.UI.TreeView();
                 
+                // We must pass the treeview to the project to refresh when a file is modified, created or deleted
+                project.setTreeView(fileTree);
 
                 fileTree.setAspect("children", (parent: ListEntry): ListEntry[] => {
                     if (parent == null) {
