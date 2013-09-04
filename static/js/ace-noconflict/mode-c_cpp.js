@@ -41,42 +41,21 @@ var CstyleBehaviour = require("./behaviour/cstyle").CstyleBehaviour;
 var CStyleFoldMode = require("./folding/cstyle").FoldMode;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new c_cppHighlightRules().getRules());
+    var highlighter = new c_cppHighlightRules();
+
+    this.$tokenizer = new Tokenizer(highlighter.getRules());
     this.$outdent = new MatchingBraceOutdent();
     this.$behaviour = new CstyleBehaviour();
+    this.$keywordList = highlighter.$keywordList;
+
     this.foldingRules = new CStyleFoldMode();
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
 
-    this.toggleCommentLines = function(state, doc, startRow, endRow) {
-        var outdent = true;
-        var re = /^(\s*)\/\//;
-
-        for (var i=startRow; i<= endRow; i++) {
-            if (!re.test(doc.getLine(i))) {
-                outdent = false;
-                break;
-            }
-        }
-
-        if (outdent) {
-            var deleteRange = new Range(0, 0, 0, 0);
-            for (var i=startRow; i<= endRow; i++)
-            {
-                var line = doc.getLine(i);
-                var m = line.match(re);
-                deleteRange.start.row = i;
-                deleteRange.end.row = i;
-                deleteRange.end.column = m[0].length;
-                doc.replace(deleteRange, m[1]);
-            }
-        }
-        else {
-            doc.indentRows(startRow, endRow, "//");
-        }
-    };
+    this.lineCommentStart = "//";
+    this.blockComment = {start: "/*", end: "*/"};
 
     this.getNextLineIndent = function(state, line, tab) {
         var indent = this.$getIndent(line);
@@ -122,7 +101,6 @@ oop.inherits(Mode, TextMode);
 
 exports.Mode = Mode;
 });
-
 ace.define('ace/mode/c_cpp_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/doc_comment_highlight_rules', 'ace/mode/text_highlight_rules'], function(require, exports, module) {
 
 
@@ -178,7 +156,6 @@ var c_cppHighlightRules = function() {
             DocCommentHighlightRules.getStartRule("doc-start"),
             {
                 token : "comment", // multi line comment
-                merge : true,
                 regex : "\\/\\*",
                 next : "comment"
             }, {
@@ -186,7 +163,6 @@ var c_cppHighlightRules = function() {
                 regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
                 token : "string", // multi line string start
-                merge : true,
                 regex : '["].*\\\\$',
                 next : "qqstring"
             }, {
@@ -194,21 +170,21 @@ var c_cppHighlightRules = function() {
                 regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
             }, {
                 token : "string", // multi line string start
-                merge : true,
                 regex : "['].*\\\\$",
                 next : "qstring"
             }, {
                 token : "constant.numeric", // hex
-                regex : "0[xX][0-9a-fA-F]+\\b"
+                regex : "0[xX][0-9a-fA-F]+(L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
             }, {
                 token : "constant.numeric", // float
-                regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
+                regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?(L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
             }, {
-              token : "constant", // <CONSTANT>
-              regex : "<[a-zA-Z0-9.]+>"
+                token : "keyword", // pre-compiler directives
+                regex : "#\\s*(?:include|import|pragma|line|define|undef|if|ifdef|else|elif|ifndef)\\b",
+                next  : "directive"
             }, {
-              token : "keyword", // pre-compiler directivs
-              regex : "(?:#include|#import|#pragma|#line|#define|#undef|#ifdef|#else|#elif|#endif|#ifndef)"
+                token : "keyword", // special case pre-compiler directive
+                regex : "(?:#\\s*endif)\\b"
             }, {
                 token : "support.function.C99.c",
                 regex : cFunctions
@@ -239,7 +215,6 @@ var c_cppHighlightRules = function() {
                 next : "start"
             }, {
                 token : "comment", // comment spanning whole line
-                merge : true,
                 regex : ".+"
             }
         ],
@@ -250,7 +225,6 @@ var c_cppHighlightRules = function() {
                 next : "start"
             }, {
                 token : "string",
-                merge : true,
                 regex : '.+'
             }
         ],
@@ -261,8 +235,37 @@ var c_cppHighlightRules = function() {
                 next : "start"
             }, {
                 token : "string",
-                merge : true,
                 regex : '.+'
+            }
+        ],
+        "directive" : [
+            {
+                token : "constant.other.multiline",
+                regex : /\\/
+            },
+            {
+                token : "constant.other.multiline",
+                regex : /.*\\/
+            },
+            {
+                token : "constant.other",
+                regex : "\\s*<.+?>",
+                next : "start"
+            },
+            {
+                token : "constant.other", // single line
+                regex : '\\s*["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]',
+                next : "start"
+            }, 
+            {
+                token : "constant.other", // single line
+                regex : "\\s*['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']",
+                next : "start"
+            },
+            {
+                token : "constant.other",
+                regex : /[^\\\/]+/,
+                next : "start"
             }
         ]
     };
@@ -289,21 +292,10 @@ var DocCommentHighlightRules = function() {
             token : "comment.doc.tag",
             regex : "@[\\w\\d_]+" // TODO: fix email addresses
         }, {
-            token : "comment.doc",
-            merge : true,
-            regex : "\\s+"
+            token : "comment.doc.tag",
+            regex : "\\bTODO\\b"
         }, {
-            token : "comment.doc",
-            merge : true,
-            regex : "TODO"
-        }, {
-            token : "comment.doc",
-            merge : true,
-            regex : "[^@\\*]+"
-        }, {
-            token : "comment.doc",
-            merge : true,
-            regex : "."
+            defaultToken : "comment.doc"
         }]
     };
 };
@@ -313,7 +305,6 @@ oop.inherits(DocCommentHighlightRules, TextHighlightRules);
 DocCommentHighlightRules.getStartRule = function(start) {
     return {
         token : "comment.doc", // doc comment
-        merge : true,
         regex : "\\/\\*(?=\\*)",
         next  : start
     };
@@ -322,7 +313,6 @@ DocCommentHighlightRules.getStartRule = function(start) {
 DocCommentHighlightRules.getEndRule = function (start) {
     return {
         token : "comment.doc", // closing comment
-        merge : true,
         regex : "\\*\\/",
         next  : start
     };
@@ -365,12 +355,7 @@ var MatchingBraceOutdent = function() {};
     };
 
     this.$getIndent = function(line) {
-        var match = line.match(/^(\s+)/);
-        if (match) {
-            return match[1];
-        }
-
-        return "";
+        return line.match(/^\s*/)[0];
     };
 
 }).call(MatchingBraceOutdent.prototype);
@@ -687,7 +672,7 @@ var CstyleBehaviour = function () {
         if (!range.isMultiLine() && (selected == '"' || selected == "'")) {
             var line = session.doc.getLine(range.start.row);
             var rightChar = line.substring(range.start.column + 1, range.start.column + 2);
-            if (rightChar == '"') {
+            if (rightChar == selected) {
                 range.end.column++;
                 return range;
             }
@@ -708,7 +693,16 @@ var oop = require("../../lib/oop");
 var Range = require("../../range").Range;
 var BaseFoldMode = require("./fold_mode").FoldMode;
 
-var FoldMode = exports.FoldMode = function() {};
+var FoldMode = exports.FoldMode = function(commentRegex) {
+    if (commentRegex) {
+        this.foldingStartMarker = new RegExp(
+            this.foldingStartMarker.source.replace(/\|[^|]*?$/, "|" + commentRegex.start)
+        );
+        this.foldingStopMarker = new RegExp(
+            this.foldingStopMarker.source.replace(/\|[^|]*?$/, "|" + commentRegex.end)
+        );
+    }
+};
 oop.inherits(FoldMode, BaseFoldMode);
 
 (function() {

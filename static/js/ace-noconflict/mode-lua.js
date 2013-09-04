@@ -28,7 +28,7 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/mode/lua', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/lua_highlight_rules', 'ace/mode/folding/lua', 'ace/range'], function(require, exports, module) {
+ace.define('ace/mode/lua', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/lua_highlight_rules', 'ace/mode/folding/lua', 'ace/range', 'ace/worker/worker_client'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
@@ -37,14 +37,22 @@ var Tokenizer = require("../tokenizer").Tokenizer;
 var LuaHighlightRules = require("./lua_highlight_rules").LuaHighlightRules;
 var LuaFoldMode = require("./folding/lua").FoldMode;
 var Range = require("../range").Range;
+var WorkerClient = require("../worker/worker_client").WorkerClient;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new LuaHighlightRules().getRules());
+    var highlighter = new LuaHighlightRules();
+    
+    this.$tokenizer = new Tokenizer(highlighter.getRules());
     this.foldingRules = new LuaFoldMode();
+    this.$keywordList = highlighter.$keywordList;
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
+   
+    this.lineCommentStart = "--";
+    this.blockComment = {start: "--[", end: "]--"};
+    
     var indentKeywords = {
         "function": 1,
         "then": 1,
@@ -64,7 +72,7 @@ oop.inherits(Mode, TextMode);
 
     function getNetIndentLevel(tokens) {
         var level = 0;
-        for (var i in tokens){
+        for (var i = 0; i < tokens.length; i++) {
             var token = tokens[i];
             if (token.type == "keyword") {
                 if (token.value in indentKeywords) {
@@ -133,6 +141,21 @@ oop.inherits(Mode, TextMode);
         session.outdentRows(new Range(row, 0, row + 2, 0));
     };
 
+    this.createWorker = function(session) {
+        var worker = new WorkerClient(["ace"], "ace/mode/lua_worker", "Worker");
+        worker.attachToDocument(session.getDocument());
+        
+        worker.on("error", function(e) {
+            session.setAnnotations([e.data]);
+        });
+        
+        worker.on("ok", function(e) {
+            session.clearAnnotations();
+        });
+        
+        return worker;
+    };
+
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
@@ -194,8 +217,6 @@ var LuaHighlightRules = function() {
         "variable.language": "this"
     }, "identifier");
 
-    var strPre = "";
-
     var decimalInteger = "(?:(?:[1-9]\\d*)|(?:0))";
     var hexInteger = "(?:0[xX][\\dA-Fa-f]+)";
     var integer = "(?:" + decimalInteger + "|" + hexInteger + ")";
@@ -205,133 +226,71 @@ var LuaHighlightRules = function() {
     var pointFloat = "(?:(?:" + intPart + "?" + fraction + ")|(?:" + intPart + "\\.))";
     var floatNumber = "(?:" + pointFloat + ")";
 
-    var comment_stack = [];
-
     this.$rules = {
-        "start" :
-        [{
-            token : "comment",           // --[[ comment
-            regex : strPre + '\\-\\-\\[\\[.*\\]\\]'
-        }, {
-            token : "comment",           // --[=[ comment
-            regex : strPre + '\\-\\-\\[\\=\\[.*\\]\\=\\]'
-        }, {
-            token : "comment",           // --[==[ comment
-            regex : strPre + '\\-\\-\\[\\={2}\\[.*\\]\\={2}\\]'
-        }, {
-            token : "comment",           // --[===[ comment
-            regex : strPre + '\\-\\-\\[\\={3}\\[.*\\]\\={3}\\]'
-        }, {
-            token : "comment",           // --[====[ comment
-            regex : strPre + '\\-\\-\\[\\={4}\\[.*\\]\\={4}\\]'
-        }, {
-            token : "comment",           // --[====+[ comment
-            regex : strPre + '\\-\\-\\[\\={5}\\=*\\[.*\\]\\={5}\\=*\\]'
-        },
-        {
-            token : "comment",           // --[[ comment
-            regex : strPre + '\\-\\-\\[\\[.*$',
-            merge : true,
-            next  : "qcomment"
-        }, {
-            token : "comment",           // --[=[ comment
-            regex : strPre + '\\-\\-\\[\\=\\[.*$',
-            merge : true,
-            next  : "qcomment1"
-        }, {
-            token : "comment",           // --[==[ comment
-            regex : strPre + '\\-\\-\\[\\={2}\\[.*$',
-            merge : true,
-            next  : "qcomment2"
-        }, {
-            token : "comment",           // --[===[ comment
-            regex : strPre + '\\-\\-\\[\\={3}\\[.*$',
-            merge : true,
-            next  : "qcomment3"
-        }, {
-            token : "comment",           // --[====[ comment
-            regex : strPre + '\\-\\-\\[\\={4}\\[.*$',
-            merge : true,
-            next  : "qcomment4"
-        }, {
-            token : function(value){     // --[====+[ comment
-                var pattern = /\-\-\[(\=+)\[/, match;
-                if ((match = pattern.exec(value)) != null && (match = match[1]) != undefined)
-                    comment_stack.push(match.length);
-
+        "start" : [{
+            stateName: "bracketedComment",
+            onMatch : function(value, currentState, stack){
+                stack.unshift(this.next, value.length - 2, currentState);
                 return "comment";
             },
-            regex : strPre + '\\-\\-\\[\\={5}\\=*\\[.*$',
-            merge : true,
-            next  : "qcomment5"
+            regex : /\-\-\[=*\[/,
+            next  : [
+                {
+                    onMatch : function(value, currentState, stack) {
+                        if (value.length == stack[1]) {
+                            stack.shift();
+                            stack.shift();
+                            this.next = stack.shift();
+                        } else {
+                            this.next = "";
+                        }
+                        return "comment";
+                    },
+                    regex : /\]=*\]/,
+                    next  : "start"
+                }, {
+                    defaultToken : "comment"
+                }
+            ]
         },
+
         {
             token : "comment",
             regex : "\\-\\-.*$"
         },
         {
-            token : "string",           // [[ string
-            regex : strPre + '\\[\\[.*\\]\\]'
-        }, {
-            token : "string",           // [=[ string
-            regex : strPre + '\\[\\=\\[.*\\]\\=\\]'
-        }, {
-            token : "string",           // [==[ string
-            regex : strPre + '\\[\\={2}\\[.*\\]\\={2}\\]'
-        }, {
-            token : "string",           // [===[ string
-            regex : strPre + '\\[\\={3}\\[.*\\]\\={3}\\]'
-        }, {
-            token : "string",           // [====[ string
-            regex : strPre + '\\[\\={4}\\[.*\\]\\={4}\\]'
-        }, {
-            token : "string",           // [====+[ string
-            regex : strPre + '\\[\\={5}\\=*\\[.*\\]\\={5}\\=*\\]'
-        },
-        {
-            token : "string",           // [[ string
-            regex : strPre + '\\[\\[.*$',
-            merge : true,
-            next  : "qstring"
-        }, {
-            token : "string",           // [=[ string
-            regex : strPre + '\\[\\=\\[.*$',
-            merge : true,
-            next  : "qstring1"
-        }, {
-            token : "string",           // [==[ string
-            regex : strPre + '\\[\\={2}\\[.*$',
-            merge : true,
-            next  : "qstring2"
-        }, {
-            token : "string",           // [===[ string
-            regex : strPre + '\\[\\={3}\\[.*$',
-            merge : true,
-            next  : "qstring3"
-        }, {
-            token : "string",           // [====[ string
-            regex : strPre + '\\[\\={4}\\[.*$',
-            merge : true,
-            next  : "qstring4"
-        }, {
-            token : function(value){     // --[====+[ string
-                var pattern = /\[(\=+)\[/, match;
-                if ((match = pattern.exec(value)) != null && (match = match[1]) != undefined)
-                    comment_stack.push(match.length);
-
-                return "string";
+            stateName: "bracketedString",
+            onMatch : function(value, currentState, stack){
+                stack.unshift(this.next, value.length, currentState);
+                return "comment";
             },
-            regex : strPre + '\\[\\={5}\\=*\\[.*$',
-            merge : true,
-            next  : "qstring5"
+            regex : /\[=*\[/,
+            next  : [
+                {
+                    onMatch : function(value, currentState, stack) {
+                        if (value.length == stack[1]) {
+                            stack.shift();
+                            stack.shift();
+                            this.next = stack.shift();
+                        } else {
+                            this.next = "";
+                        }
+                        return "comment";
+                    },
+                    
+                    regex : /\]=*\]/,
+                    next  : "start"
+                }, {
+                    defaultToken : "comment"
+                }
+            ]
         },
-
         {
             token : "string",           // " string
-            regex : strPre + '"(?:[^\\\\]|\\\\.)*?"'
+            regex : '"(?:[^\\\\]|\\\\.)*?"'
         }, {
             token : "string",           // ' string
-            regex : strPre + "'(?:[^\\\\]|\\\\.)*?'"
+            regex : "'(?:[^\\\\]|\\\\.)*?'"
         }, {
             token : "constant.numeric", // float
             regex : floatNumber
@@ -352,145 +311,11 @@ var LuaHighlightRules = function() {
             regex : "[\\]\\)\\}]"
         }, {
             token : "text",
-            regex : "\\s+"
-        } ],
-
-        "qcomment": [ {
-            token : "comment",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\]",
-            next  : "start"
-        }, {
-            token : "comment",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qcomment1": [ {
-            token : "comment",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\=\\]",
-            next  : "start"
-        }, {
-            token : "comment",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qcomment2": [ {
-            token : "comment",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={2}\\]",
-            next  : "start"
-        }, {
-            token : "comment",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qcomment3": [ {
-            token : "comment",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={3}\\]",
-            next  : "start"
-        }, {
-            token : "comment",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qcomment4": [ {
-            token : "comment",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={4}\\]",
-            next  : "start"
-        }, {
-            token : "comment",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qcomment5": [ {
-            token : function(value){
-                var pattern = /\](\=+)\]/, rule = this.rules.qcomment5[0], match;
-                rule.next = "start";
-                if ((match = pattern.exec(value)) != null && (match = match[1]) != undefined){
-                    var found = match.length, expected;
-                    if ((expected = comment_stack.pop()) != found){
-                        comment_stack.push(expected);
-                        rule.next = "qcomment5";
-                    }
-                }
-
-                return "comment";
-            },
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={5}\\=*\\]",
-            next  : "start"
-        }, {
-            token : "comment",
-            merge : true,
-            regex : '.+'
-        } ],
-
-        "qstring": [ {
-            token : "string",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\]",
-            next  : "start"
-        }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qstring1": [ {
-            token : "string",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\=\\]",
-            next  : "start"
-        }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qstring2": [ {
-            token : "string",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={2}\\]",
-            next  : "start"
-        }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qstring3": [ {
-            token : "string",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={3}\\]",
-            next  : "start"
-        }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qstring4": [ {
-            token : "string",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={4}\\]",
-            next  : "start"
-        }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qstring5": [ {
-            token : function(value){
-                var pattern = /\](\=+)\]/, rule = this.rules.qstring5[0], match;
-                rule.next = "start";
-                if ((match = pattern.exec(value)) != null && (match = match[1]) != undefined){
-                    var found = match.length, expected;
-                    if ((expected = comment_stack.pop()) != found){
-                        comment_stack.push(expected);
-                        rule.next = "qstring5";
-                    }
-                }
-
-                return "string";
-            },
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={5}\\=*\\]",
-            next  : "start"
-        }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
+            regex : "\\s+|\\w+"
         } ]
-
     };
-
+    
+    this.normalizeRules();
 }
 
 oop.inherits(LuaHighlightRules, TextHighlightRules);
@@ -504,7 +329,7 @@ ace.define('ace/mode/folding/lua', ['require', 'exports', 'module' , 'ace/lib/oo
 var oop = require("../../lib/oop");
 var BaseFoldMode = require("./fold_mode").FoldMode;
 var Range = require("../../range").Range;
-var TokenIterator = require("ace/token_iterator").TokenIterator;
+var TokenIterator = require("../../token_iterator").TokenIterator;
 
 
 var FoldMode = exports.FoldMode = function() {};
@@ -530,7 +355,7 @@ oop.inherits(FoldMode, BaseFoldMode);
                     return "start";
             } else if (match[2]) {
                 var type = session.bgTokenizer.getState(row) || "";
-                if (type.indexOf("comment") != -1 || type.indexOf("string") != -1)
+                if (type[0] == "bracketedComment" || type[0] == "bracketedString")
                     return "start";
             } else {
                 return "start";
@@ -545,7 +370,7 @@ oop.inherits(FoldMode, BaseFoldMode);
                 return "end";
         } else if (match[0][0] === "]") {
             var type = session.bgTokenizer.getState(row - 1) || "";
-            if (type.indexOf("comment") != -1 || type.indexOf("string") != -1)
+            if (type[0] == "bracketedComment" || type[0] == "bracketedString")
                 return "end";
         } else
             return "end";
@@ -587,7 +412,7 @@ oop.inherits(FoldMode, BaseFoldMode);
             "elseif": -1,
             "end": -1,
             "repeat": 1,
-            "until": -1,
+            "until": -1
         };
 
         var token = stream.getCurrentToken();

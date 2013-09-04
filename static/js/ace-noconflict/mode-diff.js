@@ -38,7 +38,7 @@ var HighlightRules = require("./diff_highlight_rules").DiffHighlightRules;
 var FoldMode = require("./folding/diff").FoldMode;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new HighlightRules().getRules(), "i");
+    this.$tokenizer = new Tokenizer(new HighlightRules().getRules());
     this.foldingRules = new FoldMode(["diff", "index", "\\+{3}", "@@|\\*{5}"], "i");
 };
 oop.inherits(Mode, TextMode);
@@ -61,20 +61,20 @@ var DiffHighlightRules = function() {
 
     this.$rules = {
         "start" : [{
-                "regex": "^(?:\\*{15}|={67}|-{3}|\\+{3})$",
-                "token": "punctuation.definition.separator.diff",
+                regex: "^(?:\\*{15}|={67}|-{3}|\\+{3})$",
+                token: "punctuation.definition.separator.diff",
                 "name": "keyword"
             }, { //diff.range.unified
-                "regex": "^(@@)(\\s*.+?\\s*)(@@)(.*)$",
-                "token": [
+                regex: "^(@@)(\\s*.+?\\s*)(@@)(.*)$",
+                token: [
                     "constant",
                     "constant.numeric",
                     "constant",
                     "comment.doc.tag"
                 ]
             }, { //diff.range.normal
-                "regex": "^(\\d+)([,\\d]+)(a|d|c)(\\d+)([,\\d]+)(.*)$",
-                "token": [
+                regex: "^(\\d+)([,\\d]+)(a|d|c)(\\d+)([,\\d]+)(.*)$",
+                token: [
                     "constant.numeric",
                     "punctuation.definition.range.diff",
                     "constant.function",
@@ -84,34 +84,40 @@ var DiffHighlightRules = function() {
                 ],
                 "name": "meta."
             }, {
-                "regex": "^(?:(\\-{3}|\\+{3}|\\*{3})( .+))$",
-                "token": [
+                regex: "^(\\-{3}|\\+{3}|\\*{3})( .+)$",
+                token: [
                     "constant.numeric",
                     "meta.tag"
                 ]
             }, { // added
-                "regex": "^([!+>])(.*?)(\\s*)$",
-                "token": [
+                regex: "^([!+>])(.*?)(\\s*)$",
+                token: [
                     "support.constant",
                     "text",
                     "invalid"
                 ]
             }, { // removed
-                "regex": "^([<\\-])(.*?)(\\s*)$",
-                "token": [
+                regex: "^([<\\-])(.*?)(\\s*)$",
+                token: [
                     "support.function",
                     "string",
                     "invalid"
                 ]
             }, {
-                "regex": "^(diff)(\\s+--\\w+)?(.+?)( .+)?$",
-                "token": ["variable", "variable", "keyword", "variable"]
+                regex: "^(diff)(\\s+--\\w+)?(.+?)( .+)?$",
+                token: ["variable", "variable", "keyword", "variable"]
             }, {
-                "regex": "^Index.+$",
-                "token": "variable"
+                regex: "^Index.+$",
+                token: "variable"
             }, {
-                "regex": "^(.*?)(\\s*)$",
-                "token": ["invisible", "invalid"]
+                regex: "^\\s+$",
+                token: "text"
+            }, {
+                regex: "\\s*$",
+                token: "invalid"
+            }, {
+                defaultToken: "invisible",
+                caseInsensitive: true
             }
         ]
     };

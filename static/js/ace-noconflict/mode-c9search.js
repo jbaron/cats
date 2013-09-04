@@ -39,7 +39,7 @@ var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutd
 var C9StyleFoldMode = require("./folding/c9search").FoldMode;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new C9SearchHighlightRules().getRules(), "i");
+    this.$tokenizer = new Tokenizer(new C9SearchHighlightRules().getRules());
     this.$outdent = new MatchingBraceOutdent();
     this.foldingRules = new C9StyleFoldMode();
 };
@@ -125,12 +125,7 @@ var MatchingBraceOutdent = function() {};
     };
 
     this.$getIndent = function(line) {
-        var match = line.match(/^(\s+)/);
-        if (match) {
-            return match[1];
-        }
-
-        return "";
+        return line.match(/^\s*/)[0];
     };
 
 }).call(MatchingBraceOutdent.prototype);

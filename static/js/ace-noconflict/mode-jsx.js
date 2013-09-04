@@ -19,157 +19,158 @@ oop.inherits(Mode, TextMode);
 
 (function() {
 
-      this.getNextLineIndent = function(state, line, tab) {
-          var indent = this.$getIndent(line);
+    this.lineCommentStart = "//";
+    this.blockComment = {start: "/*", end: "*/"};
 
-          var tokenizedLine = this.$tokenizer.getLineTokens(line, state);
-          var tokens = tokenizedLine.tokens;
+    this.getNextLineIndent = function(state, line, tab) {
+        var indent = this.$getIndent(line);
 
-          if (tokens.length && tokens[tokens.length-1].type == "comment") {
-              return indent;
-          }
+        var tokenizedLine = this.$tokenizer.getLineTokens(line, state);
+        var tokens = tokenizedLine.tokens;
 
-          if (state == "start") {
-              var match = line.match(/^.*[\{\(\[]\s*$/);
-              if (match) {
-                  indent += tab;
-              }
-          }
+        if (tokens.length && tokens[tokens.length-1].type == "comment") {
+            return indent;
+        }
 
-          return indent;
-      };
+        if (state == "start") {
+            var match = line.match(/^.*[\{\(\[]\s*$/);
+            if (match) {
+                indent += tab;
+            }
+        }
 
-      this.checkOutdent = function(state, line, input) {
-          return this.$outdent.checkOutdent(line, input);
-      };
+        return indent;
+    };
 
-      this.autoOutdent = function(state, doc, row) {
-          this.$outdent.autoOutdent(doc, row);
-      };
+    this.checkOutdent = function(state, line, input) {
+        return this.$outdent.checkOutdent(line, input);
+    };
+
+    this.autoOutdent = function(state, doc, row) {
+        this.$outdent.autoOutdent(doc, row);
+    };
 
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
 });
 ace.define('ace/mode/jsx_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/lib/lang', 'ace/mode/doc_comment_highlight_rules', 'ace/mode/text_highlight_rules'], function(require, exports, module) {
-    var oop = require("../lib/oop");
-    var lang = require("../lib/lang");
-    var DocCommentHighlightRules = require("./doc_comment_highlight_rules").DocCommentHighlightRules;
-    var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
+var oop = require("../lib/oop");
+var lang = require("../lib/lang");
+var DocCommentHighlightRules = require("./doc_comment_highlight_rules").DocCommentHighlightRules;
+var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
+
+var JsxHighlightRules = function() {
+    var keywords = lang.arrayToMap(
+        ("break|do|instanceof|typeof|case|else|new|var|catch|finally|return|void|continue|for|switch|default|while|function|this|" +
+         "if|throw|" +
+         "delete|in|try|" +
+         "class|extends|super|import|from|into|implements|interface|static|mixin|override|abstract|final|" +
+         "number|int|string|boolean|variant|" +
+         "log|assert").split("|")
+    );
     
-    var JsxHighlightRules = function() {
-        var keywords = lang.arrayToMap(
-            ("break|do|instanceof|typeof|case|else|new|var|catch|finally|return|void|continue|for|switch|default|while|function|this|" +
-             "if|throw|" +
-             "delete|in|try|" +
-             "class|extends|super|import|from|into|implements|interface|static|mixin|override|abstract|final|" +
-             "number|int|string|boolean|variant|" +
-             "log|assert").split("|")
-        );
-        
-        var buildinConstants = lang.arrayToMap(
-            ("null|true|false|NaN|Infinity|__FILE__|__LINE__|undefined").split("|")
-        );
-        
-        var reserved = lang.arrayToMap(
-            ("debugger|with|" +
-             "const|export|" +
-             "let|private|public|yield|protected|" +
-             "extern|native|as|operator|__fake__|__readonly__").split("|")
-        );
-        
-        var identifierRe = "[a-zA-Z_][a-zA-Z0-9_]*\\b";
-        
-        this.$rules = {
-            "start" : [
-                {
-                    token : "comment",
-                    regex : "\\/\\/.*$"
+    var buildinConstants = lang.arrayToMap(
+        ("null|true|false|NaN|Infinity|__FILE__|__LINE__|undefined").split("|")
+    );
+    
+    var reserved = lang.arrayToMap(
+        ("debugger|with|" +
+         "const|export|" +
+         "let|private|public|yield|protected|" +
+         "extern|native|as|operator|__fake__|__readonly__").split("|")
+    );
+    
+    var identifierRe = "[a-zA-Z_][a-zA-Z0-9_]*\\b";
+    
+    this.$rules = {
+        "start" : [
+            {
+                token : "comment",
+                regex : "\\/\\/.*$"
+            },
+            DocCommentHighlightRules.getStartRule("doc-start"),
+            {
+                token : "comment", // multi line comment
+                regex : "\\/\\*",
+                next : "comment"
+            }, {
+                token : "string.regexp",
+                regex : "[/](?:(?:\\[(?:\\\\]|[^\\]])+\\])|(?:\\\\/|[^\\]/]))*[/]\\w*\\s*(?=[).,;]|$)"
+            }, {
+                token : "string", // single line
+                regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
+            }, {
+                token : "string", // single line
+                regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
+            }, {
+                token : "constant.numeric", // hex
+                regex : "0[xX][0-9a-fA-F]+\\b"
+            }, {
+                token : "constant.numeric", // float
+                regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
+            }, {
+                token : "constant.language.boolean",
+                regex : "(?:true|false)\\b"
+            }, {
+                token : [
+                    "storage.type",
+                    "text",
+                    "entity.name.function"
+                ],
+                regex : "(function)(\\s+)(" + identifierRe + ")"
+            }, {
+                token : function(value) {
+                    if (value == "this")
+                        return "variable.language";
+                    else if (value == "function")
+                        return "storage.type";
+                    else if (keywords.hasOwnProperty(value) || reserved.hasOwnProperty(value))
+                        return "keyword";
+                    else if (buildinConstants.hasOwnProperty(value))
+                        return "constant.language";
+                    else if (/^_?[A-Z][a-zA-Z0-9_]*$/.test(value))
+                        return "language.support.class";
+                    else
+                        return "identifier";
                 },
-                DocCommentHighlightRules.getStartRule("doc-start"),
-                {
-                    token : "comment", // multi line comment
-                    regex : "\\/\\*",
-                    merge : true,
-                    next : "comment"
-                }, {
-                    token : "string.regexp",
-                    regex : "[/](?:(?:\\[(?:\\\\]|[^\\]])+\\])|(?:\\\\/|[^\\]/]))*[/]\\w*\\s*(?=[).,;]|$)"
-                }, {
-                    token : "string", // single line
-                    regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
-                }, {
-                    token : "string", // single line
-                    regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
-                }, {
-                    token : "constant.numeric", // hex
-                    regex : "0[xX][0-9a-fA-F]+\\b"
-                }, {
-                    token : "constant.numeric", // float
-                    regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
-                }, {
-                    token : "constant.language.boolean",
-                    regex : "(?:true|false)\\b"
-                }, {
-                    token : [
-                        "storage.type",
-                        "text",
-                        "entity.name.function"
-                    ],
-                    regex : "(function)(\\s+)(" + identifierRe + ")"
-                }, {
-                    token : function(value) {
-                        if (value == "this")
-                            return "variable.language";
-                        else if (value == "function")
-                            return "storage.type";
-                        else if (keywords.hasOwnProperty(value) || reserved.hasOwnProperty(value))
-                            return "keyword";
-                        else if (buildinConstants.hasOwnProperty(value))
-                            return "constant.language";
-                        else if (/^_?[A-Z][a-zA-Z0-9_]*$/.test(value))
-                            return "language.support.class";
-                        else
-                            return "identifier";
-                    },
-                    regex : identifierRe
-                }, {
-                    token : "keyword.operator",
-                    regex : "!|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|==|=|!=|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|\\b(?:in|instanceof|new|delete|typeof|void)"
-                }, {
-                    token : "punctuation.operator",
-                    regex : "\\?|\\:|\\,|\\;|\\."
-                }, {
-                    token : "paren.lparen",
-                    regex : "[[({<]"
-                }, {
-                    token : "paren.rparen",
-                    regex : "[\\])}>]"
-                }, {
-                    token : "text",
-                    regex : "\\s+"
-                }
-            ],
-            "comment" : [
-                {
-                    token : "comment", // closing comment
-                    regex : ".*?\\*\\/",
-                    next : "start"
-                }, {
-                    token : "comment", // comment spanning whole line
-                    merge : true,
-                    regex : ".+"
-                }
-            ]
-        };
-        
-        this.embedRules(DocCommentHighlightRules, "doc-",
-            [ DocCommentHighlightRules.getEndRule("start") ]);
+                regex : identifierRe
+            }, {
+                token : "keyword.operator",
+                regex : "!|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|==|=|!=|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|\\b(?:in|instanceof|new|delete|typeof|void)"
+            }, {
+                token : "punctuation.operator",
+                regex : "\\?|\\:|\\,|\\;|\\."
+            }, {
+                token : "paren.lparen",
+                regex : "[[({<]"
+            }, {
+                token : "paren.rparen",
+                regex : "[\\])}>]"
+            }, {
+                token : "text",
+                regex : "\\s+"
+            }
+        ],
+        "comment" : [
+            {
+                token : "comment", // closing comment
+                regex : ".*?\\*\\/",
+                next : "start"
+            }, {
+                token : "comment", // comment spanning whole line
+                regex : ".+"
+            }
+        ]
     };
     
-    oop.inherits(JsxHighlightRules, TextHighlightRules);
+    this.embedRules(DocCommentHighlightRules, "doc-",
+        [ DocCommentHighlightRules.getEndRule("start") ]);
+};
 
-    exports.JsxHighlightRules = JsxHighlightRules;
+oop.inherits(JsxHighlightRules, TextHighlightRules);
+
+exports.JsxHighlightRules = JsxHighlightRules;
 });
 
 ace.define('ace/mode/doc_comment_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text_highlight_rules'], function(require, exports, module) {
@@ -185,21 +186,10 @@ var DocCommentHighlightRules = function() {
             token : "comment.doc.tag",
             regex : "@[\\w\\d_]+" // TODO: fix email addresses
         }, {
-            token : "comment.doc",
-            merge : true,
-            regex : "\\s+"
+            token : "comment.doc.tag",
+            regex : "\\bTODO\\b"
         }, {
-            token : "comment.doc",
-            merge : true,
-            regex : "TODO"
-        }, {
-            token : "comment.doc",
-            merge : true,
-            regex : "[^@\\*]+"
-        }, {
-            token : "comment.doc",
-            merge : true,
-            regex : "."
+            defaultToken : "comment.doc"
         }]
     };
 };
@@ -209,7 +199,6 @@ oop.inherits(DocCommentHighlightRules, TextHighlightRules);
 DocCommentHighlightRules.getStartRule = function(start) {
     return {
         token : "comment.doc", // doc comment
-        merge : true,
         regex : "\\/\\*(?=\\*)",
         next  : start
     };
@@ -218,7 +207,6 @@ DocCommentHighlightRules.getStartRule = function(start) {
 DocCommentHighlightRules.getEndRule = function (start) {
     return {
         token : "comment.doc", // closing comment
-        merge : true,
         regex : "\\*\\/",
         next  : start
     };
@@ -261,12 +249,7 @@ var MatchingBraceOutdent = function() {};
     };
 
     this.$getIndent = function(line) {
-        var match = line.match(/^(\s+)/);
-        if (match) {
-            return match[1];
-        }
-
-        return "";
+        return line.match(/^\s*/)[0];
     };
 
 }).call(MatchingBraceOutdent.prototype);
@@ -583,7 +566,7 @@ var CstyleBehaviour = function () {
         if (!range.isMultiLine() && (selected == '"' || selected == "'")) {
             var line = session.doc.getLine(range.start.row);
             var rightChar = line.substring(range.start.column + 1, range.start.column + 2);
-            if (rightChar == '"') {
+            if (rightChar == selected) {
                 range.end.column++;
                 return range;
             }
@@ -604,7 +587,16 @@ var oop = require("../../lib/oop");
 var Range = require("../../range").Range;
 var BaseFoldMode = require("./fold_mode").FoldMode;
 
-var FoldMode = exports.FoldMode = function() {};
+var FoldMode = exports.FoldMode = function(commentRegex) {
+    if (commentRegex) {
+        this.foldingStartMarker = new RegExp(
+            this.foldingStartMarker.source.replace(/\|[^|]*?$/, "|" + commentRegex.start)
+        );
+        this.foldingStopMarker = new RegExp(
+            this.foldingStopMarker.source.replace(/\|[^|]*?$/, "|" + commentRegex.end)
+        );
+    }
+};
 oop.inherits(FoldMode, BaseFoldMode);
 
 (function() {

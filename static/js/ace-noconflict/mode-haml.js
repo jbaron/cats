@@ -51,6 +51,8 @@ var Mode = function() {
 oop.inherits(Mode, TextMode);
 
 (function() {
+    this.lineCommentStart = ["//", "#"];
+    
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
@@ -68,69 +70,69 @@ var HamlHighlightRules = function() {
         {
     "start": [
         {
-            "token" : "punctuation.section.comment",
-            "regex" : /^\s*\/.*/
+            token : "punctuation.section.comment",
+            regex : /^\s*\/.*/
         },
         {
-            "token" : "punctuation.section.comment",
-            "regex" : /^\s*#.*/
+            token : "punctuation.section.comment",
+            regex : /^\s*#.*/
         },
         {
-            "token": "string.quoted.double",
-            "regex": "==.+?=="
+            token: "string.quoted.double",
+            regex: "==.+?=="
         },
         {
-            "token": "keyword.other.doctype",
-            "regex": "^!!!\\s*(?:[a-zA-Z0-9-_]+)?"
+            token: "keyword.other.doctype",
+            regex: "^!!!\\s*(?:[a-zA-Z0-9-_]+)?"
         },
         RubyExports.qString,
         RubyExports.qqString,
         RubyExports.tString,
         {
-            "token": ["entity.name.tag.haml"],
-            "regex": /^\s*%[\w:]+/,
-            "next": "tag_single"
+            token: ["entity.name.tag.haml"],
+            regex: /^\s*%[\w:]+/,
+            next: "tag_single"
         },
         {
-            "token": [ "meta.escape.haml" ],
-            "regex": "^\\s*\\\\."
+            token: [ "meta.escape.haml" ],
+            regex: "^\\s*\\\\."
         },
         RubyExports.constantNumericHex,
         RubyExports.constantNumericFloat,
         
         RubyExports.constantOtherSymbol,
         {
-            "token": "text",
-            "regex": "=|-|~",
-            "next": "embedded_ruby"
+            token: "text",
+            regex: "=|-|~",
+            next: "embedded_ruby"
         }
     ],
     "tag_single": [
         {
-            "token": "entity.other.attribute-name.class.haml",
-            "regex": "\\.[\\w-]+"
+            token: "entity.other.attribute-name.class.haml",
+            regex: "\\.[\\w-]+"
         },
         {
-            "token": "entity.other.attribute-name.id.haml",
-            "regex": "#[\\w-]+"
+            token: "entity.other.attribute-name.id.haml",
+            regex: "#[\\w-]+"
         },
         {
-            "token": "punctuation.section",
-            "regex": "\\{",
-            "next": "section"
+            token: "punctuation.section",
+            regex: "\\{",
+            next: "section"
         },
         
         RubyExports.constantOtherSymbol,
         
         {
-            "token": "text",
-            "regex": /\s/,
-            "next": "start"
+            token: "text",
+            regex: /\s/,
+            next: "start"
         },
         {
-            "token": ["text", "punctuation"],
-            "regex": "($)|((?!\\.|#|\\{|\\[|=|-|~|\\/))",
-            "next": "start"
+            token: "empty",
+            regex: "$|(?!\\.|#|\\{|\\[|=|-|~|\\/)",
+            next: "start"
         }
     ],
     "section": [
@@ -143,9 +145,9 @@ var HamlHighlightRules = function() {
         RubyExports.constantNumericHex,
         RubyExports.constantNumericFloat,
         {
-            "token": "punctuation.section",
-            "regex": "\\}",
-            "next": "start"
+            token: "punctuation.section",
+            regex: "\\}",
+            next: "start"
         } 
     ],
     "embedded_ruby": [ 
@@ -156,23 +158,23 @@ var HamlHighlightRules = function() {
                 regex : "[A-Z][a-zA-Z_\\d]+"
         },    
         {
-            "token" : new RubyHighlightRules().getKeywords(),
-            "regex" : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+            token : new RubyHighlightRules().getKeywords(),
+            regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
         },
         {
-            "token" : ["keyword", "text", "text"],
-            "regex" : "(?:do|\\{)(?: \\|[^|]+\\|)?$",
-            "next"  : "start"
+            token : ["keyword", "text", "text"],
+            regex : "(?:do|\\{)(?: \\|[^|]+\\|)?$",
+            next  : "start"
         }, 
         {
-            "token" : ["text"],
-            "regex" : "^$",
-            "next"  : "start"
+            token : ["text"],
+            regex : "^$",
+            next  : "start"
         }, 
         {
-            "token" : ["text"],
-            "regex" : "^(?!.*\\|\\s*$)",
-            "next"  : "start"
+            token : ["text"],
+            regex : "^(?!.*\\|\\s*$)",
+            next  : "start"
         }
     ]
 }
@@ -189,35 +191,35 @@ ace.define('ace/mode/ruby_highlight_rules', ['require', 'exports', 'module' , 'a
 
 var oop = require("../lib/oop");
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
-var constantOtherSymbol = exports.constantOtherSymbol = { 
-                token : "constant.other.symbol.ruby", // symbol
-                regex : "[:](?:[A-Za-z_]|[@$](?=[a-zA-Z0-9_]))[a-zA-Z0-9_]*[!=?]?"
-           };
+var constantOtherSymbol = exports.constantOtherSymbol = {
+    token : "constant.other.symbol.ruby", // symbol
+    regex : "[:](?:[A-Za-z_]|[@$](?=[a-zA-Z0-9_]))[a-zA-Z0-9_]*[!=?]?"
+};
 
 var qString = exports.qString = {
-                token : "string", // single line
-                regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
-            };
+    token : "string", // single line
+    regex : "['](?:(?:\\\\.)|(?:[^'\\\\]))*?[']"
+};
 
 var qqString = exports.qqString = {
-                token : "string", // single line
-                regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
-            };
+    token : "string", // single line
+    regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
+};
 
 var tString = exports.tString = {
-                token : "string", // backtick string
-                regex : "[`](?:(?:\\\\.)|(?:[^'\\\\]))*?[`]"
-            };
+    token : "string", // backtick string
+    regex : "[`](?:(?:\\\\.)|(?:[^'\\\\]))*?[`]"
+};
 
 var constantNumericHex = exports.constantNumericHex = {
-                token : "constant.numeric", // hex
-                regex : "0[xX][0-9a-fA-F](?:[0-9a-fA-F]|_(?=[0-9a-fA-F]))*\\b"
-            };
+    token : "constant.numeric", // hex
+    regex : "0[xX][0-9a-fA-F](?:[0-9a-fA-F]|_(?=[0-9a-fA-F]))*\\b"
+};
 
 var constantNumericFloat = exports.constantNumericFloat = {
-                token : "constant.numeric", // float
-                regex : "[+-]?\\d(?:\\d|_(?=\\d))*(?:(?:\\.\\d(?:\\d|_(?=\\d))*)?(?:[eE][+-]?\\d+)?)?\\b"
-            };
+    token : "constant.numeric", // float
+    regex : "[+-]?\\d(?:\\d|_(?=\\d))*(?:(?:\\.\\d(?:\\d|_(?=\\d))*)?(?:[eE][+-]?\\d+)?)?\\b"
+};
 
 var RubyHighlightRules = function() {
 
@@ -231,7 +233,7 @@ var RubyHighlightRules = function() {
         "attr|attr_writer|attr_reader|attr_accessor|attr_accessible|autoload|binding|block_given?|callcc|" +
         "caller|catch|chomp|chomp!|chop|chop!|defined?|delete_via_redirect|eval|exec|exit|" +
         "exit!|fail|Float|flunk|follow_redirect!|fork|form_for|form_tag|format|gets|global_variables|gsub|" +
-        "gsub!|get_via_redirect|h|host!|https?|https!|include|Integer|lambda|link_to|" +
+        "gsub!|get_via_redirect|host!|https?|https!|include|Integer|lambda|link_to|" +
         "link_to_unless_current|link_to_function|link_to_remote|load|local_variables|loop|open|open_session|" +
         "p|print|printf|proc|putc|puts|post_via_redirect|put_via_redirect|raise|rand|" +
         "raw|readline|readlines|redirect?|request_via_redirect|require|scan|select|" +
@@ -249,7 +251,7 @@ var RubyHighlightRules = function() {
         "validates_inclusion_of|validates_numericality_of|validates_with|validates_each|" +
         "authenticate_or_request_with_http_basic|authenticate_or_request_with_http_digest|" +
         "filter_parameter_logging|match|get|post|resources|redirect|scope|assert_routing|" +
-        "translate|localize|extract_locale_from_tld|t|l|caches_page|expire_page|caches_action|expire_action|" +
+        "translate|localize|extract_locale_from_tld|caches_page|expire_page|caches_action|expire_action|" +
         "cache|expire_fragment|expire_cache_for|observe|cache_sweeper|" +
         "has_many|has_one|belongs_to|has_and_belongs_to_many"
     );
@@ -285,13 +287,12 @@ var RubyHighlightRules = function() {
                 regex : "#.*$"
             }, {
                 token : "comment", // multi line comment
-                merge : true,
-                regex : "^=begin\\s",
+                regex : "^=begin(?:$|\\s.*$)",
                 next : "comment"
             }, {
                 token : "string.regexp",
                 regex : "[/](?:(?:\\[(?:\\\\]|[^\\]])+\\])|(?:\\\\/|[^\\]/]))*[/]\\w*\\s*(?=[).,;]|$)"
-            }, 
+            },
 
             qString,
             qqString,
@@ -306,12 +307,12 @@ var RubyHighlightRules = function() {
             }, {
                 token : "support.class", // class name
                 regex : "[A-Z][a-zA-Z_\\d]+"
-            }, 
+            },
 
             constantOtherSymbol,
             constantNumericHex,
             constantNumericFloat,
-            
+
             {
                 token : "constant.language.boolean",
                 regex : "(?:true|false)\\b"
@@ -321,6 +322,49 @@ var RubyHighlightRules = function() {
             }, {
                 token : "punctuation.separator.key-value",
                 regex : "=>"
+            }, {
+                stateName: "heredoc",
+                onMatch : function(value, currentState, stack) {
+                    var next = value[2] == '-' ? "indentedHeredoc" : "heredoc";
+                    var tokens = value.split(this.splitRegex);
+                    stack.push(next, tokens[3]);
+                    return [
+                        {type:"constant", value: tokens[1]},
+                        {type:"string", value: tokens[2]},
+                        {type:"support.class", value: tokens[3]},
+                        {type:"string", value: tokens[4]}
+                    ];
+                },
+                regex : "(<<-?)(['\"`]?)([\\w]+)(['\"`]?)",
+                rules: {
+                    heredoc: [{
+                        onMatch:  function(value, currentState, stack) {
+                            if (value == stack[1]) {
+                                stack.shift();
+                                stack.shift();
+                                return "support.class";
+                            }
+                            return "string";
+                        },
+                        regex: ".*$",
+                        next: "start"
+                    }],
+                    indentedHeredoc: [{
+                        token: "string",
+                        regex: "^ +"
+                    }, {
+                        onMatch:  function(value, currentState, stack) {
+                            if (value == stack[1]) {
+                                stack.shift();
+                                stack.shift();
+                                return "support.class";
+                            }
+                            return "string";
+                        },
+                        regex: ".*$",
+                        next: "start"
+                    }]
+                }
             }, {
                 token : "keyword.operator",
                 regex : "!|\\$|%|&|\\*|\\-\\-|\\-|\\+\\+|\\+|~|===|==|=|!=|!==|<=|>=|<<=|>>=|>>>=|<>|<|>|!|&&|\\|\\||\\?\\:|\\*=|%=|\\+=|\\-=|&=|\\^=|\\b(?:in|instanceof|new|delete|typeof|void)"
@@ -338,15 +382,16 @@ var RubyHighlightRules = function() {
         "comment" : [
             {
                 token : "comment", // closing comment
-                regex : "^=end\\s.*$",
+                regex : "^=end(?:$|\\s.*$)",
                 next : "start"
             }, {
                 token : "comment", // comment spanning whole line
-                merge : true,
                 regex : ".+"
             }
         ]
     };
+
+    this.normalizeRules();
 };
 
 oop.inherits(RubyHighlightRules, TextHighlightRules);

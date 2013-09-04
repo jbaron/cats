@@ -39,40 +39,16 @@ var PythonFoldMode = require("./folding/pythonic").FoldMode;
 var Range = require("../range").Range;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new PythonHighlightRules().getRules());
+    var highlighter = new PythonHighlightRules();
+    this.$tokenizer = new Tokenizer(highlighter.getRules());
+    this.$keywordList = highlighter.$keywordList;
     this.foldingRules = new PythonFoldMode("\\:");
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
 
-    this.toggleCommentLines = function(state, doc, startRow, endRow) {
-        var outdent = true;
-        var re = /^(\s*)#/;
-
-        for (var i=startRow; i<= endRow; i++) {
-            if (!re.test(doc.getLine(i))) {
-                outdent = false;
-                break;
-            }
-        }
-
-        if (outdent) {
-            var deleteRange = new Range(0, 0, 0, 0);
-            for (var i=startRow; i<= endRow; i++)
-            {
-                var line = doc.getLine(i);
-                var m = line.match(re);
-                deleteRange.start.row = i;
-                deleteRange.end.row = i;
-                deleteRange.end.column = m[0].length;
-                doc.replace(deleteRange, m[1]);
-            }
-        }
-        else {
-            doc.indentRows(startRow, endRow, "#");
-        }
-    };
+    this.lineCommentStart = "#";
 
     this.getNextLineIndent = function(state, line, tab) {
         var indent = this.$getIndent(line);
@@ -184,32 +160,28 @@ var PythonHighlightRules = function() {
     var exponentFloat = "(?:(?:" + pointFloat + "|" +  intPart + ")" + exponent + ")";
     var floatNumber = "(?:" + exponentFloat + "|" + pointFloat + ")";
 
+    var stringEscape =  "\\\\(x[0-9A-Fa-f]{2}|[0-7]{3}|[\\\\abfnrtv'\"]|U[0-9A-Fa-f]{8}|u[0-9A-Fa-f]{4})";
+
     this.$rules = {
         "start" : [ {
             token : "comment",
             regex : "#.*$"
         }, {
-            token : "string",           // """ string
-            regex : strPre + '"{3}(?:[^\\\\]|\\\\.)*?"{3}'
-        }, {
             token : "string",           // multi line """ string start
-            merge : true,
-            regex : strPre + '"{3}.*$',
-            next : "qqstring"
+            regex : strPre + '"{3}',
+            next : "qqstring3"
         }, {
             token : "string",           // " string
-            regex : strPre + '"(?:[^\\\\]|\\\\.)*?"'
-        }, {
-            token : "string",           // ''' string
-            regex : strPre + "'{3}(?:[^\\\\]|\\\\.)*?'{3}"
+            regex : strPre + '"(?=.)',
+            next : "qqstring"
         }, {
             token : "string",           // multi line ''' string start
-            merge : true,
-            regex : strPre + "'{3}.*$",
-            next : "qstring"
+            regex : strPre + "'{3}",
+            next : "qstring3"
         }, {
             token : "string",           // ' string
-            regex : strPre + "'(?:[^\\\\]|\\\\.)*?'"
+            regex : strPre + "'(?=.)",
+            next : "qstring"
         }, {
             token : "constant.numeric", // imaginary
             regex : "(?:" + floatNumber + "|\\d+)[jJ]\\b"
@@ -238,24 +210,54 @@ var PythonHighlightRules = function() {
             token : "text",
             regex : "\\s+"
         } ],
-        "qqstring" : [ {
+        "qqstring3" : [ {
+            token : "constant.language.escape",
+            regex : stringEscape
+        }, {
             token : "string", // multi line """ string end
-            regex : '(?:[^\\\\]|\\\\.)*?"{3}',
+            regex : '"{3}',
             next : "start"
         }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
+            defaultToken : "string"
         } ],
-        "qstring" : [ {
+        "qstring3" : [ {
+            token : "constant.language.escape",
+            regex : stringEscape
+        }, {
             token : "string",  // multi line ''' string end
-            regex : "(?:[^\\\\]|\\\\.)*?'{3}",
+            regex : "'{3}",
             next : "start"
         }, {
+            defaultToken : "string"
+        } ],
+        "qqstring" : [{
+            token : "constant.language.escape",
+            regex : stringEscape
+        }, {
             token : "string",
-            merge : true,
-            regex : '.+'
-        } ]
+            regex : "\\\\$",
+            next  : "qqstring"
+        }, {
+            token : "string",
+            regex : '"|$',
+            next  : "start"
+        }, {
+            defaultToken: "string"
+        }],
+        "qstring" : [{
+            token : "constant.language.escape",
+            regex : stringEscape
+        }, {
+            token : "string",
+            regex : "\\\\$",
+            next  : "qstring"
+        }, {
+            token : "string",
+            regex : "'|$",
+            next  : "start"
+        }, {
+            defaultToken: "string"
+        }]
     };
 };
 

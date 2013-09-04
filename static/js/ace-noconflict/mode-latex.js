@@ -15,36 +15,8 @@ var Mode = function() {
 oop.inherits(Mode, TextMode);
 
 (function() {
-    this.toggleCommentLines = function(state, doc, startRow, endRow) {
-        var outdent = true;
-        var commentRegEx = /^(\s*)\%/;
+    this.lineCommentStart = "%";
 
-        for (var i = startRow; i <= endRow; i++) {
-            if (!commentRegEx.test(doc.getLine(i))) {
-                outdent = false;
-                break;
-            }
-        }
-
-        if (outdent) {
-            var deleteRange = new Range(0, 0, 0, 0);
-            for (var i = startRow; i <= endRow; i++) {
-                var line = doc.getLine(i);
-                var m = line.match(commentRegEx);
-                deleteRange.start.row = i;
-                deleteRange.end.row = i;
-                deleteRange.end.column = m[0].length;
-                doc.replace(deleteRange, m[1]);
-            }
-        }
-        else {
-            doc.indentRows(startRow, endRow, "%");
-        }
-    };
-    this.getNextLineIndent = function(state, line, tab) {
-        return this.$getIndent(line);
-    };
-    
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
@@ -89,7 +61,7 @@ ace.define('ace/mode/folding/latex', ['require', 'exports', 'module' , 'ace/lib/
 var oop = require("../../lib/oop");
 var BaseFoldMode = require("./fold_mode").FoldMode;
 var Range = require("../../range").Range;
-var TokenIterator = require("ace/token_iterator").TokenIterator;
+var TokenIterator = require("../../token_iterator").TokenIterator;
 
 var FoldMode = exports.FoldMode = function() {};
 
@@ -169,8 +141,8 @@ oop.inherits(FoldMode, BaseFoldMode);
         var row = stream.getCurrentTokenRow();
         if (dir === -1)
             return new Range(row, session.getLine(row).length, startRow, startColumn);
-        else
-            return new Range(startRow, startColumn, row, stream.getCurrentTokenColumn());
+        stream.stepBackward();
+        return new Range(startRow, startColumn, row, stream.getCurrentTokenColumn());
     };
 
     this.latexSection = function(session, row, column) {

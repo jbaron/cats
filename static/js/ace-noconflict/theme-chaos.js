@@ -50,11 +50,8 @@ border-left: 1px solid #555;\
 right: 0;\
 background: #1D1D1D;\
 }\
-.ace-chaos .ace_scroller {\
+.ace-chaos {\
 background-color: #161616;\
-}\
-.ace-chaos .ace_text-layer {\
-cursor: text;\
 color: #E6E1DC;\
 }\
 .ace-chaos .ace_cursor {\
@@ -159,7 +156,22 @@ content: '▴'\
 }\
 .ace-chaos .ace_fold-widget.ace_closed:after {\
 content: '‣'\
-}";
+}\
+.ace-chaos .ace_indent-guide {\
+border-right:1px dotted #333;\
+margin-right:-1px;\
+}\
+.ace-chaos .ace_fold { \
+background: #222; \
+border-radius: 3px; \
+color: #7AF; \
+border: none; \
+}\
+.ace-chaos .ace_fold:hover {\
+background: #CCC; \
+color: #000;\
+}\
+";
 
 var dom = require("../lib/dom");
 dom.importCssString(exports.cssText, exports.cssClass);

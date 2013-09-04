@@ -27,10 +27,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- * Contributor(s):
- * 
- *
- *
  * ***** END LICENSE BLOCK ***** */
 
 ace.define('ace/mode/lisp', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/lisp_highlight_rules'], function(require, exports, module) {
@@ -45,10 +41,14 @@ var Mode = function() {
     var highlighter = new LispHighlightRules();
     
     this.$tokenizer = new Tokenizer(highlighter.getRules());
+    this.$keywordList = highlighter.$keywordList;
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
+       
+    this.lineCommentStart = ";";
+    
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
@@ -82,54 +82,51 @@ var LispHighlightRules = function() {
             regex : ";.*$"
         },
         {
-            "token": ["storage.type.function-type.lisp", "text", "entity.name.function.lisp"],
-            "regex": "(?:\\b(?:(defun|defmethod|defmacro))\\b)(\\s+)((?:\\w|\\-|\\!|\\?)*)"
+            token: ["storage.type.function-type.lisp", "text", "entity.name.function.lisp"],
+            regex: "(?:\\b(?:(defun|defmethod|defmacro))\\b)(\\s+)((?:\\w|\\-|\\!|\\?)*)"
         },
         {
-            "token": ["punctuation.definition.constant.character.lisp", "constant.character.lisp"],
-            "regex": "(#)((?:\\w|[\\\\+-=<>'\"&#])+)"
+            token: ["punctuation.definition.constant.character.lisp", "constant.character.lisp"],
+            regex: "(#)((?:\\w|[\\\\+-=<>'\"&#])+)"
         },
         {
-            "token": ["punctuation.definition.variable.lisp", "variable.other.global.lisp", "punctuation.definition.variable.lisp"],
-            "regex": "(\\*)(\\S*)(\\*)"
+            token: ["punctuation.definition.variable.lisp", "variable.other.global.lisp", "punctuation.definition.variable.lisp"],
+            regex: "(\\*)(\\S*)(\\*)"
         },
         {
-            "token" : "constant.numeric", // hex
-            "regex" : "0[xX][0-9a-fA-F]+(?:L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
+            token : "constant.numeric", // hex
+            regex : "0[xX][0-9a-fA-F]+(?:L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
         }, 
         {
-            "token" : "constant.numeric", // float
-            "regex" : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?(?:L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
+            token : "constant.numeric", // float
+            regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?(?:L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b"
         },
         {
-                "token" : keywordMapper,
-                "regex" : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+                token : keywordMapper,
+                regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
         },
         {
-            "token" : "string",
-            "regex" : '"(?=.)',
-            "next"  : "qqstring"
+            token : "string",
+            regex : '"(?=.)',
+            next  : "qqstring"
         }
     ],
     "qqstring": [
         {
-            "token": "constant.character.escape.lisp",
-            "regex": "\\\\."
+            token: "constant.character.escape.lisp",
+            regex: "\\\\."
         },
         {
-            "token" : "string",
-            "regex" : '[^"\\\\]+',
-            "merge" : true
+            token : "string",
+            regex : '[^"\\\\]+'
         }, {
-            "token" : "string",
-            "regex" : "\\\\$",
-            "next"  : "qqstring",
-            "merge" : true
+            token : "string",
+            regex : "\\\\$",
+            next  : "qqstring"
         }, {
-            "token" : "string",
-            "regex" : '"|$',
-            "next"  : "start",
-            "merge" : true
+            token : "string",
+            regex : '"|$',
+            next  : "start"
         }
     ]
 }

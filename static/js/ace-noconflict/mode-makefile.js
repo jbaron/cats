@@ -47,10 +47,15 @@ var Mode = function() {
     this.foldingRules = new FoldMode();
     
     this.$tokenizer = new Tokenizer(highlighter.getRules());
+    this.$keywordList = highlighter.$keywordList;
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
+       
+    this.lineCommentStart = "#";    
+    this.$indentWithTabs = true;
+    
 }).call(Mode.prototype);
 
 exports.Mode = Mode;
@@ -74,48 +79,48 @@ var MakefileHighlightRules = function() {
         {
     "start": [
         {
-            "token": "string.interpolated.backtick.makefile",
-            "regex": "`",
-            "next": "shell-start"
+            token: "string.interpolated.backtick.makefile",
+            regex: "`",
+            next: "shell-start"
         },
         {
-            "token": "punctuation.definition.comment.makefile",
-            "regex": /#(?=.)/,
-            "next": "comment"
+            token: "punctuation.definition.comment.makefile",
+            regex: /#(?=.)/,
+            next: "comment"
         },
         {
-            "token": [ "keyword.control.makefile"],
-            "regex": "^(?:\\s*\\b)(\\-??include|ifeq|ifneq|ifdef|ifndef|else|endif|vpath|export|unexport|define|endef|override)(?:\\b)"
+            token: [ "keyword.control.makefile"],
+            regex: "^(?:\\s*\\b)(\\-??include|ifeq|ifneq|ifdef|ifndef|else|endif|vpath|export|unexport|define|endef|override)(?:\\b)"
         },
         {// ^([^\t ]+(\s[^\t ]+)*:(?!\=))\s*.*
-            "token": ["entity.name.function.makefile", "text"],
-            "regex": "^([^\\t ]+(?:\\s[^\\t ]+)*:)(\\s*.*)"
+            token: ["entity.name.function.makefile", "text"],
+            regex: "^([^\\t ]+(?:\\s[^\\t ]+)*:)(\\s*.*)"
         }
     ],
     "comment": [
         {
-            "token" : "punctuation.definition.comment.makefile",
-            "regex" : /.+\\/
+            token : "punctuation.definition.comment.makefile",
+            regex : /.+\\/
         },
         {
-            "token" : "punctuation.definition.comment.makefile",
-            "regex" : ".+",
-            "next"  : "start"
+            token : "punctuation.definition.comment.makefile",
+            regex : ".+",
+            next  : "start"
         }
     ],
     "shell-start": [
         {
-            "token": keywordMapper,
-            "regex" : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+            token: keywordMapper,
+            regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
         }, 
         {
-            "token": "string",
-            "regex" : "\\w+"
+            token: "string",
+            regex : "\\w+"
         }, 
         {
-            "token" : "string.interpolated.backtick.makefile",
-            "regex" : "`",
-            "next"  : "start"
+            token : "string.interpolated.backtick.makefile",
+            regex : "`",
+            next  : "start"
         }
     ]
 }
@@ -175,12 +180,28 @@ var ShHighlightRules = function() {
     var func = "(?:" + variableName + "\\s*\\(\\))";
 
     this.$rules = {
-        "start" : [ {
-            token : "comment",
-            regex : "#.*$"
+        "start" : [{
+            token : "constant",
+            regex : /\\./
         }, {
-            token : "string",           // " string
-            regex : '"(?:[^\\\\]|\\\\.)*?"'
+            token : ["text", "comment"],
+            regex : /(^|\s)(#.*)$/
+        }, {
+            token : "string",
+            regex : '"',
+            push : [{
+                token : "constant.language.escape",
+                regex : /\\(?:[$abeEfnrtv\\'"]|x[a-fA-F\d]{1,2}|u[a-fA-F\d]{4}([a-fA-F\d]{4})?|c.|\d{1,3})/
+            }, {
+                token : "constant",
+                regex : /\$\w+/
+            }, {
+                token : "string",
+                regex : '"',
+                next: "pop"
+            }, {
+                defaultToken: "string"
+            }]
         }, {
             token : "variable.language",
             regex : builtinVariable
@@ -195,7 +216,7 @@ var ShHighlightRules = function() {
             regex : fileDescriptor
         }, {
             token : "string",           // ' string
-            regex : "'(?:[^\\\\]|\\\\.)*?'"
+            start : "'", end : "'"
         }, {
             token : "constant.numeric", // float
             regex : floatNumber
@@ -214,11 +235,10 @@ var ShHighlightRules = function() {
         }, {
             token : "paren.rparen",
             regex : "[\\]\\)\\}]"
-        }, {
-            token : "text",
-            regex : "\\s+"
         } ]
     };
+    
+    this.normalizeRules();
 };
 
 oop.inherits(ShHighlightRules, TextHighlightRules);

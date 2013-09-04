@@ -15,20 +15,17 @@
  * AGPL (http://www.gnu.org/licenses/agpl-3.0.txt) for more details.
  *
  */
-ace.define('ace/mode/r', ['require', 'exports', 'module' , 'ace/editor', 'ace/edit_session', 'ace/range', 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/text_highlight_rules', 'ace/mode/r_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/unicode'], function(require, exports, module) {
+ace.define('ace/mode/r', ['require', 'exports', 'module' , 'ace/range', 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/text_highlight_rules', 'ace/mode/r_highlight_rules', 'ace/mode/matching_brace_outdent', 'ace/unicode'], function(require, exports, module) {
    
 
-   var Editor = require("ace/editor").Editor;
-   var EditSession = require("ace/edit_session").EditSession;
-   var Range = require("ace/range").Range;
-   var oop = require("ace/lib/oop");
-   var TextMode = require("ace/mode/text").Mode;
-   var Tokenizer = require("ace/tokenizer").Tokenizer;
-   var TextHighlightRules = require("ace/mode/text_highlight_rules")
-         .TextHighlightRules;
+   var Range = require("../range").Range;
+   var oop = require("../lib/oop");
+   var TextMode = require("./text").Mode;
+   var Tokenizer = require("../tokenizer").Tokenizer;
+   var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
    var RHighlightRules = require("./r_highlight_rules").RHighlightRules;
-   var MatchingBraceOutdent = require("ace/mode/matching_brace_outdent").MatchingBraceOutdent;
-   var unicode = require("ace/unicode");
+   var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
+   var unicode = require("../unicode");
 
    var Mode = function()
    {
@@ -39,104 +36,15 @@ ace.define('ace/mode/r', ['require', 'exports', 'module' , 'ace/editor', 'ace/ed
 
    (function()
    {
-      this.tokenRe = new RegExp("^["
-          + unicode.packages.L
-          + unicode.packages.Mn + unicode.packages.Mc
-          + unicode.packages.Nd
-          + unicode.packages.Pc + "._]+", "g"
-      );
-
-      this.nonTokenRe = new RegExp("^(?:[^"
-          + unicode.packages.L
-          + unicode.packages.Mn + unicode.packages.Mc
-          + unicode.packages.Nd
-          + unicode.packages.Pc + "._]|\s])+", "g"
-      );
-
-      this.$complements = {
-               "(": ")",
-               "[": "]",
-               '"': '"',
-               "'": "'",
-               "{": "}"
-            };
-      this.$reOpen = /^[(["'{]$/;
-      this.$reClose = /^[)\]"'}]$/;
-
-      this.getNextLineIndent = function(state, line, tab, tabSize, row)
-      {
-         return this.codeModel.getNextLineIndent(row, line, state, tab, tabSize);
-      };
-
-      this.allowAutoInsert = this.smartAllowAutoInsert;
-
-      this.checkOutdent = function(state, line, input) {
-         if (! /^\s+$/.test(line))
-            return false;
-
-         return /^\s*[\{\}\)]/.test(input);
-      };
-
-      this.getIndentForOpenBrace = function(openBracePos)
-      {
-         return this.codeModel.getIndentForOpenBrace(openBracePos);
-      };
-
-      this.autoOutdent = function(state, doc, row) {
-         if (row == 0)
-            return 0;
-
-         var line = doc.getLine(row);
-
-         var match = line.match(/^(\s*[\}\)])/);
-         if (match)
-         {
-            var column = match[1].length;
-            var openBracePos = doc.findMatchingBracket({row: row, column: column});
-
-            if (!openBracePos || openBracePos.row == row) return 0;
-
-            var indent = this.codeModel.getIndentForOpenBrace(openBracePos);
-            doc.replace(new Range(row, 0, row, column-1), indent);
-         }
-
-         match = line.match(/^(\s*\{)/);
-         if (match)
-         {
-            var column = match[1].length;
-            var indent = this.codeModel.getBraceIndent(row-1);
-            doc.replace(new Range(row, 0, row, column-1), indent);
-         }
-      };
-
-      this.$getIndent = function(line) {
-         var match = line.match(/^(\s+)/);
-         if (match) {
-            return match[1];
-         }
-
-         return "";
-      };
-
-      this.transformAction = function(state, action, editor, session, text) {
-         if (action === 'insertion' && text === "\n") {
-            var pos = editor.getSelectionRange().start;
-            var match = /^((\s*#+')\s*)/.exec(session.doc.getLine(pos.row));
-            if (match && editor.getSelectionRange().start.column >= match[2].length) {
-               return {text: "\n" + match[1]};
-            }
-         }
-         return false;
-      };
+      this.lineCommentStart = "#";
    }).call(Mode.prototype);
    exports.Mode = Mode;
 });
 ace.define('ace/mode/r_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/lib/lang', 'ace/mode/text_highlight_rules', 'ace/mode/tex_highlight_rules'], function(require, exports, module) {
 
-   var oop = require("ace/lib/oop");
-   var lang = require("ace/lib/lang");
-   var TextHighlightRules = require("ace/mode/text_highlight_rules")
-         .TextHighlightRules;
+   var oop = require("../lib/oop");
+   var lang = require("../lib/lang");
+   var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
    var TexHighlightRules = require("./tex_highlight_rules").TexHighlightRules;
 
    var RHighlightRules = function()
@@ -202,8 +110,7 @@ ace.define('ace/mode/r_highlight_rules', ['require', 'exports', 'module' , 'ace/
                regex : "`.*?`"
             },
             {
-               token : function(value)
-               {
+               onMatch : function(value) {
                   if (keywords[value])
                      return "keyword";
                   else if (buildinConstants[value])
@@ -292,8 +199,8 @@ ace.define('ace/mode/r_highlight_rules', ['require', 'exports', 'module' , 'ace/
 ace.define('ace/mode/tex_highlight_rules', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/lib/lang', 'ace/mode/text_highlight_rules'], function(require, exports, module) {
 
 
-var oop = require("ace/lib/oop");
-var lang = require("ace/lib/lang");
+var oop = require("../lib/oop");
+var lang = require("../lib/lang");
 var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 
 var TexHighlightRules = function(textClass) {
@@ -400,12 +307,7 @@ var MatchingBraceOutdent = function() {};
     };
 
     this.$getIndent = function(line) {
-        var match = line.match(/^(\s+)/);
-        if (match) {
-            return match[1];
-        }
-
-        return "";
+        return line.match(/^\s*/)[0];
     };
 
 }).call(MatchingBraceOutdent.prototype);

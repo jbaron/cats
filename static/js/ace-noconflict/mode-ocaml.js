@@ -39,8 +39,11 @@ var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutd
 var Range = require("../range").Range;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new OcamlHighlightRules().getRules());
+    var highlighter = new OcamlHighlightRules();
+    
+    this.$tokenizer = new Tokenizer(highlighter.getRules());
     this.$outdent   = new MatchingBraceOutdent();
+    this.$keywordList = highlighter.$keywordList;
 };
 oop.inherits(Mode, TextMode);
 
@@ -323,7 +326,6 @@ var OcamlHighlightRules = function() {
             },
             {
                 token : "comment",
-                merge : true,
                 regex : '\\(\\*.*',
                 next : "comment"
             },
@@ -337,7 +339,6 @@ var OcamlHighlightRules = function() {
             },
             {
                 token : "string", // " string
-                merge : true,
                 regex : '"',
                 next  : "qstring"
             },
@@ -382,7 +383,6 @@ var OcamlHighlightRules = function() {
             },
             {
                 token : "comment", // comment spanning whole line
-                merge : true,
                 regex : ".+"
             }
         ],
@@ -394,7 +394,6 @@ var OcamlHighlightRules = function() {
                 next : "start"
             }, {
                 token : "string",
-                merge : true,
                 regex : '.+'
             }
         ]
@@ -438,12 +437,7 @@ var MatchingBraceOutdent = function() {};
     };
 
     this.$getIndent = function(line) {
-        var match = line.match(/^(\s+)/);
-        if (match) {
-            return match[1];
-        }
-
-        return "";
+        return line.match(/^\s*/)[0];
     };
 
 }).call(MatchingBraceOutdent.prototype);

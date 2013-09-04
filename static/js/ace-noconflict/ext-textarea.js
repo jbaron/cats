@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2010, Ajax.org B.V.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -14,7 +14,7 @@
  *     * Neither the name of Ajax.org B.V. nor the
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -63,7 +63,7 @@ function applyStyles(elm, styles) {
 }
 
 function setupContainer(element, getValue) {
-        if (element.type != 'textarea') {
+    if (element.type != 'textarea') {
         throw "Textarea required!";
     }
 
@@ -85,16 +85,11 @@ function setupContainer(element, getValue) {
     };
     event.addListener(window, 'resize', resizeEvent);
     resizeEvent();
-    if (element.nextSibling) {
-        parentNode.insertBefore(container, element.nextSibling);
-    } else {
-        parentNode.appendChild(container);
-    }
+    parentNode.insertBefore(container, element.nextSibling);
     while (parentNode !== document) {
         if (parentNode.tagName.toUpperCase() === 'FORM') {
             var oldSumit = parentNode.onsubmit;
             parentNode.onsubmit = function(evt) {
-                element.innerHTML = getValue();
                 element.value = getValue();
                 if (oldSumit) {
                     oldSumit.call(this, evt);
@@ -120,7 +115,8 @@ exports.transformTextarea = function(element, loader) {
         left: "0px",
         right: "0px",
         bottom: "0px",
-        border: "1px solid gray"
+        border: "1px solid gray",
+        position: "absolute"
     });
     container.appendChild(editorDiv);
 
@@ -141,7 +137,7 @@ exports.transformTextarea = function(element, loader) {
     var settingDiv = document.createElement("div");
     var settingDivStyles = {
         top: "0px",
-        left: "0px",
+        left: "20%",
         right: "0px",
         bottom: "0px",
         position: "absolute",
@@ -150,7 +146,8 @@ exports.transformTextarea = function(element, loader) {
         color: "white",
         display: "none",
         overflow: "auto",
-        fontSize: "14px"
+        fontSize: "14px",
+        boxShadow: "-5px 2px 3px gray"
     };
     if (!UA.isOldIE) {
         settingDivStyles.backgroundColor = "rgba(0, 0, 0, 0.6)";
@@ -167,10 +164,10 @@ exports.transformTextarea = function(element, loader) {
 
     session.setValue(element.value || element.innerHTML);
     editor.focus();
-    editorDiv.appendChild(settingOpener);
+    container.appendChild(settingOpener);
     setupApi(editor, editorDiv, settingDiv, ace, options, loader);
     setupSettingPanel(settingDiv, settingOpener, editor, options);
-    
+
     var state = "";
     event.addListener(settingOpener, "mousemove", function(e) {
         var rect = this.getBoundingClientRect();
@@ -183,7 +180,7 @@ exports.transformTextarea = function(element, loader) {
             this.style.cursor = "nw-resize";
         }
     });
-    
+
     event.addListener(settingOpener, "mousedown", function(e) {
         if (state == "toggle") {
             editor.setDisplaySettings();
@@ -215,23 +212,29 @@ function setupApi(editor, editorDiv, settingDiv, ace, options, loader) {
     loader = loader || load;
 
     function toBool(value) {
-        return value == "true";
+        return value === "true" || value == true;
     }
 
     editor.setDisplaySettings = function(display) {
         if (display == null)
             display = settingDiv.style.display == "none";
-        settingDiv.style.display = display ? "block" : "none";
+        if (display) {
+            settingDiv.style.display = "block";
+            settingDiv.hideButton.focus();
+            editor.on("focus", function onFocus() {
+                editor.removeListener("focus", onFocus);
+                settingDiv.style.display = "none";
+            });
+        } else {
+            editor.focus();
+        }
     };
-    
+
+    editor.$setOption = editor.setOption;
     editor.setOption = function(key, value) {
         if (options[key] == value) return;
 
         switch (key) {
-            case "gutter":
-                renderer.setShowGutter(toBool(value));
-            break;
-
             case "mode":
                 if (value != "text") {
                     loader("mode-" + value + ".js", "ace/mode/" + value, function() {
@@ -257,6 +260,19 @@ function setupApi(editor, editorDiv, settingDiv, ace, options, loader) {
                 editorDiv.style.fontSize = value;
             break;
 
+            case "keybindings":
+                switch (value) {
+                    case "vim":
+                        editor.setKeyboardHandler("ace/keyboard/vim");
+                        break;
+                    case "emacs":
+                        editor.setKeyboardHandler("ace/keyboard/emacs");
+                        break;
+                    default:
+                        editor.setKeyboardHandler(null);
+                }
+            break;
+
             case "softWrap":
                 switch (value) {
                     case "off":
@@ -280,18 +296,9 @@ function setupApi(editor, editorDiv, settingDiv, ace, options, loader) {
                     break;
                 }
             break;
-
-            case "useSoftTabs":
-                session.setUseSoftTabs(toBool(value));
-            break;
-
-            case "showPrintMargin":
-                renderer.setShowPrintMargin(toBool(value));
-            break;
-
-            case "showInvisibles":
-                editor.setShowInvisibles(toBool(value));
-            break;
+            
+            default:
+                editor.$setOption(key, toBool(value));
         }
 
         options[key] = value;
@@ -305,18 +312,13 @@ function setupApi(editor, editorDiv, settingDiv, ace, options, loader) {
         return options;
     };
 
-    for (var option in exports.options) {
-        editor.setOption(option, exports.options[option]);
-    }
+    editor.setOptions(exports.options);
 
     return editor;
 }
 
 function setupSettingPanel(settingDiv, settingOpener, editor, options) {
-    var BOOL = {
-        "true":  true,
-        "false": false
-    };
+    var BOOL = null;
 
     var desc = {
         mode:            "Mode:",
@@ -324,6 +326,7 @@ function setupSettingPanel(settingDiv, settingOpener, editor, options) {
         theme:           "Theme:",
         fontSize:        "Font Size:",
         softWrap:        "Soft Wrap:",
+        keybindings:     "Keyboard",
         showPrintMargin: "Show Print Margin:",
         useSoftTabs:     "Use Soft Tabs:",
         showInvisibles:  "Show Invisibles"
@@ -389,6 +392,11 @@ function setupSettingPanel(settingDiv, settingOpener, editor, options) {
             80:     "80",
             free:   "Free"
         },
+        keybindings: {
+            ace: "ace",
+            vim: "vim",
+            emacs: "emacs"
+        },
         showPrintMargin:    BOOL,
         useSoftTabs:        BOOL,
         showInvisibles:     BOOL
@@ -398,6 +406,14 @@ function setupSettingPanel(settingDiv, settingOpener, editor, options) {
     table.push("<table><tr><th>Setting</th><th>Value</th></tr>");
 
     function renderOption(builder, option, obj, cValue) {
+        if (!obj) {
+            builder.push(
+                "<input type='checkbox' title='", option, "' ",
+                    cValue == "true" ? "checked='true'" : "",
+               "'></input>"
+            );
+            return;
+        }
         builder.push("<select title='" + option + "'>");
         for (var value in obj) {
             builder.push("<option value='" + value + "' ");
@@ -422,18 +438,21 @@ function setupSettingPanel(settingDiv, settingOpener, editor, options) {
     table.push("</table>");
     settingDiv.innerHTML = table.join("");
 
+    var onChange = function(e) {
+        var select = e.currentTarget;
+        editor.setOption(select.title, select.value);
+    };
+    var onClick = function(e) {
+        var cb = e.currentTarget;
+        editor.setOption(cb.title, cb.checked);
+    };
     var selects = settingDiv.getElementsByTagName("select");
-    for (var i = 0; i < selects.length; i++) {
-        var onChange = (function() {
-            var select = selects[i];
-            return function() {
-                var option = select.title;
-                var value  = select.value;
-                editor.setOption(option, value);
-            };
-        })();
+    for (var i = 0; i < selects.length; i++)
         selects[i].onchange = onChange;
-    }
+    var cbs = settingDiv.getElementsByTagName("input");
+    for (var i = 0; i < cbs.length; i++)
+        cbs[i].onclick = onClick;
+
 
     var button = document.createElement("input");
     button.type = "button";
@@ -442,6 +461,7 @@ function setupSettingPanel(settingDiv, settingOpener, editor, options) {
         editor.setDisplaySettings(false);
     });
     settingDiv.appendChild(button);
+    settingDiv.hideButton = button;
 }
 exports.options = {
     mode:               "text",
@@ -449,143 +469,10 @@ exports.options = {
     gutter:             "false",
     fontSize:           "12px",
     softWrap:           "off",
+    keybindings:        "ace",
     showPrintMargin:    "false",
     useSoftTabs:        "true",
-    showInvisibles:     "true"
+    showInvisibles:     "false"
 };
 
-});
-
-ace.define('ace/theme/textmate', ['require', 'exports', 'module' , 'ace/lib/dom'], function(require, exports, module) {
-
-
-exports.isDark = false;
-exports.cssClass = "ace-tm";
-exports.cssText = ".ace-tm .ace_gutter {\
-background: #f0f0f0;\
-color: #333;\
-}\
-.ace-tm .ace_print-margin {\
-width: 1px;\
-background: #e8e8e8;\
-}\
-.ace-tm .ace_fold {\
-background-color: #6B72E6;\
-}\
-.ace-tm .ace_scroller {\
-background-color: #FFFFFF;\
-}\
-.ace-tm .ace_cursor {\
-border-left: 2px solid black;\
-}\
-.ace-tm .ace_overwrite-cursors .ace_cursor {\
-border-left: 0px;\
-border-bottom: 1px solid black;\
-}\
-.ace-tm .ace_invisible {\
-color: rgb(191, 191, 191);\
-}\
-.ace-tm .ace_storage,\
-.ace-tm .ace_keyword {\
-color: blue;\
-}\
-.ace-tm .ace_constant {\
-color: rgb(197, 6, 11);\
-}\
-.ace-tm .ace_constant.ace_buildin {\
-color: rgb(88, 72, 246);\
-}\
-.ace-tm .ace_constant.ace_language {\
-color: rgb(88, 92, 246);\
-}\
-.ace-tm .ace_constant.ace_library {\
-color: rgb(6, 150, 14);\
-}\
-.ace-tm .ace_invalid {\
-background-color: rgba(255, 0, 0, 0.1);\
-color: red;\
-}\
-.ace-tm .ace_support.ace_function {\
-color: rgb(60, 76, 114);\
-}\
-.ace-tm .ace_support.ace_constant {\
-color: rgb(6, 150, 14);\
-}\
-.ace-tm .ace_support.ace_type,\
-.ace-tm .ace_support.ace_class {\
-color: rgb(109, 121, 222);\
-}\
-.ace-tm .ace_keyword.ace_operator {\
-color: rgb(104, 118, 135);\
-}\
-.ace-tm .ace_string {\
-color: rgb(3, 106, 7);\
-}\
-.ace-tm .ace_comment {\
-color: rgb(76, 136, 107);\
-}\
-.ace-tm .ace_comment.ace_doc {\
-color: rgb(0, 102, 255);\
-}\
-.ace-tm .ace_comment.ace_doc.ace_tag {\
-color: rgb(128, 159, 191);\
-}\
-.ace-tm .ace_constant.ace_numeric {\
-color: rgb(0, 0, 205);\
-}\
-.ace-tm .ace_variable {\
-color: rgb(49, 132, 149);\
-}\
-.ace-tm .ace_xml-pe {\
-color: rgb(104, 104, 91);\
-}\
-.ace-tm .ace_entity.ace_name.ace_function {\
-color: #0000A2;\
-}\
-.ace-tm .ace_markup.ace_heading {\
-color: rgb(12, 7, 255);\
-}\
-.ace-tm .ace_markup.ace_list {\
-color:rgb(185, 6, 144);\
-}\
-.ace-tm .ace_meta.ace_tag {\
-color:rgb(0, 22, 142);\
-}\
-.ace-tm .ace_string.ace_regex {\
-color: rgb(255, 0, 0)\
-}\
-.ace-tm .ace_marker-layer .ace_selection {\
-background: rgb(181, 213, 255);\
-}\
-.ace-tm.ace_multiselect .ace_selection.ace_start {\
-box-shadow: 0 0 3px 0px white;\
-border-radius: 2px;\
-}\
-.ace-tm .ace_marker-layer .ace_step {\
-background: rgb(252, 255, 0);\
-}\
-.ace-tm .ace_marker-layer .ace_stack {\
-background: rgb(164, 229, 101);\
-}\
-.ace-tm .ace_marker-layer .ace_bracket {\
-margin: -1px 0 0 -1px;\
-border: 1px solid rgb(192, 192, 192);\
-}\
-.ace-tm .ace_marker-layer .ace_active-line {\
-background: rgba(0, 0, 0, 0.07);\
-}\
-.ace-tm .ace_gutter-active-line {\
-background-color : #dcdcdc;\
-}\
-.ace-tm .ace_marker-layer .ace_selected-word {\
-background: rgb(250, 250, 255);\
-border: 1px solid rgb(200, 200, 250);\
-}\
-.ace-tm .ace_indent-guide {\
-background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==\") right repeat-y;\
-}\
-";
-
-var dom = require("../lib/dom");
-dom.importCssString(exports.cssText, exports.cssClass);
 });

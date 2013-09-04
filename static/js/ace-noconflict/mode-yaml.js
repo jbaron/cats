@@ -47,7 +47,9 @@ oop.inherits(Mode, TextMode);
 
 (function() {
 
-     this.getNextLineIndent = function(state, line, tab) {
+    this.lineCommentStart = "#";
+    
+    this.getNextLineIndent = function(state, line, tab) {
         var indent = this.$getIndent(line);
 
         if (state == "start") {
@@ -116,7 +118,6 @@ var YamlHighlightRules = function() {
                 regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
             }, {
                 token : "string", // multi line string start
-                merge : true,
                 regex : '[\\|>]\\w*',
                 next : "qqstring"
             }, {
@@ -140,12 +141,6 @@ var YamlHighlightRules = function() {
             }, {
                 token : "paren.rparen",
                 regex : "[\\])}]"
-            }, {
-                token : "text",
-                regex : "\\s+"
-            }, {
-                token : "text",
-                regex : "\\w+"
             }
         ],
         "qqstring" : [
@@ -155,7 +150,6 @@ var YamlHighlightRules = function() {
                 next : "start"
             }, {
                 token : "string",
-                merge : true,
                 regex : '.+'
             }
         ]};
@@ -199,12 +193,7 @@ var MatchingBraceOutdent = function() {};
     };
 
     this.$getIndent = function(line) {
-        var match = line.match(/^(\s+)/);
-        if (match) {
-            return match[1];
-        }
-
-        return "";
+        return line.match(/^\s*/)[0];
     };
 
 }).call(MatchingBraceOutdent.prototype);

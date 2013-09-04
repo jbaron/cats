@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2010, Ajax.org B.V.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -40,10 +40,8 @@ color: #333\
 width: 1px;\
 background: #e8e8e8\
 }\
-.ace-clouds .ace_scroller {\
-background-color: #FFFFFF\
-}\
-.ace-clouds .ace_text-layer {\
+.ace-clouds {\
+background-color: #FFFFFF;\
 color: #000000\
 }\
 .ace-clouds .ace_cursor {\
@@ -122,9 +120,6 @@ color: #BCC8BA\
 .ace-clouds .ace_entity.ace_name.ace_tag,\
 .ace-clouds .ace_entity.ace_other.ace_attribute-name {\
 color: #606060\
-}\
-.ace-clouds .ace_markup.ace_underline {\
-text-decoration: underline\
 }\
 .ace-clouds .ace_indent-guide {\
 background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==\") right repeat-y\

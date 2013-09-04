@@ -47,6 +47,7 @@ var Mode = function() {
     this.foldingRules = new FoldMode();
     
     this.$tokenizer = new Tokenizer(highlighter.getRules());
+    this.$keywordList = highlighter.$keywordList;
 };
 oop.inherits(Mode, TextMode);
 
@@ -73,38 +74,36 @@ var StylusHighlightRules = function() {
         "support.constant.fonts": CssHighlightRules.supportConstantFonts
     }, "text", true);
 
-    this.$rules = 
-        {
-    "start": [
+    this.$rules = {
+    start: [
         {
             token : "comment",
             regex : /\/\/.*$/
         },
         {
             token : "comment", // multi line comment
-            merge : true,
             regex : /\/\*/,
             next : "comment"
         },
         {
-            "token": ["entity.name.function.stylus", "text"],
-            "regex": "^([-a-zA-Z_][-\\w]*)?(\\()"
+            token: ["entity.name.function.stylus", "text"],
+            regex: "^([-a-zA-Z_][-\\w]*)?(\\()"
         },
         {
-            "token": ["entity.other.attribute-name.class.stylus"],
-            "regex": "\\.-?[_a-zA-Z]+[_a-zA-Z0-9-]*"
+            token: ["entity.other.attribute-name.class.stylus"],
+            regex: "\\.-?[_a-zA-Z]+[_a-zA-Z0-9-]*"
         },
         {
-            "token": ["entity.language.stylus"],
-            "regex": "^ *&"
+            token: ["entity.language.stylus"],
+            regex: "^ *&"
         },
         {
-            "token": ["variable.language.stylus"],
-            "regex": "(arguments)"
+            token: ["variable.language.stylus"],
+            regex: "(arguments)"
         },
         {
-            "token": ["keyword.stylus"],
-            "regex": "@[-\\w]+"
+            token: ["keyword.stylus"],
+            regex: "@[-\\w]+"
         },
         {
             token : ["punctuation", "entity.other.attribute-name.pseudo-element.css"],
@@ -114,8 +113,8 @@ var StylusHighlightRules = function() {
             regex : CssHighlightRules.pseudoClasses
         }, 
         {
-            "token": ["entity.name.tag.stylus"],
-            "regex": "(?:\\b)(a|abbr|acronym|address|area|article|aside|audio|b|base|big|blockquote|body|br|button|canvas|caption|cite|code|col|colgroup|datalist|dd|del|details|dfn|dialog|div|dl|dt|em|eventsource|fieldset|figure|figcaption|footer|form|frame|frameset|(?:h[1-6])|head|header|hgroup|hr|html|i|iframe|img|input|ins|kbd|label|legend|li|link|map|mark|menu|meta|meter|nav|noframes|noscript|object|ol|optgroup|option|output|p|param|pre|progress|q|samp|script|section|select|small|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|tt|ul|var|video)(?:\\b)"
+            token: ["entity.name.tag.stylus"],
+            regex: "(?:\\b)(a|abbr|acronym|address|area|article|aside|audio|b|base|big|blockquote|body|br|button|canvas|caption|cite|code|col|colgroup|datalist|dd|del|details|dfn|dialog|div|dl|dt|em|eventsource|fieldset|figure|figcaption|footer|form|frame|frameset|(?:h[1-6])|head|header|hgroup|hr|html|i|iframe|img|input|ins|kbd|label|legend|li|link|map|mark|menu|meta|meter|nav|noframes|noscript|object|ol|optgroup|option|output|p|param|pre|progress|q|samp|script|section|select|small|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|tt|ul|var|video)(?:\\b)"
         },
         {
             token : "constant.numeric",  // hex6 color
@@ -126,24 +125,24 @@ var StylusHighlightRules = function() {
             regex : "#[a-f0-9]{3}"
         }, 
         {
-            "token": ["punctuation.definition.entity.stylus", "entity.other.attribute-name.id.stylus"],
-            "regex": "(#)([a-zA-Z][a-zA-Z0-9_-]*)"
+            token: ["punctuation.definition.entity.stylus", "entity.other.attribute-name.id.stylus"],
+            regex: "(#)([a-zA-Z][a-zA-Z0-9_-]*)"
         },
         {
-            "token": "meta.vendor-prefix.stylus",
-            "regex": "-webkit-|-moz\\-|-ms-|-o-"
+            token: "meta.vendor-prefix.stylus",
+            regex: "-webkit-|-moz\\-|-ms-|-o-"
         },
         {
-            "token": ["keyword.control.stylus"],
-            "regex": "(?:\\b|\\s)(!important|for|in|return|true|false|null|if|else|unless|return)(?:\\b)"
+            token: "keyword.control.stylus",
+            regex: "(?:!important|for|in|return|true|false|null|if|else|unless|return)\\b"
         },
         {
-            "token": ["keyword.operator.stylus"],
-            "regex": "((?:!|~|\\+|-|(?:\\*)?\\*|\\/|%|(?:\\.)\\.\\.|<|>|(?:=|:|\\?|\\+|-|\\*|\\/|%|<|>)?=|!=))"
+            token: "keyword.operator.stylus",
+            regex: "!|~|\\+|-|(?:\\*)?\\*|\\/|%|(?:\\.)\\.\\.|<|>|(?:=|:|\\?|\\+|-|\\*|\\/|%|<|>)?=|!="
         },
         {
-            "token": ["keyword.operator.stylus"],
-            "regex": "(?:\\b)(in|is(?:nt)?|not)(?:\\b)"
+            token: "keyword.operator.stylus",
+            regex: "(?:in|is(?:nt)?|not)\\b"
         },
         {
             token : "string",
@@ -159,8 +158,8 @@ var StylusHighlightRules = function() {
             regex : CssHighlightRules.numRe
         }, 
         {
-            token : ["keyword"],
-            regex : "(ch|cm|deg|em|ex|fr|gd|grad|Hz|in|kHz|mm|ms|pc|pt|px|rad|rem|s|turn|vh|vm|vw|%)"
+            token : "keyword",
+            regex : "(?:ch|cm|deg|em|ex|fr|gd|grad|Hz|in|kHz|mm|ms|pc|pt|px|rad|rem|s|turn|vh|vm|vw|%)\\b"
         }, 
         {
             token : keywordMapper,
@@ -171,50 +170,42 @@ var StylusHighlightRules = function() {
         {
             token : "comment", // closing comment
             regex : ".*?\\*\\/",
-            merge : true,
             next : "start"
         }, {
             token : "comment", // comment spanning whole line
-            merge : true,
             regex : ".+"
         }
     ],
     "qqstring" : [
         {
             token : "string",
-            regex : '[^"\\\\]+',
-            merge : true
+            regex : '[^"\\\\]+'
         }, 
         {
             token : "string",
             regex : "\\\\$",
-            next  : "qqstring",
-            merge : true
+            next  : "qqstring"
         }, 
         {
             token : "string",
             regex : '"|$',
-            next  : "start",
-            merge : true
+            next  : "start"
         }
     ],
     "qstring" : [
         {
             token : "string",
-            regex : "[^'\\\\]+",
-            merge : true
+            regex : "[^'\\\\]+"
         }, 
         {
             token : "string",
             regex : "\\\\$",
-            next  : "qstring",
-            merge : true
+            next  : "qstring"
         }, 
         {
             token : "string",
             regex : "'|$",
-            next  : "start",
-            merge : true
+            next  : "start"
         }
     ]
 }
@@ -252,12 +243,80 @@ var CssHighlightRules = function() {
         "support.constant.fonts": supportConstantFonts
     }, "text", true);
 
-    var base_ruleset = [
-        {
+    this.$rules = {
+        "start" : [{
             token : "comment", // multi line comment
-            merge : true,
             regex : "\\/\\*",
-            next : "ruleset_comment"
+            push : "comment"
+        }, {
+            token: "paren.lparen",
+            regex: "\\{",
+            push:  "ruleset"
+        }, {
+            token: "string",
+            regex: "@.*?{",
+            push:  "media"
+        }, {
+            token: "keyword",
+            regex: "#[a-z0-9-_]+"
+        }, {
+            token: "variable",
+            regex: "\\.[a-z0-9-_]+"
+        }, {
+            token: "string",
+            regex: ":[a-z0-9-_]+"
+        }, {
+            token: "constant",
+            regex: "[a-z0-9-_]+"
+        }, {
+            caseInsensitive: true
+        }],
+
+        "media" : [{
+            token : "comment", // multi line comment
+            regex : "\\/\\*",
+            push : "comment"
+        }, {
+            token: "paren.lparen",
+            regex: "\\{",
+            push:  "ruleset"
+        }, {
+            token: "string",
+            regex: "\\}",
+            next:  "pop"
+        }, {
+            token: "keyword",
+            regex: "#[a-z0-9-_]+"
+        }, {
+            token: "variable",
+            regex: "\\.[a-z0-9-_]+"
+        }, {
+            token: "string",
+            regex: ":[a-z0-9-_]+"
+        }, {
+            token: "constant",
+            regex: "[a-z0-9-_]+"
+        }, {
+            caseInsensitive: true
+        }],
+
+        "comment" : [{
+            token : "comment",
+            regex : "\\*\\/",
+            next : "pop"
+        }, {
+            defaultToken : "comment"
+        }],
+
+        "ruleset" : [
+        {
+            token : "paren.rparen",
+            regex : "\\}",
+            next:   "pop"
+        }, {
+            token : "comment", // multi line comment
+            regex : "\\/\\*",
+            push : "comment"
         }, {
             token : "string", // single line
             regex : '["](?:(?:\\\\.)|(?:[^"\\\\]))*?["]'
@@ -283,115 +342,17 @@ var CssHighlightRules = function() {
             token : ["punctuation", "entity.other.attribute-name.pseudo-class.css"],
             regex : pseudoClasses
         }, {
+            token : ["support.function", "string", "support.function"],
+            regex : "(url\\()(.*)(\\))"
+        }, {
             token : keywordMapper,
             regex : "\\-?[a-zA-Z_][a-zA-Z0-9_\\-]*"
-        }
-      ];
-
-    var ruleset = lang.copyArray(base_ruleset);
-    ruleset.unshift({
-        token : "paren.rparen",
-        regex : "\\}",
-        next:   "start"
-    });
-
-    var media_ruleset = lang.copyArray( base_ruleset );
-    media_ruleset.unshift({
-        token : "paren.rparen",
-        regex : "\\}",
-        next:   "media"
-    });
-
-    var base_comment = [{
-          token : "comment", // comment spanning whole line
-          merge : true,
-          regex : ".+"
-    }];
-
-    var comment = lang.copyArray(base_comment);
-    comment.unshift({
-          token : "comment", // closing comment
-          regex : ".*?\\*\\/",
-          next : "start"
-    });
-
-    var media_comment = lang.copyArray(base_comment);
-    media_comment.unshift({
-          token : "comment", // closing comment
-          regex : ".*?\\*\\/",
-          next : "media"
-    });
-
-    var ruleset_comment = lang.copyArray(base_comment);
-    ruleset_comment.unshift({
-          token : "comment", // closing comment
-          regex : ".*?\\*\\/",
-          next : "ruleset"
-    });
-
-    this.$rules = {
-        "start" : [{
-            token : "comment", // multi line comment
-            merge : true,
-            regex : "\\/\\*",
-            next : "comment"
         }, {
-            token: "paren.lparen",
-            regex: "\\{",
-            next:  "ruleset"
-        }, {
-            token: "string",
-            regex: "@.*?{",
-            next:  "media"
-        },{
-            token: "keyword",
-            regex: "#[a-z0-9-_]+"
-        },{
-            token: "variable",
-            regex: "\\.[a-z0-9-_]+"
-        },{
-            token: "string",
-            regex: ":[a-z0-9-_]+"
-        },{
-            token: "constant",
-            regex: "[a-z0-9-_]+"
-        }],
-
-        "media" : [ {
-            token : "comment", // multi line comment
-            merge : true,
-            regex : "\\/\\*",
-            next : "media_comment"
-        }, {
-            token: "paren.lparen",
-            regex: "\\{",
-            next:  "media_ruleset"
-        },{
-            token: "string",
-            regex: "\\}",
-            next:  "start"
-        },{
-            token: "keyword",
-            regex: "#[a-z0-9-_]+"
-        },{
-            token: "variable",
-            regex: "\\.[a-z0-9-_]+"
-        },{
-            token: "string",
-            regex: ":[a-z0-9-_]+"
-        },{
-            token: "constant",
-            regex: "[a-z0-9-_]+"
-        }],
-
-        "comment" : comment,
-
-        "ruleset" : ruleset,
-        "ruleset_comment" : ruleset_comment,
-
-        "media_ruleset" : media_ruleset,
-        "media_comment" : media_comment
+            caseInsensitive: true
+        }]
     };
+
+    this.normalizeRules();
 };
 
 oop.inherits(CssHighlightRules, TextHighlightRules);
