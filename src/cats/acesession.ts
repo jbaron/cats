@@ -120,7 +120,7 @@ module Cats {
             }
                     
         }
-
+      
         /**
          * Persist the edit session
          */

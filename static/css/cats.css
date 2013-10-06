@@ -151,7 +151,7 @@ body .ui-layout-pane {
 }
 
 #result td, #result th {
-     padding: 5px;   
+     padding: 2px;   
 }
 
 #result tbody tr:nth-child(odd) {

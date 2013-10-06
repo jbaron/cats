@@ -21,6 +21,7 @@ importScripts("../static/js/typescriptServices.js");
 
 module Cats.TSWorker {
     
+    
     /**
      * Simple function to stub console.log functionality since this is 
      * not available in a worker.
@@ -162,30 +163,32 @@ module Cats.TSWorker {
                                     
             var result:{ fileName: string; content: string; }[] = [];
             var errors = [];
-            var hasErrors = false;
-            
+
             for (var fileName in scripts) {
-                var emitOutput = this.ls.getEmitOutput(fileName);
-                
-                 if (emitOutput.diagnostics && emitOutput.diagnostics.length) {
-                    var newErrors = this.convertErrors(emitOutput.diagnostics);
-                    errors = errors.concat(newErrors);
-                    hasErrors = true;
-                }
-                
-                emitOutput.outputFiles.forEach((file:Services.IOutputFile)=>{
-                     result.push({
-                        fileName : file.name,
-                        content: file.text
+                try {
+                    var emitOutput = this.ls.getEmitOutput(fileName);
+                    // var fileErrors = emitOutput.diagnostics ;
+                    var fileErrors = this.ls.getSyntacticDiagnostics(fileName);
+                      
+                     if (fileErrors && fileErrors.length) {
+                        console.log("errors in file " + fileName); 
+                        var newErrors = this.convertErrors(fileErrors);
+                        errors = errors.concat(newErrors);
+                    }
+
+                    emitOutput.outputFiles.forEach((file:Services.IOutputFile)=>{
+                         result.push({
+                            fileName : file.name,
+                            content: file.text
+                        });
                     });
-                });
-                
+                } catch(err) {/*ignore */}
                
                                
             };
                         
             return {
-                source: hasErrors ? [] : result,
+                source: result,
                 errors: errors
             };
         }
