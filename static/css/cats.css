@@ -203,7 +203,7 @@ body .ui-layout-toggler {
   overflow: hidden;
 }
 
-#searchresults, #errorresults {
+#searchresults, #errorresults, #console {
   overflow: auto;
   height: 100%;
 }

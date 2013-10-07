@@ -73,7 +73,7 @@ module Cats {
     function resizeInner(name, state) {
         if (name === "center") IDE.mainEditor.aceEditor.resize(true);
         if (name === "south") {
-            $("#searchresults, #errorresults").height(state.innerHeight()-25);
+            $("#searchresults, #errorresults, #console").height(state.innerHeight()-25);
         }
     }
 
