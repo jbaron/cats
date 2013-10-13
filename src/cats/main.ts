@@ -48,7 +48,7 @@ var IDE:Cats.Ide;
  * Main module of the CATS IDE
  */  
 module Cats {
-    
+
     /**
      * Get a parameter from the URL
      */ 
@@ -83,27 +83,19 @@ module Cats {
         alert(err);
     });
    
-   
+    // Instantiate the global ide   
     IDE = new Ide();     
-    // IDE.mainEditor = new TextEditor(IDE.editor);
-    // mainEditor.on("activeSession",()=>{console.log("active session changed")})
+
     var prjName = determineProject();
     if (prjName) {
-        IDE.addProject(prjName);
+        IDE.addProject(new Project(prjName));
     } else {
         IDE.loadDefaultProjects();
     }
     
-    Cats.Commands.init();
-    Cats.Menu.createMenuBar();
-    IDE.initViews();
-    IDE.layout();
+    IDE.init();
     
-    Cats.Menu.initFileContextMenu();
-    Cats.Menu.initTabContextMenu();
-    // IDE.mainEditor.init();
-    
-
+    // Catch the close of the windows in order to save any unsaved changes
     var win = GUI.Window.get();
     win.on("close", function() {
         Cats.Commands.get(Cats.Commands.CMDS.ide_quit).command();

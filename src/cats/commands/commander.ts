@@ -87,7 +87,6 @@ module Cats.Commands {
         
     }
 
-
 	export interface Command {
 		name:CMDS;
 		label?: string;

@@ -59,14 +59,58 @@ module Cats {
         /**
          * Initialize the views associated with the IDE
          */
-        initViews() {
+        private initViews() {
             this.views.outline = new Cats.View.Outline();
             this.views.toolBar = new Cats.View.ToolBar();
             this.views.statusBar = new Cats.View.StatusBar();
             this.views.searchResults = new Cats.View.SearchResults();
             this.views.navigation = new Cats.View.Navigator();
+            
+            this.initTabBar();
+            this.initNavBar();
+            this.initInfoBar();
+            this.initResultBar();
         }
 
+
+         private initTabBar() {
+            this.tabbar = new UI.Tabbar();
+            var tb = this.tabbar;
+            tb.setAspect("name", (session: Session) => { return session.shortName });
+            tb.setAspect("selected", (session: Session) => { return session === IDE.activeSession });
+            tb.setAspect("longname", (session: Session) => { return session.name });
+            tb.setAspect("changed", (session: Session) => { return session.changed });
+            tb.onselect = (session:Session) => this.openSession(session.name);
+            tb.ondelete = (session:Session) => this.closeSession(session);
+            tb.appendTo(this.sessionBar);
+            IDE.on("sessions", (sessions) => {this.tabbar.setOptions(sessions)} );
+        }
+
+        private initNavBar() {
+            var navbar = new UI.Tabbar();
+    
+            var t = new UI.ElemTabAdapter(navbar, [this.fileNavigation, this.outlineNavigation], this.fileNavigation);
+            t.setAspect(this.fileNavigation, "decorator", "icon-files");
+            t.setAspect(this.outlineNavigation, "decorator", "icon-outline");
+            navbar.appendTo(this.navigationBar);
+        }
+
+        private initInfoBar() {
+            var infobar = new UI.Tabbar();
+            infobar.setOptions([
+                { name: "Task List", selected: true, decorator: "icon-tasks" }
+            ]);
+            infobar.appendTo(this.taskBar);
+        }
+      
+        private initResultBar() {
+            var t  = new UI.ElemTabAdapter(IDE.resultbar, [IDE.compilationResult, IDE.searchResult, IDE.console], IDE.compilationResult);
+            t.setAspect(this.compilationResult, "decorator", "icon-errors");
+            t.setAspect(this.searchResult, "decorator", "icon-search");
+            t.setAspect(this.console, "decorator", "icon-console");
+            this.resultbar.appendTo(this.resultbarElem);        
+        }
+ 
         tabbar: UI.Tabbar;
         resultbar = new UI.Tabbar();
         
@@ -93,12 +137,17 @@ module Cats {
             super(["sessions","activeSession","project"]);
             this.mainEditor = new TextEditor(this.editor);
             this.mainEditor.init();
-            this.init();
+            this.config = this.loadConfig(true);
         }
 
-        private init() {
-            this.config = this.loadConfig(true);
-                        
+        init() {
+            Cats.Commands.init();
+            Cats.Menu.createMenuBar();
+            this.initViews();
+            this.layout();
+            Cats.Menu.initFileContextMenu();
+            Cats.Menu.initTabContextMenu();
+
             setTimeout(() => {
                 this.setTheme(this.config.theme);
                 this.setFontSize(this.config.fontSize);
@@ -107,15 +156,18 @@ module Cats {
 
 
         /**
-         * Load the projects and files that were open last time the user
-         * quit.
+         * Load the projects and files that were open last time before the
+         * application was closed.
          */ 
         loadDefaultProjects() {
+            console.info("restoring previous project and sessions.");
             if (this.config.projects && this.config.projects.length) { 
-                this.addProject(this.config.projects[0]);
+                var projectDir = this.config.projects[0]; 
+                this.addProject(new Project(projectDir));
             }
             
             if (this.config.sessions) {
+                console.info("Found previous sessions: ", this.config.sessions.length);
                 this.config.sessions.forEach((session) => {
                     try {
                         this.openSession(session.path,session.pos);
@@ -337,8 +389,8 @@ module Cats {
          * Add a new project to the IDE
          * @param projectDir the directory of the new project
          */
-        addProject(projectDir: string) {
-            this.project = new Project(projectDir);
+        addProject(project: Project) {
+            this.project = project;
         }
         
         

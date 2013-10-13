@@ -19,46 +19,7 @@
  */ 
 
 module Cats {
-    
-     function initTabBar() {
-        IDE.tabbar = new UI.Tabbar();
-        var tb = IDE.tabbar;
-        tb.setAspect("name", (session: Session) => { return session.shortName });
-        tb.setAspect("selected", (session: Session) => { return session === IDE.activeSession });
-        tb.setAspect("longname", (session: Session) => { return session.name });
-        tb.setAspect("changed", (session: Session) => { return session.changed });
-        tb.onselect = (session:Session) => IDE.openSession(session.name);
-        tb.ondelete = (session:Session) => IDE.closeSession(session);
-        tb.appendTo(IDE.sessionBar);
-        IDE.on("sessions", (sessions) => {IDE.tabbar.setOptions(sessions)} );
-    }
-
-    function initNavBar() {
-        var navbar = new UI.Tabbar();
-
-        var t = new UI.ElemTabAdapter(navbar, [IDE.fileNavigation, IDE.outlineNavigation], IDE.fileNavigation);
-        t.setAspect(IDE.fileNavigation, "decorator", "icon-files");
-        t.setAspect(IDE.outlineNavigation, "decorator", "icon-outline");
-        navbar.appendTo(IDE.navigationBar);
-    }
-
-    function initInfoBar() {
-        var infobar = new UI.Tabbar();
-        infobar.setOptions([
-            { name: "Task List", selected: true, decorator: "icon-tasks" }
-        ]);
-        infobar.appendTo(IDE.taskBar);
-    }
-      
-    function initResultBar() {
-        var t  = new UI.ElemTabAdapter(IDE.resultbar, [IDE.compilationResult, IDE.searchResult, IDE.console], IDE.compilationResult);
-        t.setAspect(IDE.compilationResult, "decorator", "icon-errors");
-        t.setAspect(IDE.searchResult, "decorator", "icon-search");
-        t.setAspect(IDE.console, "decorator", "icon-console");
-        IDE.resultbar.appendTo(IDE.resultbarElem);        
-    }
- 
- 
+  
     /**
      * Quickfix to deal with the fact that when the browser window is resized, by default the 
      * filetree and outline divs are sized 25 pixels to heigh. This is due to the tabs
@@ -82,10 +43,7 @@ module Cats {
      */ 
     export function layoutIDE():any {
         
-        initTabBar();
-        initNavBar();
-        initInfoBar();
-        initResultBar();
+       
 
 		// OUTER-LAYOUT
 		var layout = $('body').layout({
