@@ -13,18 +13,13 @@ class Greeter {
     }
 }
 
-class TabStrip<T> {
-    addTab(value:T) : Tab;
-    removeTab(value: T) : Tab;
-    onSelect(fn:(value:T)=>void);
-}
 
 var greeter = new Greeter("world");
 
 var button = document.createElement('button');
 button.innerText = "Say Hello";
 button.onclick = function() { 
-    alert(greeter.greet()); 
+    alert(greeter.greet());
 };
 
 document.body.appendChild(button);

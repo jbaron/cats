@@ -169,11 +169,11 @@ module Cats {
         }
 
         autoComplete() {
-            // if (this.activeSession.mode === "typescript") {
+            var aceSession = <AceSession>IDE.activeSession;
+            if (aceSession.mode === "typescript") {
                 var cursor = this.aceEditor.getCursorPosition();
-                var aceSession = <AceSession>IDE.activeSession;
                 aceSession.autoComplete(cursor, this.autoCompleteView);
-            // }                        
+            }                        
         }
 
     
