@@ -79,7 +79,12 @@ module Cats {
                     moduleGenTarget: 0
                 },
                 minify: false,
-                rememberOpenFiles: false
+                rememberOpenFiles: false,
+                editor: {
+                    newLineMode: "unix",
+                    useSoftTabs: true,
+                    tabSize: 4
+                }
             };
             return result;
         }

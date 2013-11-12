@@ -91,6 +91,11 @@ declare module Cats {
             codeGenTarget: number;
             moduleGenTarget: number;
         };
+        editor: {
+            newLineMode: string; //unix, windows, auto
+            useSoftTabs: boolean;
+            tabSize: number;
+        };
     }
 
     interface Position {
