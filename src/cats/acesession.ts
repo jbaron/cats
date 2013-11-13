@@ -74,7 +74,20 @@ module Cats {
             console.log("Creating new session for file " + name);
             this.mode = this.determineMode(name);
             this.editSession = new EditSession(content, "ace/mode/" + this.mode);
-            this.editSession.setNewLineMode("unix");
+            
+            var editorConfig = this.project.config.editor;
+            if (editorConfig) {
+                for(var key in editorConfig) {
+                    try {
+                        var ukey = key[0].toUpperCase() + key.slice(1);
+                        var value = editorConfig[key];
+                        this.editSession['set' + ukey](value);
+                    } catch(e) {
+                        console.warn("can't set editor config: " + key + ":" + value);
+                        console.warn(e);
+                    }
+                }
+            }
 
             this.editSession.on("change", this.onChangeHandler.bind(this));
             this.editSession.setUndoManager(new UndoManager());
