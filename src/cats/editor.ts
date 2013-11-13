@@ -197,7 +197,7 @@ module Cats {
                 name: "autoComplete",
                 bindKey: {
                     win: "Ctrl-Space",
-                    mac: "Command-Space"
+                    mac: "Ctrl-Space" 
                 },
                 exec: () => { this.autoComplete() }
             },
