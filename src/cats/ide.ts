@@ -382,6 +382,17 @@ module Cats {
                 $(".autocomplete").css("color", fg);
                 $("input").css("background-color", fg);
                 $("input").css("color", bg);
+                
+                elem = <HTMLElement>document.getElementById("editor");
+                bg = window.getComputedStyle(elem, null).backgroundColor;
+                fg = window.getComputedStyle(elem, null).color;
+                
+                var style = document.createElement("style");
+	            style.appendChild(document.createTextNode(""));
+            	document.head.appendChild(style);
+                style.sheet.insertRule(".tabbar li.active, .tabbar li:hover { background-color: " + bg +" !important; }");
+                style.sheet.insertRule(".tabbar li.active, .tabbar li:hover { color: " + fg +" !important; }");
+                
             }, 500);
         }
 
@@ -401,6 +412,13 @@ module Cats {
         closeProject(project) {
             this.project.close();
             this.project = null;
+            // TODO put code on IDE
+            var sessions = IDE.sessions;
+            for (var i = 0; i < sessions.length; i++) {
+                var session = sessions[i];
+                if (session.changed) IDE.persistSession(session);
+            }
+            IDE.sessions = [];
         }
 
     }
