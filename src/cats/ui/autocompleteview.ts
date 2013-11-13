@@ -171,6 +171,19 @@ module Cats.UI {
             // this.editor.getSession().on("change",CATS.onChangeHandler);
             // this.editor.getSession().removeAllListeners('change');
         }
+        
+        /**
+         * Determines if the specified character may be part of a JS identifier
+         */
+        private static isJsIdentifierPart(ch: number) {
+            ch |= 0; //tell JIT that ch is an int
+            return ch >= 97 && ch <= 122    //a-z
+                || ch >= 65 && ch <= 90     //A-Z
+                || ch >= 48 && ch <= 57     //0-9
+                || ch === 95    //_
+                || ch === 36    //$
+                || ch > 127     //non-ASCII letter. Not accurate, but good enough for autocomplete
+        }
 
         /**
          * Check wether the typed character is reason to stop
@@ -178,7 +191,7 @@ module Cats.UI {
          */ 
         private onChange(ev) {
             var key = ev.data.text;
-            if (" .-=,[]_/()!';:<>".indexOf(key) !== -1) {
+            if (!AutoCompleteView.isJsIdentifierPart(key.charCodeAt(0))) {
                 this.hide();
                 return;
             }
