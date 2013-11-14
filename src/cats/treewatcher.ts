@@ -77,6 +77,7 @@ export class TreeWatcher {
     }
     
     private addDirectory (directory: string) {
+        if (OS.File.platform() === "darwin") return;
         if (!this.hasDirectory(directory)) {
             if (!this.initial) {
                 this.onDirectoryCreate(directory);

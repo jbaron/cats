@@ -47,6 +47,13 @@ module OS.File {
                 FS.rmdirSync(path);
         }
 
+       /**
+         * Get platform
+         */ 
+        export function platform():string {
+            return process.platform;
+        }
+
         /**
          * Rename a file or directory
          * @param oldName the old name of the file or directory
