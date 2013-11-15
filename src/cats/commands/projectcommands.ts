@@ -27,7 +27,7 @@ module Cats.Commands {
     /**
      * Close the project
      */ 
-    function closeProject() {        
+    function closeProject() { 
         IDE.closeProject(IDE.project);
     }
 
@@ -140,6 +140,15 @@ module Cats.Commands {
             console.log(this.value);
             var param = encodeURIComponent(this.value)
             this.value = ""; // Make sure the change event goes off next tome
+            
+            /*
+            var gui = require('nw.gui'); 
+            gui.Window.open(
+                'index.html?project=' + param,
+                {"new-instance":true}
+            );
+            */
+            
             window.open('index.html?project=' + param, '_blank');
         };
         chooser.click();

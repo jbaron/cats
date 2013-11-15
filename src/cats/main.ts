@@ -98,7 +98,10 @@ module Cats {
     // Catch the close of the windows in order to save any unsaved changes
     var win = GUI.Window.get();
     win.on("close", function() {
-        Cats.Commands.get(Cats.Commands.CMDS.ide_quit).command();
+        if (IDE.hasUnsavedSessions()) {
+            if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
+        }
+       this.close(true);
     });
 
 }
