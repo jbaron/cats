@@ -231,13 +231,13 @@ module Cats.UI {
             span1.innerText = info.name;
             li.appendChild(span1);
 
-            // if (info.name !== info.type) {
+            /* 
             var span2 = document.createElement("span");
             span2.className = "type";
             span2.innerText = info.type;
             li.appendChild(span2);
-            // }
-
+            
+            */
             this.listElement.appendChild(li);
         }
 

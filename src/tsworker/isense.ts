@@ -134,13 +134,11 @@ module Cats.TSWorker {
             return result;
         }
         
-        
-        
 
         /**
          * Convert the errors from a TypeScript format into Cats format 
          */ 
-        private convertErrors(errors: TypeScript.IDiagnostic[]) :Cats.FileRange[]{
+        private convertErrors(errors: TypeScript.Diagnostic[]) :Cats.FileRange[]{
             var result:Cats.FileRange[] = [];
             errors.forEach((error) => {
     

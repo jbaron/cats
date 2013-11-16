@@ -97,7 +97,35 @@ export class ScriptInfo {
             return true;
         }
 
-
+        getScriptByteOrderMark(fileName: string):ByteOrderMark {
+            return null;
+        }
+        
+        getLocalizedDiagnosticMessages() {
+            // console.log("Called getLocalizedDiagnosticMessages");
+        }
+        
+        fileExists(path: string): boolean {
+            // console.log("Called fileExist" + path);
+            return true;
+        }
+        
+        directoryExists(path: string): boolean {
+            // console.log("Called directoryExist" + path);
+            return true;
+        }
+        
+        getParentDirectory(path: string): string {
+            // console.log("Called getParentDirectory" + path);
+            return "";
+        }
+        
+        
+        resolveRelativePath(path: string, directory: string) : string{
+            // console.log("Called resolveRelativePath" + path + " " + directory);
+            return "";
+        }
+        
         public getScriptSnapshot(fileName: string): TypeScript.IScriptSnapshot {
              var script = this.scripts[fileName];
              var result =  TypeScript.ScriptSnapshot.fromString(script.content);
