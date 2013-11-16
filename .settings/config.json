@@ -32,6 +32,9 @@
         "codeGenTarget": 1,
         "moduleGenTarget": 0
     },
+    "editor" : {
+        "completionMode" : "loose"
+    },
     "minify": false,
     "rememberOpenFiles": false
 }

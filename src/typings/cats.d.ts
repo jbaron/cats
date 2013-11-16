@@ -95,6 +95,7 @@ declare module Cats {
             newLineMode: string; //unix, windows, auto
             useSoftTabs: boolean;
             tabSize: number;
+            completionMode: string; // strict, loose
         };
     }
 

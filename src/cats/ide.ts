@@ -390,8 +390,10 @@ module Cats {
                 var style = document.createElement("style");
 	            style.appendChild(document.createTextNode(""));
             	document.head.appendChild(style);
-                style.sheet.insertRule(".tabbar li.active, .tabbar li:hover { background-color: " + bg +" !important; }");
-                style.sheet.insertRule(".tabbar li.active, .tabbar li:hover { color: " + fg +" !important; }");
+            	
+            	var sheet = <CSSStyleSheet>style.sheet;
+                sheet.insertRule(".tabbar li.active, .tabbar li:hover { background-color: " + bg +" !important; }");
+                sheet.insertRule(".tabbar li.active, .tabbar li:hover { color: " + fg +" !important; }");
                 
             }, 500);
         }

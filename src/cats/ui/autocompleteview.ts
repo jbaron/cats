@@ -85,6 +85,20 @@ module Cats.UI {
         }
 
         /**
+         * Only match when exactly same string from first position 
+         */
+        private strictComparison(a:string,b:string) : boolean {
+            return (a.indexOf(b) === 0);
+        }
+
+        /**
+         * Match any string within other string, case insensitive
+         */ 
+        private looseComparison(a:string,b:string) : boolean {
+            return (a.toLowerCase().indexOf(b.toLowerCase()) >= 0);
+        }
+
+        /**
          * Fitler the available completetions based on the users input 
          * so far.
          */ 
@@ -93,8 +107,13 @@ module Cats.UI {
             if (!text) {
                 this.filteredCompletions = this.completions;
             } else {
-                this.filteredCompletions = this.completions.filter(function(entry) {
-                    return (entry.name.indexOf(text) === 0);
+                var mode = "strictComparison";
+                if (IDE.project.config.editor && IDE.project.config.editor.completionMode) {
+                    mode = IDE.project.config.editor.completionMode + "Comparison";
+                }
+                
+                this.filteredCompletions = this.completions.filter((entry) => {
+                    return this[mode](entry.name, text);
                 });
             }
         }
