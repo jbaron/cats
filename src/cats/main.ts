@@ -85,7 +85,7 @@ module Cats {
    
     // Instantiate the global ide   
     IDE = new Ide();     
-    
+
     var prjName = determineProject();
     if (prjName) {
         IDE.addProject(new Project(prjName));

@@ -26,7 +26,7 @@ module Cats.TSWorker {
      * Simple function to stub console.log functionality since this is 
      * not available in a worker.
      */ 
-    var console = {
+    export var console = {
         log: function(str) {
             postMessage(str, null);
         }

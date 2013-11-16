@@ -108,8 +108,8 @@ module Cats.UI {
                 this.filteredCompletions = this.completions;
             } else {
                 var mode = "strictComparison";
-                if (IDE.project.config.editor && IDE.project.config.editor.completionMode) {
-                    mode = IDE.project.config.editor.completionMode + "Comparison";
+                if (IDE.project.config.completionMode) {
+                    mode = IDE.project.config.completionMode + "Comparison";
                 }
                 
                 this.filteredCompletions = this.completions.filter((entry) => {

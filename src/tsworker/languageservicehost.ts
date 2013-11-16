@@ -102,7 +102,7 @@ export class ScriptInfo {
         }
         
         getLocalizedDiagnosticMessages() {
-            // console.log("Called getLocalizedDiagnosticMessages");
+            console.log("Called getLocalizedDiagnosticMessages");
         }
         
         fileExists(path: string): boolean {

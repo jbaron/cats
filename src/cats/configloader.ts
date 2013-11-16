@@ -83,9 +83,9 @@ module Cats {
                 editor: {
                     newLineMode: "unix",
                     useSoftTabs: true,
-                    tabSize: 4,
-                    completionMode: "strict"
-                }
+                    tabSize: 4
+                },
+                completionMode: "strict"
             };
             return result;
         }

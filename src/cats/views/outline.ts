@@ -52,7 +52,7 @@ module Cats.View {
                 var outliner = new Cats.UI.TreeView();
                 outliner.setAspect("children", (parent: OutlineTreeElement): OutlineTreeElement[] => {
                     var name = parent ? parent.qualifyer : "";
-                    var kind = parent ? parent.kind : "script";
+                    var kind = parent ? parent.kind : ""; // no script anymore
                     var result: OutlineTreeElement[] = [];
                     for (var i = 0; i < data.length; i++) {
                         var o = data[i];
