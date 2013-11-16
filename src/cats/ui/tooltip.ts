@@ -24,7 +24,7 @@ module Cats.UI {
         }
               
         show(x: number, y: number, tip: string) {
-            this.element.innerHTML = tip;
+            this.element.innerText = tip;
 
             var st = this.element.style;
             st.left = (x + 10).toString(10) + "px";

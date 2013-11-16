@@ -197,13 +197,12 @@ module Cats {
                     if (!data) return;
                     var member = data.memberName;
                     if (!member) return;
-
+                    
                     var tip = data.description;
                     if (data.docComment) {
-                        tip += "<hr>" + data.docComment;
+                        tip += "\n" + data.docComment;
                     }
 
-                    // Bug in TS, need to prefix with cats.
                     IDE.mainEditor.toolTip.show(ev.x, ev.y, tip);
                 });
         }
