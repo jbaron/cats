@@ -52,7 +52,8 @@ class StockView extends MVC.View {
 
 
 /**
- * A very simple stock model with two properties, symbol and price 
+ * A very simple stock model with three properties, 
+ * symbol and opening price and price. 
  */
 class Stock {
 
@@ -73,10 +74,7 @@ class Stock {
     newDay() {
         this.openingPrice = this.price;
     }
-
 }
-
-
 
 /**
  * Initialize the stock market and its views

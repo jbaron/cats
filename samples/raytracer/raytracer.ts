@@ -98,7 +98,11 @@ class Sphere implements Thing {
     constructor(public center: Vector, radius: number, public surface: Surface) {
         this.radius2 = radius * radius;
     }
-    normal(pos: Vector): Vector { return Vector.norm(Vector.minus(pos, this.center)); };
+    
+    normal(pos: Vector): Vector { 
+        return Vector.norm(Vector.minus(pos, this.center)); 
+    }
+    
     intersect(ray: Ray) {
         var eo = Vector.minus(this.center, ray.start);
         var v = Vector.dot(eo, ray.dir);

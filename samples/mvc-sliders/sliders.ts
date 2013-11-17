@@ -1,6 +1,7 @@
 /**
  * A number of sliders are kept in sync because the use the 
- * same value in the model. Shows the strenght of the MVC framework
+ * same value in the model. Shows some of the strenght of a 
+ * MVC framework
  */
 
 ///<reference path='mvc.ts'/>
@@ -14,12 +15,15 @@ class SliderView extends MVC.View {
 
     /**
      * Create a new slider <input type=range>
-     * @param parent The element to add this slider to
+     * @param parent The HTML element to add this slider to
      */
     constructor(parent: HTMLElement) {
         super();
         this.root = <HTMLInputElement>document.createElement("input");
         this.root.type = "range";
+        
+        // When the slider is moved update the model value. This will then
+        // cause other sliders also to update. 
         this.root.onchange = (ev) => {
             model.value = ev.srcElement["value"];
         }

@@ -1,12 +1,18 @@
+
+/**
+ * Simple typed Map interface where the key is 
+ * always a string.
+ */ 
 interface StringedKeyMap<T> {
     [key:string]:T;
-};
+}
 
-
+/**
+ * Sample Car class 
+ */ 
 class Car {
     constructor(public seats, public topSpeed) {}
 }
-
 
 var map:StringedKeyMap<Car> = {};
 
