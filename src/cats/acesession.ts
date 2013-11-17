@@ -139,7 +139,7 @@ module Cats {
          */
         persist() {
             if (this.name === "untitled") {
-                this.name = prompt("Please enter the file name") || "untitled";
+                this.name = prompt("Please enter the file name", IDE.project.projectDir) || "untitled";
             }
 
             if (this.name !== "untitled") {
