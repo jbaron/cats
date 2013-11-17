@@ -3,7 +3,7 @@
 
 class Cell {
     shipIndex: number;
-    hasHit: bool;
+    hasHit: boolean;
     element: HTMLElement;
 
     constructor(public row: number, public column: number) {

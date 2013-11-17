@@ -2,7 +2,7 @@
   "name": "CATS",
   "main": "static/index.html",
   "description" : "Code Assistant for TypeScript",
-  "version" : "0.9.0.alpha",
+  "version" : "0.9.5.alpha",
   "window": { 
      "icon":"static/img/logo.png",	
      "toolbar": false,  
