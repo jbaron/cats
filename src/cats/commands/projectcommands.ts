@@ -104,11 +104,11 @@ module Cats.Commands {
             IDE.resultbar.selectOption(2);
             var cmd = project.config.customBuild.command;
             var options = project.config.customBuild.options || {};
-            /*
-            if (! options.env) {
-                options.env = IDE.project.projectDir;
+            
+            if (! options.cwd) {
+                options.cwd = IDE.project.projectDir;
             }
-            */
+            
             var exec = require('child_process').exec;
 
             var child = exec(cmd,options,

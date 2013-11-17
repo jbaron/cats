@@ -4,10 +4,14 @@
 var Greeter = (function () {
     /**
     * Create a new Greeter
+    * @param message Welcome message
     */
     function Greeter(message) {
         this.greeting = message;
     }
+    /**
+    * Give a warm welcome
+    */
     Greeter.prototype.greet = function () {
         return "Hello " + this.greeting;
     };
