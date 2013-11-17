@@ -29,7 +29,7 @@ To install CATS, just follow these steps:
         git clone https://github.com/jbaron/cats.git
 
 2. Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at: [Node-Webkit](https://github.com/rogerwang/node-webkit).
-   Make sure you have at least version 0.5.0 installed.
+   Make sure you have at least version 0.8.0 installed.
 
 3. Go to the cats directory and type: 
 
@@ -52,6 +52,7 @@ One of the main goals of CATS is to make the developer that is used to IDE's lik
 And in order to be productive, it is also very important that an IDE is responsive. So while designing and developing CATS, performance is one of the key aspects.
 In fact, CATS runs fine on older hardware.
 
+
 Bugs and Issues
 ===============
 In case you encounter an issue, you can open a ticket on Github. Also enhancement requests can be entered here: [Github issue tracker](https://github.com/jbaron/cats/issues)
@@ -61,15 +62,17 @@ Building from source
 =====================
 There is normally no need to compile CATS yourself, since all the compiled files are already included. But if you want to play around with it, here are the steps:
 
-1. Make sure you have installed TypeScript 0.9.0 or later
+1. Make sure you have installed TypeScript 0.9.1 or later
+
+2. Also make sure you have Nodejs and Jake installed. You can get node from nodejs.org and after that install Jake:
+ 
+        npm install -g jake
 
 2. Go to the cats directory
 
 3. The following will compile the required files:
 
-        tsc "@build"
-        tsc "@build2"
-        tsc "@build3"
+        jake
 
 That is all there is to it. The lib directory should now have an updated main.js, tsworker.js and uml.js files and you are ready to run CATS editor.
 
