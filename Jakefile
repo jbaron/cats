@@ -57,7 +57,7 @@ var catsOptions = [
 task('compile', {async:true}, function(outFile, options) {
 		var cmd = "tsc --out " + outFile + " " + options.join(" ") ;
 
-		console.log(cmd + "\n");
+		// console.log(cmd + "\n");
 		var ex = jake.createExec([cmd]);
 		
 		// Add listeners for output and error
@@ -68,7 +68,9 @@ task('compile', {async:true}, function(outFile, options) {
 			process.stderr.write(error);
 		});
 		ex.addListener("cmdEnd", function() {
-			console.log("done creating file " + outFile);
+		    var time = new Date();
+            var stamp = time.toLocaleTimeString();
+			console.log(stamp + " done creating file " + outFile);
 			complete();
 		});
 		ex.addListener("error", function() {

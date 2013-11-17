@@ -2,6 +2,9 @@
     "version" : "0.8",
     "main": "static/index.html",
     "sourcePath": "src",
+    "customBuild" : {
+        "command" : "jake"
+    },
     "builds" : [
         
         { 

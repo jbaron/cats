@@ -67,6 +67,7 @@ module Cats.Commands {
         project_open,
         project_close,
         project_build,
+        project_validate,
         project_run,
         project_debug,
         project_refresh,

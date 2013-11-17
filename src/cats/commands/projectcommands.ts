@@ -76,35 +76,63 @@ module Cats.Commands {
     };
 
     /**
+     * Compile all the sources without saving them
+     */ 
+    function validateProject() {
+        var project = IDE.project;
+        IDE.compilationResult.innerHTML = "";
+        
+        project.iSense.compile((err, data:Cats.CompileResults) => {                        
+            View.showCompilationResults(data);
+        });
+    }
+
+    function show(text:string) {
+        if (! text) return;
+        IDE.console.innerText += text;
+        IDE.console.scrollTop = IDE.console.scrollHeight; // Scroll to bottom
+    }
+
+    /**
      * Build the project
      */ 
     function buildProject() {
         // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
         var project = IDE.project;
-        IDE.compilationResult.innerHTML = "";
-        
-        var translate = false;
-        
-        /*
-        if (project.config.destPath != null) {
-                var srcPath = PATH.join(project.projectDir,project.config.srcPath);
-                var destPath = PATH.join(project.projectDir,project.config.destPath);
-        }
-        */
+        if (project.config.customBuild) {
+            IDE.busy(true);
+            IDE.resultbar.selectOption(2);
+            var cmd = project.config.customBuild.command;
+            var options = project.config.customBuild.options || {};
+            /*
+            if (! options.env) {
+                options.env = IDE.project.projectDir;
+            }
+            */
+            var exec = require('child_process').exec;
 
-        project.iSense.compile((err, data:Cats.CompileResults) => {                        
-
-            View.showCompilationResults(data);
-            if (data.errors && (data.errors.length > 0)) return;
+            var child = exec(cmd,options,
+              function (error, stdout, stderr) {
+                IDE.busy(false);
+                show(stdout);
+                show(stderr);
+                if (error !== null) {
+                  show('exec error: ' + error);
+                }
+            });
             
-            var sources = data.source
-
+        } else {
+            IDE.compilationResult.innerHTML = "";
+            project.iSense.compile((err, data:Cats.CompileResults) => {                        
+                View.showCompilationResults(data);
+                if (data.errors && (data.errors.length > 0)) return;
+                var sources = data.source;
                 sources.forEach((source) => {
-                    console.log(source.fileName);
-                    OS.File.writeTextFile(source.fileName, source.content);
+                        console.log(source.fileName);
+                        OS.File.writeTextFile(source.fileName, source.content);
                 });
-            
-        });
+            });
+        }
     }
 
 
@@ -160,6 +188,7 @@ module Cats.Commands {
             registry({ name: CMDS.project_open, label: "Open Project...", command: openProject });
             registry({ name: CMDS.project_close, label: "Close project", command: closeProject });
             registry({ name: CMDS.project_build, label: "Build Project", command: buildProject });
+            registry({ name: CMDS.project_validate, label: "Validate Project", command: validateProject });
             registry({ name: CMDS.project_refresh, label: "Refresh Project", command: refreshProject });
             registry({ name: CMDS.project_run, label: "Run Project", command: runProject });
             registry({ name: CMDS.project_debug, label: "Debug Project", command: null });

@@ -117,6 +117,8 @@ module Cats.Menu {
             proj.append(getCmd(CMDS.project_close));
             proj.append(new GUI.MenuItem({ type: "separator" }));
             proj.append(getCmd(CMDS.project_build));
+            proj.append(getCmd(CMDS.project_validate));
+     
             var buildOnSaveItem = new GUI.MenuItem({ label: 'Build on Save', checked: false, type: "checkbox" });
             proj.append(buildOnSaveItem);
             buildOnSaveItem.click = () => {

@@ -82,6 +82,7 @@ declare module Cats {
         sourcePath?: string;
         destPath?: string;
         buildOnSave?: boolean;
+        customBuild?:any;
         compiler: {
             useDefaultLib: boolean;
             outputOption: string;
@@ -96,7 +97,7 @@ declare module Cats {
             useSoftTabs: boolean;
             tabSize: number;
         };
-        completionMode: string; // strict, loose
+        completionMode?: string; // strict, loose
     }
 
     interface Position {

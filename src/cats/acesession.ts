@@ -230,7 +230,8 @@ module Cats {
                 this.pendingWorkerUpdate = false;
             };
 
-            this.project.JSSense.perform("autoComplete", cursor, this.name, (err, completes) => {
+            this.project.JSSense.perform("autoComplete", cursor, this.name, 
+            (err, completes) => {
                 if (completes != null) view.showCompletions(completes.entries);
             });
         }
@@ -284,7 +285,8 @@ module Cats {
             // Any pending changes that are not yet send to the worker?
             if (this.pendingWorkerUpdate) this.update();
 
-            this.project.iSense.perform("autoComplete", cursor, this.name, (err, completes:Services.CompletionInfo) => {
+            this.project.iSense.perform("autoComplete", cursor, this.name, 
+            (err, completes:Services.CompletionInfo) => {
                 if (completes != null) view.showCompletions(completes.entries);
             });
         }

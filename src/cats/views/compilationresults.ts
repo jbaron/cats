@@ -48,7 +48,7 @@ export function showCompilationResults(data:Cats.CompileResults) {
             IDE.resultbar.selectOption(2);
             var time = new Date();
             var stamp = time.toLocaleTimeString();
-            IDE.console.innerText += "\n" + stamp + " Successfully generated " + Object.keys(data.source).length + " file(s).";
+            IDE.console.innerText += "\n" + stamp + " Successfully compiled " + Object.keys(data.source).length + " file(s).\n";
             IDE.console.scrollTop = IDE.console.scrollHeight; // Scroll to bottom
 
 
