@@ -218,25 +218,6 @@ module Cats {
         }
 
         /**
-         * Perform code autocompletion for plain JS
-         */ 
-        autoCompleteJS(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
-            var editSession = this.editSession;
-
-            // Any pending changes that are not yet send to the worker?
-            if (this.pendingWorkerUpdate) {
-                var source = editSession.getValue();
-                this.project.JSSense.updateScript(this.name, source);
-                this.pendingWorkerUpdate = false;
-            };
-
-            this.project.JSSense.perform("autoComplete", cursor, this.name, 
-            (err, completes) => {
-                if (completes != null) view.showCompletions(completes.entries);
-            });
-        }
-
-        /**
          * Check if there are any errors for this session and show them.    
          */
         showErrors() {
@@ -272,14 +253,10 @@ module Cats {
         }
 
         /**
-         * Perform code autocompletion. Right now support for JS and TS.
+         * Perform code autocompletion. Right now support for TS.
          */
         autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
-            if (this.mode === "javascript") {
-                this.autoCompleteJS(cursor, view);
-                return;
-            }
-
+            
             if (this.mode !== "typescript") return;
 
             // Any pending changes that are not yet send to the worker?
@@ -297,7 +274,6 @@ module Cats {
          * worker if required.
          */
         private onChangeHandler(event) {
-            document
             this.changed = true;
             this.pendingWorkerUpdate = true;
 

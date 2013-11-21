@@ -16,7 +16,7 @@
     window.onload = function(){
         try {
             var diagram = new Cats.UML.DependencyDiagram({id: 'diagram', width: 2000, height: 2000 });
-            diagram.render();            
+            setTimeout(function() { diagram.render(); }, 1000);             
         } catch (err) {
                 alert(err);
         }

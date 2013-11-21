@@ -117,9 +117,9 @@ module Cats.UML {
             
           
             var layout = new Layout(this.diagram);
+            
             layout.layout();
             
-                        
             //Interaction is possible (editable)
             this.diagram.interaction(true);
         }
@@ -127,3 +127,6 @@ module Cats.UML {
 
 
 }
+
+
+

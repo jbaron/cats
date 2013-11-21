@@ -97,12 +97,12 @@ module Cats {
 
         // The singleton TSWorker handler instance
         iSense: ISenseHandler;
-        JSSense: ISenseHandler;
         config: ProjectConfiguration;
 
-
-        // Set the project to a new directory and make sure 
-        // we remove old artifacts.
+        /**    
+         * Set the project to a new directory and make sure 
+         * we remove old artifacts.
+         */ 
         constructor(projectDir: string) {
             IDE.project = this;
             this.projectDir = PATH.resolve(projectDir);
@@ -110,16 +110,9 @@ module Cats {
             this.refresh();
         }
 
-        private initJSSense() {
-            this.JSSense = new ISenseHandler();
-
-            var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
-            var libdts = OS.File.readTextFile(fullName);
-            this.JSSense.addScript(fullName, libdts);
-
-        }
-
-
+        /**
+         * Close the project
+         */ 
         close() {
             var gui = require('nw.gui');
             var win = gui.Window.get();
