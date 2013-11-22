@@ -13,6 +13,10 @@
 // limitations under the License.
 //
 
+///<reference path='commands/commander.ts'/>
+///<reference path='menu/filecontextmenu.ts'/>
+///<reference path='menu/menubar.ts'/>
+///<reference path='menu/tabcontextmenu.ts'/>
 
 ///<reference path='views/toolbar.ts'/>
 ///<reference path='views/statusbar.ts'/>

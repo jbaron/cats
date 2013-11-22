@@ -85,7 +85,7 @@ task('compile', {async:true}, function(outFile, options) {
 task("default", function() {
    jake.Task['compile'].invoke("lib/main.js", catsOptions);
    jake.Task['compile'].invoke("lib/tsworker.js", ["src/tsworker/isense.ts"]);
-   jake.Task['compile'].invoke("lib/uml.js", [,"--target ES5","src/cats/uml/layout.ts"]);
+   jake.Task['compile'].invoke("lib/uml.js", [,"--target ES5","src/uml/layout.ts"]);
 });
 
 

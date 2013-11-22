@@ -26,10 +26,7 @@ var GUI = require('nw.gui');
 ///<reference path='layout.ts'/>
 
 
-///<reference path='commands/commander.ts'/>
-///<reference path='menu/menubar.ts'/>
-///<reference path='menu/filecontextmenu.ts'/>
-///<reference path='menu/tabcontextmenu.ts'/>
+
 ///<reference path='project.ts'/>
 ///<reference path='ui/tabbar.ts'/>
 ///<reference path='ui/elemtabadapter.ts'/>

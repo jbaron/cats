@@ -13,8 +13,8 @@
 // limitations under the License.
 //
 
-///<reference path='../../typings/arbor.d.ts'/>
-///<reference path='../../typings/jsuml2.d.ts'/>
+///<reference path='../typings/arbor.d.ts'/>
+///<reference path='../typings/jsuml2.d.ts'/>
 
 module Cats.UML {
 
