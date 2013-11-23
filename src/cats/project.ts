@@ -168,7 +168,7 @@ module Cats {
          */
         private initTSWorker() {
             if (this.tsFiles.length > 0) {
-                this.iSense.perform("initialize", null);
+                this.iSense.initialize();
             }
         }
 

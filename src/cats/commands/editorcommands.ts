@@ -34,7 +34,7 @@ module Cats.Commands {
             if (session.mode !== "typescript") return;
             session.update();
 
-            session.project.iSense.perform("autoComplete", cursor, session.name, (err, completes) => {
+            session.project.iSense.autoComplete(cursor, session.name, (err, completes) => {
                 if (completes != null) view.showCompletions(completes.entries);
             });
         }

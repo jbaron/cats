@@ -14,7 +14,6 @@
 //
 
 ///<reference path='project.ts'/>
-///<reference path='../typings/typescript.d.ts'/>
 
 module Cats {
     
@@ -192,7 +191,7 @@ module Cats {
             var docPos = this.getPositionFromScreenOffset(ev.offsetX, ev.offsetY);
             var project = this.project;
 
-            this.project.iSense.perform("getTypeAtPosition", this.name, docPos,
+            this.project.iSense.getTypeAtPosition(this.name, docPos,
                 (err, data: TypeInfo) => {
                     if (!data) return;
                     var member = data.memberName;
@@ -262,7 +261,7 @@ module Cats {
             // Any pending changes that are not yet send to the worker?
             if (this.pendingWorkerUpdate) this.update();
 
-            this.project.iSense.perform("autoComplete", cursor, this.name, 
+            this.project.iSense.autoComplete(cursor, this.name, 
             (err, completes:Services.CompletionInfo) => {
                 if (completes != null) view.showCompletions(completes.entries);
             });

@@ -40,6 +40,9 @@ export class ISenseHandler {
         this.perform("compile", cb);
     }
 
+    getTypeAtPosition(name:string, docPos:Ace.Position, cb:(err, data: TypeInfo)=>void) {
+        this.perform("getTypeAtPosition", name, docPos, cb);
+    }
 
     getCompletions(fileName:string,cursor,cb) {
         this.perform("getCompletions", fileName, cursor,cb);
@@ -61,10 +64,18 @@ export class ISenseHandler {
         this.perform("updateScript",fileName, content, null);
     }
 
+    autoComplete(cursor:Ace.Position, name:string, cb:(err, completes:Services.CompletionInfo) => void) {
+        this.perform("autoComplete", cursor, name, cb); 
+    }
+
+    initialize() {
+        this.perform("initialize", null);
+    }
+    
     /**
      * Invoke a method on the worker using JSON-RPC message structure
      */ 
-    perform(method:string, ...data:Array<any>) {
+    private perform(method:string, ...data:Array<any>) {
         var handler = data.pop();
         this.messageId++;
         var message = {

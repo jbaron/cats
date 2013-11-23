@@ -424,7 +424,7 @@ module Cats {
                 var session = sessions[i];
                 if (session.changed) IDE.persistSession(session);
             }
-            IDE.sessions = [];
+            this.sessions = [];
         }
 
     }
