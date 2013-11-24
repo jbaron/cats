@@ -1,4 +1,3 @@
-
 /**
  * Simple typed Map interface where the key is 
  * always a string.
