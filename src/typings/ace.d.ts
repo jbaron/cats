@@ -69,6 +69,7 @@ declare module Ace {
 		new(content:string, mode:string);
 		getUndoManager():UndoManager;
 		getValue():string;
+        setOverwrite(val:boolean):void;
         getOverwrite():boolean;
         setValue(value:string);
 		getDocument():Document;

@@ -34,7 +34,7 @@ module Cats.View {
         return false;
     }
 
-    export class Outline extends BaseView {
+    export class Outline extends BasePane {
 
         constructor() {
             super(document.getElementById("outlinenav"));

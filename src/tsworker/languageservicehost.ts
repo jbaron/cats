@@ -14,10 +14,7 @@
 //
 
 
-///<reference path='../typings/typescript.d.ts' />
-
-
-// This is based on the harness.ts file from TypeScript (80% identical)
+// This is based on the harness.ts file from TypeScript
 // Major difference is that this module uses real language services API and not the Shim.
 // Licensed under the Apache License, Version 2.0. 
 
@@ -106,23 +103,23 @@ export class ScriptInfo {
         }
         
         fileExists(path: string): boolean {
-            // console.log("Called fileExist" + path);
+            console.log("Called fileExist" + path);
             return true;
         }
         
         directoryExists(path: string): boolean {
-            // console.log("Called directoryExist" + path);
+            console.log("Called directoryExist" + path);
             return true;
         }
         
         getParentDirectory(path: string): string {
-            // console.log("Called getParentDirectory" + path);
+            console.log("Called getParentDirectory" + path);
             return "";
         }
         
         
         resolveRelativePath(path: string, directory: string) : string{
-            // console.log("Called resolveRelativePath" + path + " " + directory);
+            console.log("Called resolveRelativePath" + path + " " + directory);
             return "";
         }
         

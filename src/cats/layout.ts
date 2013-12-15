@@ -25,13 +25,13 @@ module Cats {
      * filetree and outline divs are sized 25 pixels to heigh. This is due to the tabs
      * above them.
      */ 
-    function resizeOuter(name, state) {
+    function resizeOuter(name:string, state) {
         if (name === "west") {
             $("#filetree, #outlinenav").height(state.innerHeight()-25);
         }
     }
 
-    function resizeInner(name, state) {
+    function resizeInner(name:string, state) {
         if (name === "center") IDE.mainEditor.aceEditor.resize(true);
         if (name === "south") {
             $("#searchresults, #errorresults, #console").height(state.innerHeight()-25);

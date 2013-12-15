@@ -13,15 +13,6 @@
 // limitations under the License.
 //
 
-
-///<reference path='helpcommands.ts'/>
-///<reference path='filecommands.ts'/>
-///<reference path='projectcommands.ts'/>
-///<reference path='idecommands.ts'/>
-///<reference path='refactorcommands.ts'/>
-///<reference path='navigatecommands.ts'/>
-///<reference path='editorcommands.ts'/>
-
 module Cats.Commands {
 
     /**

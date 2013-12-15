@@ -22,9 +22,9 @@ module Cats.Menu {
     class Menubar {
 
 
-        fontSizes = [8, 10, 12, 14, 16, 18, 20, 24];
+        private fontSizes = [8, 10, 12, 14, 16, 18, 20, 24];
 
-        themes = [
+        private themes = [
                     { theme: "cats", label: "CATS" },
                     { theme: "chrome", label: "Chrome" },
                     { theme: "clouds", label: "Clouds" },
@@ -158,27 +158,9 @@ module Cats.Menu {
             
             var win = GUI.Window.get();
             win.menu = menubar;
-            
         }
          
-        private enableFind() {
-            window.open('findreplace.html', '_blank');
-        }
-
-        private actionFind() {
-            var input = <HTMLInputElement>document.getElementById("findText");
-            IDE.mainEditor.aceEditor.find(input.value, {}, true);
-        }
-
-        private actionReplace() {
-            var findText = <HTMLInputElement>document.getElementById("findText");
-            var replaceText = <HTMLInputElement>document.getElementById("replaceText");
-            var options = {
-                needle: findText.value
-            };
-            IDE.mainEditor.aceEditor.replace(replaceText.value, options);
-        }
-
+  
         private createFontSizeMenu() {
             var getCmd = Cats.Commands.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
@@ -222,16 +204,11 @@ module Cats.Menu {
             return menu;
         }
 
-        private enableReplace() {
-            document.getElementById("findArea").style.display = "block";
-            document.getElementById("replaceArea").style.display = "block";
-        }
-
-
     }
 
     export function createMenuBar() {
-        new Menubar();
+        var m = new Menubar();
+        
     }
 
 }

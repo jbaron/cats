@@ -13,12 +13,7 @@
 // limitations under the License.
 //
 
-
-///<reference path='mvc.ts'/>
-
 module Cats.UI {
-
-
 
 export class AspectWidget {
 

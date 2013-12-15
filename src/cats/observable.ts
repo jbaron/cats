@@ -36,14 +36,6 @@ export class ObservableImpl implements Observable {
     // Give it is name that won't quickly conflict with classes that inherit this
     private _observerRegistry = {};
 
-
-    /*
-    constructor(...props: Array<string>) {
-        if (props.length)
-            this.makeObservable.apply(this, props);
-    }
-    */
-
     constructor(args : string[]) {
         if (args.length)
             this.makeObservable.apply(this, args);
@@ -113,7 +105,7 @@ export class ObservableImpl implements Observable {
      * Make a number of plain properties observable
      * @param props The list of properties to be observable
      */
-    makeObservable(...props: Array<string>) {
+    private makeObservable(...props: Array<string>) {
         props.forEach((prop) => {
             var privateVar = this[prop];
             var timer = null;
@@ -132,23 +124,6 @@ export class ObservableImpl implements Observable {
             });
         })
     }
-
-    makeObservable2(...props: Array<string>) {
-        props.forEach((prop) => {
-            var name = "_$_" + prop;
-            this[name] = this[prop];
-            Object.defineProperty(this, prop, {
-                get: function() {
-                    return this[name];
-                },
-                set: function(val) {
-                    this[name] = val;
-                    this.emit(prop, val);
-                }
-            });
-        })
-    }
-
 
 }
 }

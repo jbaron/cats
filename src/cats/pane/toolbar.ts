@@ -15,7 +15,7 @@
 
 module Cats.View {
 
-    export class BaseView implements IView {
+    export class BasePane implements IView {
 
         constructor(public root: HTMLElement) { }
 
@@ -31,7 +31,7 @@ module Cats.View {
     }
 
 
-    export class ToolBar extends BaseView {
+    export class ToolBar extends BasePane {
 
 
 

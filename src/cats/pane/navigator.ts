@@ -75,7 +75,7 @@ module Cats.View {
 
 
 
-    export class Navigator extends BaseView {
+    export class Navigator extends BasePane {
 
         constructor() {
             super(document.getElementById("filetree"));

@@ -13,28 +13,14 @@
 // limitations under the License.
 //
 
-///<reference path='../typings/cats.d.ts'/>
-///<reference path='../typings/typescript.d.ts'/>
-///<reference path='../typings/node-webkit.d.ts'/>
-
 var PATH = require("path");
 var GUI = require('nw.gui');
 
-///<reference path='os.ts'/>
-///<reference path='observable.ts'/>
-///<reference path='ide.ts'/>
-///<reference path='layout.ts'/>
-
-
-
-///<reference path='project.ts'/>
-///<reference path='ui/tabbar.ts'/>
-///<reference path='ui/elemtabadapter.ts'/>
-///<reference path='editor.ts'/>
-
-///<reference path='ui/grid.ts'/>
-
 var IDE:Cats.Ide;
+var infoBus= new Cats.InfoBus(); 
+infoBus.SESSION.on("overwrite",(a)=>{
+    console.dir(a) ;  
+});
 
 /**
  * This is the file that is included in the index.html and 

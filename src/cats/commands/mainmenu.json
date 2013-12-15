@@ -1,0 +1,33 @@
+
+[
+    
+    {
+        "label" : "File", 
+        "type" : "Menu",
+        "subMenu" : [
+            {
+                "label" : "New File",
+                "icon" : "some icon",
+                "event" : "FILE.new"
+            },    
+            {
+                "label" : "New File",
+                "icon" : "some icon",
+                "event" : "FILE.new"
+            },    
+            {
+                "label" : "New File",
+                "icon" : "some icon",
+                "event" : "FILE.new"
+            }   
+            
+        ]
+    }
+    
+    
+ 
+ 
+    
+    
+    
+]    

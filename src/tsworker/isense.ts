@@ -14,9 +14,6 @@
 //
 
 
-///<reference path='languageservicehost.ts'/>
-///<reference path='../typings/cats.d.ts'/>
-
 importScripts("../static/js/typescriptServices.js");
 
 module Cats.TSWorker {
@@ -251,13 +248,6 @@ module Cats.TSWorker {
                 result = this.splice(result, edit.minChar + offset, edit.limChar + offset, edit.text);
                 offset += edit.text.length - (edit.limChar - edit.minChar);
             }
-            return result;
-        }
-
-
-        // Quick hack to get access to the language services
-        languageService(operation: string, params):any {
-            var result = this.ls[operation].call(this.ls, params);
             return result;
         }
 

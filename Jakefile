@@ -3,17 +3,32 @@
 var fs = require("fs");
 var path = require("path");
 
+var workerOptions = [
+   "src/typings/typescript.d.ts",
+   "src/typings/cats.d.ts",
+   "src/tsworker/languageservicehost.ts",    
+   "src/tsworker/isense.ts"
+];
+
+var umlOptions = [
+   "--target ES5",
+   "src/typings/arbor.d.ts",
+   "src/typings/jsuml2.d.ts",
+   "src/uml/layout.ts"
+];
+
 var catsOptions = [
     "--target ES5",
     "src/typings/ace.d.ts",
-    "src/typings/arbor.d.ts",
     "src/typings/cats.d.ts",
     "src/typings/jsuml2.d.ts",
     "src/typings/node-webkit.d.ts",
     "src/typings/typescript.d.ts",
     "src/cats/promise.ts",
+    "src/cats/infobus.ts",
     "src/cats/os.ts",
     "src/cats/observable.ts",
+    "src/cats/treewatcher.ts",
     "src/cats/ide.ts",
     "src/cats/layout.ts",
     "src/cats/acesession.ts",
@@ -40,13 +55,13 @@ var catsOptions = [
     "src/cats/ui/tabbar.ts",
     "src/cats/ui/tooltip.ts",
     "src/cats/ui/tree.ts",
-    "src/cats/views/compilationresults.ts",
-    "src/cats/views/navigator.ts",
-    "src/cats/views/outline.ts",
-    "src/cats/views/searchresults.ts",
-    "src/cats/views/statusbar.ts",
-    "src/cats/views/tasklist.ts",
-    "src/cats/views/toolbar.ts",
+    "src/cats/pane/toolbar.ts",
+    "src/cats/pane/compilationresults.ts",
+    "src/cats/pane/navigator.ts",
+    "src/cats/pane/outline.ts",
+    "src/cats/pane/searchresults.ts",
+    "src/cats/pane/statusbar.ts",
+    "src/cats/pane/tasklist.ts",
     "src/cats/main.ts"
 ];
 
@@ -84,8 +99,8 @@ task('compile', {async:true}, function(outFile, options) {
 // Set the default task
 task("default", function() {
    jake.Task['compile'].invoke("lib/main.js", catsOptions);
-   jake.Task['compile'].invoke("lib/tsworker.js", ["src/tsworker/isense.ts"]);
-   jake.Task['compile'].invoke("lib/uml.js", [,"--target ES5","src/uml/layout.ts"]);
+   jake.Task['compile'].invoke("lib/tsworker.js", workerOptions);
+   jake.Task['compile'].invoke("lib/uml.js", umlOptions);
 });
 
 

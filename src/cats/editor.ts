@@ -13,78 +13,39 @@
 // limitations under the License.
 //
 
-///<reference path='menu/editorcontextmenu.ts'/>
-///<reference path='ui/autocompleteview.ts'/>
-
 module Cats {
 
-    function setOverwrite() {        
-        var s = <AceSession>IDE.activeSession;
-        IDE.mainEditor.overwrite = s.editSession.getOverwrite();
-    }
 
     /**
      * The TextEditor class that wraps the Ace editor
      * and provides a set common methods. There is only
      * one TextEditor instance per window.
      */ 
-    export class TextEditor extends ObservableImpl implements Editor {
+    export class TextEditor implements Editor {
         public aceEditor: Ace.Editor;
         public toolTip: UI.ToolTip;
         private autoCompleteView: UI.AutoCompleteView;
         public onAutoComplete: Function;
         private mouseMoveTimer: number;
         
-        editMode:string;
-        overwrite:boolean;
+        private editMode:string;
+        private overwrite:boolean;
 
         private editorContextMenu: Cats.Menu.EditorContextMenu;
 
         constructor(private rootElement: HTMLElement) {
-            super(["editMode", "overwrite"]);
             this.aceEditor = this.createAceEditor();
             this.hide();
             this.init();
         }
 
-        // Small wrappers to make the observers a bit more typed.
-        onEditMode(fn:(mode:string)=>void) { this.on("editMode",fn); }
-        onOverwrite(fn:(mode:boolean)=>void) { this.on("overwrite",fn); }
-
-
-        init() {
+    
+        private init() {
             this.toolTip = new UI.ToolTip();
             this.autoCompleteView = new UI.AutoCompleteView(this.aceEditor);
             this.editorContextMenu = new Cats.Menu.EditorContextMenu(this);
             this.editorContextMenu.bindTo(this.rootElement);            
         }
-
-        /**
-         * Deactive and activeate listeners
-         * @param oldSession The current active session that will de activated
-         * @param newSession The session that will be the new active session
-         */ 
-        private swapListeners(oldSession:AceSession, newSession:AceSession) {
-            var event;
-            var listeners = {
-               "changeOverwrite" : setOverwrite                 
-            };
-            
-            if (oldSession) {
-                for (event in listeners) {
-                    oldSession.editSession.removeListener(event,listeners[event]);
-                }
-            }
-            
-            if (newSession) {
-                for (event in listeners) {
-                    newSession.editSession.on(event,listeners[event]);
-                }
-
-            }
-                    
-        }
-
 
         /**
          * Make a session the active one
@@ -101,12 +62,8 @@ module Cats {
                 return;
             }
            
-            this.swapListeners(<AceSession>IDE.activeSession,session); 
-
             IDE.activeSession = session;
-            
-            // var aceSession = <AceSession>session;
-            
+
             this.aceEditor.setSession(session.editSession);
             if (session.mode === "binary") {
                 this.aceEditor.setReadOnly(true);

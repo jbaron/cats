@@ -14,14 +14,6 @@
 //
 
 
-///<reference path='isensehandler.ts'/>
-///<reference path='treewatcher.ts'/>
-///<reference path='configloader.ts'/>
-///<reference path='ui/tooltip.ts'/>
-///<reference path='ui/tree.ts'/>
-///<reference path='../typings/ace.d.ts'/>
-
-
 module Cats {
 
     class ProjectWatcher extends TreeWatcher {

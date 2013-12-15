@@ -15,14 +15,11 @@
 
 module Cats.View {
 
-
-
-
     function rangeToPosition(range: Cats.Range): string {
         return (range.start.row + 1) + ":" + (range.start.column + 1);
     }
 
-  export class SearchResults extends BaseView {
+  export class SearchResults extends BasePane {
 
     constructor() {
          super(document.getElementById("searchresults"));             

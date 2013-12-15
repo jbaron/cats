@@ -15,7 +15,7 @@
 
 module Cats.View {
 
-     export class TaskList extends BaseView {
+     export class TaskList extends BasePane {
 
     constructor() {
          super(document.getElementById("tasklist"));             

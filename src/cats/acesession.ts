@@ -13,8 +13,6 @@
 // limitations under the License.
 //
 
-///<reference path='project.ts'/>
-
 module Cats {
     
     var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
@@ -90,6 +88,10 @@ module Cats {
 
             this.editSession.on("change", this.onChangeHandler.bind(this));
             this.editSession.setUndoManager(new UndoManager());
+            this.editSession.on("changeOverwrite",(a)=>{
+                infoBus.SESSION.emit("overwrite",this.editSession.getOverwrite());
+            });
+
             this.on("changed", () => { IDE.tabbar.refresh() });
         }
 
