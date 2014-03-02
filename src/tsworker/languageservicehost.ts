@@ -36,7 +36,7 @@ export class ScriptInfo {
         }
 
         public getLineMap() {
-            if (! this.lineMap) this.lineMap = TypeScript.LineMap.fromString(this.content);
+            if (! this.lineMap) this.lineMap = TypeScript.LineMap1.fromString(this.content);
             return this.lineMap;
         }
 
@@ -79,7 +79,7 @@ export class ScriptInfo {
     }
 
    
-    export class LanguageServiceHost implements Services.ILanguageServiceHost {
+    export class LanguageServiceHost implements TypeScript.Services.ILanguageServiceHost {
 
         private compilationSettings:TypeScript.CompilationSettings = null;
 
@@ -94,7 +94,7 @@ export class ScriptInfo {
             return true;
         }
 
-        getScriptByteOrderMark(fileName: string):ByteOrderMark {
+        getScriptByteOrderMark(fileName: string):TypeScript.ByteOrderMark {
             return null;
         }
         
@@ -199,7 +199,7 @@ export class ScriptInfo {
         /**
          * Apply an array of text edits to a string, and return the resulting string.
          */
-        public applyEdits(content: string, edits: Services.TextEdit[]): string {
+        public applyEdits(content: string, edits: TypeScript.Services.TextEdit[]): string {
             var result = content;
             edits = this.normalizeEdits(edits);
 
@@ -217,10 +217,10 @@ export class ScriptInfo {
         // Normalize an array of edits by removing overlapping entries and sorting
         // entries on the "minChar" position.
         //
-        private normalizeEdits(edits: Services.TextEdit[]): Services.TextEdit[] {
-            var result: Services.TextEdit[] = [];
+        private normalizeEdits(edits: TypeScript.Services.TextEdit[]): TypeScript.Services.TextEdit[] {
+            var result: TypeScript.Services.TextEdit[] = [];
 
-            function mapEdits(edits: Services.TextEdit[]): { edit: Services.TextEdit; index: number; }[] {
+            function mapEdits(edits: TypeScript.Services.TextEdit[]): { edit: TypeScript.Services.TextEdit; index: number; }[] {
                 var result = [];
                 for (var i = 0; i < edits.length; i++) {
                     result.push({ edit: edits[i], index: i });

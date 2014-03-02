@@ -264,7 +264,7 @@ module Cats {
             if (this.pendingWorkerUpdate) this.update();
 
             this.project.iSense.autoComplete(cursor, this.name, 
-            (err, completes:Services.CompletionInfo) => {
+            (err, completes:TypeScript.Services.CompletionInfo) => {
                 if (completes != null) view.showCompletions(completes.entries);
             });
         }

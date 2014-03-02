@@ -63,7 +63,7 @@ export class ISenseHandler {
         this.perform("updateScript",fileName, content, null);
     }
 
-    autoComplete(cursor:Ace.Position, name:string, cb:(err, completes:Services.CompletionInfo) => void) {
+    autoComplete(cursor:Ace.Position, name:string, cb:(err, completes:TypeScript.Services.CompletionInfo) => void) {
         this.perform("autoComplete", cursor, name, cb); 
     }
 

@@ -35,10 +35,10 @@ module Cats.UI {
         active = false;
         
         // The complete set of completions available
-        completions: Services.CompletionEntry[];
+        completions: TypeScript.Services.CompletionEntry[];
         
         // The fitlered completions based on the users input so far
-        filteredCompletions: Services.CompletionEntry[];
+        filteredCompletions: TypeScript.Services.CompletionEntry[];
 
         private offset = 0;
         private index = 0;
@@ -264,7 +264,7 @@ module Cats.UI {
             
         }
 
-        showCompletions(completions:Services.CompletionEntry[]) {
+        showCompletions(completions:TypeScript.Services.CompletionEntry[]) {
             if (this.active || (completions.length === 0)) return;            
             this.completions = completions;
             console.log("Received completions: " + completions.length);

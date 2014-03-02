@@ -44,7 +44,7 @@ module Cats.TSWorker {
     class ISense {
 
         private maxErrors = 20;
-        ls: Services.ILanguageService;
+        ls: TypeScript.Services.ILanguageService;
         private lsHost: LanguageServiceHost;
         private projectDir:string;
 
@@ -54,8 +54,8 @@ module Cats.TSWorker {
          */ 
         constructor() {
             this.lsHost = new LanguageServiceHost();
-            // this.ls = new Services.TypeScriptServicesFactory().createLanguageService(this.lsHost);
-            this.ls = new Services.TypeScriptServicesFactory().createPullLanguageService(this.lsHost);
+            // this.ls = new TypeScript.Services.TypeScriptServicesFactory().createLanguageService(this.lsHost);
+            this.ls = new TypeScript.Services.TypeScriptServicesFactory().createPullLanguageService(this.lsHost);
         }
 
         /**
@@ -108,7 +108,7 @@ module Cats.TSWorker {
          * Convert Services to Cats NavigateToItems
          * @todo properly do this conversion
          */ 
-        private convertNavigateTo(items:Services.NavigateToItem[]):NavigateToItem[] {
+        private convertNavigateTo(items:TypeScript.Services.NavigateToItem[]):NavigateToItem[] {
             var results= <NavigateToItem[]>items;
             for (var i = 0; i < results.length; i++) {
                 var result = results[i];
@@ -171,7 +171,7 @@ module Cats.TSWorker {
                         errors = errors.concat(newErrors);
                     }
 
-                    emitOutput.outputFiles.forEach((file:Services.IOutputFile)=>{
+                    emitOutput.outputFiles.forEach((file:TypeScript.OutputFile)=>{
                          result.push({
                             fileName : file.name,
                             content: file.text
@@ -238,7 +238,7 @@ module Cats.TSWorker {
         }
 
         getFormattedTextForRange(fileName: string, start: number, end: number):string {
-            var options = new Services.FormatCodeOptions();
+            var options = new TypeScript.Services.FormatCodeOptions();
             options.NewLineCharacter = "\n";
             var edits = this.ls.getFormattingEditsForRange(fileName, start, end, options);
             var result = this.getScriptContent(fileName);
@@ -360,7 +360,7 @@ module Cats.TSWorker {
         public getInfoAtPosition(method: string, fileName: string, cursor: Cats.Position): Cats.FileRange[] {
             var pos = this.getPositionFromCursor(fileName, cursor);
             var result:Cats.FileRange[] = [];
-            var entries: Services.ReferenceEntry[] = this.ls[method](fileName, pos);
+            var entries: TypeScript.Services.ReferenceEntry[] = this.ls[method](fileName, pos);
             for (var i = 0; i < entries.length; i++) {
                 var ref = entries[i];
                 result.push({
@@ -372,7 +372,7 @@ module Cats.TSWorker {
             return result;
         }
 
-        public autoComplete(cursor: Cats.Position, fileName: string): Services.CompletionInfo {
+        public autoComplete(cursor: Cats.Position, fileName: string): TypeScript.Services.CompletionInfo {
             var pos = this.getPositionFromCursor(fileName, cursor);
             var memberMode = false;
             var source = this.getScriptContent(fileName);

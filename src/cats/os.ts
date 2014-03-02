@@ -31,7 +31,7 @@ module OS.File {
         function mkdirRecursiveSync(path: string) {
             if (!FS.existsSync(path)) {
                 mkdirRecursiveSync(PATH.dirname(path));
-                FS.mkdirSync(path, 0775);
+                FS.mkdirSync(path,509); //, 0775);
             }
         }
 

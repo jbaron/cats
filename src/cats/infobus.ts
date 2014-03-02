@@ -10,7 +10,7 @@ declare class EventEmitter {
 }
 
 
-var EM = <EventEmitter>require('events').EventEmitter;
+var Events = require('events');
 
 
 module Cats {
@@ -57,10 +57,10 @@ module Cats {
      * Central infobus that transports all the events
      */ 
     export class InfoBus {
-        IDE: IDEEvent = new EM();
-        SESSION: IDEEvent = new EM();
-        EDITOR: IDEEvent = new EM();
-        IntelliSense: IntelliSenseEvent = new EM();
+         IDE: IDEEvent = new Events.EventEmitter();
+         SESSION: IDEEvent= new Events.EventEmitter();
+         EDITOR: IDEEvent= new Events.EventEmitter();
+         IntelliSense: IntelliSenseEvent= new Events.EventEmitter();
         
         constructor() {
             console.info("initiated new InfoBus");
