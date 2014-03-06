@@ -139,8 +139,11 @@ module Cats {
          * Persist the edit session
          */
         persist() {
+            // Select proper folder separator according to platform used   
+            var dirSlash = process.platform == "win32" ? "\\" : "/";
+            
             if (this.name === "untitled") {
-                this.name = prompt("Please enter the file name", IDE.project.projectDir) || "untitled";
+                this.name = prompt("Please enter the file name", IDE.project.projectDir + dirSlash) || "untitled";
             }
 
             if (this.name !== "untitled") {
