@@ -23,6 +23,7 @@ module Cats.Menu {
         ctxmenu.append(new GUI.MenuItem({ label: 'Refresh', click: refresh }));
         ctxmenu.append(new GUI.MenuItem({ label: 'Rename', click: rename }));
         ctxmenu.append(new GUI.MenuItem({ label: 'New file', click: newFile }));
+        ctxmenu.append(new GUI.MenuItem({ label: 'New folder', click: newFolder }));
         ctxmenu.append(new GUI.MenuItem({ label: 'Delete', click: deleteFile }));
         return ctxmenu;
     }
@@ -39,6 +40,7 @@ module Cats.Menu {
         if (sure) {            
             OS.File.remove(data.key);
         }
+        setTimeout(function(){refresh(), 100});
     }
 
     function newFile() {
@@ -56,7 +58,22 @@ module Cats.Menu {
         OS.File.writeTextFile(fullName, "");
     }
 
+    function newFolder() {
+        var basedir;
 
+        if (data.isFolder) {
+            basedir = data.key
+        } else {
+            basedir = PATH.dirname(data.key);
+        }
+
+        var name = prompt("Vnesi novo ime mape ");
+        if (name == null) return;
+        var fullName = PATH.join(basedir, name);
+        OS.File.mkdirRecursiveSync(fullName);
+        refresh(); 
+    }
+    
     function rename() {
         var dirname = PATH.dirname(data.key);
         var basename = PATH.basename(data.key);

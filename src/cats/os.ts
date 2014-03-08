@@ -28,7 +28,7 @@ module OS.File {
          * Create recursively directories if they don't exist yet
          * @param path The directory path to create
          */ 
-        function mkdirRecursiveSync(path: string) {
+        export function mkdirRecursiveSync(path: string) {
             if (!FS.existsSync(path)) {
                 mkdirRecursiveSync(PATH.dirname(path));
                 FS.mkdirSync(path,509); //, 0775);
