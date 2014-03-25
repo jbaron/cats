@@ -70,7 +70,9 @@ module Cats {
             tb.setAspect("selected", (session: Session) => { return session === IDE.activeSession });
             tb.setAspect("longname", (session: Session) => { return session.name });
             tb.setAspect("changed", (session: Session) => { return session.changed });
-            tb.onselect = (session:Session) => this.openSession(session.name);
+            tb.onselect = (session:Session) => {
+                if (session) this.openSession(session.name);
+            };
             tb.ondelete = (session:Session) => this.closeSession(session);
             tb.appendTo(this.sessionBar);
             IDE.on("sessions", (sessions) => {this.tabbar.setOptions(sessions)} );
