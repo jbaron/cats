@@ -138,13 +138,21 @@ module Cats {
         /**
          * Persist the edit session
          */
-        persist() {
-            // Select proper folder separator according to platform used   
+        persist(shouldConfirm=false) {
+            // Select proper folder separator according to platform used 
+            
+            
             var dirSlash = process.platform == "win32" ? "\\" : "/";
             
             if (this.name === "untitled") {
                 this.name = prompt("Please enter the file name", IDE.project.projectDir + dirSlash) || "untitled";
             }
+
+            if (this.changed && shouldConfirm) {
+                var c = confirm("Save " + this.name + " before closing ?");
+                if (!c) return;
+            }
+
 
             if (this.name !== "untitled") {
                 OS.File.writeTextFile(this.name, this.getValue());

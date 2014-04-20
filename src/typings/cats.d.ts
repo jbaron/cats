@@ -55,7 +55,7 @@ declare module Cats {
         getValue(): string;
         setValue(value: string);
         getPosition():any;
-        persist();
+        persist(shouldConfirm:boolean);
     }
 
     /**

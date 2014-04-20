@@ -314,9 +314,11 @@ module Cats {
             if (cb) cb(session);
         }
 
-        persistSession(session: Session) {
-            this.project.getWatcher().preventFileChange(session.name);
-            session.persist();
+        persistSession(session: Session, shouldConfirm = false) {
+            if (this.project)
+                this.project.getWatcher().preventFileChange(session.name);
+
+            session.persist(shouldConfirm);
         }
 
         /**
@@ -325,11 +327,8 @@ module Cats {
          */
         closeSession(session: Session) {
             var result = [];
-
-            if (session.changed) {
-                var c = confirm("Save " + session.name + " before closing ?");
-                if (c) this.persistSession(session);
-            }
+            this.persistSession(session, true);
+            
 
             this.sessions.forEach((s) => {
                 if (s !== session) {
@@ -399,19 +398,19 @@ module Cats {
         
         
          /**
-         * Add a new project to the IDE
-         * @param projectDir the directory of the new project
+         * Close an open project
+         * @param project to be closed
          */
         closeProject(project) {
-            this.project.close();
-            this.project = null;
             // TODO put code on IDE
             var sessions = IDE.sessions;
             for (var i = 0; i < sessions.length; i++) {
                 var session = sessions[i];
-                if (session.changed) IDE.persistSession(session);
+                if (session.changed) IDE.persistSession(session,true);
             }
             this.sessions = [];
+            this.project.close();
+            this.project = null;
         }
 
     }
