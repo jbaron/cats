@@ -606,7 +606,7 @@ declare class Enumerator {
     public item(): any;
     constructor(o: any);
 }
-declare module process_unavailable {
+declare module process123 {
     var argv: string[];
     var platform: string;
     function on(event: string, handler: (arg: any) => void): void;

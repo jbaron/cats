@@ -74,7 +74,8 @@ module Cats.Commands {
         if (session) {
             var newName = prompt("Enter new name", session.name);
             if (newName) {
-                OS.File.writeTextFile(newName,session.getValue());
+                session.name = newName;
+                IDE.persistSession(session);
             }
         }
     }

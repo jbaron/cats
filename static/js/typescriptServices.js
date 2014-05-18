@@ -36844,9 +36844,42 @@ var TypeScript;
         };
 
         Emitter.prototype.emitParenthesizedExpression = function (parenthesizedExpression) {
+            var omitParentheses = false;
+
             if (parenthesizedExpression.expression.kind() === 220 /* CastExpression */ && parenthesizedExpression.openParenTrailingComments === null) {
-                // We have an expression of the form: (<Type>SubExpr)
-                // Emitting this as (SubExpr) is really not desirable.  Just emit the subexpr as is.
+                var castedExpression = parenthesizedExpression.expression.expression;
+
+                while (castedExpression.kind() == 220 /* CastExpression */) {
+                    castedExpression = castedExpression.expression;
+                }
+
+                switch (castedExpression.kind()) {
+                    case 217 /* ParenthesizedExpression */:
+                    case 11 /* IdentifierName */:
+                    case 32 /* NullKeyword */:
+                    case 35 /* ThisKeyword */:
+                    case 14 /* StringLiteral */:
+                    case 13 /* NumericLiteral */:
+                    case 12 /* RegularExpressionLiteral */:
+                    case 37 /* TrueKeyword */:
+                    case 24 /* FalseKeyword */:
+                    case 214 /* ArrayLiteralExpression */:
+                    case 215 /* ObjectLiteralExpression */:
+                    case 212 /* MemberAccessExpression */:
+                    case 221 /* ElementAccessExpression */:
+                        omitParentheses = true;
+                        break;
+
+                    case 213 /* InvocationExpression */:
+                        if (parenthesizedExpression.parent.kind() !== 216 /* ObjectCreationExpression */) {
+                            omitParentheses = true;
+                        }
+
+                        break;
+                }
+            }
+
+            if (omitParentheses) {
                 this.emit(parenthesizedExpression.expression);
             } else {
                 this.recordSourceMappingStart(parenthesizedExpression);
@@ -42750,6 +42783,10 @@ var TypeScript;
             var signatures = [];
             for (var i = 0; i < baseConstructSignatures.length; i++) {
                 var baseSignature = baseConstructSignatures[i];
+
+                // Make sure the base signature is resolved, so that the parameter symbols from the new
+                // siganture are used, they will have the type associated with them.
+                baseSignature._resolveDeclaredSymbol();
                 var currentSignature = new PullSignatureSymbol(TypeScript.PullElementKind.ConstructSignature, baseSignature.isDefinition());
                 currentSignature.returnType = instanceTypeSymbol;
                 currentSignature.addTypeParametersFromReturnType();
@@ -75173,15 +75210,17 @@ var TypeScript;
                     //  2) For any inner modules, consider it exported.
                     var modifiers = nameIndex === 0 ? node.modifiers : TypeScript.Syntax.list([TypeScript.Syntax.token(47 /* ExportKeyword */)]);
                     var name = names[nameIndex];
-                    var kind = Services.ScriptElementKind.moduleElement;
+                    if (name) {
+                        var kind = Services.ScriptElementKind.moduleElement;
 
-                    this.createItem(node, node.modifiers, kind, name);
+                        this.createItem(node, node.modifiers, kind, name);
 
-                    this.pushNewContainerScope(name, kind);
+                        this.pushNewContainerScope(name, kind);
 
-                    this.visitModuleDeclarationWorker(node, names, nameIndex + 1);
+                        this.visitModuleDeclarationWorker(node, names, nameIndex + 1);
 
-                    this.popScope();
+                        this.popScope();
+                    }
                 }
             };
 
@@ -75209,30 +75248,34 @@ var TypeScript;
 
             GetScriptLexicalStructureWalker.prototype.visitClassDeclaration = function (node) {
                 var name = node.identifier.text();
-                var kind = Services.ScriptElementKind.classElement;
+                if (name) {
+                    var kind = Services.ScriptElementKind.classElement;
 
-                this.createItem(node, node.modifiers, kind, name);
+                    this.createItem(node, node.modifiers, kind, name);
 
-                this.pushNewContainerScope(name, kind);
+                    this.pushNewContainerScope(name, kind);
 
-                _super.prototype.visitClassDeclaration.call(this, node);
+                    _super.prototype.visitClassDeclaration.call(this, node);
 
-                this.popScope();
+                    this.popScope();
+                }
             };
 
             GetScriptLexicalStructureWalker.prototype.visitInterfaceDeclaration = function (node) {
                 var name = node.identifier.text();
-                var kind = Services.ScriptElementKind.interfaceElement;
+                if (name) {
+                    var kind = Services.ScriptElementKind.interfaceElement;
 
-                this.createItem(node, node.modifiers, kind, name);
+                    this.createItem(node, node.modifiers, kind, name);
 
-                this.pushNewContainerScope(name, kind);
+                    this.pushNewContainerScope(name, kind);
 
-                this.currentInterfaceDeclaration = node;
-                _super.prototype.visitInterfaceDeclaration.call(this, node);
-                this.currentInterfaceDeclaration = null;
+                    this.currentInterfaceDeclaration = node;
+                    _super.prototype.visitInterfaceDeclaration.call(this, node);
+                    this.currentInterfaceDeclaration = null;
 
-                this.popScope();
+                    this.popScope();
+                }
             };
 
             GetScriptLexicalStructureWalker.prototype.visitObjectType = function (node) {
@@ -75247,15 +75290,17 @@ var TypeScript;
 
             GetScriptLexicalStructureWalker.prototype.visitEnumDeclaration = function (node) {
                 var name = node.identifier.text();
-                var kind = Services.ScriptElementKind.enumElement;
+                if (name) {
+                    var kind = Services.ScriptElementKind.enumElement;
 
-                this.createItem(node, node.modifiers, kind, name);
+                    this.createItem(node, node.modifiers, kind, name);
 
-                this.pushNewContainerScope(name, kind);
+                    this.pushNewContainerScope(name, kind);
 
-                _super.prototype.visitEnumDeclaration.call(this, node);
+                    _super.prototype.visitEnumDeclaration.call(this, node);
 
-                this.popScope();
+                    this.popScope();
+                }
             };
 
             GetScriptLexicalStructureWalker.prototype.visitConstructorDeclaration = function (node) {

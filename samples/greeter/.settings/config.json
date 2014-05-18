@@ -1,5 +1,5 @@
 {
-    "version" : "1.0",    
+    "version": "1.0",
     "main": "greeter.html",
     "sourcePath": null,
     "outputPath": null,
@@ -8,7 +8,7 @@
         "emitComments": false,
         "generateDeclarationFiles": false,
         "mapSourceFiles": false,
-        "outputOption" : "",
+        "outputOption": "",
         "codeGenTarget": 1,
         "moduleGenTarget": 0
     },
