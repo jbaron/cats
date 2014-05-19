@@ -101,7 +101,7 @@ module Cats {
         }
 
         get shortName():string {
-            if (! this.name) return "untitled";
+            if (! this.name) return "Untitled";
             return PATH.basename(this.name);
         }
 
@@ -144,8 +144,8 @@ module Cats {
             
             var dirSlash = process.platform == "win32" ? "\\" : "/";
             
-            if (this.name === "untitled") {
-                this.name = prompt("Please enter the file name", IDE.project.projectDir + dirSlash) || "untitled";
+            if (this.name === "Untitled") {
+                this.name = prompt("Please enter the file name", IDE.project.projectDir + dirSlash) || "Untitled";
             }
 
             if (this.changed && shouldConfirm) {
@@ -154,7 +154,7 @@ module Cats {
             }
 
 
-            if (this.name !== "untitled") {
+            if (this.name !== "Untitled") {
                 OS.File.writeTextFile(this.name, this.getValue());
                 this.changed = false;
             }

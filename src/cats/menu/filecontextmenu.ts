@@ -36,8 +36,8 @@ module Cats.Menu {
 
     function deleteFile() {
         var basename = PATH.basename(data.key);
-        var sure = confirm("Delete " + basename);
-        if (sure) {            
+        var sure = confirm("Delete " + basename + "?");
+        if (sure) {
             OS.File.remove(data.key);
         }
         setTimeout(function(){refresh(), 100});

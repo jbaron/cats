@@ -32,93 +32,116 @@ ace.define('ace/theme/cats', ['require', 'exports', 'module' , 'ace/lib/dom'], f
 
 
 exports.isDark = false;
+exports.cssClass = "ace-cats";
 exports.cssText = ".ace-cats .ace_gutter {\
-background: #ebebeb;\
-border-right: 1px solid rgb(159, 159, 159);\
-color: rgb(136, 136, 136);\
+background: #f8f8f8;\
+color: #999;\
 }\
 .ace-cats .ace_print-margin {\
 width: 1px;\
-background: #ebebeb;\
-}\
-.ace-cats .ace_scroller {\
-background-color: #FFFFFF;\
+background: rgba(128, 128, 128, .1);\
 }\
 .ace-cats .ace_fold {\
-background-color: rgb(60, 76, 114);\
+background-color: #6B72E6;\
 }\
-.ace-cats .ace_text-layer {\
+.ace-cats {\
+background-color: #FFFFFF;\
 }\
 .ace-cats .ace_cursor {\
-border-left: 2px solid black;\
+border-left: 2px solid #000;\
+}\
+.ace-cats .ace_overwrite-cursors .ace_cursor {\
+border-bottom: 1px solid #000;\
+}\
+.ace-cats .ace_invisible {\
+color: rgb(191, 191, 191);\
 }\
 .ace-cats .ace_storage,\
-.ace-cats .ace_keyword,\
-.ace-cats .ace_variable {\
-color: rgb(127, 0, 85);\
+.ace-cats .ace_keyword {\
+color: #00F;\
 font-weight: bold;\
 }\
-.ace-cats .ace_constant.ace_buildin {\
-color: rgb(88, 72, 246);\
+.ace-cats .ace_constant {\
+color: #00F;\
+font-weight: bold;\
 }\
-.ace-cats .ace_constant.ace_library {\
-color: rgb(6, 150, 14);\
+.ace-cats .ace_invalid {\
+background-color: rgba(255, 0, 0, .1);\
+color: #F00;\
 }\
-.ace-cats .ace_function {\
-color: rgb(0, 0, 0);\
+.ace-cats .ace_support.ace_function,\
+.ace-cats .ace_support.ace_constant,\
+.ace-cats .ace_support.ace_type,\
+.ace-cats .ace_support.ace_class {\
+color: #660E7A;\
+font-weight: bold;\
+}\
+.ace-cats .ace_keyword.ace_operator {\
+color: inherit;\
 font-weight: normal;\
 }\
-.ace-cats .ace_string,\
-.ace-cats .ace_identifier {\
-color: rgb(42, 0, 255);\
+.ace-cats .ace_string {\
+color: #CB7E00;\
 }\
 .ace-cats .ace_comment {\
-color: rgb(63, 127, 95);\
-}\
-.ace-cats .ace_comment.ace_doc {\
-color: rgb(63, 95, 191);\
+color: #808080;\
 }\
 .ace-cats .ace_comment.ace_doc.ace_tag {\
-color: rgb(127, 159, 191);\
+color: #005050;\
+font-weight: bold;\
 }\
 .ace-cats .ace_constant.ace_numeric {\
-}\
-.ace-cats .ace_tag {\
-color: rgb(63, 127, 127);\
-}\
-.ace-cats .ace_type {\
-color: rgb(127, 0, 127);\
+color: #F0F;\
 }\
 .ace-cats .ace_xml-pe {\
-color: rgb(104, 104, 91);\
+color: #666;\
+}\
+.ace-cats .ace_heading {\
+color: #00F;\
+font-weight: bold;\
+}\
+.ace-cats .ace_list {\
+color: #666;\
+}\
+.ace-cats .ace_meta.ace_tag {\
+color: #00F;\
+}\
+.ace-cats .ace_string.ace_regexp {\
+color: #007C00;\
 }\
 .ace-cats .ace_marker-layer .ace_selection {\
-background: rgb(181, 213, 255);\
+background: #B0C5E3;\
+}\
+.ace-cats.ace_multiselect .ace_selection.ace_start {\
+box-shadow: 0 0 3px 0px #FFF;\
+border-radius: 2px;\
+}\
+.ace-cats .ace_marker-layer .ace_step {\
+background: #FF0;\
+}\
+.ace-cats .ace_marker-layer .ace_stack {\
+background: #A4E565;\
 }\
 .ace-cats .ace_marker-layer .ace_bracket {\
 margin: -1px 0 0 -1px;\
 border: 1px solid rgb(192, 192, 192);\
 }\
-.ace-cats .ace_meta.ace_tag {\
-color:rgb(63, 127, 127);\
-}\
-.ace-cats .ace_entity.ace_other.ace_attribute-name {\
-color:rgb(127, 0, 127);\
-}\
-.ace-cats .ace_marker-layer .ace_step {\
-background: rgb(255, 255, 0);\
-}\
 .ace-cats .ace_marker-layer .ace_active-line {\
-background: rgb(232, 242, 254);\
+background: rgba(128, 128, 128, 0.1);\
+}\
+.ace-cats .ace_gutter-active-line {\
+background-color : #dcdcdc;\
 }\
 .ace-cats .ace_marker-layer .ace_selected-word {\
-border: 1px solid rgb(181, 213, 255);\
+background: #E4E4FF;\
 }\
 .ace-cats .ace_indent-guide {\
 background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAE0lEQVQImWP4////f4bLly//BwAmVgd1/w11/gAAAABJRU5ErkJggg==\") right repeat-y;\
-}";
-
-exports.cssClass = "ace-cats";
+}\
+.ace-cats .ace_variable.ace_parameter {\
+color: #458383;\
+}\
+";
 
 var dom = require("../lib/dom");
 dom.importCssString(exports.cssText, exports.cssClass);

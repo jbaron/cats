@@ -1,27 +1,25 @@
 <html>
 <head>
 <title>CATS</title>
-    <meta charset="utf-8">   
+	<meta charset="utf-8">
 	<script type="text/javascript" src="js/jquery-latest.js"></script>
 	<script type="text/javascript" src="js/jquery-ui-latest.js"></script>
 	<script type="text/javascript" src="js/jquery.layout-latest.js"></script>
-    <script type="text/javascript" src="js/ace-noconflict/ace.js" charset="utf-8"></script>
-    
+	<script type="text/javascript" src="js/ace-noconflict/ace.js" charset="utf-8"></script>
 	<link rel="stylesheet" href="css/cats.css">
-    <link rel="stylesheet" href="css/layout.css">
-    
-
+	<link rel="stylesheet" href="css/layout.css">
+	<link href='http://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
 </head>
 
 <body class=eclipse>
 <div id=toolbar></div>
 
 <div id=statusbar>
-    <ul>
-        <li id="activity">&nbsp;</li>
-        <li id="overwritemode">insert</li>
-        <li id="sessionmode"></li>
-    </ul>
+	<ul>
+		<li id="activity">&nbsp;</li>
+		<li id="overwritemode">insert</li>
+		<li id="sessionmode"></li>
+	</ul>
 </div>
 
 <div id=center>
@@ -33,19 +31,19 @@
 		<div id=infobar></div>
 	</div>
 	<div id=result>
-		    <div id=resultbar></div>
-		    <div id=errorresults title=Problems></div>
-		    <div id=searchresults title=Search></div>
-            <div id=console title=Console></div>
+			<div id=resultbar></div>
+			<div id=errorresults data-title="Problems"></div>
+			<div id=searchresults data-title="Search"></div>
+			<div id=console data-title="Console"></div>
 	</div>
 </div>
 
 <div id=navigator>
-	<div id=navigationbar></div>
-	<div id=filetree title=Files></div>
-	<div id=outlinenav title=Outline></div>
+	<div id="navigationbar"></div>
+	<div id="filetree" data-title="Files"></div>
+	<div id="outlinenav" data-title="Outline"></div>
 </div>
-<input style="display:none;" id="fileDialog" type="file" nwdirectory />    
+<input style="display:none;" id="fileDialog" type="file" nwdirectory />
 <script src="../lib/main.js"></script>
 </body>
 </html>

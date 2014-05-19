@@ -142,6 +142,7 @@ module Cats {
             setTimeout(() => {
                 this.setTheme(this.config.theme);
                 this.setFontSize(this.config.fontSize);
+                this.setRightMargin(this.config.rightMargin);
             }, 2000);
         }
 
@@ -177,6 +178,15 @@ module Cats {
         setFontSize(size: number) {
             this.config.fontSize = size;
             IDE.mainEditor.aceEditor.setFontSize(size + "px");
+        }
+
+        /**
+        * Set the right margin of the IDE
+        * @param margin number of columns
+        */
+        setRightMargin(margin: number) {
+            this.config.rightMargin = margin;
+            IDE.mainEditor.aceEditor.setPrintMarginColumn(margin);
         }
 
         /**
@@ -230,7 +240,8 @@ module Cats {
             var defaultConfig:IDEConfiguration = {
                 version: "1",
                 theme: "cats",
-                fontSize: 16,
+                fontSize: 13,
+                rightMargin: 80,
                 sessions: [],
                 projects:[PATH.join(process.cwd(), "samples", "greeter")],
             };
@@ -365,9 +376,21 @@ module Cats {
                 var fg = isDark ? "white" : "black";
                 var elem = <HTMLElement>document.getElementsByClassName("ace_scroller")[0];
                 var bg = window.getComputedStyle(elem, null).backgroundColor;
+                elem = document.getElementById("editor");
+                var fg = window.getComputedStyle(elem, null).color;
+                var markerLayer = document.createElement("div");
+                markerLayer.className = "ace_marker-layer";
+                var selectionEl = document.createElement("span");
+                selectionEl.className = "ace_selection";
+                markerLayer.appendChild(selectionEl);
+                elem.appendChild(markerLayer);
+                var selectionBg = window.getComputedStyle(selectionEl, null).backgroundColor;
+                var selectionFg = window.getComputedStyle(selectionEl, null).color;
+                elem.removeChild(markerLayer);
 
                 $("html, #main, #navigator, #info, #result").css("background-color", bg);
                 $("html").css("color", fg);
+                $("body").removeClass("theme-light theme-dark").addClass(isDark ? "theme-dark" : "theme-light");
                 $(".autocomplete").css("background-color", bg);
                 $(".autocomplete").css("color", fg);
                 $("input").css("background-color", fg);
@@ -378,13 +401,14 @@ module Cats {
                 fg = window.getComputedStyle(elem, null).color;
                 
                 var style = document.createElement("style");
-	            style.appendChild(document.createTextNode(""));
-            	document.head.appendChild(style);
-            	
-            	var sheet = <CSSStyleSheet>style["sheet"];
-                sheet.insertRule(".tabbar li.active, .tabbar li:hover { background-color: " + bg +" !important; }",0);
-                sheet.insertRule(".tabbar li.active, .tabbar li:hover { color: " + fg +" !important; }",0);
-                
+                style.appendChild(document.createTextNode(""));
+                document.head.appendChild(style);
+
+                var sheet = <CSSStyleSheet>style["sheet"];
+                sheet.insertRule(".tabbar li.active, .tabbar li:hover { background-color: " + bg + " !important; color: " + fg + " !important; }", 0);
+                sheet.insertRule(".autocomplete_selected { background-color: " + selectionBg + " !important; color: " + selectionFg + "}", 0);
+                sheet.insertRule(".ace_search, input { background-color: " + bg + " !important; color: " + fg + "}", 0);
+                sheet.insertRule(".ace_search_options .ace_button:before { background-color: " + bg + " !important;", 0);
             }, 500);
         }
 

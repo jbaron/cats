@@ -22,7 +22,7 @@ module Cats.Menu {
     class Menubar {
 
 
-        private fontSizes = [8, 10, 12, 14, 16, 18, 20, 24];
+        private fontSizes = [8, 10, 12, 13, 14, 16, 18, 20, 24];
 
         private themes = [
                     { theme: "cats", label: "CATS" },
@@ -81,10 +81,10 @@ module Cats.Menu {
             // edit.append(this.editorCommand("undo"));
             edit.append(getCmd(CMDS.edit_undo));
             edit.append(getCmd(CMDS.edit_redo));
-            edit.append(new GUI.MenuItem({ type: "separator" }));
+            /*edit.append(new GUI.MenuItem({ type: "separator" }));
             edit.append(getCmd(CMDS.edit_cut));
             edit.append(getCmd(CMDS.edit_copy));
-            edit.append(getCmd(CMDS.edit_paste));
+            edit.append(getCmd(CMDS.edit_paste));*/
             edit.append(new GUI.MenuItem({ type: "separator" }));
             edit.append(getCmd(CMDS.edit_find));
             edit.append(getCmd(CMDS.edit_findNext));
@@ -132,12 +132,13 @@ module Cats.Menu {
 
             var run = new GUI.Menu();
             run.append(getCmd(CMDS.project_run));
-            run.append(getCmd(CMDS.project_debug));
+            // run.append(getCmd(CMDS.project_debug));
 
 
             var window = new GUI.Menu();
             window.append(new GUI.MenuItem({ label: 'Theme', submenu: this.createThemeMenu() }));
-            window.append(new GUI.MenuItem({ label: 'Font size', submenu: this.createFontSizeMenu() }));
+            window.append(new GUI.MenuItem({ label: 'Font Size', submenu: this.createFontSizeMenu() }));
+            window.append(new GUI.MenuItem({ label: 'Right Margin', submenu: this.createMarginMenu() }));
             window.append(new GUI.MenuItem({ label: 'Views', submenu: this.createViewMenu() }));
 
             var help = new GUI.Menu();
@@ -167,6 +168,17 @@ module Cats.Menu {
             var menu = new GUI.Menu();
             this.fontSizes.forEach((size: number) => {
                 var item = getCmd(CMDS.ide_fontSize,size+"px",size);
+                menu.append(item);
+            });
+            return menu;
+        }
+
+        private createMarginMenu() {
+            var getCmd = Cats.Commands.getMenuCommand;
+            var CMDS = Cats.Commands.CMDS;
+            var menu = new GUI.Menu();
+            [80, 100, 120, 140, 160, 180, 200].forEach((margin) => {
+                var item = getCmd(CMDS.ide_rightMargin, margin.toString(), margin);
                 menu.append(item);
             });
             return menu;

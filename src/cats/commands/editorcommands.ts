@@ -88,24 +88,24 @@ module Cats.Commands {
         static init(registry:(cmd:Command)=>void) {
 
             var editorCommands: any[] = [
-               { id: Cats.Commands.CMDS.edit_undo, label: "Undo", icon: "undo_edit.gif" },
-               { id: Cats.Commands.CMDS.edit_redo, label: "Redo", icon: "redo_edit.gif" },
+               { id: Cats.Commands.CMDS.edit_undo, label: "Undo", icon: "undo.png" },
+               { id: Cats.Commands.CMDS.edit_redo, label: "Redo", icon: "redo.png" },
         
-               { id: Cats.Commands.CMDS.edit_indent, label: "indent", icon: "shift_r_edit.gif" },
-               { id: Cats.Commands.CMDS.edit_outdent, label: "outdent", icon: "shift_l_edit.gif" },
+               { id: Cats.Commands.CMDS.edit_indent, label: "Indent" },
+               { id: Cats.Commands.CMDS.edit_outdent, label: "Outdent" },
         
-               { id: Cats.Commands.CMDS.edit_cut, label: "cut", icon: "cut_edit.gif" },
-               { id: Cats.Commands.CMDS.edit_copy, label: "copy", icon: "copy_edit.gif" },
-               { id: Cats.Commands.CMDS.edit_paste, label: "paste", icon: "paste_edit.gif" },
+               /*{ id: Cats.Commands.CMDS.edit_cut, label: "Cut" },
+               { id: Cats.Commands.CMDS.edit_copy, label: "Copy" },
+               { id: Cats.Commands.CMDS.edit_paste, label: "Paste" },*/
         
                { id: Cats.Commands.CMDS.edit_find, label: "Find", cmd: "find" },
                { id: Cats.Commands.CMDS.edit_findNext, label: "Find Next", cmd: "findnext" },
                { id: Cats.Commands.CMDS.edit_findPrev, label: "Find Previous", cmd: "findprevious" },
-               { id: Cats.Commands.CMDS.edit_replace, label: "Replace", cmd: "replace" },
+               { id: Cats.Commands.CMDS.edit_replace, label: "Find/Replace", cmd: "replace", icon: "find.png", },
                { id: Cats.Commands.CMDS.edit_replaceAll, label: "Replace All", cmd: "replaceall" },
         
-               { id: Cats.Commands.CMDS.edit_toggleComment, label: "Toggle Comment", cmd: "togglecomment" },
-               { id: Cats.Commands.CMDS.edit_toggleRecording, label: "Start/stop Recording", cmd: "togglerecording" },
+               { id: Cats.Commands.CMDS.edit_toggleComment, label: "Toggle Comment", cmd: "togglecomment", icon: "comment.png" },
+               { id: Cats.Commands.CMDS.edit_toggleRecording, label: "Start/Stop Recording", cmd: "togglerecording" },
                { id: Cats.Commands.CMDS.edit_replayMacro, label: "Playback Macro", cmd: "replaymacro" }
                
             ];
@@ -125,7 +125,7 @@ module Cats.Commands {
                 registry(item);
             });
             
-            registry({name:CMDS.source_format, label:"Format Code", command: formatText});               
+            registry({name:CMDS.source_format, label:"Format Code", command: formatText, icon: "static/img/format.png"});
         }
 
     }

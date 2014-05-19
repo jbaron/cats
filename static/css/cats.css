@@ -1,443 +1,547 @@
 /************************************************************** 
-  Lets make the scrollbars look a little nicer
+  Fonts 
 ***************************************************************/
-
-::-webkit-scrollbar {
-  background-color: rgba(120,120,120,0.3);
-  width: 10px;
-  height: 10px;
+@font-face {
+	font-family: "Droid Sans";
+	src: url("../font/DroidSans-webfont.woff");
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: rgba(120,120,120,0.5);
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(90,90,90,0.5);
-  width: 10px;
-  height: 10px;
+@font-face {
+	font-family: "Droid Sans bold";
+	font-weight: bold;
+	src: url("../font/DroidSans-Bold-webfont.woff");
 }
 
 /************************************************************** 
-  Simple file tree styling
+  Reset 
 ***************************************************************/
 
-
-#filetree, #outlinenav {
-    overflow: auto;    
+* {
+	border: none;
+	margin: 0;
+	padding: 0;
 }
 
-#navigator .treeview {
-  padding: 4px;
-  padding-left: 10px;
+:focus {
+	outline: 0;
 }
-
-.treeview ul {
-  list-style: none;
-  padding-left: 3em;
-  margin-left: -3em;
-  margin-top: 0;
-}
-
-.treeview li {
-    line-height: 1.5em;
-    cursor: pointer;
-    padding-left: 1.3em;
-}
-
-.treeview li span:hover{
-    background-color: rgba(120,120,120,0.4);
-}
-
-.treeview li.collapsed:before {
-  content: "+";
-  margin-left: -2em;
-  padding-right: 1.5em;
-  font-family: monospace; 
-}
-
-.treeview li.opened:before {
-  content: "-";
-  margin-left: -2em;
-  padding-right: 1.5em;
-  font-family: monospace;  
-}
-
-
-/***************************************************************
-   Style for layout
-****************************************************************/
 
 table {
-  font-size: inherit;
+	border-collapse: collapse;
+	font: inherit;
 }
 
-body {
-  font-family: Geneva, Arial, Helvetica, sans-serif;    
-  background-color: rgba(100, 100, 100, 0.3);
-  font-size: 14px;
-  
-  /* CSS rule to disable text selection highlighting on editor window */
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
+li {
+	list-style-type: none;
 }
 
-body #center {
-  background-color: transparent;
-  border: 0px;
-}
-
-#sessionbar, #navigationbar, #resultbar, #infobar {
-  background-color: rgba(100,100,100,0.2);
-  height: 25px;
-}
-
-#statusbar, #toolbar {
-  background-color: transparent;
-  border: 0px;
-  min-height: 25px;
-  max-height: 25px;
-}
-
-#statusbar > ul {
-   margin: 0px;
-   float: right;
-   list-style: none;
-}
-
-#statusbar li {
-float: left;
-   margin-right: 10px;
-   border-left-style: groove;
-   height: 90%;
-   padding-left: 5px;
-}
-
-
-#toolbar button {
-    width: 30px;
-    background-repeat: no-repeat;
-    background-position: 5px 2px;
-    border-width: 1px;
-    height: 23px;
-    background-color: rgba(230,230,230,0.4);
-    margin-right: 2px;
-    margin-top: 2px;
-}
-
-body .ui-layout-pane {
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  background-color: white;
-  border-radius: 5px;
-}
-
-
-/***************************************************************
-      result tables 
-****************************************************************/
-
-#result table {
-  border-collapse:collapse;
-  width: 100%;
-  text-align: left;
-}
-
-
-#result thead {
-   font-size: 1.1em;
-   line-height: 1.0em;
-}
-
-#result td, #result th {
-     padding: 2px;   
-}
-
-#result tbody tr:nth-child(odd) {
-  background-color: rgba(100,100,100,0.1);
-}
-
-#result table, #result td, #result th
-{
-  border:1px solid rgba(100,100,100,0.1);
-  border-top: 0px;
-}
-
-
-
-.busy {
-  min-width: 50px;
-  background-image:url('../img/loader.gif');
-  background-repeat:no-repeat;
-  background-position:center; 
-  background-size: contain;
-}
-
-#result table tbody tr:hover {
-  background-color: rgba(120,120,120,0.4);
-  cursor: pointer;
+input, button {
+	font: inherit;
 }
 
 /************************************************************** 
-  Overwrite default layout settings
+  jQuery UI Layout 
 ***************************************************************/
 
 body .ui-layout-pane {
-  padding: 0px;
+	background-color: transparent !important;
+	border: none !important;
+	padding: 0 !important;
 }
 
+body .ui-layout-resizer {
+	background-color: rgba(128, 128, 128, .2);
+	border-color: rgba(128, 128, 128, .4);
+}
 
-body .ui-layout-resizer  { /* all 'resizer-bars' */
-  background:   transparent;
-  border:     0px solid #BBB;
-  border-width: 0;
+body .ui-layout-resizer-open-hover, body .ui-layout-resizer-dragging {
+	background-color: rgba(128, 128, 128, .3);
 }
 
 body .ui-layout-toggler {
-  background:   transparent;
-  border:     0px ;
+	border: none;
+	background-color: rgba(128, 128, 128, .3);
 }
 
-#navigator, #info, #result {
-  overflow: hidden;
+body .ui-layout-toggler-hover {
+	background-color: rgba(128, 128, 128, .4) !important;
 }
 
-#searchresults, #errorresults, #console {
-  overflow: auto;
-  height: 100%;
+/************************************************************** 
+  Layout 
+***************************************************************/
+
+body {
+	font: 12px/1.5 "Segoe UI", "Lucida Grande", "Droid Sans", sans-serif;
+	-webkit-user-select: none;
 }
 
-/************************************************************* 
- Some very basic default settings for the ACE editor 
-**************************************************************/
-
-#editor { 
-        position: absolute;
-        top: 25px; /* Make room for tabs */
-        right: 0;
-        bottom: 0;
-        left: 0;
-        font-size: 16px;
+th {
+	background-color: rgba(128, 128, 128, .05);
+	border-right: 1px solid rgba(128, 128, 128, .1);
+	border-bottom: 1px solid rgba(128, 128, 128, .1);
+	font-weight: normal;
+	line-height: 23px;
+	padding: 0 5px;
+	text-align: left;
 }
 
-
-/***********************************************************
-Tab section
-************************************************************/
-
- .tabbar ul {
-  padding: 0px;
-  margin: 0px;
-  list-style: none;
-  overflow: hidden;
-  height: 100%;
+td {
+	padding: 0 5px;
+	vertical-align: top;
 }
 
-.tabbar li.changed:before {
-  content: "*";
+#toolbar {
+	background-color: rgba(128, 128, 128, .1) !important;
+	border-bottom: 1px solid rgba(128, 128, 128, .1) !important;
+	height: 26px !important;
+	padding: 2px !important;
 }
 
-.tabbar select {
-  position: absolute;
-  top: 0;
-  right: 2px;
-  width: 20px;
-  border-top-right-radius: 5px;
+#toolbar button {
+	background: transparent no-repeat center;
+	background-size: 16px;
+	border: 1px solid transparent;
+	border-radius: 2px;
+	box-sizing: content-box;
+	display: inline-block;
+	height: 16px;
+	padding: 4px;
+	vertical-align: middle;
+	width: 16px;
+}
+
+#toolbar button:hover {
+	background-color: rgba(128, 128, 128, .1);
+	border-color: rgba(128, 128, 128, .2);
+}
+
+#navigator {
+	overflow-x: hidden;
+}
+
+ul.tabbar {
+	background: linear-gradient(rgba(128, 128, 128, .05), rgba(128, 128, 128, .1));
+	border-bottom: 1px solid rgba(128, 128, 128, .2);
+}
+
+ul.tabbar:empty {
+	display: none;
 }
 
 .tabbar li {
-  float: left;
-  font-size: 90%;
-  height: 25px;
-  box-sizing: border-box;
-  padding: 2px 5px 2px 2px;
-  margin-right: 5px;  
-  cursor: pointer;
+	border-right: 1px solid rgba(128, 128, 128, .2) !important;
+	cursor: default;
+	display: inline-block;
+	line-height: 23px;
+	padding: 0 8px;
 }
-
 
 .tabbar li.active, .tabbar li:hover {
-  border: 1px solid rgba(100,100,100,0.5);
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  border-bottom: 0px;
-  /* background-color: rgba(250, 250, 250, 0.5); */
-  background-color: #ffffff;
-  text-decoration:none;
-  margin-top: -1px;
-  margin-left: -1px;
-  margin-right: 4px;
+	background: #FFF;
+} 
+
+.tabbar li span {
+	display: none;
 }
 
-.tabbar li.active {
-  background-repeat: no-repeat;
-  padding-left: 20px;
-  background-position: 1px 3px;
-  background-image: url("../img/main_tab.gif");
+.treeview li {
+	background-position: 22px 1px;
+	background-repeat: no-repeat;
+	cursor: default;
+	line-height: 18px;
+	padding-left: 16px;
+	position: relative;
 }
 
-.tabbar [class*=" icon-"] {
-/* #navigationbar li, #infobar li, #resultbar li { */
-  background-repeat: no-repeat;
-  padding-left: 20px;
-  background-position: 1px 3px;
+.treeview li>span {
+	display: inline-block;
+	padding-left: 26px;
 }
 
-.tabbar li.icon-tasks {
-  background-image: url("../img/tasks_tsk.gif");
+.treeview [class*="icon-"] {
+	background-size: 16px;
 }
 
-.tabbar li.icon-errors {
-  background-image: url("../img/errorwarning_tab.gif");
+.treeview .collapsed::before, .treeview .opened::before {
+	background-repeat: no-repeat;
+	background-size: 100%;
+	content: "";
+	display: block;
+	height: 9px;
+	left: 9px;
+	position: absolute;
+	top: 5px;
+	width: 7px;
 }
 
-.tabbar li.icon-search {
-  background-image: url("../img/search_ref_obj.gif");
+.treeview .collapsed::before {
+	background-image: url("../img/treeview_collapsed.png");
 }
 
-.tabbar li.icon-console {
-  background-image: url("../img/console_view.gif");
+.treeview .opened::before {
+	background-image: url("../img/treeview_opened.png");
 }
 
-
-.tabbar li.icon-files {
-  background-image: url("../img/filenav_nav.gif");
+#editor { 
+	bottom: 0;
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: 24px;
 }
 
-.tabbar li.icon-outline {
-  background-image: url("../img/outline_co.gif");
+#statusbar {
+	background-color: rgba(128, 128, 128, .1) !important;
+	border-top: 1px solid rgba(128, 128, 128, .2) !important;
+	line-height: 23px;
+	text-align: right;
+	text-transform: uppercase;
 }
 
-.tabbar li span {    float: right;
-    display: block;
-    font-size: 70%;
-    padding-left: 5px;
-    vertical-align: top;
-    font-weight: bold;
-    height: 100%;
-    visibility: hidden;
+#statusbar ul {
+	padding: 0 8px;
 }
 
-.tabbar li:hover span, .tabbar li.active span {
-    visibility: visible;
+#statusbar li {
+	display: inline-block;
 }
 
-/*********************************************************
-Auto complete styling
-***********************************************************/    
-.autocomplete{
-    height:200px;
-    overflow:hidden;
-    border:1px solid #ccc;
-    font-size: 90%;
-    position: fixed;
-    z-index: 1000;
-    padding: 3px;
+#result>div {
+	overflow: auto;
+}
+
+#result table {
+	width: 100%;
+}
+
+#errorresults, #searchresults, #console {
+	-webkit-user-select: text;
+}
+
+#errorresults thead, #searchresults thead {
+	text-transform: capitalize;
+}
+
+#errorresults thead th:nth-child(2), #searchresults thead th:nth-child(2) {
+	font-size: 0;
+}
+
+#errorresults th:nth-child(2):after, #searchresults th:nth-child(2):after {
+    content: "File";
+    font-size: 12px;
+    vertical-align: middle;
+}
+
+#errorresults td:first-child, #searchresults td:first-child {
+	background: url("../img/search_result.png") no-repeat left 1px;
+	background-size: 16px;
+	padding-left: 16px;
+}
+
+#errorresults td:first-child {
+	background-image: url("../img/error_result.png");
+}
+
+.autocomplete {
+	border: 1px solid rgba(128, 128, 128, .2);
     display: none;
-    background: white;
-    -webkit-box-shadow: 5px 5px 5px #888;
-}
-
-.autocomplete ul{
-    width:400px;
-    margin:0px;
-    padding:0px;
-}
-
-.autocomplete li{
-    padding:1px;
-    line-height:18px;
-    height:18px;
-    overflow:hidden;
-    list-style: none;
-}
-
-.autocomplete [class*=" icon-"]  {
-    padding-left: 20px;
-}
-
-.autocomplete .icon-method:after{
-    content: "()";
+    overflow: auto;
+    padding: 2px;
+    position: fixed;
+    width: 400px;
+    z-index: 1000;
 }
 
 .autocomplete .type {
-    padding-left:10px;
-    color:blue;
-    visibility:hidden;
+    padding-left: 10px;
+    visibility: hidden;
 }
 
 .autocomplete_selected {
-   background-color: #eee;
-   color: #222;
-}
-
-.autocomplete_selected .name {
-    font-weight:bold;
+   background-color: #A1B6C3;
 }
 
 .autocomplete_selected .type {
-    visibility:visible;    
-}    
+    visibility: visible;    
+}
 
+.autocomplete [class*=" icon-"] {
+	background-position: left center;
+	background-repeat: no-repeat;
+	background-size: 16px;
+    padding-left: 20px;
+}
 
-/***********************************************************************
-  Icons
-************************************************************************/
+.autocomplete .icon-method:after {
+    content: "()";
+}
+
+/************************************************************** 
+  Editor 
+***************************************************************/
+
+#editor button, #editor .ace_button {
+	cursor: default;
+}
+
+#editor .ace_gutter-cell.ace_error {
+	background-image: url("../img/error.png");
+	background-size: 16px;
+}
+
+#editor .ace_search {	
+	background-color: #FFF;
+	border: none;
+	border-radius: 0;
+	font: 12px/1.5 "Segoe UI", "Lucida Grande", "Droid Sans", sans-serif;
+	max-width: 310px;
+	padding: 5px;
+}
+
+#editor .ace_search:before {
+	background-color: rgba(128, 128, 128, .1);
+	border: 1px solid rgba(128, 128, 128, .2);
+	border-right: none;
+	border-top: none;
+	bottom: 0;
+	content: "";
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
+	z-index: -1;
+}
+
+#editor .ace_search_form, #editor .ace_replace_form {
+	border: none;
+	border-radius: 0;
+	outline: 0;
+}
+
+#editor .ace_search_field {
+	border: 1px solid rgba(128, 128, 128, .2);
+	height: 26px;
+	margin-right: 5px;
+	padding: 0 5px;
+}
+
+#editor .ace_searchbtn_close {
+	background: transparent url("../img/close.png") no-repeat center;
+	background-size: 16px;
+	border-radius: 0;
+	height: 26px;
+	margin: 0;
+	opacity: .7;
+	width: 26px;
+}
+
+#editor .ace_searchbtn_close:hover {
+	opacity: 1;
+}
+
+#editor .ace_search_field::-webkit-input-placeholder {
+	text-indent: -9999px;
+}
+
+#editor .ace_search_form .ace_searchbtn {
+	background-color: transparent;
+	background-size: 16px;
+	border: 1px solid transparent;
+	border-radius: 2px;
+	box-sizing: border-box;
+	height: 26px;
+	width: 26px;
+}
+
+#editor .ace_search_form .ace_searchbtn:hover {
+	border-color: rgba(128, 128, 128, .2);
+}
+
+#editor .ace_searchbtn.prev {
+	background-image: url("../img/arrow_up.png");
+}
+
+#editor .ace_searchbtn.next {
+	background-image: url("../img/arrow_down.png");
+}                                                            
+
+#editor .ace_replacebtn {
+	background-color: transparent;
+	color: inherit;
+	border: 1px solid rgba(128, 128, 128, .2);
+	border-radius: 0;
+	height: 26px;
+}
+
+#editor .ace_replacebtn:hover {
+	background-color: rgba(128, 128, 128, .05);
+}
+
+#editor [action="replaceAndFindNext"] {
+	margin-right: 5px;
+	width: 58px;
+}
+
+#editor [action="replaceAll"] {
+	width: 28px;
+}
+
+#editor .ace_search_options {
+	display: inline-block;
+	margin: 0;
+	text-align: left;
+}
+
+#editor .ace_search_options .ace_button {
+	background-color: transparent;
+	border: none;
+	color: inherit;
+	display: inline-block;
+	font-size: 0;
+	margin: 0 10px 0 0;
+	opacity: 1;
+	padding: 0;
+	white-space: nowrap;
+}
+
+#editor .ace_search_options .ace_button:before {
+	background: #FFF no-repeat center;
+	border: 1px solid rgba(128, 128, 128, .2);
+	content: "";
+	display: inline-block;
+	height: 11px;
+	margin-right: 2px;
+	width: 11px;
+}
+
+#editor .ace_search_options .ace_button:hover:before {
+	border-color: rgba(128, 128, 128, .4);
+}
+
+#editor .ace_search_options .checked:before {
+	background-image: url("../img/checked.png");
+	background-size: 11px;
+}
+
+#editor .ace_search_options .ace_button:after {
+	display: inline-block;
+	font-size: 12px;
+	line-height: 13px;
+	vertical-align: top;
+}
+
+#editor [action="toggleRegexpMode"]:after {
+	content: "Regex";
+}
+
+#editor [action="toggleCaseSensitive"]:after {
+	content: "Match Case";
+}
+
+#editor [action="toggleWholeWords"]:after {
+	content: "Words";
+}
+
+/************************************************************** 
+  Icons 
+***************************************************************/
 
 .icon-method, .icon-function, .icon-keyword {
-    background: url('../img/methpub_obj.gif') no-repeat; 
+	background-image: url("../img/method.png");
 }
 
 .icon-constructor {
-  background: url('../img/constr_ovr.gif') no-repeat;
+	background: url("../img/constructor.png");
 }
 
-.icon-module{
-    background: url('../img/package_obj.gif') no-repeat; 
+.icon-module {
+	background-image: url("../img/module.png");
 }
 
-.icon-interface{
-    background: url('../img/int_obj.gif') no-repeat; 
+.icon-interface {
+	background: url("../img/interface.png");
 }
 
-.icon-enum{
-    background: url('../img/enum_obj.gif') no-repeat; 
+.icon-enum {
+	background: url("../img/enum.png"); 
 }
 
-.icon-class{
-    background: url('../img/class_obj.gif') no-repeat; 
+.icon-class {
+	background-image: url("../img/class.png");
 }
 
-.icon-variable {
-  background: url('../img/genericvariable_obj.gif') no-repeat; 
+.icon-var {
+	background-image: url("../img/variable.png");
 }
 
 .icon-property {
-    background: url('../img/property_obj.gif') no-repeat; 
+	background-image: url("../img/property.png");
 }
 
 .icon-file {
-    background: url('../img/file_obj.gif') no-repeat; 
+	background-image: url("../img/file.png");
 }
 
 .icon-folder {
-    background: url('../img/fldr_obj.gif') no-repeat; 
+	background-image: url("../img/folder.png");
 }
 
-/*******************************************************************        
-  Find Area styling
-********************************************************************/
-
-#findArea, #replaceArea {
-  display: none;
+[data-name$=".ts"].icon-file {
+	background-image: url("../img/file_ts.png");
 }
 
-#findArea span, #replaceArea span {
-  width: 100px;
-  float: left;
+[data-name$=".js"].icon-file {
+	background-image: url("../img/file_js.png");
 }
 
-#findArea button, #replaceArea button {
-  width: 100px;
+[data-name$=".html"].icon-file, [data-name$=".htm"].icon-file {
+	background-image: url("../img/file_html.png");
+}
+
+[data-name$=".xml"].icon-file {
+	background-image: url("../img/file_xml.png");
+}
+
+[data-name$=".json"].icon-file {
+	background-image: url("../img/file_json.png");
+}
+
+[data-name$=".yml"].icon-file, [data-name$=".yaml"].icon-file {
+	background-image: url("../img/file_yaml.png");
+}
+
+[data-name$=".txt"].icon-file {
+	background-image: url("../img/file_txt.png");
+}
+
+[data-name="readme"].icon-file, [data-name^="readme."].icon-file {
+	background-image: url("../img/file_readme.png");
+}
+
+/******************** SCROLLBARS ********************/
+
+.ace_scrollbar {
+	width: 12px !important;
+	z-index: 999;
+}
+
+.ace_scrollbar-h {
+	height: 12px !important;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+	background-color: rgba(128, 128, 128, .1);
+}
+ 
+::-webkit-scrollbar-thumb {
+	background-color: rgba(128, 128, 128, .2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: rgba(128, 128, 128, .4);
 }
