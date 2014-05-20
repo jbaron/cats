@@ -116,6 +116,15 @@ td {
 	border-color: rgba(128, 128, 128, .2);
 }
 
+#activity.busy {
+ min-width: 50px;
+ background-image:url('../img/loader.gif');
+ background-repeat:no-repeat;
+ background-position:center; 
+ -background-size: contain;
+ background-color: red;
+}
+
 #navigator {
 	overflow-x: hidden;
 }
@@ -143,6 +152,10 @@ ul.tabbar:empty {
 
 .tabbar li span {
 	display: none;
+}
+
+.tabbar li.changed:before {
+    content: "*";
 }
 
 .treeview li {
