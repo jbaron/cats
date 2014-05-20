@@ -231,7 +231,9 @@ export class Tabbar extends AspectWidget {
     private onClickHandler(ev) {
         if (this.onselect) {            
             var option = this.getSelectedOption(ev);
-            this.onselect(option);
+            if (option) {
+                this.onselect(option);
+            }
         }
     }
 

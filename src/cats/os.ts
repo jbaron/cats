@@ -122,7 +122,7 @@ module OS.File {
          * @param name The full name/path of the file
          */ 
         export function readTextFile(name: string): string {
-            if (name === "untitled") return "";
+            if (name === "Untitled") return "";
 
             var data = FS.readFileSync(name, "utf8");
 
@@ -139,7 +139,7 @@ module OS.File {
          * @param name The full name/path of the file
          */ 
         export function readTextFile2(name: string, cb:(param:string)=>any) {
-            if (name === "untitled") return "";
+            if (name === "Untitled") return "";
 
             var data = FS.readFileSync(name, "utf8");
 

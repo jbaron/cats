@@ -52,10 +52,12 @@ module Cats {
 		,	west__paneSelector:		"#navigator"
 		,	north__paneSelector:	"#toolbar"
 		,	south__paneSelector:	"#statusbar"
-		,	west__size:				.20
-		,	spacing_open:			4  // ALL panes
-		,	spacing_closed:			4 // ALL panes
+		,	spacing_open:			0
+		,	spacing_closed:			0
 		,	north__maxSize:			25
+		,	west__size:				.20
+		,	west__spacing_open:		4
+		,	west__spacing_closed:	4
 		,	south__maxSize:			25
 
 			// MIDDLE-LAYOUT (child of outer-center-pane)
@@ -66,8 +68,8 @@ module Cats {
 			,	south__paneSelector:	"#result"
 			,	east__size:				.20
 			,	south__size:			.20
-			,	spacing_open:			4  // ALL panes
-			,	spacing_closed:			4 // ALL panes
+			,	spacing_open:			4
+			,	spacing_closed:			4
 
 			}
 		});

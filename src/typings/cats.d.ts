@@ -65,6 +65,7 @@ declare module Cats {
         version: string;
         theme: string;
         fontSize: number;
+        rightMargin: number;
         projects: string[];
         sessions: {
             path: string;

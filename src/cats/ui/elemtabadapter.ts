@@ -47,7 +47,7 @@ export class ElemTabAdapter {
         for (var i=0;i<elems.length;i++) {
             var elem = elems[i];            
             result.push({
-                name: elem.title || elem.id,
+                name: elem.getAttribute("data-title") || elem.title || elem.id,
                 selected: false,
                 elem: elem
             });

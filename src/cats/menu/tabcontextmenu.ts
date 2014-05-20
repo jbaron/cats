@@ -16,11 +16,58 @@
 module Cats.Menu {
 
 
-    function getTab() {
+    function getContextSession() {
+        return contextElement._value || IDE.activeSession;
     }
 
-    function nop() {
-        alert("not yet implemented");
+    function closeContextTab() {
+        var session = getContextSession();
+        
+        if (session)
+            IDE.closeSession(session);
+    }
+
+    function closeOtherTabs() {
+        var contextSession = getContextSession();
+        
+        IDE.sessions.forEach((session) => {
+            if (session !== contextSession)
+                IDE.closeSession(session);
+        });
+    }
+
+    function closeAllTabs() {
+        IDE.sessions.forEach((session) => {
+            IDE.closeSession(session);
+        });
+    }
+
+    function closeRightTabs() {
+        var contextSession = getContextSession();
+        var found = false;
+        
+        IDE.sessions.forEach((session) => {
+            if (found)
+                IDE.closeSession(session);
+            
+            found = found || session === contextSession;
+        });
+    }
+
+    function closeLeftTabs() {
+        var contextSession = getContextSession();
+        var found = false;
+        
+        IDE.sessions.forEach((session) => {
+            found = found || session === contextSession;
+            
+            if (!found)
+                IDE.closeSession(session);
+        });
+    }
+
+    function closeActiveTab() {
+        IDE.closeSession(IDE.activeSession);
     }
 
 
@@ -35,23 +82,33 @@ module Cats.Menu {
 
             // Add the items
             this.ctxmenu.append(new GUI.MenuItem({
-                label: 'Close this tab',
-                click: nop
+                label: "Close",
+                click: closeContextTab
             }));
 
             this.ctxmenu.append(new GUI.MenuItem({
-                label: 'Close other tabs',
-                click: nop
+                label: "Close Others",
+                click: closeOtherTabs
             }));
 
             this.ctxmenu.append(new GUI.MenuItem({
-                label: 'Close all tabs',
-                click: nop
+                label: "Close All",
+                click: closeAllTabs
             }));
 
             this.ctxmenu.append(new GUI.MenuItem({
-                label: 'Close active tab',
-                click: nop
+                label: "Close Right",
+                click: closeRightTabs
+            }));
+
+            this.ctxmenu.append(new GUI.MenuItem({
+                label: "Close Left",
+                click: closeLeftTabs
+            }));
+
+            this.ctxmenu.append(new GUI.MenuItem({
+                label: "Close Active",
+                click: closeActiveTab
             }));
 
         }
@@ -64,9 +121,9 @@ module Cats.Menu {
 
     }
 
+    var contextElement;
 
     export function initTabContextMenu() {
-        return;
         var contextMenu = new TabContextMenu();
 
         IDE.sessionBar.addEventListener('contextmenu', function(ev: any) {
@@ -78,6 +135,7 @@ module Cats.Menu {
             */
             // console.log(data.key);
             ev.preventDefault();
+            contextElement = ev.srcElement;
             contextMenu.popup(ev.x, ev.y);
             return false;
         });

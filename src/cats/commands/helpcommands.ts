@@ -21,14 +21,31 @@ module Cats.Commands {
      * Show the available keyboard shortcuts
      */ 
     function showShortcuts() {
-        window.open('keyboard_shortcuts.html', '_blank');
+        var isDark = document.getElementsByClassName("ace_dark").length > 0;
+        var elem = <HTMLElement>document.getElementsByClassName("ace_scroller")[0];
+        var bg = window.getComputedStyle(elem, null).backgroundColor;
+        elem = document.getElementById("editor");
+        var fg = window.getComputedStyle(elem, null).color;
+        var w = window.open("keyboard_shortcuts.html", "_blank", "width=800; height=595");
+        
+        w.onload = () => {
+            var body = w.document.body;
+            
+            $(body)
+                .css("background-color", bg)
+                .css("color", fg);
+            
+            if (isDark) {
+                $(body).addClass("dark");
+            }
+        };
     }
 
     /**
      * Show the version of CATS
      */ 
     function showAbout() {
-        alert("Code Assisitant for TypeScript\nversion 0.9.5.alpha\nCreated by JBaron");
+        alert("Code Assisitant for TypeScript, version 0.9.5.alpha\nCreated by JBaron\nIcons from icons8.com");
     }
 
     /**

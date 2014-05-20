@@ -132,8 +132,12 @@ module Cats.UI {
                 li.appendChild(span);
 
                 // li.innerText = this.getValue(entry,"name");
-                li.setAttribute('data-value', encodeURIComponent(entry.path));
+                li.setAttribute("data-name", entry.name.toLowerCase());
                 li["_value"] = entry;
+
+                if (entry.path) {
+                    li.setAttribute("data-value", encodeURIComponent(entry.path));
+                }
 
                 if (this.getValue(entry, "isFolder")) {
                     li.className = TreeView.COLLAPSED;

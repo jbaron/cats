@@ -121,6 +121,7 @@ declare module Ace {
 		moveCursorTo(row:number, column:number, animate?:boolean);
         moveCursorToPosition(position:Position);
 		setFontSize(cssSize: string);
+		setPrintMarginColumn(column:number);
 	}
 
 

@@ -43,7 +43,11 @@ module Cats.Commands {
     function setFontSize(size:number) {
         IDE.setFontSize(size);
     }
-    
+
+    function setRightMargin(margin) {
+        IDE.setRightMargin(margin);
+    }
+
     function toggleView(name:string) {
         IDE.layoutConfig.toggle(name);
     }
@@ -57,7 +61,8 @@ module Cats.Commands {
             registry({ name: CMDS.ide_quit, label: "Quit", command: quit });
             registry({ name: CMDS.ide_theme, label: "Theme", command: setTheme });
             registry({ name: CMDS.ide_fontSize, label: "Font Size", command: setFontSize });
-            registry({ name: CMDS.ide_toggleView, label : "Toggle View",command: toggleView });
+            registry({ name: CMDS.ide_rightMargin, label : "Right Margin", command: setRightMargin });
+            registry({ name: CMDS.ide_toggleView, label : "Toggle View", command: toggleView });
         }
     }
 
