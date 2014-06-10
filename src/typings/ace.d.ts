@@ -122,6 +122,8 @@ declare module Ace {
         moveCursorToPosition(position:Position);
 		setFontSize(cssSize: string);
 		setPrintMarginColumn(column:number);
+		getShowInvisibles():boolean;
+		setShowInvisibles(showInvisibles:boolean);
 	}
 
 

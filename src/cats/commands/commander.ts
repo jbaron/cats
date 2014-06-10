@@ -43,6 +43,7 @@ module Cats.Commands {
         edit_findPrev,
         edit_replace,
         edit_replaceAll,
+        edit_toggleInvisibles, 
         edit_toggleRecording,
         edit_replayMacro,
         
@@ -65,6 +66,7 @@ module Cats.Commands {
         project_properties,
         project_dependencies,
         
+        navigate_gotoLine,
         navigate_references,
         navigate_occurences,
         navigate_implementors,

@@ -84,7 +84,9 @@ module Cats {
         if (IDE.hasUnsavedSessions()) {
             if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
         }
-       this.close(true);
+        
+        IDE.saveConfig();
+        this.close(true);
     });
 
 }

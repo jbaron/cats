@@ -93,6 +93,7 @@ module Cats.Menu {
             edit.append(getCmd(CMDS.edit_replaceAll));
             
             edit.append(new GUI.MenuItem({ type: "separator" }));
+            edit.append(getCmd(CMDS.edit_toggleInvisibles));
             edit.append(getCmd(CMDS.edit_toggleRecording));
             edit.append(getCmd(CMDS.edit_replayMacro));
 
@@ -107,6 +108,7 @@ module Cats.Menu {
             refactor.append(getCmd(CMDS.refactor_rename));
 
             var navigate = new GUI.Menu();
+            navigate.append(getCmd(CMDS.navigate_gotoLine));
             navigate.append(getCmd(CMDS.navigate_declaration));
             navigate.append(getCmd(CMDS.navigate_references));
             navigate.append(getCmd(CMDS.navigate_occurences));

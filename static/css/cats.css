@@ -116,15 +116,6 @@ td {
 	border-color: rgba(128, 128, 128, .2);
 }
 
-#activity.busy {
- min-width: 50px;
- background-image:url('../img/loader.gif');
- background-repeat:no-repeat;
- background-position:center; 
- -background-size: contain;
- background-color: red;
-}
-
 #navigator {
 	overflow-x: hidden;
 }
@@ -150,12 +141,12 @@ ul.tabbar:empty {
 	background: #FFF;
 } 
 
-.tabbar li span {
-	display: none;
+.tabbar li.changed:before {
+	content: "*";
 }
 
-.tabbar li.changed:before {
-    content: "*";
+.tabbar li span {
+	display: none;
 }
 
 .treeview li {
@@ -204,20 +195,54 @@ ul.tabbar:empty {
 	top: 24px;
 }
 
+#info {
+	display: none;
+}
+
 #statusbar {
 	background-color: rgba(128, 128, 128, .1) !important;
 	border-top: 1px solid rgba(128, 128, 128, .2) !important;
+	cursor: default;
 	line-height: 23px;
 	text-align: right;
 	text-transform: uppercase;
+	white-space: nowrap;
 }
 
 #statusbar ul {
-	padding: 0 8px;
+	overflow: hidden;
 }
 
 #statusbar li {
-	display: inline-block;
+	float: left;
+	padding: 0 8px;
+}
+
+#statusbar li:empty, #statusbar.no-session li {
+	display: none;
+}
+
+#selection, #sessionmode {
+	border-right: 1px solid rgba(128, 128, 128, .2);
+}
+
+#statusbar #recordingmode, #statusbar #overwritemode {
+	border-left: 1px solid rgba(128, 128, 128, .2);
+	float: right;
+}
+
+#statusbar.no-session #recordingmode, #statusbar.no-session #activity {
+	display: list-item;
+}
+
+#statusbar #activity {
+	border: none;
+	float: right;
+	width: 40px;
+}
+
+#activity.busy {
+	background: url("../img/loader.gif") no-repeat center;
 }
 
 #result>div {
@@ -241,9 +266,9 @@ ul.tabbar:empty {
 }
 
 #errorresults th:nth-child(2):after, #searchresults th:nth-child(2):after {
-    content: "File";
-    font-size: 12px;
-    vertical-align: middle;
+	content: "File";
+	font-size: 12px;
+	vertical-align: middle;
 }
 
 #errorresults td:first-child, #searchresults td:first-child {
@@ -258,36 +283,36 @@ ul.tabbar:empty {
 
 .autocomplete {
 	border: 1px solid rgba(128, 128, 128, .2);
-    display: none;
-    overflow: auto;
-    padding: 2px;
-    position: fixed;
-    width: 400px;
-    z-index: 1000;
+	display: none;
+	overflow: auto;
+	padding: 2px;
+	position: fixed;
+	width: 400px;
+	z-index: 1000;
 }
 
 .autocomplete .type {
-    padding-left: 10px;
-    visibility: hidden;
+	padding-left: 10px;
+	visibility: hidden;
 }
 
 .autocomplete_selected {
-   background-color: #A1B6C3;
+	background-color: #A1B6C3;
 }
 
 .autocomplete_selected .type {
-    visibility: visible;    
+	visibility: visible;
 }
 
 .autocomplete [class*=" icon-"] {
 	background-position: left center;
 	background-repeat: no-repeat;
 	background-size: 16px;
-    padding-left: 20px;
+	padding-left: 20px;
 }
 
 .autocomplete .icon-method:after {
-    content: "()";
+	content: "()";
 }
 
 /************************************************************** 
@@ -377,7 +402,7 @@ ul.tabbar:empty {
 
 #editor .ace_searchbtn.next {
 	background-image: url("../img/arrow_down.png");
-}                                                            
+}
 
 #editor .ace_replacebtn {
 	background-color: transparent;
@@ -544,7 +569,7 @@ ul.tabbar:empty {
 }
 
 ::-webkit-scrollbar {
-    width: 12px;
+	width: 12px;
 }
  
 ::-webkit-scrollbar-track {
