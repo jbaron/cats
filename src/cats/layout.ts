@@ -64,9 +64,9 @@ module Cats {
 		,	center__childOptions: {
                 onresize: resizeInner  
 			,	center__paneSelector:	"#main"
-			,	east__paneSelector:		"#info"
+//			,	east__paneSelector:		"#info"
 			,	south__paneSelector:	"#result"
-			,	east__size:				.20
+//			,	east__size:				.20
 			,	south__size:			.20
 			,	spacing_open:			4
 			,	spacing_closed:			4

@@ -81,6 +81,10 @@ module Cats.Commands {
         }
         return result;
     }
+    
+    function toggleInvisibles() {
+        IDE.mainEditor.aceEditor.setShowInvisibles(!IDE.mainEditor.aceEditor.getShowInvisibles());
+    }
 
     export class EditorCommands {
 
@@ -106,8 +110,9 @@ module Cats.Commands {
         
                { id: Cats.Commands.CMDS.edit_toggleComment, label: "Toggle Comment", cmd: "togglecomment", icon: "comment.png" },
                { id: Cats.Commands.CMDS.edit_toggleRecording, label: "Start/Stop Recording", cmd: "togglerecording" },
-               { id: Cats.Commands.CMDS.edit_replayMacro, label: "Playback Macro", cmd: "replaymacro" }
+               { id: Cats.Commands.CMDS.edit_replayMacro, label: "Playback Macro", cmd: "replaymacro" },
                
+               { id: Cats.Commands.CMDS.navigate_gotoLine, label: "Goto Line", cmd: "gotoline" }
             ];
 
 
@@ -125,6 +130,7 @@ module Cats.Commands {
                 registry(item);
             });
             
+            registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "static/img/invisibles.png"});
             registry({name:CMDS.source_format, label:"Format Code", command: formatText, icon: "static/img/format.png"});
         }
 
