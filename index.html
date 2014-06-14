@@ -28,26 +28,31 @@
     <div id="content-wrapper">
       <div class="inner clearfix">
         <section id="main-content">
-          <h1>Introduction</h1>
+          <h1>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h1>
 
-<p>CATS is an IDE for the TypeScript developer. It stands for Code Assistant for TypeScript. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. CATS itself is written in TypeScript and even being developed with CATS.</p>
+<p>CATS is an IDE for the TypeScript developer. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. CATS itself is written in TypeScript and even being developed with CATS as its main IDE. </p>
 
 <p>Although not yet feature complete, it is getting there. Right now CATS already has built-in support for the following features:</p>
 
 <ul>
-<li><p>TypeScript code completion (just type a dot or Ctrl-Space to invoke it).</p></li>
-<li><p>TypeScript compilation to JavaScript.</p></li>
-<li><p>Syntax highlighting for many languages including TypeScript.</p></li>
-<li><p>Validation of the TypeScript source code while you are typing.</p></li>
-<li><p>JavaScript JSHint support.</p></li>
-<li><p>The normal editing features you expect of a mature editor, like folding, indentation (see also help =&gt; keyboard shortcuts to see a list).</p></li>
-<li><p>Running your application from within IDE and using the WebKit debugger.</p></li>
-<li><p>Theme support:</p></li>
+<li>Intelligent code editor with support for syntax highlighting and code completion.</li>
+</ul><p><img src="https://raw.github.com/jbaron/cats/master/artifacts/autocomplete.png"></p>
+
+<ul>
+<li>Support for refactoring and smart navigation.</li>
+<li>TypeScript compilation to JavaScript.</li>
+<li>Validation of the source code while you are typing.</li>
+<li>JavaScript JSHint support.</li>
+<li>Editing features like folding and indentation.</li>
+<li>Running your application from within IDE and using the WebKit debugger to debug.</li>
+<li>Theming:</li>
 </ul><p><img src="https://raw.github.com/jbaron/cats/master/artifacts/themes.png" height="220px" width="850px"></p>
 
 <p>It is recommended to first make a backup before using CATS on your project since the software is still considered to be of alpha quality. </p>
 
-<h1>Installation &amp; Running it</h1>
+<h1>
+<a name="installation--running-it" class="anchor" href="#installation--running-it"><span class="octicon octicon-link"></span></a>Installation &amp; Running it</h1>
 
 <p>To install CATS, just follow these steps:</p>
 
@@ -58,52 +63,73 @@
 <pre><code>git clone https://github.com/jbaron/cats.git
 </code></pre>
 </li>
-<li><p>Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at: <a href="https://github.com/rogerwang/node-webkit">Node-Webkit</a></p></li>
-<li><p>Go to the cats directory and type: /path_to_node_webkit/nw ./</p></li>
-</ol><p>By default the "greeter" project will be loaded. In the samples directory there are several other projects you can try out. Of course when you open a new project, you can also open a directory that contains your own project.</p>
+<li><p>Download and install node-webkit. In case you don't have node-webkit yet, you can download a binary for Windows, Linux or Mac at: <a href="https://github.com/rogerwang/node-webkit">Node-Webkit</a>.
+Make sure you have at least version 0.8.0 installed.</p></li>
+<li>
+<p>Go to the cats directory and type: </p>
 
-<h1>Configuration</h1>
+<pre><code>/path_to_node_webkit/nw ./
+</code></pre>
+</li>
+</ol><p>By default the "greeter" project will be loaded. In the samples directory there are several other projects you can try out. Of course when you open a new project, you can also open a directory that contains your own project. When you want to start CATS with a specific project, you can pass the project directory as a command line parameter:</p>
 
-<p>CATS will look for a file in the project directory called: ".settings/config.json". If found, CATS will use the values configured in this file, otherwise it will use sensible default values.</p>
+<pre><code>    /path_to_node_webkit/nw ./ &lt;full_path_to_project&gt;
+</code></pre>
 
-<p>You can edit this file (or the default values if you don't have this file yet) from the main menu.</p>
+<h1>
+<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h1>
 
-<h1>Bugs and Issues</h1>
+<p>CATS will look for a file in the project directory called: ".settings/config.json". If found, CATS will use the values configured in this file, otherwise it will use sensible default values.
+You can edit this file (or the default values if you don't have this file yet) from the main menu.</p>
 
-<p>In case you encounter an issue, you can open a ticket on Github. Also feature requests can be entered here: <a href="https://github.com/jbaron/cats/issues">Github issue tracker</a></p>
+<h1>
+<a name="goals" class="anchor" href="#goals"><span class="octicon octicon-link"></span></a>Goals</h1>
 
-<h1>Building from source</h1>
+<p>One of the main goals of CATS is to make the developer that is used to IDE's like Eclipse, NetBeans, Visual Studio or IntelliJ, feel right at home. So the same support you got from your IDE when you developed in Java or C#, is now available for TypeScript/JavaScript.
+And in order to be productive, it is also very important that an IDE is responsive. So while designing and developing CATS, performance is one of the key aspects.
+In fact, CATS runs fine on older hardware.</p>
+
+<h1>
+<a name="bugs-and-issues" class="anchor" href="#bugs-and-issues"><span class="octicon octicon-link"></span></a>Bugs and Issues</h1>
+
+<p>In case you encounter an issue, you can open a ticket on Github. Also enhancement requests can be entered here: <a href="https://github.com/jbaron/cats/issues">Github issue tracker</a></p>
+
+<h1>
+<a name="building-from-source" class="anchor" href="#building-from-source"><span class="octicon octicon-link"></span></a>Building from source</h1>
 
 <p>There is normally no need to compile CATS yourself, since all the compiled files are already included. But if you want to play around with it, here are the steps:</p>
 
 <ol>
-<li><p>Make sure you have installed TypeScript 0.8.1 or later</p></li>
+<li><p>Make sure you have installed TypeScript 0.9.1 or later</p></li>
+<li>
+<p>Also make sure you have Nodejs and Jake installed. You can get node from nodejs.org and after that install Jake:</p>
+
+<pre><code>npm install -g jake
+</code></pre>
+</li>
 <li><p>Go to the cats directory</p></li>
 <li>
-<p>The following will compile the required tsworker.js file:</p>
+<p>The following will compile the required files:</p>
 
-<pre><code>tsc @build
+<pre><code>jake
 </code></pre>
 </li>
-<li>
-<p>Now the only thing left is to compile the main.js file: </p>
+</ol><p>That is all there is to it. The lib directory should now have an updated main.js, tsworker.js and uml.js files and you are ready to run CATS editor.</p>
 
-<pre><code>tsc @build2
-</code></pre>
-</li>
-</ol><p>That is all there is to it. The lib file should now have an updated main.js and tsworker.js file and you are ready to run CATS editor.</p>
-
-<h1>Couldn't have done it without ....</h1>
+<h1>
+<a name="couldnt-have-done-it-without-" class="anchor" href="#couldnt-have-done-it-without-"><span class="octicon octicon-link"></span></a>Couldn't have done it without ....</h1>
 
 <p>Some of the main 3rd party components that we have used within CATS and couldn't have done without:</p>
 
 <ul>
-<li><p>TypeScript (of course), developed by Microsoft.</p></li>
-<li><p>ACE, an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.</p></li>
-<li><p>Node-webkit. This is a great initiative from Intel to allow Node libraries to be used within a web page. We use this to read and write local files without the need for a server-side component.</p></li>
-</ul><h1>Todo</h1>
+<li><p><a href="http://www.typescriptlang.org">TypeScript</a> (of course), developed by Microsoft.</p></li>
+<li><p><a href="http://ace.ajax.org">ACE</a>, an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.</p></li>
+<li><p><a href="https://github.com/rogerwang/node-webkit">Node-webkit</a>. This is a great initiative from Intel to allow Node libraries to be used within a web page. CATS use this to read and write local files without the need for a server-side component.</p></li>
+<li><p><a href="http://www.jrromero.net/tools/jsUML2">jsUML2</a>. This is library for creating UML diagrams done in pure JavaScript.</p></li>
+</ul><h1>
+<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>Todo</h1>
 
-<p>The todo list items are tracked as enhancement request on GitHub. You can check them out at:</p>
+<p>The todo list items are tracked as enhancement requests on GitHub. You can check them out at:</p>
 
 <p><a href="https://github.com/jbaron/cats/issues?labels=enhancement&amp;page=1&amp;state=open">ToDo List</a></p>
         </section>
@@ -120,7 +146,7 @@
 
           <p class="repo-owner"><a href="https://github.com/jbaron/cats"></a> is maintained by <a href="https://github.com/jbaron">jbaron</a>.</p>
 
-          <p>This page was generated by <a href="pages.github.com">GitHub Pages</a> using the Architect theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.</p>
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
         </aside>
       </div>
     </div>
