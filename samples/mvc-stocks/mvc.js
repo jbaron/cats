@@ -19,18 +19,18 @@ var MVC;
                 this.id = "view#" + View.ID++;
             }
         }
-        View.GetViewer = /**
+        /**
         * Get the current active Viewer
         */
-        function () {
+        View.GetViewer = function () {
             return View.VIEWER;
         };
 
-        View.isActive = /**
+        /**
         * Return wether this viewer is still active and therefor could be
         * a listener.
         */
-        function () {
+        View.isActive = function () {
             return true;
         };
 
@@ -73,11 +73,11 @@ var MVC;
     var Model = (function () {
         function Model() {
         }
-        Model.notify = /**
+        /**
         * Notify observers of a change. This method bundles multiple
         * updates to the same viewer in to one
         */
-        function (newWaiters) {
+        Model.notify = function (newWaiters) {
             if (Model.Waiting) {
                 for (var id in newWaiters) {
                     Model.Waiters[id] = newWaiters[id];
@@ -99,13 +99,13 @@ var MVC;
             }, 0);
         };
 
-        Model.registerViewer = /**
+        /**
         * Is this property accessed by a viewer. If that is the case and this is the first time,
         * lets register the viewer as an observer of the property
         * @param obj The object of the property
         * @param prop The property name
         */
-        function (obj, prop) {
+        Model.registerViewer = function (obj, prop) {
             var viewer = View.GetViewer();
             if (viewer) {
                 if (!obj.__observers[prop][viewer.id]) {
@@ -115,11 +115,11 @@ var MVC;
             }
         };
 
-        Model.makeObservable = /**
+        /**
         * Utiltiy method to make a number of plain properties observable.
         * @param props The list of property names to be observable
         */
-        function (obj, props) {
+        Model.makeObservable = function (obj, props) {
             if (!obj.__observers)
                 obj.__observers = {};
             props.forEach(function (prop) {

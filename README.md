@@ -62,7 +62,7 @@ Building from source
 =====================
 There is normally no need to compile CATS yourself, since all the compiled files are already included. But if you want to play around with it, here are the steps:
 
-1. Make sure you have installed TypeScript 0.9.1 or later
+1. Make sure you have installed TypeScript 1.0.1 or later
 
 2. Also make sure you have Nodejs and Jake installed. You can get node from nodejs.org and after that install Jake:
  

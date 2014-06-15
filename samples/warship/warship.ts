@@ -33,7 +33,7 @@ class Ship {
         this.element = $("<div class='ship'></div>")[0];
     }
 
-    updatePosition(row: number, column: number, vertical: bool) {
+    updatePosition(row: number, column: number, vertical: boolean) {
         this.row = row;
         this.column = column;
         this.isVertical = vertical;
@@ -90,9 +90,9 @@ class Board {
     onEvent: Function;           // Callback function when an action on the board occurs
     shipSizes = [5, 4, 3, 3, 2];
 
-    private positioningEnabled: bool;    // Set to true when the player can position the ships
+    private positioningEnabled: boolean;    // Set to true when the player can position the ships
 
-    constructor(public element: HTMLElement, playerBoard: bool = true) {
+    constructor(public element: HTMLElement, playerBoard: boolean = true) {
         this.positioningEnabled = playerBoard;
         this.cells = [];
         this.ships = [];
@@ -111,7 +111,7 @@ class Board {
                         disabled: false,
                         drop: (event, ui) => {
                             var shipElement = <HTMLElement>ui.draggable[0];
-                            var shipIndex: number = $(shipElement).data("shipIndex");
+                            var shipIndex: number = <any>$(shipElement).data("shipIndex");
                             var ship = this.ships[shipIndex];
                             var shipX = Math.round(shipElement.offsetLeft / cell.element.offsetWidth);
                             var shipY = Math.round(shipElement.offsetTop / cell.element.offsetHeight);
@@ -155,7 +155,7 @@ class Board {
         }
     }
 
-    set dragAndDropEnabled(val: bool) {
+    set dragAndDropEnabled(val: boolean) {
         var cells = $(this.element).children(".cell");
         var ships = $(this.element).children(".ship");
 
@@ -186,7 +186,7 @@ class Board {
     }
 
     bombCell(cellElem: HTMLElement) {
-        var cellPos = Cell.parseCellLocation($(cellElem).data("cellLocation"));
+        var cellPos = Cell.parseCellLocation(<any>$(cellElem).data("cellLocation"));
         var cell = this.cells[cellPos.row][cellPos.column];
 
         if (cell.hasHit) {

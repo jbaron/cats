@@ -6,8 +6,8 @@ var Cell = (function () {
         this.column = column;
         this.element = $("<div class='cell notBombed'></div>")[0];
     }
-    Cell.parseCellLocation = // Parse a cell location of the format "row,column"
-    function (pos) {
+    // Parse a cell location of the format "row,column"
+    Cell.parseCellLocation = function (pos) {
         var indices = pos.split(",");
         return { 'row': parseInt(indices[0]), 'column': parseInt(indices[1]) };
     };
@@ -370,7 +370,7 @@ var Game = (function () {
 
     Game.prototype.updateStatus = function (msg) {
         $("#status").slideUp('fast', function () {
-            $(this).text(msg).slideDown('fast');
+            $(this).text(msg).slideDown('fast'); // Then slide in the new text
         });
     };
     Game.gameState = { begin: 0, computerTurn: 1, playerTurn: 2, finished: 3 };

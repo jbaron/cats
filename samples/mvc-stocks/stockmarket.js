@@ -53,7 +53,8 @@ var StockView = (function (_super) {
 })(MVC.View);
 
 /**
-* A very simple stock model with two properties, symbol and price
+* A very simple stock model with three properties,
+* symbol and opening price and price.
 */
 var Stock = (function () {
     /**
@@ -81,27 +82,12 @@ var Stock = (function () {
 function initStockMarket() {
     var stockMarket = [];
     var stockList = [
-        "Microsoft (MSFT)",
-        "Apple (AAPL)",
-        "Cisco (CSCO)",
-        "Google (GOOG)",
-        "Oracle (ORCL)",
-        "Intel (INTC)",
-        "Qualcomm (QCOMM)",
-        "Amgen (AMGN)",
-        "Teva Pharmacutical (TEVA)",
-        "Research in Motion (RIMM)",
-        "Gilead Sciences (GILD)",
-        "Amazon.com (AMZN)",
-        "Comcast (CMCSA)",
-        "LM Ericsson (ERIC)",
-        "e-Bay (EBAY)",
-        "Dell (DELL)",
-        "Celgene Corp (CELG)",
-        "DirecTv (DTV)",
-        "Infosys Technology (INFY)",
-        "Mitsui & Company (MITSY)"
-    ];
+        "Microsoft (MSFT)", "Apple (AAPL)", "Cisco (CSCO)",
+        "Google (GOOG)", "Oracle (ORCL)", "Intel (INTC)", "Qualcomm (QCOMM)",
+        "Amgen (AMGN)", "Teva Pharmacutical (TEVA)", "Research in Motion (RIMM)",
+        "Gilead Sciences (GILD)", "Amazon.com (AMZN)", "Comcast (CMCSA)",
+        "LM Ericsson (ERIC)", "e-Bay (EBAY)", "Dell (DELL)", "Celgene Corp (CELG)",
+        "DirecTv (DTV)", "Infosys Technology (INFY)", "Mitsui & Company (MITSY)"];
 
     var parent = document.getElementById("stockmarket");
 
