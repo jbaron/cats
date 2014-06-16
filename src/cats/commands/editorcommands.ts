@@ -126,12 +126,12 @@ module Cats.Commands {
                     shortcut: getShortcut(config.cmd),
                     command: editorCommand(config.cmd),
                 }
-                if (config.icon) item.icon = "static/img/" + config.icon;
+                if (config.icon) item.icon = config.icon;
                 registry(item);
             });
             
-            registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "static/img/invisibles.png"});
-            registry({name:CMDS.source_format, label:"Format Code", command: formatText, icon: "static/img/format.png"});
+            registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
+            registry({name:CMDS.source_format, label:"Format Code", command: formatText, icon: "format.png"});
         }
 
     }

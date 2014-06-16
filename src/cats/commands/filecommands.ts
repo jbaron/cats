@@ -90,12 +90,12 @@ module Cats.Commands {
 
     export class FileCommands {
         static init(registry: (cmd: Command) => void ) {
-            registry({ name: CMDS.file_new, label: "New File", command: newFile, icon: "static/img/new.png" });
+            registry({ name: CMDS.file_new, label: "New File", command: newFile, icon: "new.png" });
             registry({ name: CMDS.file_close, label: "Close File", command: closeFile });
             registry({ name: CMDS.file_closeOther, label: "Close Other Files", command: closeOtherFiles });
             registry({ name: CMDS.file_closeAll, label: "Close All Files", command: closeAllFiles });
             registry({ name: CMDS.file_save, label: "Save File", command: saveFile });
-            registry({ name: CMDS.file_saveAll, label: "Save All", command: saveAll, icon: "static/img/save.png" });
+            registry({ name: CMDS.file_saveAll, label: "Save All", command: saveAll, icon: "save.png" });
             registry({ name: CMDS.file_saveAs, label: "Save As...", command: saveAs });
         }
 

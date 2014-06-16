@@ -18,9 +18,6 @@ var GUI = require('nw.gui');
 
 var IDE:Cats.Ide;
 var infoBus= new Cats.InfoBus(); 
-infoBus.SESSION.on("overwrite",(a)=>{
-    console.dir(a) ;  
-});
 
 /**
  * This is the file that is included in the index.html and 
