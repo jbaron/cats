@@ -69,7 +69,7 @@ module Cats {
             super(["changed"]);
             
             console.log("Creating new session for file " + name);
-            this.mode = this.determineMode(name);
+            this.mode = AceSession.determineMode(name);
             this.editSession = new EditSession(content, "ace/mode/" + this.mode);
             
             var editorConfig = this.project.config.editor;
@@ -223,7 +223,7 @@ module Cats {
          * Determine the edit mode based on the file name
          * @param name File name
          */
-        private determineMode(name: string): string {
+        public static determineMode(name: string): string {
             var ext = PATH.extname(name);
             var result = AceSession.MODES[ext] || AceSession.DEFAULT_MODE;
             return result;

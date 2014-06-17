@@ -320,6 +320,7 @@ module Cats {
             return this.sessionStack[this.sessionStack.length - 1];
         }
 
+
         /**
          * Open an existing session or if it doesn't exist yet create
          * a new one.
@@ -327,8 +328,15 @@ module Cats {
         openSession(name: string, pos?:Ace.Position, cb?:Function):void {
             var session = this.getSession(name);
             if (! session) {
-                var content;
-                if (name) content = OS.File.readTextFile(name);
+                var content="";
+                if (name) {
+                    var mode = AceSession.determineMode(name);
+                    if (mode === "binary") {
+                        var validate = confirm("This might be a binary file, are you sure ?");
+                        if (! validate) return;
+                    } 
+                    content = OS.File.readTextFile(name);
+                }
                 session = new AceSession(name, content);
                 this.addSession(session);
             }
