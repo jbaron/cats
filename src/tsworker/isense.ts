@@ -13,11 +13,9 @@
 // limitations under the License.
 //
 
-
 importScripts("../static/js/typescriptServices.js");
 
 module Cats.TSWorker {
-    
     
     /**
      * Simple function to stub console.log functionality since this is 

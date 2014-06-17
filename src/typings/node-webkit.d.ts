@@ -16,20 +16,21 @@
 declare var process: any;
 // declare var global: any; // Also defined in typescript.d.ts
 declare var require: any;
-    
+
+declare class EventEmitter {
+    addListener(event: string, listener: Function): void;
+    on(event: string, listener: Function): void;
+    once(event: string, listener: Function): void;
+    removeListener(event: string, listener: Function): void;
+    removeAllListener(event: string): void;
+    setMaxListeners(n: number): void;
+    listeners(event: string): { Function; }[];
+    emit(event: string, arg1: any, arg2: any): void;
+}
+
+  
 declare module nw.gui {
 
-	interface EventEmitter {
-	    addListener(event: string, listener: Function);
-	    on(event: string, listener: Function);
-	    once(event: string, listener: Function): void;
-	    removeListener(event: string, listener: Function): void;
-	    removeAllListener(event: string): void;
-	    setMaxListeners(n: number): void;
-	    listeners(event: string): { Function; }[];
-	    emit(event: string, arg1?: any, arg2?: any): void;
-	}
-	
 	interface MenuConfig {
 		type?:string;
 	}

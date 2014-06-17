@@ -13,23 +13,13 @@
 // limitations under the License.
 //
 
-declare class EventEmitter {
-    addListener(event: string, listener: Function): void;
-    on(event: string, listener: Function): void;
-    once(event: string, listener: Function): void;
-    removeListener(event: string, listener: Function): void;
-    removeAllListener(event: string): void;
-    setMaxListeners(n: number): void;
-    listeners(event: string): { Function; }[];
-    emit(event: string, arg1: any, arg2: any): void;
-}
-
-
 var Events = require('events');
-
 
 module Cats {
 
+    /**
+     * Events related to the editor
+     */ 
     export interface EditorEvent extends EventEmitter {
         on(event: string, listener: Function): void;
         on(event: "changed", cb: (fileName: string, content: string) => void): void;
@@ -42,6 +32,9 @@ module Cats {
         emit(event: "changed", fileName: string, content: string): void;
     }
 
+    /**
+     * Events related to the whole IDE
+     */ 
     export interface IDEEvent extends EventEmitter {
         emit(event: string, ...args): void;
         emit(event: "busy", busy: boolean): void;
@@ -55,6 +48,9 @@ module Cats {
         on(event: "activeSession", fn: (newsession, oldsession) => void): void;
     }
 
+    /**
+     * Events related to the intellisense features
+     */ 
     export interface IntelliSenseEvent extends EventEmitter {
         emit(event: string, ...args): void;
         emit(event: "busy", busy: boolean): void;

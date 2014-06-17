@@ -102,6 +102,9 @@ export class ScriptInfo {
             console.log("Called getLocalizedDiagnosticMessages");
         }
         
+        //////////////////////////////////////////////////////////////////////
+        // IReferenceResolverHost implementation
+        
         fileExists(path: string): boolean {
             console.log("Called fileExist" + path);
             return true;
@@ -136,6 +139,10 @@ export class ScriptInfo {
              return result;
         }
 
+
+        //////////////////////////////////////////////////////////////////////
+        // local implementation
+        
         public addScript(fileName: string, content: string) {
             var script = new ScriptInfo(fileName, content);
             this.scripts[fileName] = script;
