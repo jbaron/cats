@@ -14,7 +14,6 @@
 //
 
 /*
-
 var formatting_options = {
         public IndentSize: number;
         public TabSize: number;

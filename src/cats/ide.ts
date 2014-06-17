@@ -218,7 +218,10 @@ module Cats {
             }
         }
 
-
+        /**
+         * Indicate whether the IDE is busy with some (background) task
+         * @param isBusy true if busy, false otherwise
+         */ 
         public busy(isBusy:boolean) {
             if (isBusy) {
                $("#activity").addClass("busy"); 
@@ -227,9 +230,18 @@ module Cats {
             }
         }
 
-
-        public layout() {
+        /**
+         * Layout the IDE
+         */ 
+        private layout() {
              this.layoutConfig = layoutIDE();
+        }
+
+        /**
+         * Get the directory where the icons for the IDE can be found
+         */ 
+        public getIconDir() {
+            return this.config.iconDir || "static/img/";
         }
 
         /**
@@ -241,6 +253,7 @@ module Cats {
                 version: "1",
                 theme: "cats",
                 fontSize: 13,
+                iconDir: "static/img/",
                 rightMargin: 80,
                 sessions: [],
                 projects:[PATH.join(process.cwd(), "samples", "greeter")],

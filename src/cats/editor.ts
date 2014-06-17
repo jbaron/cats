@@ -15,7 +15,6 @@
 
 module Cats {
 
-
     /**
      * The TextEditor class that wraps the Ace editor
      * and provides a set common methods. There is only

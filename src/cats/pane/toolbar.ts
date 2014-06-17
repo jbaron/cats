@@ -49,7 +49,7 @@ module Cats.View {
             cmds.forEach((cmd) => {
                 if (cmd.icon) {
                     var button = <HTMLElement>document.createElement("button");
-                    button.style.backgroundImage = "url(.." + "/static/img/" + cmd.icon + ")";
+                    button.style.backgroundImage = "url(../" + IDE.getIconDir() + cmd.icon + ")";
                     button.title = cmd.label;
                     button.onclick = <any>cmd.command;
                     t.appendChild(button);

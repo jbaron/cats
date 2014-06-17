@@ -157,7 +157,7 @@ module Cats.Commands {
         
         // if (cmd.shortcut) item.label += " [" + cmd.shortcut + "]";
         if (cmd.shortcut) item.label = addShortcut(item.label, cmd.shortcut);        
-        if (cmd.icon) item.icon = "static/img/" + cmd.icon;
+        if (cmd.icon) item.icon = IDE.getIconDir() + cmd.icon;
                 
         return new GUI.MenuItem(item);
     }
