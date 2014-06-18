@@ -40,11 +40,13 @@ module Cats {
         emit(event: "busy", busy: boolean): void;
         emit(event: "sessions", sessions): void;
         emit(event: "activeSession", newsession, oldsession): void;
+        emit(event: "toggleView", viewName:string): void;
 
 
         on(event: string, fn: any): void;
         on(event: "busy", fn: (flag: boolean) => void): void;
         on(event: "sessions", fn: (sessions) => void): void;
+        on(event: "toggleView", fn: (viewName:string) => void): void;
         on(event: "activeSession", fn: (newsession, oldsession) => void): void;
     }
 
@@ -57,7 +59,6 @@ module Cats {
         emit(event: "sessions", sessions): void;
         emit(event: "activeSession", newsession, oldsession): void;
 
-
         on(event: string, fn: any): void;
         on(event: "busy", fn: (flag: boolean) => void): void;
         on(event: "sessions", fn: (sessions) => void): void;
@@ -65,7 +66,7 @@ module Cats {
     }
 
     /**
-     * Central infobus that transports all the events
+     * Central infobus that transports all type of events
      */ 
     export class InfoBus {
          IDE: IDEEvent = new Events.EventEmitter();

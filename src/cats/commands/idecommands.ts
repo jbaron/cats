@@ -49,7 +49,7 @@ module Cats.Commands {
     }
 
     function toggleView(name:string) {
-        IDE.layoutConfig.toggle(name);
+        infoBus.IDE.emit("toggleView", name);
     }
     
 

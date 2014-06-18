@@ -129,6 +129,7 @@ module Cats {
             super(["sessions","activeSession","project"]);
             this.mainEditor = new TextEditor(this.editor);
             this.config = this.loadConfig(true);
+            infoBus.IDE.on("toggleView", (name) => this.layoutConfig.toggle(name));
         }
 
         init() {
@@ -138,7 +139,7 @@ module Cats {
             this.layout();
             Cats.Menu.initFileContextMenu();
             Cats.Menu.initTabContextMenu();
-
+            
             setTimeout(() => {
                 this.setTheme(this.config.theme);
                 this.setFontSize(this.config.fontSize);

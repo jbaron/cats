@@ -45,6 +45,11 @@ declare module Cats {
         isDirectory: boolean; // is this a folder or a file
     }
 
+    /**
+     * Generic interface for a session that is used for editing information
+     * 
+     * @TODO: implement save and load as part of session
+     */ 
     interface Session {
         name: string;
         type: string;
