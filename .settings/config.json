@@ -1,41 +1,37 @@
 {
-    "version" : "0.8",
+    "version": "0.8",
     "main": "static/index.html",
     "sourcePath": "src",
-    "customBuild" : {
-        "command" : "jake"
+    "customBuild": {
+        "command": "jake"
     },
-    "builds" : [
-        
-        { 
-          "name" : "worker",
-          "main" : "cats/tsworker/isense.ts",
-          "output": "lib/worker.js"
+    "builds": [
+        {
+            "name": "worker",
+            "main": "cats/tsworker/isense.ts",
+            "output": "lib/worker.js"
         },
-        
-        { 
-          "name" : "ide",
-          "main" : "cats/main.ts",
-          "output": "lib/main.js"
+        {
+            "name": "ide",
+            "main": "cats/main.ts",
+            "output": "lib/main.js"
         },
-
-        { 
-          "name" : "uml",
-          "main" : "cats/uml/layout.ts",
-          "output": "lib/uml.js"
+        {
+            "name": "uml",
+            "main": "cats/uml/layout.ts",
+            "output": "lib/uml.js"
         }
-        
     ],
     "compiler": {
         "useDefaultLib": true,
         "emitComments": false,
-        "outputOption": "tmp",        
+        "outputOption": "/Users/peter/Development/cats/tmp",
         "generateDeclarationFiles": false,
         "mapSourceFiles": false,
         "codeGenTarget": 1,
         "moduleGenTarget": 0
     },
-    "completionMode" : "loose",
+    "completionMode": "loose",
     "minify": false,
-    "rememberOpenFiles": false
+    "rememberOpenFiles": true
 }

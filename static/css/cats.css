@@ -13,9 +13,8 @@
 }
 
 /************************************************************** 
-  Reset 
+  Reset margins, paddings etc
 ***************************************************************/
-
 * {
 	border: none;
 	margin: 0;
@@ -39,10 +38,28 @@ input, button {
 	font: inherit;
 }
 
-/************************************************************** 
-  jQuery UI Layout 
-***************************************************************/
+body {
+	font: 12px/1.5 "Segoe UI", "Lucida Grande", "Droid Sans", sans-serif;
+	-webkit-user-select: none;
+}
 
+th {
+	background-color: rgba(128, 128, 128, .05);
+	border-right: 1px solid rgba(128, 128, 128, .1);
+	border-bottom: 1px solid rgba(128, 128, 128, .1);
+	font-weight: normal;
+	line-height: 23px;
+	padding: 0 5px;
+	text-align: left;
+}
+
+td {
+	padding: 0 5px;
+	vertical-align: top;
+}
+/************************************************************** 
+  Format the jQuery UI Layout 
+***************************************************************/
 body .ui-layout-pane {
 	background-color: transparent !important;
 	border: none !important;
@@ -67,30 +84,9 @@ body .ui-layout-toggler-hover {
 	background-color: rgba(128, 128, 128, .4) !important;
 }
 
-/************************************************************** 
-  Layout 
-***************************************************************/
-
-body {
-	font: 12px/1.5 "Segoe UI", "Lucida Grande", "Droid Sans", sans-serif;
-	-webkit-user-select: none;
-}
-
-th {
-	background-color: rgba(128, 128, 128, .05);
-	border-right: 1px solid rgba(128, 128, 128, .1);
-	border-bottom: 1px solid rgba(128, 128, 128, .1);
-	font-weight: normal;
-	line-height: 23px;
-	padding: 0 5px;
-	text-align: left;
-}
-
-td {
-	padding: 0 5px;
-	vertical-align: top;
-}
-
+/*******************************************************************
+    Setup the toolbar
+********************************************************************/
 #toolbar {
 	background-color: rgba(128, 128, 128, .1) !important;
 	border-bottom: 1px solid rgba(128, 128, 128, .1) !important;
@@ -116,10 +112,14 @@ td {
 	border-color: rgba(128, 128, 128, .2);
 }
 
-#navigator {
-	overflow-x: hidden;
+
+#navigator, #info, #result {
+  overflow: hidden;
 }
 
+/*********************************************************************
+    Tabbars 
+**********************************************************************/
 ul.tabbar {
 	background: linear-gradient(rgba(128, 128, 128, .05), rgba(128, 128, 128, .1));
 	border-bottom: 1px solid rgba(128, 128, 128, .2);
@@ -149,6 +149,9 @@ ul.tabbar:empty {
 	display: none;
 }
 
+/*********************************************************************
+     Treeviews
+**********************************************************************/
 .treeview li {
 	background-position: 22px 1px;
 	background-repeat: no-repeat;
@@ -179,6 +182,10 @@ ul.tabbar:empty {
 	width: 7px;
 }
 
+.treeview li span:hover{
+    background-color: rgba(120,120,120,0.4);
+}
+
 .treeview .collapsed::before {
 	background-image: url("../img/treeview_collapsed.png");
 }
@@ -187,18 +194,17 @@ ul.tabbar:empty {
 	background-image: url("../img/treeview_opened.png");
 }
 
-#editor { 
-	bottom: 0;
-	left: 0;
-	position: absolute;
-	right: 0;
-	top: 24px;
+#filetree {
+    overflow: auto;
 }
 
 #info {
 	display: none;
 }
 
+/**************************************************************************
+        Statusbar
+***************************************************************************/
 #statusbar {
 	background-color: rgba(128, 128, 128, .1) !important;
 	border-top: 1px solid rgba(128, 128, 128, .2) !important;
@@ -245,13 +251,24 @@ ul.tabbar:empty {
 	background: url("../img/loader.gif") no-repeat center;
 }
 
+/***************************************************************
+      result tables 
+****************************************************************/
 #result>div {
 	overflow: auto;
 }
 
 #result table {
-	width: 100%;
+  border-collapse:collapse;
+  width: 100%;
+  text-align: left;
 }
+
+#result table tbody tr:hover {
+  background-color: rgba(120,120,120,0.4);
+  cursor: pointer;
+}
+
 
 #errorresults, #searchresults, #console {
 	-webkit-user-select: text;
@@ -280,6 +297,10 @@ ul.tabbar:empty {
 #errorresults td:first-child {
 	background-image: url("../img/error_result.png");
 }
+
+/******************************************************************************
+ Lets format the autocomplete popup
+*******************************************************************************/
 
 .autocomplete {
 	border: 1px solid rgba(128, 128, 128, .2);
@@ -318,6 +339,13 @@ ul.tabbar:empty {
 /************************************************************** 
   Editor 
 ***************************************************************/
+#editor { 
+	bottom: 0;
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: 24px;
+}
 
 #editor button, #editor .ace_button {
 	cursor: default;
@@ -481,6 +509,15 @@ ul.tabbar:empty {
 	content: "Words";
 }
 
+#editor .ace_scrollbar {
+	width: 12px !important;
+	z-index: 999;
+}
+
+#editor .ace_scrollbar-h {
+	height: 12px !important;
+}
+
 /************************************************************** 
   Icons 
 ***************************************************************/
@@ -557,17 +594,9 @@ ul.tabbar:empty {
 	background-image: url("../img/file_readme.png");
 }
 
-/******************** SCROLLBARS ********************/
-
-.ace_scrollbar {
-	width: 12px !important;
-	z-index: 999;
-}
-
-.ace_scrollbar-h {
-	height: 12px !important;
-}
-
+/**************************************************************************** 
+     Generic SCROLLBARS 
+*****************************************************************************/
 ::-webkit-scrollbar {
 	width: 12px;
 }

@@ -290,17 +290,16 @@ module Cats.TSWorker {
         // Get the chars offset based on the Ace position
         private getPositionFromCursor(fileName: string, cursor: Cats.Position): number {
             var script = this.getScript(fileName);
-            var pos = script.getLineMap().getPosition(cursor.row,cursor.column);
-                        
-            // Determine the position
-            // var pos = lineMap[cursor.row + 1] + cursor.column;
-            // console.log(pos);
-            return pos;
+            if (script) {
+                var pos = script.getLineMap().getPosition(cursor.row,cursor.column);
+                return pos;
+            }
         }
 
         // Get the position
         public getTypeAtPosition(fileName: string, coord): TypeInfo {
             var pos = this.getPositionFromCursor(fileName, coord);
+            if (!pos) return;
             var result = <TypeInfo>this.ls.getTypeAtPosition(fileName, pos);
             if (result) result.description = TypeScript.MemberName.memberNameToString(result.memberName);
             return result;

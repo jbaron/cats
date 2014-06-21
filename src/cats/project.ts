@@ -167,7 +167,6 @@ module Cats {
 
         /**
          * Load all the script that are part of the project into the tsworker
-         * For now use a synchronous call to load.
          * @param directory The source directory where to start the scan
          */
         private loadTypeScriptFiles(directory: string) {

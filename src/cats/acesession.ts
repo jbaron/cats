@@ -72,8 +72,22 @@ module Cats {
             this.mode = AceSession.determineMode(name);
             this.editSession = new EditSession(content, "ace/mode/" + this.mode);
             
-            var editorConfig = this.project.config.editor;
-            if (editorConfig) {
+            this.configEditor(this.project.config.editor);
+
+            this.editSession.on("change", this.onChangeHandler.bind(this));
+            this.editSession.setUndoManager(new UndoManager());
+            this.editSession.on("changeOverwrite",(a)=>{
+                infoBus.SESSION.emit("overwrite",this.editSession.getOverwrite());
+            });
+
+            this.on("changed", () => { IDE.tabbar.refresh() });
+        }
+
+        /**
+         * Config the editor with any confiured default values 
+         */ 
+        private configEditor(editorConfig) {
+           if (editorConfig) {
                 for(var key in editorConfig) {
                     try {
                         var ukey = key[0].toUpperCase() + key.slice(1);
@@ -84,15 +98,7 @@ module Cats {
                         console.warn(e);
                     }
                 }
-            }
-
-            this.editSession.on("change", this.onChangeHandler.bind(this));
-            this.editSession.setUndoManager(new UndoManager());
-            this.editSession.on("changeOverwrite",(a)=>{
-                infoBus.SESSION.emit("overwrite",this.editSession.getOverwrite());
-            });
-
-            this.on("changed", () => { IDE.tabbar.refresh() });
+            } 
         }
 
 
