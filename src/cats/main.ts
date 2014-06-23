@@ -16,6 +16,8 @@
 var PATH = require("path");
 var GUI = require('nw.gui');
 
+console.info = function() {};
+
 var IDE:Cats.Ide;
 var infoBus= new Cats.InfoBus(); 
 
@@ -70,7 +72,7 @@ module Cats {
     if (prjName) {
         IDE.addProject(new Project(prjName));
     } else {
-        IDE.loadDefaultProjects();
+        IDE.restorePreviousProjects();
     }
     
     IDE.init();

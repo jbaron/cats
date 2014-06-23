@@ -150,9 +150,9 @@ module Cats {
 
         /**
          * Load the projects and files that were open last time before the
-         * application was closed.
+         * IDE was closed.
          */ 
-        loadDefaultProjects() {
+        restorePreviousProjects() {
             console.info("restoring previous project and sessions.");
             if (this.config.projects && this.config.projects.length) { 
                 var projectDir = this.config.projects[0]; 

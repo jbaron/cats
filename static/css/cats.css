@@ -164,6 +164,7 @@ ul.tabbar:empty {
 .treeview li>span {
 	display: inline-block;
 	padding-left: 26px;
+	width: 100%;
 }
 
 .treeview [class*="icon-"] {
@@ -195,7 +196,8 @@ ul.tabbar:empty {
 }
 
 #filetree {
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 #info {

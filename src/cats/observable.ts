@@ -115,7 +115,7 @@ export class ObservableImpl implements Observable {
                     return privateVar;
                 },
                 set: function(val) {
-                    console.log("received event: " + prop);
+                    console.info("received event: " + prop);
                     if (val === privateVar) return;
                     privateVar = val;
                     clearTimeout(timer);

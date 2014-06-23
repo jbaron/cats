@@ -28,7 +28,7 @@ export class ISenseHandler {
     constructor() {
         // Create a new webworker
         this.worker = new Worker("../lib/tsworker.js");
-        this.init();
+        this.initWorker();
     }
 
     getErrors(fileName:string,cb:(err, result: FileRange[]) => void) {
@@ -83,7 +83,7 @@ export class ISenseHandler {
             params: data
         }
         this.worker.postMessage(message);
-        console.log("Send message: " + message.method);
+        console.info("Send message: " + message.method);
         if (handler) {
             IDE.busy(true);
             this.registry[this.messageId] = handler;
@@ -100,7 +100,7 @@ export class ISenseHandler {
     /**
      * Setup the message communication with the worker
      */ 
-    private init() {
+    private initWorker(){
         // Setup the message handler
         this.worker.onmessage = (e) => {
             var msg = e.data;

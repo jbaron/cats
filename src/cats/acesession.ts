@@ -68,7 +68,7 @@ module Cats {
         constructor(public name?: string, content?: string) {
             super(["changed"]);
             
-            console.log("Creating new session for file " + name);
+            console.info("Creating new session for file " + name);
             this.mode = AceSession.determineMode(name);
             this.editSession = new EditSession(content, "ace/mode/" + this.mode);
             

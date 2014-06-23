@@ -72,6 +72,8 @@ module Cats {
         // The home directory of the project
         projectDir: string;
         name: string;
+        
+        // The TypeScript files that are part of the project
         private tsFiles: string[] = [];
         
         private watcher: ProjectWatcher;
@@ -85,6 +87,13 @@ module Cats {
         }
         public getWatcher(): TreeWatcher {
             return this.watcher;
+        }
+
+        /**
+         * Check whether a certain TS file is part of this project
+         */ 
+        public containsTSFile(name:string) : boolean {
+            return (this.tsFiles.indexOf(name) > -1);
         }
 
         // The singleton TSWorker handler instance
@@ -111,6 +120,8 @@ module Cats {
             win.close();
         }
 
+
+
         /**
          *  Refreshes the project and loads required artifacts
          *  again from the filesystem to be fully in sync
@@ -126,7 +137,7 @@ module Cats {
             
             if (this.config.compiler.outputOption) {
                 this.config.compiler.outputOption = PATH.join(this.projectDir,this.config.compiler.outputOption);
-                console.log("Compiler output: " + this.config.compiler.outputOption);
+                console.info("Compiler output: " + this.config.compiler.outputOption);
             }
                 
             this.iSense.setCompilationSettings(this.config.compiler);
@@ -175,13 +186,13 @@ module Cats {
                 try {
                     var fullName = file.fullName;
                     if (file.isFile) {                       
-                        console.log("FullName: " + fullName);
+                        console.info("FullName: " + fullName);
                         var ext = PATH.extname(fullName);
                         if (ext === ".ts") {                            
                             OS.File.readTextFile2(fullName,(content) => {
                                 this.iSense.addScript(fullName, content);
                                 this.tsFiles.push(fullName);
-                                console.log("Found TypeScript file: " + fullName);
+                                console.info("Found TypeScript file: " + fullName);
                             });
                         }
                     }
