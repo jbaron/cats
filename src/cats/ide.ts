@@ -136,6 +136,7 @@ module Cats {
             Cats.Commands.init();
             Cats.Menu.createMenuBar();
             this.initViews();
+            this.initFileDropArea();
             this.layout();
             Cats.Menu.initFileContextMenu();
             Cats.Menu.initTabContextMenu();
@@ -145,6 +146,42 @@ module Cats {
                 this.setFontSize(this.config.fontSize);
                 this.setRightMargin(this.config.rightMargin);
             }, 2000);
+        }
+
+        /**
+         * Attach the drag n' drop event listeners to the document
+         *
+         * @author  LordZardeck <sean@blackfireweb.com>
+         */
+        private initFileDropArea(): void {
+            // Listen onto file drop events
+            document.documentElement.addEventListener('drop', this.acceptFileDrop.bind(this), false);
+
+            // Prevent the browser from redirecting to the file
+            document.documentElement.addEventListener('dragover', (event: DragEvent) => {
+                event.stopPropagation();
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+            }, false);
+        }
+
+        /**
+         * Process the file and open it inside a new ACE session
+         *
+         * @param   event       {DragEvent}
+         * @author  LordZardeck <sean@blackfireweb.com>
+         */
+        private acceptFileDrop(event: DragEvent): void {
+            event.stopPropagation();
+            event.preventDefault();
+
+            // Loop over each file dropped. More than one file
+            // can be added at a time
+            var files: FileList = event.dataTransfer.files;
+
+            for(var i = 0; i < files.length; i++) {
+                this.openSession((<any>files[i]).path);
+            }
         }
 
         /**
