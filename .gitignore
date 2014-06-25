@@ -1,6 +1,4 @@
-src/*/*.js
-src/*/*/*.js
-src/*/*/*/*.js
+src/**/*.js
 tmp
-
-
+node_modules/*
+.idea/*

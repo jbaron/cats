@@ -1,13 +1,16 @@
 {
   "name": "CATS",
   "main": "static/index.html",
-  "description" : "Code Assistant for TypeScript",
-  "version" : "0.9.8",
-  "window": { 
-     "icon":"static/img/logo.png",	
-     "toolbar": false,  
-     "position": "center",
-     "width": 1000,
-     "height": 800
+  "description": "Code Assistant for TypeScript",
+  "version": "0.9.8",
+  "window": {
+    "icon": "static/img/logo.png",
+    "toolbar": false,
+    "position": "center",
+    "width": 1000,
+    "height": 800
+  },
+  "devDependencies": {
+    "jake": "^0.7.17"
   }
 }

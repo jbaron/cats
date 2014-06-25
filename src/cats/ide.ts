@@ -103,27 +103,27 @@ module Cats {
             this.resultbar.appendTo(this.resultbarElem);        
         }
  
-        tabbar: UI.Tabbar;
-        resultbar = new UI.Tabbar();
+        public tabbar: UI.Tabbar;
+        public resultbar: UI.Tabbar = new UI.Tabbar();
         
-        navigationBar = document.getElementById("navigationbar");
-        fileNavigation = document.getElementById("filetree");
-        outlineNavigation = document.getElementById("outlinenav");
+        public navigationBar: HTMLElement = document.getElementById("navigationbar");
+        public fileNavigation: HTMLElement = document.getElementById("filetree");
+        public outlineNavigation: HTMLElement = document.getElementById("outlinenav");
 
-        resultbarElem = document.getElementById("resultbar");
-        compilationResult = document.getElementById("errorresults");
-        searchResult = document.getElementById("searchresults");
-        console = document.getElementById("console");
+        public resultbarElem: HTMLElement = document.getElementById("resultbar");
+        public compilationResult: HTMLElement = document.getElementById("errorresults");
+        public searchResult: HTMLElement = document.getElementById("searchresults");
+        public console: HTMLElement = document.getElementById("console");
 
-        taskBar = document.getElementById("infobar");
+        public taskBar: HTMLElement = document.getElementById("infobar");
 
-        editor = document.getElementById("editor");
-        sessionBar = document.getElementById("sessionbar");
+        public editor: HTMLElement = document.getElementById("editor");
+        public sessionBar: HTMLElement = document.getElementById("sessionbar");
 
-        mainMenu = null;
-        private config:IDEConfiguration;
+        public mainMenu = null;
+        public config: IDEConfiguration;
 
-        mainEditor: TextEditor;
+        public mainEditor: TextEditor;
 
         constructor() {
             super(["sessions","activeSession","project"]);
@@ -136,10 +136,11 @@ module Cats {
             Cats.Commands.init();
             Cats.Menu.createMenuBar();
             this.initViews();
+            this.InitFileDropArea();
             this.layout();
             Cats.Menu.initFileContextMenu();
             Cats.Menu.initTabContextMenu();
-            
+
             setTimeout(() => {
                 this.setTheme(this.config.theme);
                 this.setFontSize(this.config.fontSize);
@@ -147,6 +148,41 @@ module Cats {
             }, 2000);
         }
 
+        /**
+         * Attach the drag n' drop event listeners to the document
+         *
+         * @author  LordZardeck <sean@blackfireweb.com>
+         */
+        private InitFileDropArea(): void {
+            // Listen onto file drop events
+            document.documentElement.addEventListener('drop', this.AcceptFileDrop.bind(this), false);
+
+            // Prevent the browser from redirecting to the file
+            document.documentElement.addEventListener('dragover', (event: DragEvent) => {
+                event.stopPropagation();
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+            }, false);
+        }
+
+        /**
+         * Process the file and open it inside a new ACE session
+         *
+         * @param   event       {DragEvent}
+         * @author  LordZardeck <sean@blackfireweb.com>
+         */
+        private AcceptFileDrop(event: DragEvent): void {
+            event.stopPropagation();
+            event.preventDefault();
+
+            // Loop over each file dropped. More than one file
+            // can be added at a time
+            var files: FileList = event.dataTransfer.files;
+
+            for(var i = 0; i < files.length; i++) {
+                this.openSession((<any>files[i]).path);
+            }
+        }
 
         /**
          * Load the projects and files that were open last time before the
