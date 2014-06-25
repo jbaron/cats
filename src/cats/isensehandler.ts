@@ -25,7 +25,7 @@ export class ISenseHandler {
     private messageId = 0;
     private registry = {};
 
-    constructor() {
+    constructor(private project:Project) {
         // Create a new webworker
         this.worker = new Worker("../lib/tsworker.js");
         this.initWorker();
@@ -34,6 +34,11 @@ export class ISenseHandler {
     getErrors(fileName:string,cb:(err, result: FileRange[]) => void) {
         this.perform("getErrors",fileName, cb);
     }
+
+    getAllDiagnostics(cb:(err, result: FileRange[]) => void) {
+        this.perform("getAllDiagnostics", cb);
+    }
+
 
     compile(cb:(err, data:Cats.CompileResults)=>void) {
         this.perform("compile", cb);

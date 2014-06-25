@@ -120,7 +120,15 @@ module Cats {
             win.close();
         }
 
-
+        /**
+         * Show the errors on a project level
+         */ 
+        validate() {
+            // @TODO don't compile just get the errors
+            this.iSense.getAllDiagnostics( (err,data) => {
+             if (data) View.showErrors(data);
+            });
+        }
 
         /**
          *  Refreshes the project and loads required artifacts
@@ -133,7 +141,7 @@ module Cats {
             document.title = "CATS | " + this.name;
 
             // this.initJSSense();
-            this.iSense = new ISenseHandler();
+            this.iSense = new ISenseHandler(this);
             
             if (this.config.compiler.outputOption) {
                 this.config.compiler.outputOption = PATH.join(this.projectDir,this.config.compiler.outputOption);

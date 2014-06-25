@@ -32,6 +32,7 @@ export class Grid  {
 	defaultHandler = (row,name:string) => { return row[name];};
 
 	onselect:(event:any)=>void;
+	onrender:(row:HTMLElement,data:any)=>void;
 
 	constructor() {
 		this.rootElement = <HTMLTableElement>document.createElement("table");
@@ -54,7 +55,7 @@ export class Grid  {
 		return this.rows;
 	}
 
-	setAspect(aspect:string,handler /*:AspectHandler BUG in TS */) {
+	setAspect(aspect:string,handler:AspectHandler) {
 		this.aspects[aspect] = handler;
 	}
 
@@ -84,7 +85,7 @@ export class Grid  {
 	  });
 	}
 
-	private createRow(parent:HTMLTableSectionElement, rowData) {
+	private createRow(parent:HTMLTableSectionElement, rowData):HTMLElement {
 		var row = <HTMLTableRowElement>parent.insertRow(-1);
 		this.columns.forEach((column) => {
 			row.insertCell(-1).innerText = this.getValue(rowData,column); 
@@ -96,6 +97,7 @@ export class Grid  {
 				self.onselect(this["_value"]);
 			}
       };
+      return row;
 	}
 
 	render() {
@@ -104,11 +106,12 @@ export class Grid  {
 	    table.innerHTML = "";
 	    this.createHeader();
 
-	    var tbody = document.createElement("tbody");
+	    var tbody = <HTMLTableSectionElement>document.createElement("tbody");
 	    table.appendChild(tbody); 
 
 	    this.rows.forEach( (row) => {      
-	    	this.createRow(tbody,row);
+	    	var r = this.createRow(tbody,row);
+	    	if (this.onrender) this.onrender(r,row);
 	    });
 	}
 

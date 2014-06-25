@@ -14,7 +14,7 @@
 //
 
 module Cats {
-
+    
     export interface IDEViews {
         navigation: View.Navigator;
         outline: IView;
@@ -31,6 +31,7 @@ module Cats {
         sessions: Session[] = [];
         project: Project;
         layoutConfig;
+        private static STORE_KEY = "cats.config";
 
         activeSession: Session;
     
@@ -62,8 +63,7 @@ module Cats {
             this.initResultBar();
         }
 
-
-         private initTabBar() {
+        private initTabBar() {
             this.tabbar = new UI.Tabbar();
             var tb = this.tabbar;
             tb.setAspect("name", (session: Session) => { return session.shortName });
@@ -146,7 +146,6 @@ module Cats {
                 this.setRightMargin(this.config.rightMargin);
             }, 2000);
         }
-
 
         /**
          * Load the projects and files that were open last time before the
@@ -260,7 +259,7 @@ module Cats {
                 projects:[PATH.join(process.cwd(), "samples", "greeter")],
             };
             
-            var configStr = localStorage["cats.config"];
+            var configStr = localStorage[Ide.STORE_KEY];
             
             if (configStr) {
                     try {
@@ -272,7 +271,6 @@ module Cats {
             }
             
             return defaultConfig;
-                        
         }
 
         /**
@@ -292,7 +290,7 @@ module Cats {
 
             if (this.project) config.projects.push(this.project.projectDir);
             var configStr = JSON.stringify(config);
-            localStorage["cats.config"] = configStr;
+            localStorage[Ide.STORE_KEY] = configStr;
         }
 
 
@@ -320,7 +318,6 @@ module Cats {
         private previousSession() {
             return this.sessionStack[this.sessionStack.length - 1];
         }
-
 
         /**
          * Open an existing session or if it doesn't exist yet create
@@ -362,7 +359,6 @@ module Cats {
             var result = [];
             this.persistSession(session, true);
             
-
             this.sessions.forEach((s) => {
                 if (s !== session) {
                     result.push(s);
@@ -441,7 +437,6 @@ module Cats {
         addProject(project: Project) {
             this.project = project;
         }
-        
         
          /**
          * Close an open project

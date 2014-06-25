@@ -19,7 +19,7 @@
  */ 
 
 module Cats {
-  
+    
     /**
      * Quickfix to deal with the fact that when the browser window is resized, by default the 
      * filetree and outline divs are sized 25 pixels to heigh. This is due to the tabs

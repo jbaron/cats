@@ -16,7 +16,7 @@
 module Cats.View {
 
 
-function showErrors(errors: Cats.FileRange[]) {
+export function showErrors(errors: Cats.FileRange[] = []) {
 
         IDE.resultbar.selectOption(0);
         var grid = new Cats.UI.Grid();

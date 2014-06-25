@@ -16,7 +16,7 @@
 var Events = require('events');
 
 module Cats {
-
+    
     /**
      * Events related to the editor
      */ 

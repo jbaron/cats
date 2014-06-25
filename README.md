@@ -1,6 +1,6 @@
 Introduction
 ============
-CATS is an IDE for the TypeScript developer. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. CATS itself is written in TypeScript and even being developed with CATS as its main IDE. 
+CATS is an IDE for the TypeScript developer. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. CATS itself is written in TypeScript and even being developed using CATS as the IDE. 
 
 Although not yet feature complete, it is getting there. Right now CATS already has built-in support for the following features:
 
@@ -14,14 +14,15 @@ Although not yet feature complete, it is getting there. Right now CATS already h
 - JavaScript JSHint support.
 - Editing features like folding and indentation.
 - Running your application from within IDE and using the WebKit debugger to debug.
+- External build systems
 - Theming:
 
 <img src="https://raw.github.com/jbaron/cats/master/artifacts/themes.png" height="220px" width="850px" />
 
 It is recommended to first make a backup before using CATS on your project since the software is still considered to be of alpha quality. 
 
-Installation & Running it
-=========================
+Installation & Running CATS
+===========================
 To install CATS, just follow these steps:
 
 1. Download the CATS from Github: 
@@ -33,22 +34,36 @@ To install CATS, just follow these steps:
 
 3. Go to the cats directory and type: 
 
-        /path_to_node_webkit/nw ./
+        node-webkit </path/CATSInstallationDirectory> --project </path/projectDirectory>
 
-By default the "greeter" project will be loaded. In the samples directory there are several other projects you can try out. Of course when you open a new project, you can also open a directory that contains your own project. When you want to start CATS with a specific project, you can pass the project directory as a command line parameter:
+With CATS you also get a samples directory with several small projects you can try out. Of course you can also open a directory that contains your own project. 
+When you want to start CATS with a specific project, you have to pass the project directory as a command line parameter:
 
-		/path_to_node_webkit/nw ./ <full_path_to_project>
+
+Windows example:
+
+		node-webkit C:\cats --project C:\cats\samples\greeter
    
+OSX and Linux example: 
+
+        nw /Users/peter/Development/cats --project /Users/peter/Development/cats/samples/greeter 
+
+I'm using the nw alias in my ~/.bash_profile as explained on the node-webkit page:
+
+        alias nw="/Applications/node-webkit.app/Contents/MacOS/node-webkit"
+
+TIP: If you start CATS without the project parameter, it will re-open the last one and also restore the sessions that were still open when hen you quit the IDE.
+
 
 Configuration
 =============
-CATS will look for a file in the project directory called: ".settings/config.json". If found, CATS will use the values configured in this file, otherwise it will use sensible default values.
+CATS will look for a file in the project directory called: ".settings/config.json". If found, CATS will use the values configured in this file, otherwise it will use some sensible default values.
 You can edit this file (or the default values if you don't have this file yet) from the main menu.
 
 
 Goals
 =====
-One of the main goals of CATS is to make the developer that is used to IDE's like Eclipse, NetBeans, Visual Studio or IntelliJ, feel right at home. So the same support you got from your IDE when you developed in Java or C#, is now available for TypeScript/JavaScript.
+One of the main goals of CATS is to make the developer that is used to IDE's like Eclipse, NetBeans, Visual Studio or IntelliJ, feel right at home. So the same support you got from your IDE when you developed in Java or C#, is now available for TypeScript projects.
 And in order to be productive, it is also very important that an IDE is responsive. So while designing and developing CATS, performance is one of the key aspects.
 In fact, CATS runs fine on older hardware.
 
@@ -76,10 +91,16 @@ There is normally no need to compile CATS yourself, since all the compiled files
 
 That is all there is to it. The lib directory should now have an updated main.js, tsworker.js and uml.js files and you are ready to run CATS editor.
 
+TIP: you can add the --debug flag to the commandline to get more info on what is going on internally within CATS.
+
 
 Couldn't have done it without ....
 ==================================
-Some of the main 3rd party components that we have used within CATS and couldn't have done without:
+There is not a lot of documentation yet explaining the structure of CATS and how the different parts relate to eachother. 
+So the more surprised we were when we received some pull request that added functionality or fixed some bugs. So thanks to everyone who
+contributed some code to this project.
+
+And of course some of the main 3rd party components that we have used within CATS and couldn't have done without:
 
 - [TypeScript](http://www.typescriptlang.org) (of course), developed by Microsoft.
 

@@ -112,22 +112,12 @@ declare module Cats {
         column: number;
     }
 
-    interface Range {
-        start: Position;
-        end: Position;
-    }
 
     class TypeInfo extends TypeScript.Services.TypeInfo {
         description: string;
     }
 
-    interface FileRange {
-        fileName: string;
-        range: Range;
-        message?: string;
-        context?: string;
-    }
-
+ 
     interface CompileResults {
         source: { fileName: string; content: string; }[];
         errors: FileRange[];

@@ -165,6 +165,9 @@ module Cats {
                 this.changed = false;
             }
             
+            
+            if (this.mode === "typescript") this.project.validate();
+            
             if (IDE.project.config.buildOnSave && (this.mode === "typescript") ) 
                     Commands.runCommand(Commands.CMDS.project_build);
                     
@@ -240,6 +243,7 @@ module Cats {
          */
         showErrors() {
             if (this.mode === "typescript") {
+                // TODO get its own timer
                 this.project.iSense.getErrors(this.name, (err, result: FileRange[]) => {
                     var annotations: Ace.Annotation[] = [];
                     if (result) {
@@ -247,7 +251,7 @@ module Cats {
                             annotations.push({
                                 row: error.range.start.row,
                                 column: error.range.start.column,
-                                type: "error",
+                                type: error.severity === Severity.Error ? "error" : "warning",
                                 text: error.message
                             });
                         });

@@ -6,6 +6,7 @@ var path = require("path");
 var workerOptions = [
    "src/typings/typescript.d.ts",
    "src/typings/cats.d.ts",
+   "src/cats/common.ts",
    "src/tsworker/languageservicehost.ts",    
    "src/tsworker/isense.ts"
 ];
@@ -24,6 +25,7 @@ var catsOptions = [
     "src/typings/jsuml2.d.ts",
     "src/typings/node-webkit.d.ts",
     "src/typings/typescript.d.ts",
+    "src/cats/common.ts",
     "src/cats/promise.ts",
     "src/cats/infobus.ts",
     "src/cats/os.ts",

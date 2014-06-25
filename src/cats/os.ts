@@ -13,7 +13,6 @@
 // limitations under the License.
 //
 
-
 /**
  * This module abstracts out the native File IO. Right now it uses Nodejs, but this
  * could be easily changed to another implementation like a cloud storage API.

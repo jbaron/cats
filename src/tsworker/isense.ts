@@ -22,13 +22,13 @@ module Cats.TSWorker {
      * not available in a worker.
      */ 
     export var console = {
-        log: function(str) {
-            postMessage(str, null);
-        }
+        log: function(str) { postMessage({level: "log" , msg: str}, null); },
+        error: function(str) { postMessage({level: "error" , msg: str}, null); },
+        info: function(str) { postMessage({level: "info" , msg: str}, null); }
     }
 
     /**
-     * Case insensitive sorting
+     * Case insensitive sorting algoritme
      */ 
     function caseInsensitiveSort(a: { name: string; }, b: { name: string; }) {
         if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
@@ -41,7 +41,7 @@ module Cats.TSWorker {
     
     class ISense {
 
-        private maxErrors = 20;
+        private maxErrors = 100;
         ls: TypeScript.Services.ILanguageService;
         private lsHost: LanguageServiceHost;
         private projectDir:string;
@@ -133,18 +133,57 @@ module Cats.TSWorker {
         /**
          * Convert the errors from a TypeScript format into Cats format 
          */ 
-        private convertErrors(errors: TypeScript.Diagnostic[]) :Cats.FileRange[]{
+        private convertErrors(errors: TypeScript.Diagnostic[], severity=Severity.Error) :Cats.FileRange[]{
+            
+            if (!(errors && errors.length)) return [];
+            
             var result:Cats.FileRange[] = [];
             errors.forEach((error) => {
     
                 var r = this.getRange(error.fileName(), error.start(), error.start() + error.length());
                 result.push({
                     range:r,
+                    severity: severity,
                     message:error.message(),
                     fileName: error.fileName()
                 });             
             });
             return result;
+        }
+
+        /**
+         * Get the errors for either one script or for 
+         * all the scripts
+         * @param fileName name of the script. If none provided the errors
+         * for all scripts will be returned.
+         */ 
+        getErrors(fileName: string) :Cats.FileRange[]{
+            var errors:Cats.FileRange[] = [];
+            var fileErrors = this.ls.getSyntacticDiagnostics(fileName);
+                  
+            var newErrors = this.convertErrors(fileErrors, Severity.Error);
+            errors = errors.concat(newErrors);
+            
+            fileErrors = this.ls.getSemanticDiagnostics(fileName);
+            newErrors = this.convertErrors(fileErrors, Severity.Warning);
+            
+            errors = errors.concat(newErrors);
+                    
+            return errors;        
+        }
+
+        /**
+         * Get the diagnostic messages for all the files that 
+         * are regsitered in this worker
+         */  
+        getAllDiagnostics() {
+            var scripts = this.lsHost.scripts;
+            var errors = [];
+
+            for (var fileName in scripts) {
+                errors = errors.concat(this.getErrors(fileName));
+            }
+            return errors;
         }
 
         /**
@@ -160,15 +199,8 @@ module Cats.TSWorker {
             for (var fileName in scripts) {
                 try {
                     var emitOutput = this.ls.getEmitOutput(fileName);
-                    // var fileErrors = emitOutput.diagnostics ;
-                    var fileErrors = this.ls.getSyntacticDiagnostics(fileName);
-                      
-                     if (fileErrors && fileErrors.length) {
-                        console.log("errors in file " + fileName); 
-                        var newErrors = this.convertErrors(fileErrors);
-                        errors = errors.concat(newErrors);
-                    }
-
+                    // errors = errors.concat(this.getErrors(fileName));
+                    
                     emitOutput.outputFiles.forEach((file:TypeScript.OutputFile)=>{
                          result.push({
                             fileName : file.name,
@@ -179,13 +211,19 @@ module Cats.TSWorker {
                
                                
             };
-                        
+            
+            errors  = this.getAllDiagnostics();
+            console.error("Errors found: " + errors.length);
             return {
                 source: result,
                 errors: errors
             };
         }
 
+
+        /**
+         * Configure the compiler settings
+         */ 
         setCompilationSettings(options:any) {
             var compOptions = new TypeScript.CompilationSettings();
 
@@ -257,22 +295,6 @@ module Cats.TSWorker {
         }
 
 
-        /**
-         * Get the errors for either one script or for 
-         * all the scripts
-         * @param fileName name of the script. If none provided the errors
-         * for all scripts will be returned.
-         */ 
-        getErrors(fileName: string) : Cats.FileRange[]{
-            var result:Cats.FileRange[];
-            var errors = this.ls.getSemanticDiagnostics(fileName);
-            var errors2 = this.ls.getSyntacticDiagnostics(fileName);
-            result = this.convertErrors(errors);
-            result = result.concat(this.convertErrors(errors2));
-            return result;
-        }
-        
-          
         // updated the content of a script
         updateScript(fileName: string, content: string) {
             this.lsHost.updateScript(fileName, content);
@@ -387,6 +409,10 @@ module Cats.TSWorker {
         }
     }
 
+    /*******************************************************************
+      Create and initiate the message listener for incomming messages
+     *******************************************************************/ 
+
     var tsh = new ISense();
 
     addEventListener('message', function(e) {
@@ -409,7 +435,7 @@ module Cats.TSWorker {
                 description: err.description,
                 stack: err.stack
             }
-            console.log("Error during processing message " + method);
+            console.error("Error during processing message " + method);
             postMessage({ id: id, error: error }, null);
         }
     }, false);

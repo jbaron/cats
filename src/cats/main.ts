@@ -16,7 +16,11 @@
 var PATH = require("path");
 var GUI = require('nw.gui');
 
-console.info = function() {};
+var args = GUI.App.argv;
+if (args.indexOf("--debug") === -1 ) {
+    console.info = function() {};
+    console.debug = function() {};
+}
 
 var IDE:Cats.Ide;
 var infoBus= new Cats.InfoBus(); 
@@ -53,7 +57,8 @@ module Cats {
         var projectName = getParameterByName("project");
         if (!projectName) {
             var args = GUI.App.argv;
-            if (args && (args.length > 0)) projectName = args[0];
+            var i = args.indexOf("--project");
+            if (i > -1) projectName = args[i+1];
         }
         return projectName;
     }

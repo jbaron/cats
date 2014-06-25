@@ -267,7 +267,7 @@ module Cats.UI {
         showCompletions(completions:TypeScript.Services.CompletionEntry[]) {
             if (this.active || (completions.length === 0)) return;            
             this.completions = completions;
-            console.log("Received completions: " + completions.length);
+            console.info("Received completions: " + completions.length);
             var cursor = this.editor.getCursorPosition();
             var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
             this.setPosition(coords);

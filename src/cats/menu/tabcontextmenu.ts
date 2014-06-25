@@ -29,13 +29,16 @@ module Cats.Menu {
 
     function closeOtherTabs() {
         var contextSession = getContextSession();
-        
+
         IDE.sessions.forEach((session) => {
             if (session !== contextSession)
                 IDE.closeSession(session);
         });
     }
 
+    /**
+     * Close all tabs. Make ure we copy Array first
+     */ 
     function closeAllTabs() {
         IDE.sessions.forEach((session) => {
             IDE.closeSession(session);
