@@ -61,6 +61,13 @@ module Cats.Menu {
 
         constructor() {
             var menubar = new GUI.Menu({ type: 'menubar' });
+            
+            // @TODO fix a bit nicer
+            if ((OS.File.platform() === OS.File.PlatForm.OSX) && menubar.createMacBuiltin) {
+                menubar.createMacBuiltin("CATS");
+                GUI.Window.get().menu = menubar;
+            }
+            
             var getCmd = Cats.Commands.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
 

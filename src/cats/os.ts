@@ -46,6 +46,12 @@ module OS.File {
                 FS.rmdirSync(path);
         }
 
+
+        export class PlatForm {
+            static OSX = "darwin";
+            
+        }
+
        /**
          * Get platform
          */ 
