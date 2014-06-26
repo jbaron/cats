@@ -45,9 +45,9 @@ module Cats.View {
 
         handleOutlineEvent(session: Session) {
             var project = session.project;
-            var mode = "getScriptLexicalStructure";
+            
             // var mode = "getOutliningRegions";
-            project.iSense.perform(mode, session.name, (err, data: NavigateToItem[]) => {
+            project.iSense.getScriptLexicalStructure(session.name, (err, data: NavigateToItem[]) => {
                 IDE.outlineNavigation.innerHTML = "";
                 var outliner = new Cats.UI.TreeView();
                 outliner.setAspect("children", (parent: OutlineTreeElement): OutlineTreeElement[] => {

@@ -42,7 +42,7 @@ module Cats.Commands {
       function formatText() {
             var session = IDE.activeSession;
             if (session) {
-                session.project.iSense.perform("getFormattedTextForRange", session.name, 0, session.getValue().length, (err, result) => {                    
+                session.project.iSense.getFormattedTextForRange( session.name, 0, session.getValue().length, (err, result) => {                    
                     if (!err) {
                         var pos = IDE.mainEditor.aceEditor.getCursorPosition();
                         session.setValue(result);

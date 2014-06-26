@@ -45,24 +45,7 @@ declare module Cats {
         isDirectory: boolean; // is this a folder or a file
     }
 
-    /**
-     * Generic interface for a session that is used for editing information
-     * 
-     * @TODO: implement save and load as part of session
-     */ 
-    interface Session {
-        name: string;
-        type: string;
-        project: any;
-        mode: string;
-        changed: boolean;
-        shortName: string;
-        getValue(): string;
-        setValue(value: string);
-        getPosition():any;
-        persist(shouldConfirm:boolean);
-    }
-
+ 
     /**
      * Used for storing IDE specific settings
      */

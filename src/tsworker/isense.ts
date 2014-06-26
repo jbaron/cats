@@ -403,7 +403,7 @@ module Cats.TSWorker {
             */
             // Lets find out what autocompletion there is possible		
             var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode);
-
+            if (! completions.entries) completions.entries = []; // @Bug in TS
             completions.entries.sort(caseInsensitiveSort); // Sort case insensitive
             return completions;
         }

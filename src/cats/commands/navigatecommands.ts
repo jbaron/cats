@@ -23,7 +23,7 @@ module Cats.Commands {
         var session = IDE.activeSession;
         if (! session) return;
         var cursor = getCursor();
-        session.project.iSense.perform("getDefinitionAtPosition", session.name, cursor, (err, data:FileRange) => {
+        session.project.iSense.getDefinitionAtPosition( session.name, cursor, (err, data:FileRange) => {
             if (data && data.fileName)
                 IDE.openSession(data.fileName, data.range.start);
         });
@@ -36,7 +36,7 @@ module Cats.Commands {
         var cursor = getCursor();
         var searchResultsElem = IDE.searchResult;
         searchResultsElem.innerHTML = "";
-        session.project.iSense.perform("getInfoAtPosition", type, session.name, cursor, (err, data:Cats.FileRange[]) => {
+        session.project.iSense.getInfoAtPosition(type, session.name, cursor, (err, data:Cats.FileRange[]) => {
             IDE.views.searchResults.render(data);
         });
     }

@@ -15,6 +15,24 @@
 
 
 module Cats {
+    
+     /**
+     * Generic interface for a session that is used for editing information
+     * 
+     * @TODO: implement save and load as part of session
+     */ 
+    export interface Session {
+        name: string;
+        type: string;
+        project: Project;
+        mode: string;
+        changed: boolean;
+        shortName: string;
+        getValue(): string;
+        setValue(value: string);
+        getPosition():any;
+        persist(shouldConfirm:boolean);
+    }
 
     class ProjectWatcher extends TreeWatcher {
         

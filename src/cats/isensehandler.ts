@@ -39,11 +39,26 @@ export class ISenseHandler {
         this.perform("getAllDiagnostics", cb);
     }
 
-
+    getFormattedTextForRange(sessionName:string, start, end, cb) {
+        this.perform("getFormattedTextForRange", start, end, cb);
+    }                    
+                
+    getDefinitionAtPosition(sessionName:string, cursor, cb:(err, data:FileRange) => void) {
+        this.perform("getDefinitionAtPosition", sessionName, cursor, cb);
+    }
+             
+    getInfoAtPosition(type, sessionName, cursor, cb:(err, data:Cats.FileRange[]) => void) {
+        this.perform("getInfoAtPosition", type, sessionName, cursor, cb);
+    }
+    
     compile(cb:(err, data:Cats.CompileResults)=>void) {
         this.perform("compile", cb);
     }
 
+    getScriptLexicalStructure(sessionName:string, cb: (err, data: NavigateToItem[])=>void) {
+        this.perform("getScriptLexicalStructure",sessionName,cb);
+    }
+    
     getTypeAtPosition(name:string, docPos:Ace.Position, cb:(err, data: TypeInfo)=>void) {
         this.perform("getTypeAtPosition", name, docPos, cb);
     }
