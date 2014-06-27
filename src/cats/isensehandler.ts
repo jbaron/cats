@@ -40,7 +40,7 @@ export class ISenseHandler {
     }
 
     getFormattedTextForRange(sessionName:string, start, end, cb) {
-        this.perform("getFormattedTextForRange", start, end, cb);
+        this.perform("getFormattedTextForRange", sessionName, start, end, cb);
     }                    
                 
     getDefinitionAtPosition(sessionName:string, cursor, cb:(err, data:FileRange) => void) {
