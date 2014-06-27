@@ -29,7 +29,7 @@ export class Grid  {
 	private rows:any[];
 	private aspects = {};
 
-	defaultHandler = (row,name:string) => { return row[name];};
+	private static DefaultHandler = (row,name:string) => { return row[name];};
 
 	onselect:(event:any)=>void;
 	onrender:(row:HTMLElement,data:any)=>void;
@@ -60,7 +60,7 @@ export class Grid  {
 	}
 
 	private getValue(row,columnName:string) :string {
-		var fn = this.aspects[columnName] || this.defaultHandler;
+		var fn = this.aspects[columnName] || Grid.DefaultHandler;
 		return fn(row,columnName);
 	}
 

@@ -23,40 +23,12 @@ module Cats.UI {
         isFolder: boolean;
     }
 
-    class AspectWidget {
-
-        private aspects = {};
-        defaultHandler = (data, name: string) => { return data[name]; };
-
-
-        setAspect(name, aspect) {
-            this.aspects[name] = aspect;
-        }
-
-        getValue(data, name: string) {
-            var fn = this.aspects[name] || this.defaultHandler;
-            return fn(data, name);
-        }
-
-    }
-
-
+  
     // Created a file tree view based on a directory.
     // Very simple and fast implementation
-    export class TreeView {
+    export class TreeView extends AspectWidget {
 
-        private aspects = {};
-        defaultHandler = (data, name: string) => { return data[name]; };
-
-
-        setAspect(name, aspect) {
-            this.aspects[name] = aspect;
-        }
-
-        getValue(data, name: string) {
-            var fn = this.aspects[name] || this.defaultHandler;
-            return fn(data, name);
-        }
+       
 
         static COLLAPSED = "collapsed";
         static OPENED = "opened";
@@ -75,7 +47,7 @@ module Cats.UI {
         public oncontextmenu: (path: string) => void; //TODO implement
 
         constructor() {
-
+            super();
             this.rootElem = document.createElement("div");
             this.rootElem.className = "treeview";
 
