@@ -157,14 +157,15 @@ ul.tabbar:empty {
 	background-repeat: no-repeat;
 	cursor: default;
 	line-height: 18px;
-	padding-left: 16px;
+	padding-left: 18px;
 	position: relative;
 }
 
 .treeview li>span {
+	border: 1px solid transparent;
 	display: inline-block;
-	padding-left: 26px;
-	width: 100%;
+	padding-left: 24px;
+	padding-right: 4px;
 }
 
 .treeview [class*="icon-"] {
@@ -183,8 +184,9 @@ ul.tabbar:empty {
 	width: 7px;
 }
 
-.treeview li span:hover{
-    background-color: rgba(120,120,120,0.4);
+.treeview li span:hover, .treeview li.selected>span {
+	background-color: rgba(128, 128, 128, .1);
+	border-color: rgba(128, 128, 128, .2);
 }
 
 .treeview .collapsed::before {
@@ -261,16 +263,24 @@ ul.tabbar:empty {
 }
 
 #result table {
-  border-collapse:collapse;
-  width: 100%;
-  text-align: left;
+	width: 100%;
+	text-align: left;
+}
+
+#result table tbody tr {
+	border-top: 1px solid transparent;
 }
 
 #result table tbody tr:hover {
-  background-color: rgba(120,120,120,0.4);
-  cursor: pointer;
+	background-color: rgba(128, 128, 128, .1);
+	border-color: rgba(128, 128, 128, .2);
+	border-right: 1px solid rgba(128, 128, 128, .1);
+	cursor: default;
 }
 
+#result table tbody tr:hover + tr {
+	border-top: 1px solid rgba(128, 128, 128, .2);
+}
 
 #errorresults, #searchresults, #console {
 	-webkit-user-select: text;
@@ -343,6 +353,7 @@ ul.tabbar:empty {
 ***************************************************************/
 #editor { 
 	bottom: 0;
+	font-size: 13px;
 	left: 0;
 	position: absolute;
 	right: 0;
@@ -355,6 +366,11 @@ ul.tabbar:empty {
 
 #editor .ace_gutter-cell.ace_error {
 	background-image: url("../img/error.png");
+	background-size: 16px;
+}
+
+#editor .ace_gutter-cell.ace_warning {
+	background-image: url("../img/warning.png");
 	background-size: 16px;
 }
 

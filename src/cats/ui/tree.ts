@@ -57,6 +57,7 @@ module Cats.UI {
                 if (elem.tagName.toLowerCase() === "span") {
                     if (this.onselect) {
                         var entry = TreeView.getValueFromElement(elem);
+                        if (entry.isFolder) this.handleClick(<HTMLElement>elem.parentNode);
                         this.onselect(entry);
                     }
                 } else {
