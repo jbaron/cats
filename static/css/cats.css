@@ -353,6 +353,7 @@ ul.tabbar:empty {
 ***************************************************************/
 #editor { 
 	bottom: 0;
+	font-size: 13px;
 	left: 0;
 	position: absolute;
 	right: 0;
