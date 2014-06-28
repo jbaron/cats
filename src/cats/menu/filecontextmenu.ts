@@ -56,6 +56,7 @@ module Cats.Menu {
         if (name == null) return;
         var fullName = PATH.join(basedir, name);
         OS.File.writeTextFile(fullName, "");
+        IDE.project.iSense.addScript(fullName, "");
     }
 
     function newFolder() {
