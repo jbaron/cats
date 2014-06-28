@@ -114,6 +114,12 @@ module Cats {
             return (this.tsFiles.indexOf(name) > -1);
         }
 
+        public addTSFile(name:string,content:string) : void {
+            this.tsFiles.push(name);
+            this.iSense.addScript(name,content);
+            console.info("Added TypeScript file: " + name);
+        }
+
         // The singleton TSWorker handler instance
         iSense: ISenseHandler;
         config: ProjectConfiguration;
@@ -216,9 +222,7 @@ module Cats {
                         var ext = PATH.extname(fullName);
                         if (ext === ".ts") {                            
                             OS.File.readTextFile2(fullName,(content) => {
-                                this.iSense.addScript(fullName, content);
-                                this.tsFiles.push(fullName);
-                                console.info("Found TypeScript file: " + fullName);
+                                this.addTSFile(fullName,content);
                             });
                         }
                     }

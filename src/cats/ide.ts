@@ -373,6 +373,9 @@ module Cats {
                     content = OS.File.readTextFile(name);
                 }
                 session = new AceSession(name, content);
+                if ((session.mode === "typescript") && (! this.project.containsTSFile(name))) {
+                    this.project.addTSFile(name,content);
+                }
                 this.addSession(session);
             }
             this.mainEditor.edit(session,pos);
