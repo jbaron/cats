@@ -131,7 +131,6 @@ module Cats.Menu {
             var buildOnSaveItem = new GUI.MenuItem({ label: 'Build on Save', checked: false, type: "checkbox" });
             proj.append(buildOnSaveItem);
             buildOnSaveItem.click = () => {
-                console.log("Clicked: " + buildOnSaveItem.checked);
                 IDE.project.config.buildOnSave = buildOnSaveItem.checked;
             }
             proj.append(getCmd(CMDS.project_refresh));
