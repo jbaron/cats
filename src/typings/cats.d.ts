@@ -75,7 +75,7 @@ declare module Cats {
         customBuild?:any;
         compiler: {
             useDefaultLib: boolean;
-            outputOption: string;
+            outFileOption: string;
             emitComments: boolean;
             generateDeclarationFiles: boolean;
             mapSourceFiles: boolean;

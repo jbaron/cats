@@ -122,8 +122,8 @@ export class ScriptInfo {
         
         
         resolveRelativePath(path: string, directory: string) : string{
-            console.log("Called resolveRelativePath" + path + " " + directory);
-            return "";
+            console.log("Called resolveRelativePath p1:" + path + " p2:" + directory);
+            return path;
         }
         
         public getScriptSnapshot(fileName: string): TypeScript.IScriptSnapshot {

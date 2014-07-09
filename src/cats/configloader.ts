@@ -70,7 +70,7 @@ module Cats {
                 buildOnSave: false,
                 compiler: {
                     useDefaultLib: true,
-                    outputOption: "",
+                    outFileOption: "",
                     emitComments: false,
                     generateDeclarationFiles: false,
                     mapSourceFiles: false,

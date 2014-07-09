@@ -167,9 +167,9 @@ module Cats {
             // this.initJSSense();
             this.iSense = new ISenseHandler(this);
             
-            if (this.config.compiler.outputOption) {
-                this.config.compiler.outputOption = PATH.join(this.projectDir,this.config.compiler.outputOption);
-                console.info("Compiler output: " + this.config.compiler.outputOption);
+            if (this.config.compiler.outFileOption) {
+                this.config.compiler.outFileOption = PATH.join(this.projectDir,this.config.compiler.outFileOption);
+                console.info("Compiler output: " + this.config.compiler.outFileOption);
             }
                 
             this.iSense.setCompilationSettings(this.config.compiler);
