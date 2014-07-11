@@ -207,6 +207,9 @@ module Cats.TSWorker {
                             content: file.text
                         });
                     });
+                    if (this.lsHost.getCompilationSettings().outFileOption) {
+                        break;
+                    }
                 } catch(err) {/*ignore */}
                
                                
