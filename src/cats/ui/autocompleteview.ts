@@ -308,10 +308,10 @@ module Cats.UI {
             bottom = top + $(this.wrap).height();
             if (bottom < editorBottom) {
                 this.wrap.style.top = top + 'px';
-                return this.wrap.style.left = coords.pageX + 'px';
+                this.wrap.style.left = coords.pageX + 'px';
             } else {
                 this.wrap.style.top = (top - $(this.wrap).height() - 20) + 'px';
-                return this.wrap.style.left = coords.pageX + 'px';
+                this.wrap.style.left = coords.pageX + 'px';
             }
         }
 
