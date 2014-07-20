@@ -30,6 +30,8 @@ module Cats.Commands {
 
 
     function rename() {
+        /*
+        @TODO
         var table = <HTMLElement>document.querySelector("#searchresults table");
         if (!table) {
             alert("Cannot rename if there are no search results available");
@@ -41,6 +43,7 @@ module Cats.Commands {
         var newName = prompt(msg);
         if (!newName) return;
         refactor(rows,newName);
+        */
     }
 
 

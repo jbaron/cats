@@ -74,7 +74,7 @@ module Cats {
             this.show();
             this.aceEditor.focus();
             session.showErrors();
-            if (IDE.tabbar) IDE.tabbar.refresh();
+            // if (IDE.tabbar) IDE.tabbar.refresh();
             this.editMode = PATH.basename(session.mode); 
          
         }

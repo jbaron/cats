@@ -14,13 +14,6 @@
 //
 
 module Cats {
-    
-    export interface IDEViews {
-        outline: IView;
-        compilationResults: IView;
-        taskList: IView;
-        editor: IView;
-    }
 
     export class Ide extends ObservableImpl {
 
@@ -55,8 +48,6 @@ module Cats {
             return editor.getSession();
         }
 
-        tabbar: UI.Tabbar;
-        resultbar = new UI.Tabbar();
         searchResult:ResultTable;
         problemResult:ResultTable;
 
@@ -262,13 +253,6 @@ module Cats {
         }
 
         /**
-         * Layout the IDE
-         */ 
-        private layout() {
-             this.layoutConfig = layoutIDE();
-        }
-
-        /**
          * Get the directory where the icons for the IDE can be found
          */ 
         public getIconDir() {
@@ -421,45 +405,6 @@ module Cats {
         setTheme(theme: string) {
             this.config.theme = theme;
             IDE.mainEditor.setTheme(theme);
-            setTimeout(function() {
-                var isDark = document.getElementsByClassName("ace_dark").length > 0;
-                var fg = isDark ? "white" : "black";
-                var elem = <HTMLElement>document.getElementsByClassName("ace_scroller")[0];
-                var bg = window.getComputedStyle(elem, null).backgroundColor;
-                elem = document.getElementById("editor");
-                var fg = window.getComputedStyle(elem, null).color;
-                var markerLayer = document.createElement("div");
-                markerLayer.className = "ace_marker-layer";
-                var selectionEl = document.createElement("span");
-                selectionEl.className = "ace_selection";
-                markerLayer.appendChild(selectionEl);
-                elem.appendChild(markerLayer);
-                var selectionBg = window.getComputedStyle(selectionEl, null).backgroundColor;
-                var selectionFg = window.getComputedStyle(selectionEl, null).color;
-                elem.removeChild(markerLayer);
-
-                $("html, #main, #navigator, #info, #result").css("background-color", bg);
-                $("html").css("color", fg);
-                $("body").removeClass("theme-light theme-dark").addClass(isDark ? "theme-dark" : "theme-light");
-                $(".autocomplete").css("background-color", bg);
-                $(".autocomplete").css("color", fg);
-                $("input").css("background-color", fg);
-                $("input").css("color", bg);
-                
-                elem = <HTMLElement>document.getElementById("editor");
-                bg = window.getComputedStyle(elem, null).backgroundColor;
-                fg = window.getComputedStyle(elem, null).color;
-                
-                var style = document.createElement("style");
-                style.appendChild(document.createTextNode(""));
-                document.head.appendChild(style);
-
-                var sheet = <CSSStyleSheet>style["sheet"];
-                sheet.insertRule(".tabbar li.active, .tabbar li:hover { background-color: " + bg + " !important; color: " + fg + " !important; }", 0);
-                sheet.insertRule(".autocomplete_selected { background-color: " + selectionBg + " !important; color: " + selectionFg + "}", 0);
-                sheet.insertRule(".ace_search, input { background-color: " + bg + " !important; color: " + fg + "}", 0);
-                sheet.insertRule(".ace_search_options .ace_button:before { background-color: " + bg + " !important;", 0);
-            }, 500);
         }
 
         /**

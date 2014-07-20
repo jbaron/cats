@@ -80,7 +80,7 @@ module Cats {
                 infoBus.SESSION.emit("overwrite",this.editSession.getOverwrite());
             });
 
-            this.on("changed", () => { IDE.tabbar.refresh() });
+            // @TODO this.on("changed", () => { IDE.tabbar.refresh() });
         }
 
         /**

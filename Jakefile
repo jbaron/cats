@@ -33,7 +33,6 @@ var catsOptions = [
     "src/cats/observable.ts",
     "src/cats/treewatcher.ts",
     "src/cats/ide.ts",
-    "src/cats/layout.ts",
     "src/cats/acesession.ts",
     "src/cats/commands/commander.ts",
     "src/cats/commands/editorcommands.ts",
@@ -50,10 +49,6 @@ var catsOptions = [
     "src/cats/menu/menubar.ts",
     "src/cats/project.ts",
     "src/cats/ui/autocompleteview.ts",
-    "src/cats/ui/elemtabadapter.ts",
-    "src/cats/ui/grid.ts",
-    "src/cats/ui/mvc.ts",
-    "src/cats/ui/tabbar.ts",
     "src/cats/ui/tooltip.ts",
     "src/cats/gui/application.ts",
     "src/cats/gui/console.ts",
@@ -66,9 +61,7 @@ var catsOptions = [
     "src/cats/gui/sessionTabView.ts",
     "src/cats/gui/statusBar.ts",
     
-    "src/cats/pane/compilationresults.ts",
     "src/cats/pane/outline.ts",
-    "src/cats/pane/statusbar.ts",
     "src/cats/main.ts"
 ];
 

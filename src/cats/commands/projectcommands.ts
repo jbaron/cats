@@ -19,6 +19,20 @@
 module Cats.Commands {
 
 
+        function showCompilationResults(data:Cats.CompileResults) {
+
+            if (data.errors && (data.errors.length > 0)) {
+                IDE.problemResult.setData(data.errors);
+                return;
+            }
+            
+            IDE.problemResult.setData([]);
+            var time = new Date();
+            var stamp = time.toLocaleTimeString();
+            IDE.console123.log( stamp + " Successfully compiled " + Object.keys(data.source).length + " file(s).\n");
+        }
+
+
     function closeAllProjects() {
         var sure = confirm("Do you really want to quit?");
         if (sure) GUI.App.closeAllWindows();
@@ -82,7 +96,7 @@ module Cats.Commands {
         var project = IDE.project;
 
         project.iSense.compile((err, data:Cats.CompileResults) => {                        
-            View.showCompilationResults(data);
+            showCompilationResults(data);
         });
     }
 
@@ -99,7 +113,7 @@ module Cats.Commands {
         var project = IDE.project;
         if (project.config.customBuild) {
             IDE.busy(true);
-            IDE.resultbar.selectOption(2);
+            // IDE.resultbar.selectOption(2);
             var cmd = project.config.customBuild.command;
             var options = project.config.customBuild.options || {};
             
@@ -121,7 +135,7 @@ module Cats.Commands {
             
         } else {
             project.iSense.compile((err, data:Cats.CompileResults) => {                        
-                View.showCompilationResults(data);
+                showCompilationResults(data);
                 if (data.errors && (data.errors.length > 0)) return;
                 var sources = data.source;
                 sources.forEach((source) => {
