@@ -60,8 +60,10 @@ class ResultTable extends qx.ui.table.Table {
         this.setPadding(0, 0, 0, 0);
         
         this.getSelectionModel().addListener("changeSelection" , (data) => {
-            console.log(data);
-            // IDE.openSession(data.fileName, data.range.start);
+            var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
+            var data = this.getTableModel().getRowData(selectedRow);
+            IDE.console123.log("Selected row:" + selectedRow);
+            if (data) IDE.openSession(data[1], data[3].start);
         })
         
     }

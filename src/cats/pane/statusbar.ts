@@ -15,6 +15,7 @@
 
 module Cats.View {
 
+/*
     export class StatusBar extends BasePane {
 
         
@@ -27,15 +28,7 @@ module Cats.View {
             // NOP
         }
 
-        /*
-        public busy(isBusy:boolean) {
-            if (IDE.isBusy) {
-               $("#activity").addClass("busy"); 
-            } else {
-                $("#activity").removeClass("busy"); 
-            }
-        }
-        */
+   
 
         private render() {
             var act = <AceSession>IDE.activeSession;
@@ -103,5 +96,6 @@ module Cats.View {
             document.getElementById("selection").innerText = text;
         }
     }
+*/
 
 }

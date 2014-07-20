@@ -153,26 +153,21 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
      * @param directory The directory name that should be read
      */ 
     readDir(parent){
-            var directory = parent.getFullPath();
-            var files:string[] = fs.readdirSync(directory);
-            // this.directoryModels[directory] = parent;        
-            files.forEach((file) => {
-                var fullName = path.join(directory, file);
-                var stats = fs.statSync(fullName);
+            var entries = OS.File.readDir(parent.getFullPath(), true);
+            entries.forEach((entry:Cats.FileEntry) => {
                 var node = {
-                   label:file,
-                   fullPath: fullName,
-                   loaded : ! stats.isDirectory(),
-                   directory: stats.isDirectory(),
-                   children: stats.isDirectory() ? [{
+                   label: entry.name,
+                   fullPath: entry.fullName,
+                   loaded : ! entry.isDirectory,
+                   directory: entry.isDirectory,
+                   children: entry.isDirectory ? [{
                         label: "Loading",
                         icon: "loading",
                         directory: false
                     }] : null   
                 };
                 parent.getChildren().push(qx.data.marshal.Json.createModel(node, true));
-            });
-            
+            }); 
     }
 
 }

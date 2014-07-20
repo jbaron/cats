@@ -55,7 +55,6 @@ var catsOptions = [
     "src/cats/ui/mvc.ts",
     "src/cats/ui/tabbar.ts",
     "src/cats/ui/tooltip.ts",
-    "src/cats/ui/tree.ts",
     "src/cats/gui/application.ts",
     "src/cats/gui/console.ts",
     "src/cats/gui/fileNavigator.ts",
@@ -67,11 +66,9 @@ var catsOptions = [
     "src/cats/gui/sessionTabView.ts",
     "src/cats/gui/statusBar.ts",
     
-    "src/cats/pane/toolbar.ts",
     "src/cats/pane/compilationresults.ts",
     "src/cats/pane/outline.ts",
     "src/cats/pane/statusbar.ts",
-    "src/cats/pane/tasklist.ts",
     "src/cats/main.ts"
 ];
 

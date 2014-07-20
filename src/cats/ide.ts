@@ -380,9 +380,6 @@ module Cats {
         }
 
         persistSession(session: Session, shouldConfirm = false) {
-            if (this.project)
-                this.project.getWatcher().preventFileChange(session.name);
-
             session.persist(shouldConfirm);
         }
 

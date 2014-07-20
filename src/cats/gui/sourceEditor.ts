@@ -11,7 +11,7 @@ class SourceEditor extends qx.ui.core.Widget {
         this.addListenerOnce("appear", () => {
             var container = this.getContentElement().getDomElement();
             // create the editor
-            this.aceEditor = ace.edit(container);
+            this.aceEditor = this.createAceEditor(container);
             this.aceEditor.getSession().setMode("ace/mode/typescript");
             // this.aceEditor.getSession().setValue(this.getContent());
             this.aceEditor.getSession();
@@ -46,6 +46,62 @@ class SourceEditor extends qx.ui.core.Widget {
         this.popup.moveTo(coords.pageX, coords.pageY);
         this.popup.show();
     }
+
+
+          // Initialize the editor
+        private createAceEditor(rootElement):Ace.Editor {
+            var editor: Ace.Editor = ace.edit(rootElement);
+
+            editor.commands.addCommands([
+            {
+                name: "autoComplete",
+                bindKey: {
+                    win: "Ctrl-Space",
+                    mac: "Ctrl-Space" 
+                },
+                exec: () => { this.autoComplete() }
+            },
+
+           {
+                name: "gotoDeclaration",
+                bindKey: {
+                    win: "F12",
+                    mac: "F12"
+                },
+                exec: () => { Cats.Commands.runCommand(Cats.Commands.CMDS.navigate_declaration) }
+            },
+
+
+            {
+                name: "save",
+                bindKey: {
+                    win: "Ctrl-S",
+                    mac: "Command-S"
+                },
+                exec: () =>  { Cats.Commands.runCommand(Cats.Commands.CMDS.file_save) }
+            }
+            ]);
+ 
+            var originalTextInput = editor.onTextInput;
+            editor.onTextInput = (text) => {
+                originalTextInput.call(editor, text);
+                if (text === ".") this.autoComplete();
+            };
+
+            /*
+            var elem = rootElement; // TODo find scroller child
+            elem.onmousemove = this.onMouseMove.bind(this);
+            elem.onmouseout = () => {
+                this.toolTip.hide()
+                clearTimeout(this.mouseMoveTimer);
+            };
+            */
+
+            return editor;
+    }
+
+    
+
 
     setupInputHandling() {
         

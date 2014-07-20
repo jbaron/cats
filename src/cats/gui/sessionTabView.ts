@@ -64,6 +64,8 @@ class SessionTabView extends qx.ui.tabview.TabView {
         if (pos) {
             setTimeout(() => {
                 page.editor.getAceEditor().moveCursorToPosition(pos);
+                page.editor.getAceEditor().clearSelection();
+                page.editor.getAceEditor().centerSelection();
             }, 0);
         }
     }

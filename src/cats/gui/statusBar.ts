@@ -12,8 +12,10 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
     }
 
     init() {
-       this.add(new qx.ui.toolbar.Button("1:1")); 
-       
+       var positionButton = new qx.ui.toolbar.Button("1:1");
+       positionButton.setPadding(1,1,1,1);
+       positionButton.setMargin(0, 0, 0, 0);
+       this.add(positionButton); 
     }
 
     toggle() {

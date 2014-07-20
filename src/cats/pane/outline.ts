@@ -34,12 +34,12 @@ module Cats.View {
         return false;
     }
 
-    export class Outline extends BasePane {
+    export class Outline  {
 
         constructor() {
-            super(document.getElementById("outlinenav"));
-            this.icon = "icon-outline";
-            this.name = "Outline";
+            // super(document.getElementById("outlinenav"));
+            // this.icon = "icon-outline";
+            // this.name = "Outline";
             this.initOutlineView();
         }
 
