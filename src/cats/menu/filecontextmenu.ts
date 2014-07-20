@@ -95,21 +95,6 @@ module Cats.Menu {
         element: null
     }
 
-    export function initFileContextMenu() {
-        var fileContextMenu = createFileContextMenu();
-
-        IDE.fileNavigation.addEventListener('contextmenu', function(ev: any) {
-        var d = UI.TreeView.getValueFromElement(ev.srcElement);
-        if (d && d.path) {
-            data.key = d.path;
-            data.isFolder = d.isFolder;
-            data.element = ev.srcElement;
-            // console.log(data.key);
-            ev.preventDefault();
-            fileContextMenu.popup(ev.x, ev.y);
-        }
-        return false;
-        });
-    }
+   
 
 }

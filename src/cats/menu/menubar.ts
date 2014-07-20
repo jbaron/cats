@@ -197,8 +197,8 @@ module Cats.Menu {
             var CMDS = Cats.Commands.CMDS;
             var menu = new GUI.Menu();
             var views = [
-                {id:"north",name:"Toolbar"},    
-                {id:"south",name:"Statusbar"}
+                {id:IDE.toolBar,name:"Toolbar"},    
+                {id:IDE.statusBar,name:"Statusbar"}
             ]
             views.forEach((view) => {
                     var item = getCmd(CMDS.ide_toggleView,view.name,view.id);

@@ -16,11 +16,11 @@
 module Cats.Commands {
 
     function getCursor(): Ace.Position {
-        return IDE.mainEditor.aceEditor.getCursorPosition();
+        return IDE.getActiveEditor().getCursorPosition();
     }
 
     export function gotoDeclaration() {        
-        var session = IDE.activeSession;
+        var session = IDE.getActiveSession();
         if (! session) return;
         var cursor = getCursor();
         session.project.iSense.getDefinitionAtPosition( session.name, cursor, (err, data:FileRange) => {
@@ -30,14 +30,14 @@ module Cats.Commands {
     }
 
     function getInfoAt(type: string) {        
-        var session = IDE.activeSession;
+        var session = IDE.getActiveSession();
         if (! session) return;
-        IDE.resultbar.selectOption(1);
+        IDE.problemPane.select("Search");
         var cursor = getCursor();
-        var searchResultsElem = IDE.searchResult;
-        searchResultsElem.innerHTML = "";
+ 
         session.project.iSense.getInfoAtPosition(type, session.name, cursor, (err, data:Cats.FileRange[]) => {
-            IDE.views.searchResults.render(data);
+            console.log("Called getInfoAt for with results #" + data.length);
+            IDE.searchResult.setData(data);
         });
     }
 

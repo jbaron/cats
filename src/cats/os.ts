@@ -81,12 +81,23 @@ module OS.File {
         export function switchToForwardSlashes(path:string):string {
             return path.replace(/\\/g, "/");
         }
+         
+         
+         // Sort first on directory versus file and then on alphabet
+        function sort(a: Cats.FileEntry, b: Cats.FileEntry) {
+            if ((!a.isDirectory) && b.isDirectory) return 1;
+            if (a.isDirectory && (!b.isDirectory)) return -1;
+            if (a.name > b.name) return 1;
+            if (b.name > a.name) return -1;
+            return 0;
+        }
+ 
                 
         /**
          * Read the files from a directory
          * @param directory The directory name that should be read
          */ 
-        export function readDir(directory:string): Cats.FileEntry[] {
+        export function readDir(directory:string, sorted=false): Cats.FileEntry[] {
             var files:string[] = FS.readdirSync(directory);
             var result = [];
             files.forEach((file) => {
@@ -99,6 +110,7 @@ module OS.File {
                    isDirectory: stats.isDirectory()
                 });
             });
+            if (sorted) result.sort(sort);
             return result;
         }
         

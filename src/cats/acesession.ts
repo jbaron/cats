@@ -191,7 +191,7 @@ module Cats {
          * Get the Position based on mouse x,y coordinates
          */
         private getPositionFromScreenOffset(x: number, y: number): Ace.Position {
-            var r = IDE.mainEditor.aceEditor.renderer;
+            var r = IDE.getActiveEditor().renderer;
             // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
             var offset = (x - r.$padding) / r.characterWidth;
 

@@ -30,7 +30,7 @@ module Cats {
         private editMode:string;
         private overwrite:boolean;
 
-        private editorContextMenu: Cats.Menu.EditorContextMenu;
+
 
         constructor(private rootElement: HTMLElement) {
             this.aceEditor = this.createAceEditor();
@@ -42,8 +42,6 @@ module Cats {
         private init() {
             this.toolTip = new UI.ToolTip();
             this.autoCompleteView = new UI.AutoCompleteView(this.aceEditor);
-            this.editorContextMenu = new Cats.Menu.EditorContextMenu(this);
-            this.editorContextMenu.bindTo(this.rootElement);            
         }
 
         /**

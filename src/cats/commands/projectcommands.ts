@@ -80,8 +80,7 @@ module Cats.Commands {
      */ 
     function validateProject() {
         var project = IDE.project;
-        IDE.compilationResult.innerHTML = "";
-        
+
         project.iSense.compile((err, data:Cats.CompileResults) => {                        
             View.showCompilationResults(data);
         });
@@ -89,8 +88,7 @@ module Cats.Commands {
 
     function show(text:string) {
         if (! text) return;
-        IDE.console.innerText += text;
-        IDE.console.scrollTop = IDE.console.scrollHeight; // Scroll to bottom
+        IDE.console123.log(text);
     }
 
     /**
@@ -122,13 +120,11 @@ module Cats.Commands {
             });
             
         } else {
-            IDE.compilationResult.innerHTML = "";
             project.iSense.compile((err, data:Cats.CompileResults) => {                        
                 View.showCompilationResults(data);
                 if (data.errors && (data.errors.length > 0)) return;
                 var sources = data.source;
                 sources.forEach((source) => {
-                        console.log(source.fileName);
                         OS.File.writeTextFile(source.fileName, source.content);
                 });
             });

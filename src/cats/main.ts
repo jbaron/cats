@@ -70,17 +70,7 @@ module Cats {
         alert(err);
     });
    
-    // Instantiate the global ide   
-    IDE = new Ide();     
-    
-    var prjName = determineProject();
-    if (prjName) {
-        IDE.addProject(new Project(prjName));
-    } else {
-        IDE.restorePreviousProjects();
-    }
-    
-    IDE.init();
+   
     
     // Catch the close of the windows in order to save any unsaved changes
     var win = GUI.Window.get();
@@ -93,4 +83,24 @@ module Cats {
         this.close(true);
     });
 
+    function main(app?) {
+       
+         // Instantiate the global ide   
+        IDE = new Ide(app.getRoot());     
+        
+        var prjName = determineProject();
+        if (prjName) {
+            IDE.addProject(new Project(prjName));
+        } else {
+            IDE.restorePreviousProjects();
+        }
+        
+        IDE.init();
+    }
+    
+    qx.registry.registerMainMethod(main);
+
 }
+
+
+

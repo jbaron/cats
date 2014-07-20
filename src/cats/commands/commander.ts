@@ -175,7 +175,7 @@ module Cats.Commands {
      * themselves
      */ 
 	export function init() {
-		EditorCommands.init(register);
+		// EditorCommands.init(register);
 	    FileCommands.init(register);
 		HelpCommands.init(register);
 	    ProjectCommands.init(register);

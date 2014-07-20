@@ -48,6 +48,8 @@ module Cats.View {
             
             // var mode = "getOutliningRegions";
             project.iSense.getScriptLexicalStructure(session.name, (err, data: NavigateToItem[]) => {
+                
+                /*
                 IDE.outlineNavigation.innerHTML = "";
                 var outliner = new Cats.UI.TreeView();
                 outliner.setAspect("children", (parent: OutlineTreeElement): OutlineTreeElement[] => {
@@ -81,16 +83,18 @@ module Cats.View {
                     IDE.openSession(data.fileName, data.range.start);
                 };
                 outliner.refresh();
+                */
             });
 
         }
 
         initOutlineView() {
             IDE.on("activeSession", (session: Session) => {
-                if (session && (session.mode === "typescript"))
+                if (session && (session.mode === "typescript")) {
                     this.handleOutlineEvent(session);
-                else
-                    IDE.outlineNavigation.innerHTML = "";
+                } else {
+                   // @TODO empty outline navigator
+                }
             });
 
         }

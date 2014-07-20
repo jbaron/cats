@@ -16,6 +16,7 @@
 
 // Declare the global JQuery $
 declare var $;
+// declare var qx:any;
 
 declare module Cats {
 

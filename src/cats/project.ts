@@ -150,7 +150,7 @@ module Cats {
         validate() {
             // @TODO don't compile just get the errors
             this.iSense.getAllDiagnostics( (err,data) => {
-             if (data) View.showErrors(data);
+             // if (data) View.showErrors(data);
             });
         }
 

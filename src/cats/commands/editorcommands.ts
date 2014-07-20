@@ -22,7 +22,7 @@ module Cats.Commands {
 
     // Just wrap the Ace command.
     function editorCommand(commandName: string) {
-        return function() { IDE.mainEditor.aceEditor.execCommand(commandName); }
+        return function() { IDE.getActiveEditor().execCommand(commandName); }
     }
 
 
@@ -44,9 +44,9 @@ module Cats.Commands {
             if (session) {
                 session.project.iSense.getFormattedTextForRange( session.name, 0, session.getValue().length, (err, result) => {                    
                     if (!err) {
-                        var pos = IDE.mainEditor.aceEditor.getCursorPosition();
+                        var pos = IDE.getActiveEditor().getCursorPosition();
                         session.setValue(result);
-                        if (pos) IDE.mainEditor.aceEditor.moveCursorToPosition(pos);
+                        if (pos) IDE.getActiveEditor().moveCursorToPosition(pos);
                     }
                     
                 });
@@ -55,8 +55,8 @@ module Cats.Commands {
 
     // TODO i18n
     function getShortcut(commandName: string) {
-        var platform = IDE.mainEditor.aceEditor.commands.platform;
-        var command = IDE.mainEditor.aceEditor.commands.byName[commandName];
+        var platform = IDE.getActiveEditor().commands.platform;
+        var command = IDE.getActiveEditor().commands.byName[commandName];
 
         if (command && command.bindKey) {
             var key = command.bindKey[platform];
@@ -70,8 +70,8 @@ module Cats.Commands {
     // TODO i18n
     function addShortcut(label, commandName: string) {
         var result = label;
-        var platform = IDE.mainEditor.aceEditor.commands.platform;
-        var command = IDE.mainEditor.aceEditor.commands.byName[commandName];
+        var platform = IDE.getActiveEditor().commands.platform;
+        var command = IDE.getActiveEditor().commands.byName[commandName];
 
         if (command && command.bindKey) {
             var tabs = 5 - Math.floor((result.length / 4) - 0.01);
@@ -83,7 +83,7 @@ module Cats.Commands {
     }
     
     function toggleInvisibles() {
-        IDE.mainEditor.aceEditor.setShowInvisibles(!IDE.mainEditor.aceEditor.getShowInvisibles());
+        IDE.getActiveEditor().setShowInvisibles(!IDE.mainEditor.aceEditor.getShowInvisibles());
     }
 
     export class EditorCommands {

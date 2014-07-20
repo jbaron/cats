@@ -48,8 +48,9 @@ module Cats.Commands {
         IDE.setRightMargin(margin);
     }
 
-    function toggleView(name:string) {
-        infoBus.IDE.emit("toggleView", name);
+    function toggleView(component) {
+        component.toggle();
+        // infoBus.IDE.emit("toggleView", name);
     }
     
 

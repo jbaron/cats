@@ -16,17 +16,21 @@
 module Cats {
     
     export interface IDEViews {
-        navigation: View.Navigator;
         outline: IView;
-        searchResults: View.SearchResults;
         compilationResults: IView;
-        toolBar: IView;
-        statusBar: IView;
         taskList: IView;
         editor: IView;
     }
 
     export class Ide extends ObservableImpl {
+
+        navigatorPane: TabView;
+        problemPane: TabView;
+        toolBar: ToolBar
+        infoPane: TabView;
+        statusBar: qx.ui.toolbar.ToolBar;
+        sessionTabView: SessionTabView;
+        console123:Console123;
 
         sessions: Session[] = [];
         project: Project;
@@ -35,117 +39,105 @@ module Cats {
 
         activeSession: Session;
     
-        views: IDEViews = {
-            navigation: null,
-            outline: null,
-            searchResults: null,
-            console:null,
-            compilationResults: null,
-            toolBar: null,
-            statusBar: null,
-            taskList: null,
-            editor: null
-        };
 
-        /**
-         * Initialize the views associated with the IDE
-         */
-        private initViews() {
-            this.views.outline = new Cats.View.Outline();
-            this.views.toolBar = new Cats.View.ToolBar();
-            this.views.statusBar = new Cats.View.StatusBar();
-            this.views.searchResults = new Cats.View.SearchResults();
-            this.views.navigation = new Cats.View.Navigator();
-            
-            this.initTabBar();
-            this.initNavBar();
-            this.initInfoBar();
-            this.initResultBar();
+        getActiveEditor() {
+            var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
+            if (! page) return null;
+            var editor:SourceEditor = <SourceEditor>page.getChildren()[0];
+            return editor.getAceEditor();
         }
 
-        private initTabBar() {
-            this.tabbar = new UI.Tabbar();
-            var tb = this.tabbar;
-            tb.setAspect("name", (session: Session) => { return session.shortName });
-            tb.setAspect("selected", (session: Session) => { return session === IDE.activeSession });
-            tb.setAspect("longname", (session: Session) => { return session.name });
-            tb.setAspect("changed", (session: Session) => { return session.changed });
-            tb.onselect = (session:Session) => {
-                if (session) this.openSession(session.name);
-            };
-            tb.ondelete = (session:Session) => this.closeSession(session);
-            tb.appendTo(this.sessionBar);
-            IDE.on("sessions", (sessions) => {this.tabbar.setOptions(sessions)} );
+
+        getActiveSession() {
+            var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
+            if (! page) return null;
+            var editor:SourceEditor = <SourceEditor>page.getChildren()[0];
+            return editor.getSession();
         }
 
-        private initNavBar() {
-            var navbar = new UI.Tabbar();
-    
-            var t = new UI.ElemTabAdapter(navbar, [this.fileNavigation, this.outlineNavigation], this.fileNavigation);
-            t.setAspect(this.fileNavigation, "decorator", "icon-files");
-            t.setAspect(this.outlineNavigation, "decorator", "icon-outline");
-            navbar.appendTo(this.navigationBar);
-        }
-
-        private initInfoBar() {
-            var infobar = new UI.Tabbar();
-            infobar.setOptions([
-                { name: "Task List", selected: true, decorator: "icon-tasks" }
-            ]);
-            infobar.appendTo(this.taskBar);
-        }
-      
-        private initResultBar() {
-            var t  = new UI.ElemTabAdapter(IDE.resultbar, [IDE.compilationResult, IDE.searchResult, IDE.console], IDE.compilationResult);
-            t.setAspect(this.compilationResult, "decorator", "icon-errors");
-            t.setAspect(this.searchResult, "decorator", "icon-search");
-            t.setAspect(this.console, "decorator", "icon-console");
-            this.resultbar.appendTo(this.resultbarElem);        
-        }
- 
         tabbar: UI.Tabbar;
         resultbar = new UI.Tabbar();
-        
-        navigationBar = document.getElementById("navigationbar");
-        fileNavigation = document.getElementById("filetree");
-        outlineNavigation = document.getElementById("outlinenav");
-
-        resultbarElem = document.getElementById("resultbar");
-        compilationResult = document.getElementById("errorresults");
-        searchResult = document.getElementById("searchresults");
-        console = document.getElementById("console");
-
-        taskBar = document.getElementById("infobar");
-
-        editor = document.getElementById("editor");
-        sessionBar = document.getElementById("sessionbar");
+        searchResult:ResultTable;
+        problemResult:ResultTable;
 
         mainMenu = null;
         private config:IDEConfiguration;
 
         mainEditor: TextEditor;
 
-        constructor() {
+        constructor(private doc) {
             super(["sessions","activeSession","project"]);
-            this.mainEditor = new TextEditor(this.editor);
             this.config = this.loadConfig(true);
             infoBus.IDE.on("toggleView", (name) => this.layoutConfig.toggle(name));
         }
 
         init() {
-            Cats.Commands.init();
-            Cats.Menu.createMenuBar();
-            this.initViews();
-            this.initFileDropArea();
-            this.layout();
-            Cats.Menu.initFileContextMenu();
-            Cats.Menu.initTabContextMenu();
             
-            setTimeout(() => {
-                this.setTheme(this.config.theme);
-                this.setFontSize(this.config.fontSize);
-                this.setRightMargin(this.config.rightMargin);
-            }, 2000);
+            this.layoutQx();
+            Cats.Commands.init();
+           
+            this.toolBar.init();
+            Cats.Menu.createMenuBar();
+        }
+
+        layoutQx() {
+            // container layout
+            var layout = new qx.ui.layout.VBox();
+    
+            // main container
+            var mainContainer = new qx.ui.container.Composite(layout);
+            this.doc.add(mainContainer, { edge: 0 });
+    
+            this.toolBar = new ToolBar();
+    
+            mainContainer.add(this.toolBar, { flex: 0 });
+    
+            // mainsplit, contains the editor splitpane and the info splitpane
+            var mainsplit = new qx.ui.splitpane.Pane("horizontal").set({ decorator: null });
+            this.navigatorPane = new TabView(["Files", "Outline"]);
+            var fileTree = new FileNavigator(process.cwd());
+            this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
+            this.navigatorPane.getChildren()[1].add(new OutlineNavigator(), { edge: 0 });
+    
+            mainsplit.add(this.navigatorPane, 1); // navigator
+    
+    
+            var editorSplit = new qx.ui.splitpane.Pane("vertical").set({ decorator: null });
+    
+            var infoSplit = new qx.ui.splitpane.Pane("horizontal");
+            this.sessionTabView = new SessionTabView();
+            infoSplit.set({ decorator: null });
+            infoSplit.add(this.sessionTabView, 4); // editor
+           
+            this.infoPane = new TabView(["Todo", "Properties"]);
+            infoSplit.add(this.infoPane, 1); // todo
+    
+            editorSplit.add(infoSplit, 4);
+    
+            // Setup Problems section
+            this.problemPane = new TabView(["Problems", "Search", "Console"]);
+            this.console123 = new Console123();
+    
+            editorSplit.add(this.problemPane, 2); // Info
+    
+    
+            this.problemResult = new ResultTable();
+            this.problemPane.getChildren()[0].add(this.problemResult, { edge: 0 });
+            
+            this.searchResult = new ResultTable()
+            this.problemPane.getChildren()[1].add(this.searchResult, { edge: 0 });
+            this.problemPane.getChildren()[2].add(this.console123, { edge: 0 });
+    
+            this.problemPane.select("Console");
+            // this.problemPane.setSelection([this.problemPane.getChildren()[2]]);
+    
+            mainsplit.add(editorSplit, 4); // main area
+    
+            mainContainer.add(mainsplit, { flex: 1 });
+    
+            // Setup status bar
+            this.statusBar = new StatusBar();
+            mainContainer.add(this.statusBar, { flex: 0 });
         }
 
         /**
@@ -214,7 +206,7 @@ module Cats {
          */
         setFontSize(size: number) {
             this.config.fontSize = size;
-            IDE.mainEditor.aceEditor.setFontSize(size + "px");
+            IDE.getActiveEditor().setFontSize(size + "px");
         }
 
         /**
@@ -232,6 +224,8 @@ module Cats {
          */
         addSession(session: Session) {
             this.sessions = this.sessions.concat([session]);
+            var p = IDE.sessionTabView.addSession(session);
+            IDE.console123.log("Added File " + session.name);
         }
 
         /**
@@ -356,6 +350,7 @@ module Cats {
             return this.sessionStack[this.sessionStack.length - 1];
         }
 
+       
         /**
          * Open an existing session or if it doesn't exist yet create
          * a new one.
@@ -378,7 +373,7 @@ module Cats {
                 }
                 this.addSession(session);
             }
-            this.mainEditor.edit(session,pos);
+            this.sessionTabView.navigateTo(session,pos);
             this.activeSession = session;
             this.addToSessionStack(name, pos, cb);
             if (cb) cb(session);

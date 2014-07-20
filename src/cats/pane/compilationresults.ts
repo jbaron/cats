@@ -16,43 +16,18 @@
 module Cats.View {
 
 
-export function showErrors(errors: Cats.FileRange[] = []) {
-
-        IDE.resultbar.selectOption(0);
-        var grid = new Cats.UI.Grid();
-        grid.setColumns(["message", "fileName", "position"]);
-        grid.setAspect("position", (data:FileRange) => { return (data.range.start.row + 1) + ":" + (data.range.start.column + 1) });
-
-        grid.setRows(errors);
-        grid.onselect = function(data:FileRange) {
-            IDE.openSession(data.fileName, data.range.start);
-        };
-
-        grid.render();
-
-        var result = IDE.compilationResult;
-        result.innerHTML = "";
-        grid.appendTo(result);    
-    
-}
-
 
 export function showCompilationResults(data:Cats.CompileResults) {
 
             if (data.errors && (data.errors.length > 0)) {
-                showErrors(data.errors);
+                IDE.problemResult.setData(data.errors);
                 return;
             }
-
-            // Lets puts a timestamp so it is clear we did something
-            IDE.resultbar.selectOption(2);
+            
+            IDE.problemResult.setData([]);
             var time = new Date();
             var stamp = time.toLocaleTimeString();
-            IDE.console.innerText += "\n" + stamp + " Successfully compiled " + Object.keys(data.source).length + " file(s).\n";
-            IDE.console.scrollTop = IDE.console.scrollHeight; // Scroll to bottom
-
-
-
+            IDE.console123.log( stamp + " Successfully compiled " + Object.keys(data.source).length + " file(s).\n");
     }
     
 }

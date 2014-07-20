@@ -97,6 +97,7 @@ declare module Ace {
 	interface Editor {
 		find(value:string,options,something);
 		focus();
+		resize();
         setReadOnly(readOnly:boolean);
         getReadOnly():boolean;
 		replace(value:string,options);
