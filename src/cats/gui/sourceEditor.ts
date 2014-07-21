@@ -5,8 +5,9 @@ class SourceEditor extends qx.ui.core.Widget {
 
     private aceEditor:Ace.Editor;
     private popup:qx.ui.popup.Popup;
+    private autoCompleteView: Cats.UI.AutoCompleteView;
 
-    constructor(private session:Cats.Session) {
+    constructor(private session:Cats.AceSession) {
         super();
         this.addListenerOnce("appear", () => {
             var container = this.getContentElement().getDomElement();
@@ -22,7 +23,8 @@ class SourceEditor extends qx.ui.core.Widget {
                     this.aceEditor.resize();
                 }, 0);
             });
-             this.setupInputHandling();
+            this.autoCompleteView = new Cats.UI.AutoCompleteView(this.aceEditor);
+             // this.setupInputHandling();
               if (session.mode === "typescript") this.createContextMenu();
         }, this);
         
@@ -38,8 +40,15 @@ class SourceEditor extends qx.ui.core.Widget {
         return this.aceEditor;
     }
 
-    autoComplete() {
-        
+
+     autoComplete() {
+            if (this.session.mode === "typescript") {
+                var cursor = this.aceEditor.getCursorPosition();
+                this.session.autoComplete(cursor, this.autoCompleteView);
+            }                        
+        }
+
+    autoComplete123() {
         // alert("auto complete");
         var cursor = this.aceEditor.getCursorPosition();
         var coords = this.aceEditor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
@@ -98,18 +107,6 @@ class SourceEditor extends qx.ui.core.Widget {
             */
 
             return editor;
-    }
-
-    
-
-
-    setupInputHandling() {
-        
-        var originalTextInput = this.aceEditor.onTextInput;
-        this.aceEditor.onTextInput = (text) => {
-                originalTextInput.call(this.aceEditor, text);
-                if (text === ".") this.autoComplete();
-        };
     }
 
     setContent(value:string) {

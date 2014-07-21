@@ -31,7 +31,7 @@ module Cats {
         private static STORE_KEY = "cats.config";
 
         activeSession: Session;
-    
+        outlineNavigator:OutlineNavigator; 
 
         getActiveEditor() {
             var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
@@ -88,7 +88,9 @@ module Cats {
             this.navigatorPane = new TabView(["Files", "Outline"]);
             var fileTree = new FileNavigator(process.cwd());
             this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
-            this.navigatorPane.getChildren()[1].add(new OutlineNavigator(), { edge: 0 });
+            
+            this.outlineNavigator = new OutlineNavigator()
+            this.navigatorPane.getChildren()[1].add(this.outlineNavigator , { edge: 0 });
     
             mainsplit.add(this.navigatorPane, 1); // navigator
     
@@ -360,6 +362,13 @@ module Cats {
             this.sessionTabView.navigateTo(session,pos);
             this.activeSession = session;
             this.addToSessionStack(name, pos, cb);
+            var project = session.project;
+            
+            // var mode = "getOutliningRegions";
+            this.project.iSense.getScriptLexicalStructure(session.name, (err, data: NavigateToItem[]) => {
+                this.outlineNavigator.setData(data);
+            });    
+            
             if (cb) cb(session);
         }
 

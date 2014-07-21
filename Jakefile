@@ -27,7 +27,6 @@ var catsOptions = [
     "src/typings/typescript.d.ts",
     "src/typings/qooxdoo.d.ts",
     "src/cats/common.ts",
-    "src/cats/promise.ts",
     "src/cats/infobus.ts",
     "src/cats/os.ts",
     "src/cats/observable.ts",
@@ -60,8 +59,6 @@ var catsOptions = [
     "src/cats/gui/toolBar.ts",
     "src/cats/gui/sessionTabView.ts",
     "src/cats/gui/statusBar.ts",
-    
-    "src/cats/pane/outline.ts",
     "src/cats/main.ts"
 ];
 

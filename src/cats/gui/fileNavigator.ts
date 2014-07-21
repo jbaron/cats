@@ -71,13 +71,9 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
 
     
     setup() {
-        
         this.setIconPath("");
         this.setIconOptions({
             converter : function(value, model) {
-               // console.log(value);
-               // console.log(value.getFullPath());
-               
                if (value.getDirectory()) {
                    return "./resource/qx/icon/Tango/16/places/folder.png";
                }

@@ -10,7 +10,7 @@ class SessionPage extends qx.ui.tabview.Page {
         this.setPadding(0, 0, 0, 0);
         this.setMargin(0, 0, 0, 0);
         this.setDecorator(null);
-        this.editor = new SourceEditor(session);
+        this.editor = new SourceEditor(<Cats.AceSession>session);
         this.add(this.editor, { edge: 0 });
         this.createContextMenu();
         

@@ -320,8 +320,9 @@ ul.tabbar:empty {
 	overflow: auto;
 	padding: 2px;
 	position: fixed;
+	background-color: white;
 	width: 400px;
-	z-index: 1000;
+	z-index: 9999;
 }
 
 .autocomplete .type {

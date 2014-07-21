@@ -1,52 +1,62 @@
+
+interface OutlineNavigatorItem {
+    name:string;
+    fullName:string;
+    range: Cats.Range;
+    kind: string;
+    kids?: OutlineNavigatorItem[];
+}
 /**      
  * Create a simple Tree to mimic outline functionality      
  */
-class OutlineNavigator extends qx.ui.tree.Tree {
+class OutlineNavigator extends qx.ui.tree.VirtualTree {
 
     constructor() {
-        super();
+        super(null,"name", "kids");
 
         this.setDecorator(null);
         this.setPadding(0, 0, 0, 0);
         this.setHideRoot(true);
-
-        // create and set the tree root
-        var root = new qx.ui.tree.TreeFolder("Desktop");
-        this.setRoot(root);
-
-        for (var f = 0; f < 10; f++) {
-            var f1 = new qx.ui.tree.TreeFolder("Class-" + f);
-            root.add(f1);
-            // create a third layer
-            for (var i = 0; i < 10; i++) {
-                var f11 = new qx.ui.tree.TreeFile("Method-" + i);
-                f1.add(f11);
+        /*
+        this.addListener("dblclick", () => {
+            var item = this.getSelectedItem();
+            if (item) {
+                IDE.getActiveEditor().moveCursorToPosition(item.range.start);
             }
-        }
-        // open the folders
-        root.setOpen(true);
-        f1.setOpen(true);
+        });
+        */
+    }
+    
+    private getSelectedItem():OutlineNavigatorItem {
+        var item = this.getSelection().getItem(0);
+        return item;
     }
     
     
-    
-    private createModel(data:Cats.NavigateToItem[], parent) {
+    private createModel(data:Cats.NavigateToItem[], parent:OutlineNavigatorItem) {
         if (! parent.kids) parent.kids = [];
         data.forEach((item)=>{
-             if ((item.containerKind === parent.kind) && (item.containerName === parent.name)) {
+              // var fullName = parent.containerName ? parent.containerName + "." + parent.name : parent.name;
+             if ((item.containerKind === parent.kind) && (item.containerName === parent.fullName)) {
+                 var fullName = parent.name ? parent.name + "." + item.name : item.name;
                  var newItem = {
                      name: item.name,
-                     kind: item.kind
+                     fullName : fullName,
+                     kind: item.kind,
+                     range: item.range
                  }
                  parent.kids.push(newItem);
                  this.createModel(data, newItem);
              }
-        })
+        });
+        return parent;
     }
     
     setData(data: Cats.NavigateToItem[]) {
-        var json = this.createModel(data,{name:"", kind:""});
+        // console.log(data);
+        var json = this.createModel(data,{name:"", kind:"", fullName:"", range:null});
         var model = qx.data.marshal.Json.createModel(json, true);
+        this.setModel(model);
         
         
                 /*
