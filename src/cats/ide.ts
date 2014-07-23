@@ -15,7 +15,7 @@
 
 module Cats {
 
-    export class Ide extends ObservableImpl {
+    export class Ide  {
 
         navigatorPane: TabView;
         problemPane: TabView;
@@ -27,21 +27,21 @@ module Cats {
 
         sessions: Session[] = [];
         project: Project;
-        layoutConfig;
         private static STORE_KEY = "cats.config";
 
-        activeSession: Session;
+
+        infoBus= <InfoBus> new Events.EventEmitter();
+
         outlineNavigator:OutlineNavigator; 
 
         getActiveEditor() {
             var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
             if (! page) return null;
             var editor:SourceEditor = <SourceEditor>page.getChildren()[0];
-            return editor.getAceEditor();
+            return editor;
         }
 
-
-        getActiveSession() {
+         get activeSession() {
             var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
             if (! page) return null;
             var editor:SourceEditor = <SourceEditor>page.getChildren()[0];
@@ -57,9 +57,7 @@ module Cats {
         mainEditor: TextEditor;
 
         constructor(private doc) {
-            super(["sessions","activeSession","project"]);
             this.config = this.loadConfig(true);
-            infoBus.IDE.on("toggleView", (name) => this.layoutConfig.toggle(name));
         }
 
         init() {
@@ -84,7 +82,10 @@ module Cats {
             mainContainer.add(this.toolBar, { flex: 0 });
     
             // mainsplit, contains the editor splitpane and the info splitpane
-            var mainsplit = new qx.ui.splitpane.Pane("horizontal").set({ decorator: null });
+            var mainsplit = new qx.ui.splitpane.Pane("horizontal");
+            mainsplit.set({ decorator: null });
+            mainsplit.setBackgroundColor("#F4F4F4");
+            
             this.navigatorPane = new TabView(["Files", "Outline"]);
             var fileTree = new FileNavigator(process.cwd());
             this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
@@ -199,7 +200,7 @@ module Cats {
          */
         setFontSize(size: number) {
             this.config.fontSize = size;
-            IDE.getActiveEditor().setFontSize(size + "px");
+            // IDE.getActiveEditor().setFontSize(size + "px");
         }
 
         /**
@@ -247,11 +248,15 @@ module Cats {
          * @param isBusy true if busy, false otherwise
          */ 
         public busy(isBusy:boolean) {
+            //@TODO call status bar busy 
+                     
+            /*
             if (isBusy) {
                $("#activity").addClass("busy"); 
             } else {
                 $("#activity").removeClass("busy"); 
             }
+            */
         }
 
         /**
@@ -360,14 +365,19 @@ module Cats {
                 this.addSession(session);
             }
             this.sessionTabView.navigateTo(session,pos);
-            this.activeSession = session;
+
             this.addToSessionStack(name, pos, cb);
             var project = session.project;
             
             // var mode = "getOutliningRegions";
-            this.project.iSense.getScriptLexicalStructure(session.name, (err, data: NavigateToItem[]) => {
-                this.outlineNavigator.setData(data);
-            });    
+            if ((<AceSession>session).isTypeScript()) {
+                this.project.iSense.getScriptLexicalStructure(session.name, (err, data: NavigateToItem[]) => {
+                    this.outlineNavigator.setData(data);
+                });    
+            } else {
+                this.outlineNavigator.setData([]);
+            }
+            
             
             if (cb) cb(session);
         }

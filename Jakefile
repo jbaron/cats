@@ -29,7 +29,6 @@ var catsOptions = [
     "src/cats/common.ts",
     "src/cats/infobus.ts",
     "src/cats/os.ts",
-    "src/cats/observable.ts",
     "src/cats/treewatcher.ts",
     "src/cats/ide.ts",
     "src/cats/acesession.ts",

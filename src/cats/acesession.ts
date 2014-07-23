@@ -18,7 +18,7 @@ module Cats {
     var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
     var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
     
-    export class AceSession extends ObservableImpl implements Session {
+    export class AceSession implements Session {
 
         private static MODES = {
             ".js": "javascript",
@@ -66,9 +66,6 @@ module Cats {
          * @param content The content of the session
          */
         constructor(public name?: string, content?: string) {
-            super(["changed"]);
-            
-            console.info("Creating new session for file " + name);
             this.mode = AceSession.determineMode(name);
             this.editSession = new EditSession(content, "ace/mode/" + this.mode);
             
@@ -77,7 +74,7 @@ module Cats {
             this.editSession.on("change", this.onChangeHandler.bind(this));
             this.editSession.setUndoManager(new UndoManager());
             this.editSession.on("changeOverwrite",(a)=>{
-                infoBus.SESSION.emit("overwrite",this.editSession.getOverwrite());
+                // infoBus.SESSION.emit("overwrite",this.editSession.getOverwrite());
             });
 
             // @TODO this.on("changed", () => { IDE.tabbar.refresh() });
@@ -104,6 +101,10 @@ module Cats {
 
         get project():Project {
             return IDE.project;
+        }
+
+        isTypeScript(): boolean {
+            return this.mode === "typescript";
         }
 
         get shortName():string {
@@ -188,29 +189,12 @@ module Cats {
         }
 
         /**
-         * Get the Position based on mouse x,y coordinates
-         */
-        private getPositionFromScreenOffset(x: number, y: number): Ace.Position {
-            var r = IDE.getActiveEditor().renderer;
-            // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
-            var offset = (x - r.$padding) / r.characterWidth;
-
-            // @BUG: Quickfix for strange issue with top
-            var correction = r.scrollTop ? 7 : 0;
-
-            var row = Math.floor((y + r.scrollTop - correction) / r.lineHeight);
-            var col = Math.round(offset);
-            var docPos = this.editSession.screenToDocumentPosition(row, col);
-            return docPos;
-        }
-
-        /**
          * Show info at Screen location
          */
         showInfoAt(ev: MouseEvent) {
             if (this.mode !== "typescript") return;
 
-            var docPos = this.getPositionFromScreenOffset(ev.offsetX, ev.offsetY);
+            var docPos = IDE.getActiveEditor().getPositionFromScreenOffset(ev.offsetX, ev.offsetY);
             var project = this.project;
 
             this.project.iSense.getTypeAtPosition(this.name, docPos,

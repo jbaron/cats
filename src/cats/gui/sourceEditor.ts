@@ -1,5 +1,6 @@
 /**
- * Simple wrapper around ACE editor
+ * Wrapper around the ACE editor. The rest of the code base should not use
+ * ACE editor directly so it can be easily changed for another editor if required.
  */
 class SourceEditor extends qx.ui.core.Widget {
 
@@ -36,9 +37,46 @@ class SourceEditor extends qx.ui.core.Widget {
         return this.session;
     }
     
+    
+    private setupEvents() {
+        var session = this.aceEditor.getSession();
+        session.on("changeOverwrite",(a)=>{
+                IDE.infoBus.emit("editor.overwrite",session.getOverwrite());
+        });
+    }
+    
     getAceEditor() {
         return this.aceEditor;
     }
+
+    moveToPosition(pos: Ace.Position) {
+        this.aceEditor.moveCursorToPosition(pos);
+        this.aceEditor.clearSelection();
+        this.aceEditor.centerSelection();
+    }
+
+    getPosition() {
+        return this.aceEditor.getCursorPosition();
+    }
+
+       /**
+         * Get the Position based on mouse x,y coordinates
+         */
+    getPositionFromScreenOffset(x: number, y: number): Ace.Position {
+            var r = this.aceEditor.renderer;
+            // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
+            var offset = (x - r.$padding) / r.characterWidth;
+
+            // @BUG: Quickfix for strange issue with top
+            var correction = r.scrollTop ? 7 : 0;
+
+            var row = Math.floor((y + r.scrollTop - correction) / r.lineHeight);
+            var col = Math.round(offset);
+            
+            var docPos = this.aceEditor.getSession().screenToDocumentPosition(row, col);
+            return docPos;
+        }
+
 
 
      autoComplete() {

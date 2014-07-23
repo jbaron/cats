@@ -23,7 +23,6 @@ if (args.indexOf("--debug") === -1 ) {
 }
 
 var IDE:Cats.Ide;
-var infoBus= new Cats.InfoBus(); 
 
 /**
  * This is the file that is included in the index.html and 

@@ -17,14 +17,15 @@ class OutlineNavigator extends qx.ui.tree.VirtualTree {
         this.setDecorator(null);
         this.setPadding(0, 0, 0, 0);
         this.setHideRoot(true);
-        /*
+        
         this.addListener("dblclick", () => {
-            var item = this.getSelectedItem();
+            var item = <any>this.getSelectedItem();
             if (item) {
-                IDE.getActiveEditor().moveCursorToPosition(item.range.start);
+                // @TODO fix getStart to use primitive types
+                IDE.getActiveEditor().moveToPosition(item.getRange().getStart());
             }
         });
-        */
+        
     }
     
     private getSelectedItem():OutlineNavigatorItem {
@@ -55,6 +56,8 @@ class OutlineNavigator extends qx.ui.tree.VirtualTree {
     setData(data: Cats.NavigateToItem[]) {
         // console.log(data);
         var json = this.createModel(data,{name:"", kind:"", fullName:"", range:null});
+        
+        // This could be very expensive call, look for better alternative.
         var model = qx.data.marshal.Json.createModel(json, true);
         this.setModel(model);
         

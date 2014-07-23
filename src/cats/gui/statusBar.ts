@@ -3,19 +3,41 @@
  */
 class StatusBar extends qx.ui.toolbar.ToolBar {
 
+    modeInfo;
+    overwriteInfo:qx.ui.toolbar.Button;
+    positionInfo;
+    busyInfo
+    
+
     constructor() {
         super();
         this.setPadding(0, 0, 0, 0);
         this.setMargin(0, 0, 0, 0);
         this.setDecorator(null);
         this.init();
+        this.setupListeners();
+    }
+
+    private createButton(label?) {
+        var button = new qx.ui.toolbar.Button(label);
+        button.setPadding(1,1,1,1);
+        button.setMargin(0, 0, 0, 0);
+        return button;
     }
 
     init() {
-       var positionButton = new qx.ui.toolbar.Button("1:1");
-       positionButton.setPadding(1,1,1,1);
-       positionButton.setMargin(0, 0, 0, 0);
-       this.add(positionButton); 
+       this.positionInfo = this.createButton("1:1");
+       this.add(this.positionInfo);
+       
+       this.modeInfo = this.createButton("TYPESCRIPT");
+       this.add(this.modeInfo);
+       
+       this.overwriteInfo = this.createButton("INSERT");
+       this.add(this.overwriteInfo);
+       
+       this.busyInfo = this.createButton();
+       this.add(this.busyInfo);
+       
     }
 
     toggle() {
@@ -38,11 +60,25 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
             }
         }
 
+
+        private setupListeners() {
+            IDE.infoBus.on("editor.overwrite", (value) => {
+                if (value) 
+                    this.overwriteInfo.setLabel("OVERWRITE");
+                else 
+                    this.overwriteInfo.setLabel("INESRT");
+            });
+        }
+
+
         initStatusBar() {
             var overwriteMode = document.getElementById("overwritemode");
+            
+            /*
             infoBus.SESSION.on("overwrite",(mode: boolean) => {
                 overwriteMode.innerText = mode ? "overwrite" : "insert";
             });
+            
 
             overwriteMode.onclick = (e:MouseEvent)=>{
               var s = <Cats.AceSession>IDE.activeSession;
@@ -67,14 +103,7 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
             recordingMode.onclick = (e:MouseEvent) => {
                 aceEditor.commands.toggleRecording(aceEditor);
             };
-            
-            IDE.on("sessions", (sessions: Cats.Session[]) => {
-                if (sessions.length) {
-                    // this.root.classList.remove("no-session");
-                } else {
-                    // this.root.classList.add("no-session");
-                }
-            })
+            */    
         }
         
         private updateSelectionText() {

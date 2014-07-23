@@ -16,11 +16,11 @@
 module Cats.Commands {
 
     function getCursor(): Ace.Position {
-        return IDE.getActiveEditor().getCursorPosition();
+        return IDE.getActiveEditor().getPosition();
     }
 
     export function gotoDeclaration() {        
-        var session = IDE.getActiveSession();
+        var session = IDE.activeSession;
         if (! session) return;
         var cursor = getCursor();
         session.project.iSense.getDefinitionAtPosition( session.name, cursor, (err, data:FileRange) => {
@@ -30,7 +30,7 @@ module Cats.Commands {
     }
 
     function getInfoAt(type: string) {        
-        var session = IDE.getActiveSession();
+        var session = IDE.activeSession;
         if (! session) return;
         IDE.problemPane.select("Search");
         var cursor = getCursor();

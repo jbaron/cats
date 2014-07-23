@@ -65,10 +65,21 @@ module Cats {
         on(event: "activeSession", fn: (newsession, oldsession) => void): void;
     }
 
+    export interface InfoBus extends EventEmitter {
+        on(event: string, fn: any): void;
+        on(ev:"editor.overwrite", fn: (value:boolean) => void): void; 
+        
+        emit(event: string, ...args): void;
+        emit(event: "editor.overwrite", overwrite: boolean): void;
+        
+    }
+
     /**
      * Central infobus that transports all type of events
      */ 
-    export class InfoBus {
+    export class InfoBus2 {
+         on:any;
+         
          IDE: IDEEvent = new Events.EventEmitter();
          SESSION: IDEEvent= new Events.EventEmitter();
          EDITOR: IDEEvent= new Events.EventEmitter();

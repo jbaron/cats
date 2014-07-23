@@ -19,12 +19,12 @@
 
 module Cats.Commands {
 
-
+/*
     // Just wrap the Ace command.
     function editorCommand(commandName: string) {
         return function() { IDE.getActiveEditor().execCommand(commandName); }
     }
-
+*/
 
  // Perform code autocompletion
      function autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
@@ -44,17 +44,18 @@ module Cats.Commands {
             if (session) {
                 session.project.iSense.getFormattedTextForRange( session.name, 0, session.getValue().length, (err, result) => {                    
                     if (!err) {
-                        var pos = IDE.getActiveEditor().getCursorPosition();
+                        var pos = IDE.getActiveEditor().getPosition();
                         session.setValue(result);
-                        if (pos) IDE.getActiveEditor().moveCursorToPosition(pos);
+                        if (pos) IDE.getActiveEditor().moveToPosition(pos);
                     }
                     
                 });
             }
         }
 
-    // TODO i18n
+    /*
     function getShortcut(commandName: string) {
+        
         var platform = IDE.getActiveEditor().commands.platform;
         var command = IDE.getActiveEditor().commands.byName[commandName];
 
@@ -64,6 +65,7 @@ module Cats.Commands {
         }
 
         return null;
+        
     }
 
 
@@ -86,6 +88,8 @@ module Cats.Commands {
         IDE.getActiveEditor().setShowInvisibles(!IDE.mainEditor.aceEditor.getShowInvisibles());
     }
 
+    */
+    
     export class EditorCommands {
 
 
@@ -123,14 +127,16 @@ module Cats.Commands {
                 var item:Command = {
                     name: config.id,
                     label: config.label,
-                    shortcut: getShortcut(config.cmd),
-                    command: editorCommand(config.cmd),
+                    shortcut:null,
+                    command:null
+        //            shortcut: getShortcut(config.cmd),
+ //                   command: editorCommand(config.cmd),
                 }
                 if (config.icon) item.icon = config.icon;
                 registry(item);
             });
             
-            registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
+           // registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
             registry({name:CMDS.source_format, label:"Format Code", command: formatText, icon: "format.png"});
         }
 
