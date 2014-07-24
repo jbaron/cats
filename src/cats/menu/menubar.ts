@@ -199,8 +199,8 @@ module Cats.Menu {
             var views = [
                 {id:IDE.toolBar,name:"Toolbar"},    
                 {id:IDE.statusBar,name:"Statusbar"}
-            ]
-            views.forEach((view) => {
+            ];
+            views.forEach((view:any) => {
                     var item = getCmd(CMDS.ide_toggleView,view.name,view.id);
                     menu.append(item);
             });

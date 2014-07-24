@@ -15,7 +15,6 @@
 
 module Cats.UI {
 
-    declare var $;
     var HashHandler = ace.require('ace/keyboard/hash_handler').HashHandler;
 
     /** 
@@ -302,6 +301,11 @@ module Cats.UI {
          * @TODO remove jQuery dependency
          */ 
         private setPosition(coords) {
+            // Quick hack
+            this.wrap.style.top = (coords.pageY - 200) + 'px';
+            this.wrap.style.left = coords.pageX + 'px';
+            
+            /*
             var bottom, editorBottom, top;
             top = coords.pageY + 20;
             editorBottom = $(this.editor.container).offset().top + $(this.editor.container).height();
@@ -313,6 +317,7 @@ module Cats.UI {
                 this.wrap.style.top = (top - $(this.wrap).height() - 20) + 'px';
                 this.wrap.style.left = coords.pageX + 'px';
             }
+            */
         }
 
     

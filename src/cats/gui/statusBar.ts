@@ -15,8 +15,8 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
         this.setupListeners();
     }
 
-    private createButton(label?) {
-        var button = new qx.ui.toolbar.Button(label);
+    private createButton(label?:string, icon?:string) {
+        var button = new qx.ui.toolbar.Button(label,icon);
         button.setPadding(1,1,1,1);
         button.setMargin(0, 0, 0, 0);
         return button;
@@ -32,9 +32,19 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
        this.overwriteInfo = this.createButton("INSERT");
        this.add(this.overwriteInfo);
        
-       this.busyInfo = this.createButton();
+       this.busyInfo = this.createButton("","./img/loader.gif");
+       this.busyInfo.setShow("label");
        this.add(this.busyInfo);
        
+    }
+
+
+    setBusy(busy:boolean) {
+        if (busy) {
+            this.busyInfo.setShow("icon");
+        } else {
+            this.busyInfo.setShow("label");
+        }
     }
 
     toggle() {

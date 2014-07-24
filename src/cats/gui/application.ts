@@ -13,7 +13,7 @@ class Ide {
     infoPane: TabView;
     statusBar: qx.ui.toolbar.ToolBar;
     sessionPane: TabView;
-    console:Console123;
+    console:ConsoleLog;
 
     doc: qx.ui.container.Composite;
 
@@ -59,7 +59,7 @@ class Ide {
 
         // Setup Problems section
         this.problemPane = new TabView(["Problems", "Search", "Console"]);
-        this.console = new Console123();
+        this.console = new ConsoleLog();
 
         editorSplit.add(this.problemPane, 2); // Info
 

@@ -7,23 +7,19 @@ class SourceEditor extends qx.ui.core.Widget {
     private aceEditor:Ace.Editor;
     private popup:qx.ui.popup.Popup;
     private autoCompleteView: Cats.UI.AutoCompleteView;
+    private container;
 
     constructor(private session:Cats.AceSession, pos?:Cats.Position) {
         super();
         this.addListenerOnce("appear", () => {
-            var container = this.getContentElement().getDomElement();
+            this.container = this.getContentElement().getDomElement();
             // create the editor
-            this.aceEditor = this.createAceEditor(container);
+            this.aceEditor = this.createAceEditor(this.container);
             this.aceEditor.getSession().setMode("ace/mode/typescript");
             // this.aceEditor.getSession().setValue(this.getContent());
             this.aceEditor.getSession();
             this.setContent(session.getValue());
-            this.addListener("resize", () => {
-                // use a timeout to let the layout queue apply its changes to the dom
-                window.setTimeout(() => {
-                    this.aceEditor.resize();
-                }, 0);
-            });
+            
             this.autoCompleteView = new Cats.UI.AutoCompleteView(this.aceEditor);
              // this.setupInputHandling();
               if (session.mode === "typescript") this.createContextMenu();
@@ -32,6 +28,16 @@ class SourceEditor extends qx.ui.core.Widget {
         
         this.popup = new qx.ui.popup.Popup(new qx.ui.layout.Flow());
         this.popup.add(new qx.ui.basic.Label("Code completion"));
+  
+       
+        this.addListener("resize", () => { this.resizeEditor() });
+        this.addListener("appear", () => { this.resizeEditor() });
+    }
+
+    private resizeEditor() {
+         setTimeout(() => {
+            this.aceEditor.resize();
+        }, 100);
     }
 
     getSession() : Cats.Session {
@@ -46,10 +52,6 @@ class SourceEditor extends qx.ui.core.Widget {
         });
     }
     
-    getAceEditor() {
-        return this.aceEditor;
-    }
-
     moveToPosition(pos: Ace.Position) {
         this.aceEditor.moveCursorToPosition(pos);
         this.aceEditor.clearSelection();
@@ -78,7 +80,32 @@ class SourceEditor extends qx.ui.core.Widget {
             return docPos;
         }
 
+        /**
+         * Show info at Screen location
+         */
+        showInfoAt(ev: MouseEvent) {
+            // if (this.mode !== "typescript") return;
 
+            var docPos = this.getPositionFromScreenOffset(ev.offsetX, ev.offsetY);
+            var project = IDE.project;
+
+            project.iSense.getTypeAtPosition(this.session.name, docPos,
+                (err, data: Cats.TypeInfo) => {
+                    if (!data) return;
+                    var member = data.memberName;
+                    if (!member) return;
+                    
+                    var tip = data.description;
+                    if (data.docComment) {
+                        tip += "\n" + data.docComment;
+                    }
+    
+                    var tooltip = new qx.ui.tooltip.ToolTip(tip);
+                    // this.add(tooltip);
+                    tooltip.show();
+                    // IDE.mainEditor.toolTip.show(ev.x, ev.y, tip);
+                });
+        }
 
      autoComplete() {
             if (this.session.mode === "typescript") {

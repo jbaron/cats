@@ -3,7 +3,7 @@
  * logging information that are of interest to the user.
  * 
  */ 
-class Console123 extends qx.ui.container.Scroll /* qx.ui.core.Widget */ {
+class ConsoleLog extends qx.ui.container.Scroll /* qx.ui.core.Widget */ {
  
     private container:HTMLElement;
  

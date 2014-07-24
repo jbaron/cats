@@ -29,7 +29,7 @@ module Cats.Commands {
             IDE.problemResult.setData([]);
             var time = new Date();
             var stamp = time.toLocaleTimeString();
-            IDE.console123.log( stamp + " Successfully compiled " + Object.keys(data.source).length + " file(s).\n");
+            IDE.console.log( stamp + " Successfully compiled " + Object.keys(data.source).length + " file(s).\n");
         }
 
 
@@ -102,7 +102,7 @@ module Cats.Commands {
 
     function show(text:string) {
         if (! text) return;
-        IDE.console123.log(text);
+        IDE.console.log(text);
     }
 
     /**

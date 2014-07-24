@@ -8,7 +8,9 @@ class TabView extends qx.ui.tabview.TabView {
         this.setContentPadding(1, 0, 0, 0);
         tabNames.forEach((name) => {
             this.addPage(name);
-        });
+        });           
+        
+  
     }
 
     getIconName(name:string) {

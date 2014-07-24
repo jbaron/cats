@@ -21,11 +21,11 @@ module Cats {
         problemPane: TabView;
         toolBar: ToolBar
         infoPane: TabView;
-        statusBar: qx.ui.toolbar.ToolBar;
+        statusBar: StatusBar;
         sessionTabView: SessionTabView;
-        console123:Console123;
+        console:ConsoleLog;
 
-        sessions: Session[] = [];
+        // sessions: Session[] = [];
         project: Project;
         private static STORE_KEY = "cats.config";
 
@@ -39,6 +39,10 @@ module Cats {
             if (! page) return null;
             var editor:SourceEditor = <SourceEditor>page.getChildren()[0];
             return editor;
+        }
+
+        get sessions() {
+            return this.sessionTabView.getSessions();
         }
 
          get activeSession() {
@@ -110,7 +114,7 @@ module Cats {
     
             // Setup Problems section
             this.problemPane = new TabView(["Problems", "Search", "Console"]);
-            this.console123 = new Console123();
+            this.console = new ConsoleLog();
     
             editorSplit.add(this.problemPane, 2); // Info
     
@@ -120,7 +124,7 @@ module Cats {
             
             this.searchResult = new ResultTable()
             this.problemPane.getChildren()[1].add(this.searchResult, { edge: 0 });
-            this.problemPane.getChildren()[2].add(this.console123, { edge: 0 });
+            this.problemPane.getChildren()[2].add(this.console, { edge: 0 });
     
             this.problemPane.select("Console");
             // this.problemPane.setSelection([this.problemPane.getChildren()[2]]);
@@ -217,9 +221,8 @@ module Cats {
          * @param session The session to be added
          */
         addSession(session: Session) {
-            this.sessions = this.sessions.concat([session]);
             var p = IDE.sessionTabView.addSession(session);
-            IDE.console123.log("Added File " + session.name);
+            IDE.console.log("Added File " + session.name);
         }
 
         /**
@@ -248,15 +251,7 @@ module Cats {
          * @param isBusy true if busy, false otherwise
          */ 
         public busy(isBusy:boolean) {
-            //@TODO call status bar busy 
-                     
-            /*
-            if (isBusy) {
-               $("#activity").addClass("busy"); 
-            } else {
-                $("#activity").removeClass("busy"); 
-            }
-            */
+            this.statusBar.setBusy(isBusy);
         }
 
         /**
@@ -362,7 +357,6 @@ module Cats {
                 if ((session.mode === "typescript") && (! this.project.containsTSFile(name))) {
                     this.project.addTSFile(name,content);
                 }
-                this.sessions = this.sessions.concat([session]);
                 var p = IDE.sessionTabView.addSession(session,pos);
             } else {
                  this.sessionTabView.navigateTo(session,pos);

@@ -2,7 +2,7 @@
 class SessionPage extends qx.ui.tabview.Page {
  
     editor:SourceEditor;
- 
+
     constructor(public session:Cats.Session, pos?) {
         super(session.shortName);
         this.setShowCloseButton(true);
@@ -59,6 +59,15 @@ class SessionTabView extends qx.ui.tabview.TabView {
           this.add(page);
           this.setSelection([page]);
     }
+    
+    getSessions():Cats.Session[] {
+        var result = [];
+        this.getChildren().forEach((child:SessionPage) =>{
+            result.push(child.session);
+        });
+        return result;
+    }
+    
     
     navigateTo(session, pos?:Ace.Position) {
         var page = this.getPageBySession(session);
