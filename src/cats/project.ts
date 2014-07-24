@@ -30,7 +30,6 @@ module Cats {
         shortName: string;
         getValue(): string;
         setValue(value: string);
-        getPosition():any;
         persist(shouldConfirm:boolean);
     }
 
@@ -61,6 +60,8 @@ module Cats {
 
         // The singleton TSWorker handler instance
         iSense: ISenseHandler;
+        
+        // Stores the project configuration paramters
         config: ProjectConfiguration;
 
         /**    

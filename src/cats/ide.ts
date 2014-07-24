@@ -84,7 +84,7 @@ module Cats {
             // mainsplit, contains the editor splitpane and the info splitpane
             var mainsplit = new qx.ui.splitpane.Pane("horizontal");
             mainsplit.set({ decorator: null });
-            mainsplit.setBackgroundColor("#F4F4F4");
+            // mainsplit.setBackgroundColor("#F4F4F4");
             
             this.navigatorPane = new TabView(["Files", "Outline"]);
             var fileTree = new FileNavigator(process.cwd());
@@ -185,7 +185,7 @@ module Cats {
                 console.info("Found previous sessions: ", this.config.sessions.length);
                 this.config.sessions.forEach((session) => {
                     try {
-                        this.openSession(session.path,session.pos);
+                        this.openSession(session.path);
                     } catch (err) {
                         console.error("error " + err);
                         alert("Couldn't open file " + session.path);
@@ -305,8 +305,8 @@ module Cats {
             
             this.sessions.forEach((session)=>{               
                 config.sessions.push({
-                    path: session.name,
-                    pos: session.getPosition() //TODO make session fully responsible
+                    path: session.name
+                    // session.getPosition() //@TODO make session fully responsible
                 });
             });
 
@@ -362,9 +362,11 @@ module Cats {
                 if ((session.mode === "typescript") && (! this.project.containsTSFile(name))) {
                     this.project.addTSFile(name,content);
                 }
-                this.addSession(session);
+                this.sessions = this.sessions.concat([session]);
+                var p = IDE.sessionTabView.addSession(session,pos);
+            } else {
+                 this.sessionTabView.navigateTo(session,pos);
             }
-            this.sessionTabView.navigateTo(session,pos);
 
             this.addToSessionStack(name, pos, cb);
             var project = session.project;

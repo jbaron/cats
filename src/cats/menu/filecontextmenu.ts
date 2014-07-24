@@ -67,7 +67,7 @@ module Cats.Menu {
             basedir = PATH.dirname(data.key);
         }
 
-        var name = prompt("Vnesi novo ime mape ");
+        var name = prompt("Please enter new name");
         if (name == null) return;
         var fullName = PATH.join(basedir, name);
         OS.File.mkdirRecursiveSync(fullName);

@@ -3,14 +3,14 @@ class SessionPage extends qx.ui.tabview.Page {
  
     editor:SourceEditor;
  
-    constructor(public session:Cats.Session) {
+    constructor(public session:Cats.Session, pos?) {
         super(session.shortName);
         this.setShowCloseButton(true);
         this.setLayout(new qx.ui.layout.Canvas());
         this.setPadding(0, 0, 0, 0);
         this.setMargin(0, 0, 0, 0);
         this.setDecorator(null);
-        this.editor = new SourceEditor(<Cats.AceSession>session);
+        this.editor = new SourceEditor(<Cats.AceSession>session,pos);
         this.add(this.editor, { edge: 0 });
         this.createContextMenu();
         
@@ -54,18 +54,16 @@ class SessionTabView extends qx.ui.tabview.TabView {
         this.setContentPadding(1, 0, 0, 0);
     }
 
-    addSession(session) {
-          this.add(new SessionPage(session));
+    addSession(session, pos?:Cats.Position) {
+          var page = new SessionPage(session, pos);
+          this.add(page);
+          this.setSelection([page]);
     }
     
     navigateTo(session, pos?:Ace.Position) {
         var page = this.getPageBySession(session);
         this.setSelection([page]);
-        if (pos) {
-            setTimeout(() => {
-                page.editor.moveToPosition(pos);
-            }, 0);
-        }
+        if (pos) page.editor.moveToPosition(pos);
     }
 
     getPageBySession(session):SessionPage {

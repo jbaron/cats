@@ -8,7 +8,7 @@ class SourceEditor extends qx.ui.core.Widget {
     private popup:qx.ui.popup.Popup;
     private autoCompleteView: Cats.UI.AutoCompleteView;
 
-    constructor(private session:Cats.AceSession) {
+    constructor(private session:Cats.AceSession, pos?:Cats.Position) {
         super();
         this.addListenerOnce("appear", () => {
             var container = this.getContentElement().getDomElement();
@@ -27,6 +27,7 @@ class SourceEditor extends qx.ui.core.Widget {
             this.autoCompleteView = new Cats.UI.AutoCompleteView(this.aceEditor);
              // this.setupInputHandling();
               if (session.mode === "typescript") this.createContextMenu();
+              if (pos) this.moveToPosition(pos);
         }, this);
         
         this.popup = new qx.ui.popup.Popup(new qx.ui.layout.Flow());

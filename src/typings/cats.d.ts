@@ -55,7 +55,7 @@ declare module Cats {
         projects: string[];
         sessions: {
             path: string;
-            pos: Position;
+            state?: any;
         }[];
     }
 

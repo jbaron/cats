@@ -112,20 +112,6 @@ module Cats {
             return PATH.basename(this.name);
         }
 
-        /**
-         * Get the current position of the cursor
-         */ 
-        getPosition():Position {
-             var c = this.editSession.getSelection().getCursor();
-                                
-            var pos = {
-                row: c.row,
-                column: c.column                    
-            };
-                
-            return pos;    
-        }
-
 
         /**
          * Setup some required listeners

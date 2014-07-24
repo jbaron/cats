@@ -1,23 +1,28 @@
 class TabView extends qx.ui.tabview.TabView {
+    
+    iconPath = "./img/eclipse/";
 
     constructor(tabNames: string[]) {
         super();
-        this.setPadding(0, 0, 0, 0);
+ //       this.setPadding(0, 0, 0, 0);
         this.setContentPadding(1, 0, 0, 0);
         tabNames.forEach((name) => {
             this.addPage(name);
         });
     }
 
-    addPage(name, tooltipText?:string): qx.ui.tabview.Page {
-        var tab = new qx.ui.tabview.Page(name);
-        tab.setLayout(new qx.ui.layout.Canvas());
-        tab.setPadding(0, 0, 0, 0);
-        tab.setMargin(0, 0, 0, 0);
-        tab.setDecorator(null);
+    getIconName(name:string) {
+        return this.iconPath + name.toLowerCase() + "_view.gif";
+    }
+
+    addPage(name:string, tooltipText?:string): qx.ui.tabview.Page {
         
+        var tab = new qx.ui.tabview.Page(name, this.getIconName(name));
+        tab.setLayout(new qx.ui.layout.Canvas());
+
         var button = (<any>tab).getButton();
         button.setContextMenu(this.createContextMenu(tab));
+
         if (tooltipText) {
             var tooltip = new qx.ui.tooltip.ToolTip(tooltipText);
             button.setToolTip(tooltip);

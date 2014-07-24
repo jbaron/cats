@@ -11,9 +11,6 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
 
     constructor() {
         super();
-        this.setPadding(0, 0, 0, 0);
-        this.setMargin(0, 0, 0, 0);
-        this.setDecorator(null);
         this.init();
         this.setupListeners();
     }

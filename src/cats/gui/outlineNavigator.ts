@@ -13,9 +13,8 @@ class OutlineNavigator extends qx.ui.tree.VirtualTree {
 
     constructor() {
         super(null,"name", "kids");
-
         this.setDecorator(null);
-        this.setPadding(0, 0, 0, 0);
+        // this.setPadding(0, 0, 0, 0);
         this.setHideRoot(true);
         
         this.addListener("dblclick", () => {
