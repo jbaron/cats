@@ -3,19 +3,19 @@
  * logging information that are of interest to the user.
  * 
  */ 
-class ConsoleLog extends qx.ui.container.Scroll /* qx.ui.core.Widget */ {
+class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.Widget */ {
  
     private container:HTMLElement;
  
     constructor() {
-        super();
+        super(null);
 
         this.setDecorator(null);
-        var w = new qx.ui.core.Widget();
-        this.add(w);
-        
+        //var w = new qx.ui.core.Widget();
+        // this.add(w);
+        this.setOverflow("auto","auto");
         this.addListenerOnce("appear", () => {
-            this.container = w.getContentElement().getDomElement();
+            this.container = this.getContentElement().getDomElement();
         });
         this.setContextMenu(this.createContextMenu());
     }
@@ -28,7 +28,8 @@ class ConsoleLog extends qx.ui.container.Scroll /* qx.ui.core.Widget */ {
                prefix = dt.toLocaleTimeString() + " ";
             } 
             this.container.innerText += prefix + msg + "\n";
-            this.container.scrollTop = this.container.scrollHeight; // Scroll to bottom
+            this.getContentElement().scrollToY(100000);
+            // this.container.scrollTop = this.container.scrollHeight; // Scroll to bottom
 
             // var t = document.createTextNode(prefix + msg);
             // this.container.appendChild(t);

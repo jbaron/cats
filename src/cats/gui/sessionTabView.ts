@@ -13,9 +13,17 @@ class SessionPage extends qx.ui.tabview.Page {
         this.editor = new SourceEditor(<Cats.AceSession>session,pos);
         this.add(this.editor, { edge: 0 });
         this.createContextMenu();
+        this.createToolTip();
         
         this.setChanged(false);
     }  
+    
+    
+    private createToolTip() {
+        var button:qx.ui.tabview.TabButton = (<any>this).getButton();
+        var tooltip = new qx.ui.tooltip.ToolTip(this.session.name);
+        button.setToolTip(tooltip);
+    }
     
      private createContextMenu() {
         var button:qx.ui.tabview.TabButton = (<any>this).getButton();
