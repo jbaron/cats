@@ -131,17 +131,6 @@ module Cats {
         }
 
     
-        private onMouseMove(ev: MouseEvent) {
-            this.toolTip.hide();
-            clearTimeout(this.mouseMoveTimer);
-            var elem = <HTMLElement>ev.srcElement;
-            if (elem.className !== "ace_content") return;
-            var session = <AceSession>IDE.activeSession;
-            this.mouseMoveTimer = setTimeout(() => {
-                session.showInfoAt(ev);
-            }, 800);
-        }
-
         // Initialize the editor
         private createAceEditor():Ace.Editor {
             var editor: Ace.Editor = ace.edit(this.rootElement);
@@ -182,12 +171,6 @@ module Cats {
                 if (text === ".") this.autoComplete();
             };
 
-            var elem = this.rootElement; // TODo find scroller child
-            elem.onmousemove = this.onMouseMove.bind(this);
-            elem.onmouseout = () => {
-                this.toolTip.hide()
-                clearTimeout(this.mouseMoveTimer);
-            };
 
             return editor;
         }

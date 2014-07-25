@@ -7,7 +7,7 @@ class SourceEditor extends qx.ui.embed.Html {
     private aceEditor:Ace.Editor;
     private popup:qx.ui.popup.Popup;
     private autoCompleteView: Cats.UI.AutoCompleteView;
-    private container;
+    // private container:HTMLElement;
     private mouseMoveTimer;
     private updateSourceTimer;
     private pendingWorkerUpdate = false;
@@ -18,9 +18,9 @@ class SourceEditor extends qx.ui.embed.Html {
         this.setFont(null);
         this.setAppearance(null);
         this.addListenerOnce("appear", () => {
-            this.container = this.getContentElement().getDomElement();
-            // create the editor
-            this.aceEditor = this.createAceEditor(this.container);
+            var container = this.getContentElement().getDomElement();
+          
+            this.aceEditor = this.createAceEditor(container);
             this.aceEditor.getSession().setMode("ace/mode/typescript");
             // this.aceEditor.getSession().setValue(this.getContent());
             this.aceEditor.getSession();
@@ -35,17 +35,21 @@ class SourceEditor extends qx.ui.embed.Html {
         this.popup = new qx.ui.popup.Popup(new qx.ui.layout.Flow());
         this.popup.add(new qx.ui.basic.Label("Code completion"));
   
-        this.setToolTip(new qx.ui.tooltip.ToolTip(""));
-        this.getToolTip().exclude();
-        this.getToolTip().setRich(true);
-        this.getToolTip().setWidth(200);
-        
-        
         this.addListener("resize", () => { this.resizeHandler();});
         // this.addListener("resize", () => { this.resizeEditor();});
         // this.addListener("appear", () => { this.resizeEditor() });
     }
 
+
+    private createToolTip() {
+        var tooltip = new qx.ui.tooltip.ToolTip("");
+        tooltip.exclude();
+        tooltip.setRich(true);
+        tooltip.setMaxWidth(500);
+        // tooltip.setWidth(300);
+        this.setToolTip(tooltip);
+        return tooltip;
+    }
 
     private resizeHandler() {
         if (!this.isSeeable()) {
@@ -122,11 +126,12 @@ class SourceEditor extends qx.ui.embed.Html {
                     
                     var tip = data.description;
                     if (data.docComment) {
-                        tip += "\n" + data.docComment;
+                        tip += '<br>' + data.docComment;
                     }
                     
                     if (tip && tip.trim()) {
                         var tooltip:qx.ui.tooltip.ToolTip = this.getToolTip();
+                        if (! tooltip) tooltip = this.createToolTip();
                         tooltip.setLabel(tip);
                         tooltip.moveTo(ev.x, ev.y+10);
                         tooltip.show();
@@ -227,7 +232,7 @@ class SourceEditor extends qx.ui.embed.Html {
             var elem = rootElement; // TODo find scroller child
             elem.onmousemove = this.onMouseMove.bind(this);
             elem.onmouseout = () => {
-                this.getToolTip().exclude();
+                if (this.getToolTip() && this.getToolTip().isSeeable()) this.getToolTip().exclude();
                 clearTimeout(this.mouseMoveTimer);
             };
             
@@ -262,7 +267,7 @@ class SourceEditor extends qx.ui.embed.Html {
   
 
     private onMouseMove(ev: MouseEvent) {
-            this.getToolTip().exclude();
+            if (this.getToolTip() && this.getToolTip().isSeeable()) this.getToolTip().exclude();
             clearTimeout(this.mouseMoveTimer);
             var elem = <HTMLElement>ev.srcElement;
             if (elem.className !== "ace_content") return;

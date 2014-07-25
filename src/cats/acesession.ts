@@ -175,30 +175,6 @@ module Cats {
         }
 
         /**
-         * Show info at Screen location
-         */
-        showInfoAt(ev: MouseEvent) {
-            if (this.mode !== "typescript") return;
-
-            var docPos = IDE.getActiveEditor().getPositionFromScreenOffset(ev.offsetX, ev.offsetY);
-            var project = this.project;
-
-            this.project.iSense.getTypeAtPosition(this.name, docPos,
-                (err, data: TypeInfo) => {
-                    if (!data) return;
-                    var member = data.memberName;
-                    if (!member) return;
-                    
-                    var tip = data.description;
-                    if (data.docComment) {
-                        tip += "\n" + data.docComment;
-                    }
-
-                    IDE.mainEditor.toolTip.show(ev.x, ev.y, tip);
-                });
-        }
-
-        /**
          * Determine the edit mode based on the file name
          * @param name File name
          */
