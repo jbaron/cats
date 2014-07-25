@@ -65,7 +65,7 @@ module Cats {
          * @param name The name of the session
          * @param content The content of the session
          */
-        constructor(public name?: string, content?: string) {
+        constructor(public name: string, public content="") {
             this.mode = AceSession.determineMode(name);
             this.editSession = new EditSession(content, "ace/mode/" + this.mode);
             

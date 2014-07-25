@@ -41,7 +41,7 @@ module Cats.Commands {
      * Set the font size
      */ 
     function setFontSize(size:number) {
-        IDE.setFontSize(size);
+        IDE.sessionTabView.setFontSize(size);
     }
 
     function setRightMargin(margin) {

@@ -2,15 +2,21 @@
  * Wrapper around the ACE editor. The rest of the code base should not use
  * ACE editor directly so it can be easily changed for another editor if required.
  */
-class SourceEditor extends qx.ui.core.Widget {
+class SourceEditor extends qx.ui.embed.Html {
 
     private aceEditor:Ace.Editor;
     private popup:qx.ui.popup.Popup;
     private autoCompleteView: Cats.UI.AutoCompleteView;
     private container;
+    private mouseMoveTimer;
+    private updateSourceTimer;
+    private pendingWorkerUpdate = false;
 
-    constructor(private session:Cats.AceSession, pos?:Cats.Position) {
-        super();
+    constructor(private session:Cats.Session, pos?:Cats.Position) {
+        super("");
+        this.setDecorator(null);
+        this.setFont(null);
+        this.setAppearance(null);
         this.addListenerOnce("appear", () => {
             this.container = this.getContentElement().getDomElement();
             // create the editor
@@ -29,10 +35,26 @@ class SourceEditor extends qx.ui.core.Widget {
         this.popup = new qx.ui.popup.Popup(new qx.ui.layout.Flow());
         this.popup.add(new qx.ui.basic.Label("Code completion"));
   
-       
-        this.addListener("resize", () => { this.resizeEditor() });
-        this.addListener("appear", () => { this.resizeEditor() });
+        this.setToolTip(new qx.ui.tooltip.ToolTip(""));
+        this.getToolTip().exclude();
+        this.getToolTip().setRich(true);
+        this.getToolTip().setWidth(200);
+        
+        
+        this.addListener("resize", () => { this.resizeHandler();});
+        // this.addListener("resize", () => { this.resizeEditor();});
+        // this.addListener("appear", () => { this.resizeEditor() });
     }
+
+
+    private resizeHandler() {
+        if (!this.isSeeable()) {
+            this.addListenerOnce("appear", () => { this.resizeEditor();});
+        } else {
+             this.resizeEditor();   
+        }
+    }
+
 
     private resizeEditor() {
          setTimeout(() => {
@@ -44,6 +66,9 @@ class SourceEditor extends qx.ui.core.Widget {
         return this.session;
     }
     
+    setFontSize(size) {
+        this.aceEditor.setFontSize(size + "px");
+    }
     
     private setupEvents() {
         var session = this.aceEditor.getSession();
@@ -53,8 +78,8 @@ class SourceEditor extends qx.ui.core.Widget {
     }
     
     moveToPosition(pos: Ace.Position) {
-        this.aceEditor.moveCursorToPosition(pos);
         this.aceEditor.clearSelection();
+        this.aceEditor.moveCursorToPosition(pos);
         this.aceEditor.centerSelection();
     }
 
@@ -83,7 +108,7 @@ class SourceEditor extends qx.ui.core.Widget {
         /**
          * Show info at Screen location
          */
-        showInfoAt(ev: MouseEvent) {
+        showToolTipAt(ev: MouseEvent) {
             // if (this.mode !== "typescript") return;
 
             var docPos = this.getPositionFromScreenOffset(ev.offsetX, ev.offsetY);
@@ -99,18 +124,53 @@ class SourceEditor extends qx.ui.core.Widget {
                     if (data.docComment) {
                         tip += "\n" + data.docComment;
                     }
-    
-                    var tooltip = new qx.ui.tooltip.ToolTip(tip);
-                    // this.add(tooltip);
-                    tooltip.show();
+                    
+                    if (tip && tip.trim()) {
+                        var tooltip:qx.ui.tooltip.ToolTip = this.getToolTip();
+                        tooltip.setLabel(tip);
+                        tooltip.moveTo(ev.x, ev.y+10);
+                        tooltip.show();
+                    }
                     // IDE.mainEditor.toolTip.show(ev.x, ev.y, tip);
                 });
         }
 
+
+       /**
+         * Update the worker with the latest version of the content of this 
+         * session.
+         */
+        update() {
+            if (this.session.mode === "typescript") {
+                var source = this.aceEditor.getSession().getValue();
+                IDE.project.iSense.updateScript(this.session.name, source);
+                clearTimeout(this.updateSourceTimer);
+                this.pendingWorkerUpdate = false;
+            };
+        }
+
+
+        /**
+         * Perform code autocompletion. Right now support for TS.
+         */
+        showAutoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
+            
+            if (this.session.mode !== "typescript") return;
+
+            // Any pending changes that are not yet send to the worker?
+            if (this.pendingWorkerUpdate) this.update();
+
+            IDE.project.iSense.autoComplete(cursor, this.session.name, 
+            (err, completes:TypeScript.Services.CompletionInfo) => {
+                if (completes != null) view.showCompletions(completes.entries);
+            });
+        }
+
+
      autoComplete() {
             if (this.session.mode === "typescript") {
                 var cursor = this.aceEditor.getCursorPosition();
-                this.session.autoComplete(cursor, this.autoCompleteView);
+                this.showAutoComplete(cursor, this.autoCompleteView);
             }                        
         }
 
@@ -163,14 +223,14 @@ class SourceEditor extends qx.ui.core.Widget {
                 if (text === ".") this.autoComplete();
             };
 
-            /*
+        
             var elem = rootElement; // TODo find scroller child
             elem.onmousemove = this.onMouseMove.bind(this);
             elem.onmouseout = () => {
-                this.toolTip.hide()
+                this.getToolTip().exclude();
                 clearTimeout(this.mouseMoveTimer);
             };
-            */
+            
 
             return editor;
     }
@@ -201,5 +261,14 @@ class SourceEditor extends qx.ui.core.Widget {
     }
   
 
+    private onMouseMove(ev: MouseEvent) {
+            this.getToolTip().exclude();
+            clearTimeout(this.mouseMoveTimer);
+            var elem = <HTMLElement>ev.srcElement;
+            if (elem.className !== "ace_content") return;
+            this.mouseMoveTimer = setTimeout(() => {
+                this.showToolTipAt(ev);
+            }, 800);
+        }
 
 }

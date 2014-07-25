@@ -199,15 +199,6 @@ module Cats {
         }
 
         /**
-         * Set the font size of the IDE
-         * @param size the font size in pixels
-         */
-        setFontSize(size: number) {
-            this.config.fontSize = size;
-            // IDE.getActiveEditor().setFontSize(size + "px");
-        }
-
-        /**
         * Set the right margin of the IDE
         * @param margin number of columns
         */
@@ -240,8 +231,9 @@ module Cats {
          * @param name The name of the session
          */
         getSession(name: string) : Session {
-            for (var i = 0; i < this.sessions.length; i++) {
-                var session = this.sessions[i];
+            var sessions = this.sessions; 
+            for (var i = 0; i < sessions.length; i++) {
+                var session = sessions[i];
                 if (session.name === name) return session;
             }
         }

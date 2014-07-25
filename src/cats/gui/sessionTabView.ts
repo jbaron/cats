@@ -3,7 +3,7 @@ class SessionPage extends qx.ui.tabview.Page {
  
     editor:SourceEditor;
 
-    constructor(public session:Cats.Session, pos?) {
+    constructor(public session:Cats.Session, pos?:Cats.Position) {
         super(session.shortName);
         this.setShowCloseButton(true);
         this.setLayout(new qx.ui.layout.Canvas());
@@ -68,6 +68,12 @@ class SessionTabView extends qx.ui.tabview.TabView {
         return result;
     }
     
+    
+    setFontSize(size) {
+        this.getChildren().forEach((child:SessionPage)=>{
+           child.editor.setFontSize(size); 
+        });
+    }
     
     navigateTo(session, pos?:Ace.Position) {
         var page = this.getPageBySession(session);

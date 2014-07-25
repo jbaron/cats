@@ -23,6 +23,7 @@ module Cats {
      */ 
     export interface Session {
         name: string;
+        content:string;
         type: string;
         project: Project;
         mode: string;
