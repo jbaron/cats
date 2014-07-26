@@ -4,7 +4,7 @@ class TabView extends qx.ui.tabview.TabView {
 
     constructor(tabNames: string[]) {
         super();
- //       this.setPadding(0, 0, 0, 0);
+        this.setPadding(0, 0, 0, 0);
         this.setContentPadding(1, 0, 0, 0);
         tabNames.forEach((name) => {
             this.addPage(name);

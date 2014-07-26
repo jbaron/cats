@@ -15,7 +15,8 @@ class SessionPage extends qx.ui.tabview.Page {
         this.createContextMenu();
         this.createToolTip();
         
-        this.setChanged(false);
+        this.editor.addListener("editor.update", () => { this.setChanged(true);});
+        this.editor.addListener("editor.errors", (ev) => { this.setHasErrors(ev.getData());});
     }  
     
     
@@ -41,14 +42,22 @@ class SessionPage extends qx.ui.tabview.Page {
         button.setContextMenu(menu);
     }
 
+    setHasErrors(errors:number) {
+        if (errors > 0) {
+            this.setIcon("./img/eclipse/warning.gif");
+        } else {
+            this.getButton().resetIcon();
+        }
+        console.log(errors);
+    }
+
     setChanged(changed:boolean) {
-        
-        var iconPath = "./resource/qx/icon/Tango/16/";  
+        var button:qx.ui.tabview.TabButton = (<any>this).getButton();
         
         if (changed) {
-            this.setIcon(iconPath + "status/dialog-information.png");
+            button.setLabel("*" + this.session.shortName);
         } else {
-            this.setIcon("");
+            button.setLabel(this.session.shortName);
         }
     }
 

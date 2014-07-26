@@ -3,7 +3,7 @@
  */
 class StatusBar extends qx.ui.toolbar.ToolBar {
 
-    modeInfo;
+    modeInfo:qx.ui.toolbar.Button;
     overwriteInfo:qx.ui.toolbar.Button;
     positionInfo;
     busyInfo
@@ -18,23 +18,28 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
     private createButton(label?:string, icon?:string) {
         var button = new qx.ui.toolbar.Button(label,icon);
         button.setPadding(1,1,1,1);
-        button.setMargin(0, 0, 0, 0);
+        button.setMargin(0, 10, 0, 0);
+        button.setMinWidth(100);
+        button.setDecorator(null);
         return button;
     }
 
     init() {
+        
        this.positionInfo = this.createButton("1:1");
        this.add(this.positionInfo);
        
-       this.modeInfo = this.createButton("TYPESCRIPT");
+       this.modeInfo = this.createButton("No Mode");
        this.add(this.modeInfo);
-       
-       this.overwriteInfo = this.createButton("INSERT");
-       this.add(this.overwriteInfo);
-       
+       this.addSpacer();
+
        this.busyInfo = this.createButton("","./img/loader.gif");
        this.busyInfo.setShow("label");
        this.add(this.busyInfo);
+
+       this.overwriteInfo = this.createButton("INSERT");
+       this.add(this.overwriteInfo);
+       
        
     }
 

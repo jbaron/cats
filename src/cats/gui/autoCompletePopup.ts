@@ -169,8 +169,9 @@
          * Show the popup and make sure the keybinding is in place
          * 
          */ 
-        private showPopup() {
+        private showPopup(coords) {
             this.editor.keyBinding.addKeyboardHandler(this.handler);
+            this.moveTo(coords.pageX, coords.PageY);
             this.show();
             // this.wrap.style.display = 'block';
             this.changeListener = (ev) => this.onChange(ev);
@@ -214,7 +215,7 @@
         private onChange(ev) {
             var key = ev.data.text;
             if (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0))) {
-                this.hide();
+                this.hidePopup();
                 return;
             }
             // hack to get the cursor updated before we render
@@ -273,9 +274,8 @@
             console.info("Received completions: " + completions.length);
             var cursor = this.editor.getCursorPosition();
             var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
-            this.setPositionPopup(coords);
             this.render();
-            this.showPopup();
+            this.showPopup(coords);
         }
 
 
@@ -299,33 +299,6 @@
             this.scroll();
         }
 
-        /**
-         * Determine the location of the popup. Copied from the Ace playground
-         * editor. 
-         * @TODO remove jQuery dependency
-         */ 
-        private setPositionPopup(coords) {
-            // Quick hack
-            this.moveTo(coords.pageX, coords.PageY-200);
-            // this.wrap.style.top = (coords.pageY - 200) + 'px';
-            // this.wrap.style.left = coords.pageX + 'px';
-            
-            /*
-            var bottom, editorBottom, top;
-            top = coords.pageY + 20;
-            editorBottom = $(this.editor.container).offset().top + $(this.editor.container).height();
-            bottom = top + $(this.wrap).height();
-            if (bottom < editorBottom) {
-                this.wrap.style.top = top + 'px';
-                this.wrap.style.left = coords.pageX + 'px';
-            } else {
-                this.wrap.style.top = (top - $(this.wrap).height() - 20) + 'px';
-                this.wrap.style.left = coords.pageX + 'px';
-            }
-            */
-        }
-
-    
         private current(): HTMLElement {
             if (this.cursorPos >= 0)
                 return <HTMLElement>this.listElement.childNodes[this.cursorPos];

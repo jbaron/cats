@@ -2,7 +2,7 @@
  * Wrapper around the ACE editor. The rest of the code base should not use
  * ACE editor directly so it can be easily changed for another editor if required.
  */
-class SourceEditor extends qx.ui.embed.Html {
+class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
 
     private aceEditor:Ace.Editor;
     private autoCompletePopup:AutoCompletePopup;
@@ -14,49 +14,45 @@ class SourceEditor extends qx.ui.embed.Html {
     private pendingWorkerUpdate = false;
 
     constructor(private session:Cats.Session, pos?:Cats.Position) {
-        super("");
+        super();
         this.setDecorator(null);
         this.setFont(null);
         this.setAppearance(null);
         this.addListenerOnce("appear", () => {
             var container = this.getContentElement().getDomElement();
+            container.style.lineHeight="normal";
              // this.configEditor(this.project.config.editor);
 
             this.aceEditor = this.createAceEditor(container);
             var aceSession = this.aceEditor.getSession();
             aceSession.setMode("ace/mode/" + session.mode)
+            aceSession.setValue(session.content);
             
             aceSession.on("change", this.onChangeHandler.bind(this));
-            aceSession.setValue(session.content);
+            
              if (session.mode === "binary") {
                 this.aceEditor.setReadOnly(true);
             } else {
                 this.aceEditor.setReadOnly(false);                
             }
             
-            //Session().setValue(this.getContent());
-            
-            // this.setContent(session.getValue());
-            
-            // this.autoCompleteView = new Cats.UI.AutoCompleteView(this.aceEditor);
-             // this.setupInputHandling();
-              if (session.mode === "typescript") this.createContextMenu();
-              if (pos) this.moveToPosition(pos);
+        
+             if (session.mode === "typescript") this.createContextMenu();
+             if (pos) setTimeout(() => { this.moveToPosition(pos); }, 100);
               
-               this.autoCompletePopup = new AutoCompletePopup(this.aceEditor);
-               this.autoCompletePopup.show();
-               this.autoCompletePopup.hide();
+              
+             this.autoCompletePopup = new AutoCompletePopup(this.aceEditor);
+             this.autoCompletePopup.show();
+             this.autoCompletePopup.hide();
+               
                
         }, this);
         
       
-        this.addListener("appear", () => {
-           this.showErrors(); 
-        });
+        this.addListener("appear", () => { this.showErrors(); });
   
-        this.addListener("resize", () => { this.resizeHandler();});
-        // this.addListener("resize", () => { this.resizeEditor();});
-        // this.addListener("appear", () => { this.resizeEditor() });
+        this.addListener("resize", () => { this.resizeHandler(); });
+ 
     }
 
 
@@ -65,7 +61,11 @@ class SourceEditor extends qx.ui.embed.Html {
          * worker if required.
          */
         private onChangeHandler(event) {
-            this.changed = true;
+            if (! this.changed) {
+                this.fireDataEvent("editor.update", this.session);
+                this.changed = true;
+            }
+            
             this.pendingWorkerUpdate = true;
 
             if (this.session.mode !== "typescript") return;
@@ -244,6 +244,7 @@ class SourceEditor extends qx.ui.embed.Html {
                         });
                     }
                     this.aceEditor.getSession().setAnnotations(annotations);
+                    this.fireDataEvent("editor.errors", annotations.length);
                 });
             }
         }
@@ -282,12 +283,13 @@ class SourceEditor extends qx.ui.embed.Html {
             }
             ]);
  
+            
             var originalTextInput = editor.onTextInput;
             editor.onTextInput = (text) => {
                 originalTextInput.call(editor, text);
                 if (text === ".") this.autoComplete();
             };
-
+            
         
             var elem = rootElement; // TODo find scroller child
             elem.onmousemove = this.onMouseMove.bind(this);
@@ -296,7 +298,6 @@ class SourceEditor extends qx.ui.embed.Html {
                 clearTimeout(this.mouseMoveTimer);
             };
             
-
             return editor;
     }
 

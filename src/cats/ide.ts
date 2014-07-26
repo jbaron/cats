@@ -73,6 +73,8 @@ module Cats {
 
         private layout() {
             // container layout
+            qx.theme.manager.Meta.getInstance().setTheme(qx.theme["Simple"]);
+            
             var layout = new qx.ui.layout.VBox();
     
             // main container
@@ -86,7 +88,9 @@ module Cats {
             // mainsplit, contains the editor splitpane and the info splitpane
             var mainsplit = new qx.ui.splitpane.Pane("horizontal");
             mainsplit.set({ decorator: null });
-            // mainsplit.setBackgroundColor("#F4F4F4");
+            
+            // Quick hack to make look better.
+            if (this.toolBar.getBackgroundColor()) mainsplit.setBackgroundColor(this.toolBar.getBackgroundColor());
             
             this.navigatorPane = new TabView(["Files", "Outline"]);
             var fileTree = new FileNavigator(process.cwd());

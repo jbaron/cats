@@ -10723,6 +10723,7 @@ constructor (label:string,icon?:string);
  _applyShowCloseButton(value:boolean,old:boolean):void;
  _onButtonClose():void;
  getIcon():any;
+ getButton():qx.ui.tabview.TabButton;
  getLabel():any;
  getShowCloseButton():any;
  initIcon(value:any):any;
