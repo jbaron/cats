@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-module Cats.UI {
+
 
     var HashHandler = ace.require('ace/keyboard/hash_handler').HashHandler;
 
@@ -21,11 +21,11 @@ module Cats.UI {
      * This class takes care of the autocomplete popup and deals with 
      * the key events and filtering of the results while you are typing
      */
-    export class AutoCompleteView {
+    class AutoCompletePopup extends qx.ui.popup.Popup {
 
         private static selectedClassName = 'autocomplete_selected';
         private static className = 'autocomplete';
-        private wrap: HTMLElement;
+       
         private listElement: HTMLElement;
         private handler = new HashHandler();
         private changeListener;
@@ -41,21 +41,23 @@ module Cats.UI {
 
         private offset = 0;
         private index = 0;
-        private cursor = -1;
+        private cursorPos = -1;
         private showNumberOfOptions = 10;
 
         constructor(private editor: Ace.Editor) {
-            this.init();
-            this.initKeys();
-            this.editor.container.appendChild(this.wrap);
-            this.listElement.innerHTML = '';
-        }
-
-        private init() {
-            this.wrap = document.createElement('div');
+            super(new qx.ui.layout.Flow());
+            this.setDecorator(null);
+            this.setPadding(0,0,0,0);
+            this.setMargin(0,0,0,0);
+            this.setWidth(300);
+            this.setHeight(200);
             this.listElement = document.createElement('ul');
-            this.wrap.className = AutoCompleteView.className;
-            this.wrap.appendChild(this.listElement);
+            this.addListenerOnce("appear", () => {
+                var container = this.getContentElement().getDomElement();
+                this.initKeys();
+                container.appendChild(this.listElement);
+                this.listElement.innerHTML = '';
+            });    
         }
 
         /**
@@ -145,7 +147,7 @@ module Cats.UI {
             this.handler.bindKey("PageDown", () => { this.moveCursor(10) });
             this.handler.bindKey("Up", () => { this.moveCursor(-1) });
             this.handler.bindKey("PageUp", () => { this.moveCursor(-10) });
-            this.handler.bindKey("Esc", () => { this.hide() });
+            this.handler.bindKey("Esc", () => { this.hidePopup() });
             this.handler.bindKey("Return|Tab", () => {
                 var current = this.current();
                 if (current) {
@@ -156,7 +158,7 @@ module Cats.UI {
                     var span = <HTMLElement>current.firstChild;
                     this.editor.insert(span.innerText);
                 }
-                this.hide();
+                this.hidePopup();
             });
 
             // this.handler.bindKeys(AutoCompleteView.KeyBinding);
@@ -167,9 +169,10 @@ module Cats.UI {
          * Show the popup and make sure the keybinding is in place
          * 
          */ 
-        private show() {
+        private showPopup() {
             this.editor.keyBinding.addKeyboardHandler(this.handler);
-            this.wrap.style.display = 'block';
+            this.show();
+            // this.wrap.style.display = 'block';
             this.changeListener = (ev) => this.onChange(ev);
             // this.editor.getSession().removeAllListeners('change');
             this.editor.getSession().on("change", this.changeListener);
@@ -180,9 +183,10 @@ module Cats.UI {
          * Hide the popup and remove all keybindings
          * 
          */ 
-        private hide() {
+        private hidePopup() {
             this.editor.keyBinding.removeKeyboardHandler(this.handler);
-            this.wrap.style.display = 'none';
+            this.exclude();
+            // this.wrap.style.display = 'none';
             this.editor.getSession().removeListener('change', this.changeListener);
             // this.editor.getSession().removeAllListeners('change');
             this.active = false;
@@ -209,7 +213,7 @@ module Cats.UI {
          */ 
         private onChange(ev) {
             var key = ev.data.text;
-            if (!AutoCompleteView.isJsIdentifierPart(key.charCodeAt(0))) {
+            if (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0))) {
                 this.hide();
                 return;
             }
@@ -253,7 +257,7 @@ module Cats.UI {
             this.filter();
             this.offset = 0;
             this.index = 0;
-            this.cursor = 0;
+            this.cursorPos = 0;
 
             if (this.hasCompletions()) {
                 var max = Math.min(this.filteredCompletions.length, 10);
@@ -269,20 +273,20 @@ module Cats.UI {
             console.info("Received completions: " + completions.length);
             var cursor = this.editor.getCursorPosition();
             var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
-            this.setPosition(coords);
+            this.setPositionPopup(coords);
             this.render();
-            this.show();
+            this.showPopup();
         }
 
 
         private highLite() {
-            var elem = <HTMLElement>this.listElement.children[this.cursor];
-            elem.className = AutoCompleteView.selectedClassName;
+            var elem = <HTMLElement>this.listElement.children[this.cursorPos];
+            elem.className = AutoCompletePopup.selectedClassName;
         }
 
         private moveCursor(offset: number) {
             if (! this.hasCompletions()) return;
-            var newCursor = this.cursor + offset;
+            var newCursor = this.cursorPos + offset;
             newCursor = Math.min(this.filteredCompletions.length-1, newCursor);
             newCursor = Math.max(0, newCursor);
 
@@ -291,7 +295,7 @@ module Cats.UI {
 
             var elem = this.current();
             if (elem) elem.className = "";
-            this.cursor = newCursor;
+            this.cursorPos = newCursor;
             this.scroll();
         }
 
@@ -300,10 +304,11 @@ module Cats.UI {
          * editor. 
          * @TODO remove jQuery dependency
          */ 
-        private setPosition(coords) {
+        private setPositionPopup(coords) {
             // Quick hack
-            this.wrap.style.top = (coords.pageY - 200) + 'px';
-            this.wrap.style.left = coords.pageX + 'px';
+            this.moveTo(coords.pageX, coords.PageY-200);
+            // this.wrap.style.top = (coords.pageY - 200) + 'px';
+            // this.wrap.style.left = coords.pageX + 'px';
             
             /*
             var bottom, editorBottom, top;
@@ -322,8 +327,8 @@ module Cats.UI {
 
     
         private current(): HTMLElement {
-            if (this.cursor >= 0)
-                return <HTMLElement>this.listElement.childNodes[this.cursor];
+            if (this.cursorPos >= 0)
+                return <HTMLElement>this.listElement.childNodes[this.cursorPos];
             else
                 return null;
         }
@@ -345,13 +350,13 @@ module Cats.UI {
          */ 
         private scroll() {
 
-            while (this.cursor >= (this.offset + 10)) {
+            while (this.cursorPos >= (this.offset + 10)) {
                 this.hideRow(this.offset);
                 this.showRow(this.offset + 10);
                 this.offset++;
             }
 
-            while (this.cursor < this.offset) {
+            while (this.cursorPos < this.offset) {
                 this.showRow(this.offset - 1);
                 this.hideRow(this.offset + 9);
                 this.offset--;
@@ -361,4 +366,4 @@ module Cats.UI {
 
     }
 
-}
+

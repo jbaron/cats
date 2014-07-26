@@ -5,11 +5,12 @@
 class SourceEditor extends qx.ui.embed.Html {
 
     private aceEditor:Ace.Editor;
-    private popup:qx.ui.popup.Popup;
-    private autoCompleteView: Cats.UI.AutoCompleteView;
+    private autoCompletePopup:AutoCompletePopup;
+    // private autoCompleteView: Cats.UI.AutoCompleteView;
     // private container:HTMLElement;
     private mouseMoveTimer;
     private updateSourceTimer;
+    private changed=false;
     private pendingWorkerUpdate = false;
 
     constructor(private session:Cats.Session, pos?:Cats.Position) {
@@ -19,27 +20,64 @@ class SourceEditor extends qx.ui.embed.Html {
         this.setAppearance(null);
         this.addListenerOnce("appear", () => {
             var container = this.getContentElement().getDomElement();
-          
+             // this.configEditor(this.project.config.editor);
+
             this.aceEditor = this.createAceEditor(container);
-            this.aceEditor.getSession().setMode("ace/mode/typescript");
-            // this.aceEditor.getSession().setValue(this.getContent());
-            this.aceEditor.getSession();
-            this.setContent(session.getValue());
+            var aceSession = this.aceEditor.getSession();
+            aceSession.setMode("ace/mode/" + session.mode)
             
-            this.autoCompleteView = new Cats.UI.AutoCompleteView(this.aceEditor);
+            aceSession.on("change", this.onChangeHandler.bind(this));
+            aceSession.setValue(session.content);
+             if (session.mode === "binary") {
+                this.aceEditor.setReadOnly(true);
+            } else {
+                this.aceEditor.setReadOnly(false);                
+            }
+            
+            //Session().setValue(this.getContent());
+            
+            // this.setContent(session.getValue());
+            
+            // this.autoCompleteView = new Cats.UI.AutoCompleteView(this.aceEditor);
              // this.setupInputHandling();
               if (session.mode === "typescript") this.createContextMenu();
               if (pos) this.moveToPosition(pos);
+              
+               this.autoCompletePopup = new AutoCompletePopup(this.aceEditor);
+               this.autoCompletePopup.show();
+               this.autoCompletePopup.hide();
+               
         }, this);
         
-        this.popup = new qx.ui.popup.Popup(new qx.ui.layout.Flow());
-        this.popup.add(new qx.ui.basic.Label("Code completion"));
+      
+        this.addListener("appear", () => {
+           this.showErrors(); 
+        });
   
         this.addListener("resize", () => { this.resizeHandler();});
         // this.addListener("resize", () => { this.resizeEditor();});
         // this.addListener("appear", () => { this.resizeEditor() });
     }
 
+
+        /**
+         * Keep track of changes made to the content and update the 
+         * worker if required.
+         */
+        private onChangeHandler(event) {
+            this.changed = true;
+            this.pendingWorkerUpdate = true;
+
+            if (this.session.mode !== "typescript") return;
+
+            clearTimeout(this.updateSourceTimer);
+
+            // Don't send too many updates to the worker
+            this.updateSourceTimer = setTimeout(() => {
+                if (this.pendingWorkerUpdate) this.update();
+                this.showErrors();
+            }, 1000);
+        }
 
     private createToolTip() {
         var tooltip = new qx.ui.tooltip.ToolTip("");
@@ -158,7 +196,7 @@ class SourceEditor extends qx.ui.embed.Html {
         /**
          * Perform code autocompletion. Right now support for TS.
          */
-        showAutoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
+        showAutoComplete(cursor: Ace.Position) {
             
             if (this.session.mode !== "typescript") return;
 
@@ -167,7 +205,7 @@ class SourceEditor extends qx.ui.embed.Html {
 
             IDE.project.iSense.autoComplete(cursor, this.session.name, 
             (err, completes:TypeScript.Services.CompletionInfo) => {
-                if (completes != null) view.showCompletions(completes.entries);
+                if (completes != null) this.autoCompletePopup.showCompletions(completes.entries);
             });
         }
 
@@ -175,7 +213,7 @@ class SourceEditor extends qx.ui.embed.Html {
      autoComplete() {
             if (this.session.mode === "typescript") {
                 var cursor = this.aceEditor.getCursorPosition();
-                this.showAutoComplete(cursor, this.autoCompleteView);
+                this.showAutoComplete(cursor);
             }                        
         }
 
@@ -183,10 +221,32 @@ class SourceEditor extends qx.ui.embed.Html {
         // alert("auto complete");
         var cursor = this.aceEditor.getCursorPosition();
         var coords = this.aceEditor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
-        this.popup.moveTo(coords.pageX, coords.pageY);
-        this.popup.show();
+        this.autoCompletePopup.moveTo(coords.pageX, coords.pageY);
+        this.autoCompletePopup.show();
     }
 
+       /**
+         * Check if there are any errors for this session and show them.    
+         */
+        showErrors() {
+            if (this.session.mode === "typescript") {
+                // TODO get its own timer
+                IDE.project.iSense.getErrors(this.session.name, (err, result: Cats.FileRange[]) => {
+                    var annotations: Ace.Annotation[] = [];
+                    if (result) {
+                        result.forEach((error: Cats.FileRange) => {
+                            annotations.push({
+                                row: error.range.start.row,
+                                column: error.range.start.column,
+                                type: error.severity === Cats.Severity.Error ? "error" : "warning",
+                                text: error.message
+                            });
+                        });
+                    }
+                    this.aceEditor.getSession().setAnnotations(annotations);
+                });
+            }
+        }
 
           // Initialize the editor
         private createAceEditor(rootElement):Ace.Editor {

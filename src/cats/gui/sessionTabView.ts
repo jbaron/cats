@@ -10,7 +10,7 @@ class SessionPage extends qx.ui.tabview.Page {
         this.setPadding(0, 0, 0, 0);
         this.setMargin(0, 0, 0, 0);
         this.setDecorator(null);
-        this.editor = new SourceEditor(<Cats.AceSession>session,pos);
+        this.editor = new SourceEditor(session,pos);
         this.add(this.editor, { edge: 0 });
         this.createContextMenu();
         this.createToolTip();
@@ -76,7 +76,15 @@ class SessionTabView extends qx.ui.tabview.TabView {
         return result;
     }
     
-    
+    /**
+      * Set the right margin of the IDE
+       * @param margin number of columns
+        */
+    setRightMargin(margin: number) {
+            // IDE.config.rightMargin = margin;
+            // IDE.mainEditor.aceEditor.setPrintMarginColumn(margin);
+    }
+
     setFontSize(size) {
         this.getChildren().forEach((child:SessionPage)=>{
            child.editor.setFontSize(size); 

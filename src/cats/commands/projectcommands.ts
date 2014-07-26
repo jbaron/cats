@@ -156,9 +156,10 @@ module Cats.Commands {
             IDE.openSession(name);
         } else {
             var content = JSON.stringify(project.config, null, 4);
-            var session = new AceSession(name,content);
-            IDE.addSession(session);
-            IDE.openSession(name);
+            // @TODO fix
+            // var session = new AceSession(name,content);
+            // IDE.addSession(session);
+            // IDE.openSession(name);
         }
     }
     

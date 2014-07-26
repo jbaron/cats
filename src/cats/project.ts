@@ -21,7 +21,7 @@ module Cats {
      * 
      * @TODO: implement save and load as part of session
      */ 
-    export interface Session {
+    export interface Session123 {
         name: string;
         content:string;
         type: string;

@@ -58,22 +58,20 @@ module Cats {
         mainMenu = null;
         private config:IDEConfiguration;
 
-        mainEditor: TextEditor;
+        // mainEditor: TextEditor;
 
         constructor(private doc) {
             this.config = this.loadConfig(true);
         }
 
         init() {
-            
-            this.layoutQx();
             Cats.Commands.init();
-           
-            this.toolBar.init();
+            this.layout();
+            // this.toolBar.init();
             Cats.Menu.createMenuBar();
         }
 
-        layoutQx() {
+        private layout() {
             // container layout
             var layout = new qx.ui.layout.VBox();
     
@@ -198,15 +196,7 @@ module Cats {
             }            
         }
 
-        /**
-        * Set the right margin of the IDE
-        * @param margin number of columns
-        */
-        setRightMargin(margin: number) {
-            this.config.rightMargin = margin;
-            IDE.mainEditor.aceEditor.setPrintMarginColumn(margin);
-        }
-
+ 
         /**
          * Add a new session to the IDE
          * @param session The session to be added
@@ -338,14 +328,14 @@ module Cats {
             if (! session) {
                 var content="";
                 if (name) {
-                    var mode = AceSession.determineMode(name);
+                    var mode = Session.determineMode(name);
                     if (mode === "binary") {
                         var validate = confirm("This might be a binary file, are you sure ?");
                         if (! validate) return;
                     } 
                     content = OS.File.readTextFile(name);
                 }
-                session = new AceSession(name, content);
+                session = new Session(name, content);
                 if ((session.mode === "typescript") && (! this.project.containsTSFile(name))) {
                     this.project.addTSFile(name,content);
                 }
@@ -358,7 +348,7 @@ module Cats {
             var project = session.project;
             
             // var mode = "getOutliningRegions";
-            if ((<AceSession>session).isTypeScript()) {
+            if (session.isTypeScript()) {
                 this.project.iSense.getScriptLexicalStructure(session.name, (err, data: NavigateToItem[]) => {
                     this.outlineNavigator.setData(data);
                 });    
@@ -393,7 +383,7 @@ module Cats {
             // Check if was the current session displayed
             if (IDE.activeSession === session) {
                 IDE.activeSession = null;
-                IDE.mainEditor.hide();
+                //@TODO IDE.mainEditor.hide();
                 if (this.hasPreviousSession()) {
                     var prevSession = this.previousSession();
                     setTimeout(() => {
@@ -411,7 +401,7 @@ module Cats {
          */
         setTheme(theme: string) {
             this.config.theme = theme;
-            IDE.mainEditor.setTheme(theme);
+            // IDE.mainEditor.setTheme(theme);
         }
 
         /**

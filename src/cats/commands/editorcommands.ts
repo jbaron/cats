@@ -26,20 +26,10 @@ module Cats.Commands {
     }
 */
 
- // Perform code autocompletion
-     function autoComplete(cursor: Ace.Position, view: Cats.UI.AutoCompleteView) {
-            var session = <AceSession>IDE.activeSession;
-            if (! session) return;
-            
-            if (session.mode !== "typescript") return;
-            session.update();
-
-            session.project.iSense.autoComplete(cursor, session.name, (err, completes) => {
-                if (completes != null) view.showCompletions(completes.entries);
-            });
-        }
+ 
 
       function formatText() {
+          /*
             var session = IDE.activeSession;
             if (session) {
                 session.project.iSense.getFormattedTextForRange( session.name, 0, session.getValue().length, (err, result) => {                    
@@ -51,6 +41,7 @@ module Cats.Commands {
                     
                 });
             }
+            */
         }
 
     /*

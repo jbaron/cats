@@ -16,7 +16,7 @@
 module Cats {
     
     
-    export class Session123  {
+    export class Session  {
 
         private static MODES = {
             ".js": "javascript",
@@ -41,6 +41,7 @@ module Cats {
 
         private static DEFAULT_MODE = "text";
         public mode:string;
+        public changed = false;
         
         /**
          * Create a new session
@@ -50,7 +51,7 @@ module Cats {
          * @param content The content of the session
          */
         constructor(public name?: string, public content?: string) {
-            this.mode = Session123.determineMode(name);
+            this.mode = Session.determineMode(name);
  
         }
 
@@ -100,7 +101,7 @@ module Cats {
          */
         public static determineMode(name: string): string {
             var ext = PATH.extname(name);
-            var result = Session123.MODES[ext] || Session123.DEFAULT_MODE;
+            var result = Session.MODES[ext] || Session.DEFAULT_MODE;
             return result;
         }
 

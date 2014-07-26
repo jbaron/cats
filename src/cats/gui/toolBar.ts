@@ -7,10 +7,10 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
 
     constructor() {
         super();
+        this.init();
     }
 
-    init() {
-        
+    private init() {
         var cmds = Cats.Commands.getAllCommands();
         cmds.forEach((cmd) => {
             if (cmd.icon) {

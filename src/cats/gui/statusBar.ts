@@ -58,6 +58,7 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
         // Leftover past
 
         private render() {
+            /*
             var act = <Cats.AceSession>IDE.activeSession;
             var session = act.editSession;
             if (session) {
@@ -65,6 +66,7 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
                 document.getElementById("overwritemode").innerText = session.getOverwrite() ? "overwrite" : "insert";
                 this.updateSelectionText();
             }
+            */
         }
 
 
@@ -113,7 +115,9 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
             */    
         }
         
+        
         private updateSelectionText() {
+        /*
             var aceEditor = <any>IDE.mainEditor.aceEditor;
             var lead = aceEditor.selection.lead;
             var text: string;
@@ -128,6 +132,8 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
             }
             
             document.getElementById("selection").innerText = text;
+        */
         }
-
+        
+        
 }

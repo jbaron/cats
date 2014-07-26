@@ -45,7 +45,7 @@ module Cats.Commands {
     }
 
     function setRightMargin(margin) {
-        IDE.setRightMargin(margin);
+        IDE.sessionTabView.setRightMargin(margin);
     }
 
     function toggleView(component) {
