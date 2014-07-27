@@ -23,10 +23,8 @@
      */
     class AutoCompletePopup extends qx.ui.popup.Popup {
 
-        private static selectedClassName = 'autocomplete_selected';
-        private static className = 'autocomplete';
-       
-        private listElement: HTMLElement;
+
+        private listModel:any;
         private handler;
         private changeListener;
         private list:qx.ui.list.List;
@@ -35,10 +33,7 @@
         active = false;
         
         
-        private offset = 0;
-        private index = 0;
-        private cursorPos = -1;
-        private showNumberOfOptions = 10;
+        private cursorPos = 0;
 
         constructor(private editor: Ace.Editor) {
             super(new qx.ui.layout.Flow());
@@ -56,10 +51,10 @@
                  // Creates the model data
           
           
-              var model = qx.data.marshal.Json.createModel([], false);
+              // var model = qx.data.marshal.Json.createModel([], false);
         
               // Creates the list and configures it
-              var list:qx.ui.list.List = new qx.ui.list.List(model).set({
+              var list:qx.ui.list.List = new qx.ui.list.List(null).set({
                 scrollbarX: "on",
                 selectionMode : "single",
                 // height: 280,
@@ -137,12 +132,17 @@
         }
 
    
-        private moveCursor(rows:number) {
-            
+        private moveCursor(row:number) {
+            this.cursorPos += row;
+            if (this.cursorPos < 0) this.cursorPos = 0;
+            var length = this.listModel.getLength();
+            if (this.cursorPos > length) this.cursorPos = length;
+            var item = this.listModel.getItem(this.cursorPos);
+            (<any>this.list.getSelection()).push(item);
         }
         
         private current() {
-            return null;
+            return this.list.getSelection().getItem(0);
         }
    
         /**
@@ -165,13 +165,11 @@
                     for (var i = 0; i < inputText.length; i++) {
                         this.editor.remove("left");
                     }
-                    var span = <HTMLElement>current.firstChild;
-                    this.editor.insert(span.innerText);
+                    var label = current.getLabel();
+                    this.editor.insert(label);
                 }
                 this.hidePopup();
             });
-
-            // this.handler.bindKeys(AutoCompleteView.KeyBinding);
 
         }
 
@@ -192,12 +190,14 @@
                   });
               });
           
-            var model = qx.data.marshal.Json.createModel(rawData, false);
+            this.listModel = qx.data.marshal.Json.createModel(rawData, false);
             this.updateFilter()
-            this.list.setModel(model);
+            this.list.setModel(this.listModel);
             
+            this.cursorPos = 0;
+            this.moveCursor(0);
             this.show();
-            // this.wrap.style.display = 'block';
+
             this.changeListener = (ev) => this.onChange(ev);
             // this.editor.getSession().removeAllListeners('change');
             this.editor.getSession().on("change", this.changeListener);
@@ -256,11 +256,6 @@
             this.showPopup(coords, completions);
         }
 
-
-        private highLite() {
-            var elem = <HTMLElement>this.listElement.children[this.cursorPos];
-            elem.className = AutoCompletePopup.selectedClassName;
-        }
 
 }
 

@@ -244,7 +244,7 @@ module Cats {
          * Get the directory where the icons for the IDE can be found
          */ 
         public getIconDir() {
-            return this.config.iconDir || "static/img/";
+            return this.config.iconDir || "static/img/eclipse/";
         }
 
         /**
@@ -256,7 +256,7 @@ module Cats {
                 version: "1",
                 theme: "cats",
                 fontSize: 13,
-                iconDir: "static/img/",
+                iconDir: "static/img/eclipse/",
                 rightMargin: 80,
                 sessions: [],
                 projects:[PATH.join(process.cwd(), "samples", "greeter")],
