@@ -33,7 +33,9 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         this.setDecorator(null);
 
         this.setupDelegate();
-        this.setContextMenu(this.createContextMenu());
+        
+        var contextMenu = new FileContextMenu(this);
+        this.setContextMenu(contextMenu);
         this.setup();
 
         console.log("Icon path:" + this.getIconPath());    
@@ -63,13 +65,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         return null;
     }
 
-    getSelectedItem() {
-        console.log(this.getSelection().getItem(0));
-        var fileName = this.getSelection().getItem(0).getLabel();
-        return fileName;
-    }
 
-    
     setup() {
         this.setIconPath("");
         this.setIconOptions({
@@ -82,25 +78,6 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
             }
       });
 
-    }
-
-    private createContextMenu() {
-        var menu = new qx.ui.menu.Menu();
-        var refreshButton = new qx.ui.menu.Button("Refresh");
-        var renameButton = new qx.ui.menu.Button("Rename");
-        
-        var deleteButton = new qx.ui.menu.Button("Delete");
-        deleteButton.addListener("execute", () => { alert("going to delete " + this.getSelectedItem()); });
-
-        var newFileButton = new qx.ui.menu.Button("New File");
-        var newDirButton = new qx.ui.menu.Button("New Directory");
-        
-        menu.add(refreshButton);
-        menu.add(renameButton);
-        menu.add(deleteButton);
-        menu.add(newFileButton);
-        menu.add(newDirButton);
-        return menu;
     }
 
     setupDelegate() {

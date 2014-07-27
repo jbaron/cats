@@ -27,18 +27,14 @@
         private static className = 'autocomplete';
        
         private listElement: HTMLElement;
-        private handler = new HashHandler();
+        private handler;
         private changeListener;
+        private list:qx.ui.list.List;
         
         // Other tasks can check wether autocompletion is in progress
         active = false;
         
-        // The complete set of completions available
-        completions: TypeScript.Services.CompletionEntry[];
         
-        // The fitlered completions based on the users input so far
-        filteredCompletions: TypeScript.Services.CompletionEntry[];
-
         private offset = 0;
         private index = 0;
         private cursorPos = -1;
@@ -46,19 +42,42 @@
 
         constructor(private editor: Ace.Editor) {
             super(new qx.ui.layout.Flow());
-            this.setDecorator(null);
+            // this.setDecorator(null);
             this.setPadding(0,0,0,0);
             this.setMargin(0,0,0,0);
             this.setWidth(300);
             this.setHeight(200);
-            this.listElement = document.createElement('ul');
-            this.addListenerOnce("appear", () => {
-                var container = this.getContentElement().getDomElement();
-                this.initKeys();
-                container.appendChild(this.listElement);
-                this.listElement.innerHTML = '';
-            });    
+            this.createList();
+            this.initHandler();
         }
+
+
+        private createList() {
+                 // Creates the model data
+          
+          
+              var model = qx.data.marshal.Json.createModel([], false);
+        
+              // Creates the list and configures it
+              var list:qx.ui.list.List = new qx.ui.list.List(model).set({
+                scrollbarX: "on",
+                selectionMode : "single",
+                // height: 280,
+                width: 300,
+                labelPath: "label",
+                iconPath: "icon",
+                iconOptions: {converter : function(data) {
+                  return "icon/" + data + "/places/folder.png";
+                }}
+              });
+              
+              list.setDecorator(null);
+              
+              this.add(list);
+              this.list = list;
+              
+        }
+
 
         /**
          * Get the text between cursor and start
@@ -103,44 +122,35 @@
          * Fitler the available completetions based on the users input 
          * so far.
          */ 
-        private filter() {
+        private updateFilter() {
             var text = this.getInputText(); // .toLowerCase();
             if (!text) {
-                this.filteredCompletions = this.completions;
+                this.list.setDelegate(null);
             } else {
-                var mode = "strictComparison";
-                if (IDE.project.config.completionMode) {
-                    mode = IDE.project.config.completionMode + "Comparison";
+                var delegate = {}
+                delegate["filter"] = function(data) {
+                    var label = data.getLabel();
+                    return label.indexOf(text) === 0 ;
                 }
-                
-                this.filteredCompletions = this.completions.filter((entry) => {
-                    return this[mode](entry.name, text);
-                });
+                this.list.setDelegate(delegate);
             }
         }
 
-       /**
-         * Fitler the available completetions based on the users input 
-         * so far. This one is case insensitive a find any matching string
-         */ 
-        private filter2() {
-            var text = this.getInputText();
-            if (!text) {
-                this.filteredCompletions = this.completions;
-            } else {
-                text = text.toLowerCase();
-                this.filteredCompletions = this.completions.filter(function(entry) {
-                    return (entry.name.toLowerCase().indexOf(text) > -1);
-                });
-            }
+   
+        private moveCursor(rows:number) {
+            
         }
-
-
+        
+        private current() {
+            return null;
+        }
+   
         /**
          * Setup the different keybindings that would go to the 
          * popup window and not the editor
          */ 
-        private initKeys() {
+        private initHandler() {
+            this.handler = new HashHandler();
             this.handler.bindKey("Home", () => { this.moveCursor(-10000) });
             this.handler.bindKey("End", () => { this.moveCursor(10000) });
             this.handler.bindKey("Down", () => { this.moveCursor(1) });
@@ -169,9 +179,23 @@
          * Show the popup and make sure the keybinding is in place
          * 
          */ 
-        private showPopup(coords) {
+        private showPopup(coords,completions:TypeScript.Services.CompletionEntry[]) {
             this.editor.keyBinding.addKeyboardHandler(this.handler);
-            this.moveTo(coords.pageX, coords.PageY);
+            this.moveTo(coords.pageX, coords.pageY+15);
+            
+            
+             var rawData = [];
+             completions.forEach((completion) => {
+                  rawData.push({
+                     label: completion.name,
+                     icon: "16"
+                  });
+              });
+          
+            var model = qx.data.marshal.Json.createModel(rawData, false);
+            this.updateFilter()
+            this.list.setModel(model);
+            
             this.show();
             // this.wrap.style.display = 'block';
             this.changeListener = (ev) => this.onChange(ev);
@@ -220,62 +244,16 @@
             }
             // hack to get the cursor updated before we render
             // TODO find out how to force update without a timer delay
-            setTimeout(() => { this.render() }, 0);
+            setTimeout(() => { this.updateFilter() }, 0);
         }
 
-        /**
-         * Render a single row
-         */ 
-        private renderRow() {
-            var index = this.listElement.children.length;
-            var info = this.filteredCompletions[index];
-            var li = <HTMLElement>document.createElement("li");
-            var span1 = document.createElement("span");
-            span1.className = "name " + " icon-" + info.kind;
-            span1.innerText = info.name;
-            li.appendChild(span1);
-
-            /* 
-            var span2 = document.createElement("span");
-            span2.className = "type";
-            span2.innerText = info.type;
-            li.appendChild(span2);
-            
-            */
-            this.listElement.appendChild(li);
-        }
-
-        /**
-         * Are there any completions to show
-         * 
-         */ 
-        private hasCompletions() {
-            return this.filteredCompletions.length > 0;
-        }
-
-        private render() {
-            this.listElement.innerHTML = "";
-            this.filter();
-            this.offset = 0;
-            this.index = 0;
-            this.cursorPos = 0;
-
-            if (this.hasCompletions()) {
-                var max = Math.min(this.filteredCompletions.length, 10);
-                for (var n = 0; n < max; n++) this.renderRow();
-                this.highLite();
-            }
-            
-        }
-
+     
         showCompletions(completions:TypeScript.Services.CompletionEntry[]) {
             if (this.active || (completions.length === 0)) return;            
-            this.completions = completions;
             console.info("Received completions: " + completions.length);
             var cursor = this.editor.getCursorPosition();
             var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
-            this.render();
-            this.showPopup(coords);
+            this.showPopup(coords, completions);
         }
 
 
@@ -284,59 +262,6 @@
             elem.className = AutoCompletePopup.selectedClassName;
         }
 
-        private moveCursor(offset: number) {
-            if (! this.hasCompletions()) return;
-            var newCursor = this.cursorPos + offset;
-            newCursor = Math.min(this.filteredCompletions.length-1, newCursor);
-            newCursor = Math.max(0, newCursor);
-
-            // If there are any missing rows, let add them
-            while (newCursor >= this.listElement.children.length) this.renderRow();
-
-            var elem = this.current();
-            if (elem) elem.className = "";
-            this.cursorPos = newCursor;
-            this.scroll();
-        }
-
-        private current(): HTMLElement {
-            if (this.cursorPos >= 0)
-                return <HTMLElement>this.listElement.childNodes[this.cursorPos];
-            else
-                return null;
-        }
-       
-
-        private hideRow(index) {
-            var elem = <HTMLElement>this.listElement.children[index];
-            elem.style.display = "none";
-        }
-
-        private showRow(index) {
-            var elem = <HTMLElement>this.listElement.children[index];
-            elem.style.display = "block";
-        }
-
-        /**
-         * Scroll the view by hiding the first row and showing the next 
-         * or the reverse.
-         */ 
-        private scroll() {
-
-            while (this.cursorPos >= (this.offset + 10)) {
-                this.hideRow(this.offset);
-                this.showRow(this.offset + 10);
-                this.offset++;
-            }
-
-            while (this.cursorPos < this.offset) {
-                this.showRow(this.offset - 1);
-                this.hideRow(this.offset + 9);
-                this.offset--;
-            }
-            this.highLite();
-        }
-
-    }
+}
 
 

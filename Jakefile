@@ -42,7 +42,6 @@ var catsOptions = [
     "src/cats/commands/refactorcommands.ts",
     "src/cats/configloader.ts",
     "src/cats/isensehandler.ts",
-    "src/cats/menu/filecontextmenu.ts",
     "src/cats/menu/menubar.ts",
     "src/cats/project.ts",
     "src/cats/gui/console.ts",
@@ -55,6 +54,7 @@ var catsOptions = [
     "src/cats/gui/sessionTabView.ts",
     "src/cats/gui/statusBar.ts",
     "src/cats/gui/autoCompletePopup.ts",
+    "src/cats/gui/fileContextMenu.ts",
     "src/cats/main.ts"
 ];
 

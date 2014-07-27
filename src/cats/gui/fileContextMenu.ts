@@ -12,38 +12,78 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-
-module Cats.Menu {
-
-
-    function createFileContextMenu() {
-        // Create an empty menu
-        var ctxmenu = new GUI.Menu();
-        // Add some items
-        ctxmenu.append(new GUI.MenuItem({ label: 'Refresh', click: refresh }));
-        ctxmenu.append(new GUI.MenuItem({ label: 'Rename', click: rename }));
-        ctxmenu.append(new GUI.MenuItem({ label: 'New file', click: newFile }));
-        ctxmenu.append(new GUI.MenuItem({ label: 'New folder', click: newFolder }));
-        ctxmenu.append(new GUI.MenuItem({ label: 'Delete', click: deleteFile }));
-        return ctxmenu;
+var data = {
+        key: "",
+        isFolder: true,
+        element: null
     }
 
 
-    function refresh() {
+class FileContextMenu extends qx.ui.menu.Menu {
+
+
+    constructor(private fileNavigator:FileNavigator) {
+        super();
+        this.init();
+    }
+
+
+    getSelection() {
+        return this.fileNavigator.getSelection();
+    }
+
+    getSelectedFile() {
+        var item = this.getSelection().getItem(0);
+        if (! item) return null;
+        if (! item.getDirectory) return null;
+        if (! item.getDirectory()) {
+            return item;
+        }
+        return null;
+    }
+
+    getSelectedItem() {
+        console.log(this.getSelection().getItem(0));
+        var fileName = this.getSelection().getItem(0).getLabel();
+        return fileName;
+    }
+
+
+    init() {
+         var refreshButton = new qx.ui.menu.Button("Refresh");
+        var renameButton = new qx.ui.menu.Button("Rename");
+        
+        var deleteButton = new qx.ui.menu.Button("Delete");
+        deleteButton.addListener("execute", () => { alert("going to delete " + this.getSelectedItem()); });
+
+        var newFileButton = new qx.ui.menu.Button("New File");
+        var newDirButton = new qx.ui.menu.Button("New Directory");
+        this.add(refreshButton);
+        this.add(renameButton);
+        this.add(deleteButton);
+        this.add(newFileButton);
+        this.add(newDirButton);
+        
+    }
+
+   
+
+    refresh() {
+        var item = this.getSelectedItem();
         // IDE.project.getTreeView().refresh();
     }
 
 
-    function deleteFile() {
+    deleteFile() {
         var basename = PATH.basename(data.key);
         var sure = confirm("Delete " + basename + "?");
         if (sure) {
             OS.File.remove(data.key);
         }
-        setTimeout(function(){refresh(), 100});
+        setTimeout(()=>{ this.refresh();}, 100);
     }
 
-    function newFile() {
+    newFile() {
         var basedir;
 
         if (data.isFolder) {
@@ -58,7 +98,7 @@ module Cats.Menu {
         OS.File.writeTextFile(fullName, "");
     }
 
-    function newFolder() {
+    newFolder() {
         var basedir;
 
         if (data.isFolder) {
@@ -71,10 +111,10 @@ module Cats.Menu {
         if (name == null) return;
         var fullName = PATH.join(basedir, name);
         OS.File.mkdirRecursiveSync(fullName);
-        refresh(); 
+        this.refresh(); 
     }
     
-    function rename() {
+    rename() {
         var dirname = PATH.dirname(data.key);
         var basename = PATH.basename(data.key);
         var name = prompt("Enter new name", basename);
@@ -89,12 +129,6 @@ module Cats.Menu {
         }
     }
 
-    var data = {
-        key: "",
-        isFolder: true,
-        element: null
-    }
+    
+}  
 
-   
-
-}

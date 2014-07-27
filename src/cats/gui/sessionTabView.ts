@@ -44,9 +44,11 @@ class SessionPage extends qx.ui.tabview.Page {
 
     setHasErrors(errors:number) {
         if (errors > 0) {
-            this.setIcon("./img/eclipse/warning.gif");
+            if (! this.getIcon())
+                this.setIcon("./img/eclipse/warning.gif");
+            this.getButton().setShow("both");
         } else {
-            this.getButton().resetIcon();
+            this.getButton().setShow("label");
         }
         console.log(errors);
     }

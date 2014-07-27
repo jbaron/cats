@@ -164,7 +164,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
                     
                     var tip = data.description;
                     if (data.docComment) {
-                        tip += '<br>' + data.docComment;
+                        tip += '<hr>' + data.docComment;
                     }
                     
                     if (tip && tip.trim()) {
