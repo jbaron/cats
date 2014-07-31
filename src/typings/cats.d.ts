@@ -16,6 +16,8 @@
 
 declare module Cats {
 
+    var theme:any
+
     interface Map<T>  {
         [index:string]:T;
     }

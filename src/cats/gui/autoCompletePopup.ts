@@ -14,7 +14,6 @@
 //
 
 
-
     var HashHandler = ace.require('ace/keyboard/hash_handler').HashHandler;
 
     /** 
@@ -28,11 +27,8 @@
         private handler;
         private changeListener;
         private list:qx.ui.list.List;
-        
-        // Other tasks can check wether autocompletion is in progress
-        active = false;
-        
-        
+        private filtered;
+
         private cursorPos = 0;
 
         constructor(private editor: Ace.Editor) {
@@ -50,7 +46,7 @@
         private createList() {
                  // Creates the model data
           
-          
+                var self = this;
               // var model = qx.data.marshal.Json.createModel([], false);
         
               // Creates the list and configures it
@@ -61,8 +57,8 @@
                 width: 300,
                 labelPath: "label",
                 iconPath: "icon",
-                iconOptions: {converter : function(data) {
-                  return "icon/" + data + "/places/folder.png";
+                iconOptions: {converter : (data) => {
+                  return this.getIconForKind(data);
                 }}
               });
               
@@ -99,52 +95,58 @@
                 return "";
         }
 
-        /**
-         * Only match when exactly same string from first position 
-         */
-        private strictComparison(a:string,b:string) : boolean {
-            return (a.indexOf(b) === 0);
-        }
+
+		private matchText(text, completion) {
+			if (! text) return true;
+			if (completion.indexOf(text) === 0) return true;
+			return false;
+		}
 
         /**
-         * Match any string within other string, case insensitive
-         */ 
-        private looseComparison(a:string,b:string) : boolean {
-            return (a.toLowerCase().indexOf(b.toLowerCase()) >= 0);
-        }
-
-        /**
-         * Fitler the available completetions based on the users input 
+         * Filter the available completions based on the users text input 
          * so far.
          */ 
         private updateFilter() {
             var text = this.getInputText(); // .toLowerCase();
-            if (!text) {
-                this.list.setDelegate(null);
-            } else {
-                var delegate = {}
-                delegate["filter"] = function(data) {
-                    var label = data.getLabel();
-                    return label.indexOf(text) === 0 ;
-                }
-                this.list.setDelegate(delegate);
+			var lastItem = this.listModel.getItem(this.listModel.getLength() -1);
+			var counter = 0;
+
+			this.filtered = [];
+            var delegate = {};
+            delegate["filter"] = (data) => {
+                var label = data.getLabel();
+				var result = this.matchText(text, label);
+				if (result) this.filtered.push(data);
+				if (data === lastItem) {
+					// IDE.console.log("filtered items: " + this.filtered.length);
+					// @TODO check for selected
+					var selection = this.list.getSelection().getItem(0);
+					if ( ! (selection && (this.filtered.indexOf(selection)>-1)) ) {
+					    this.cursorPos=0;
+					    this.moveCursor(0);
+					} 
+				}
+                return result;
             }
+            this.list.setDelegate(delegate);
+					
         }
 
    
-        private moveCursor(row:number) {
+       private moveCursor(row:number) {
             this.cursorPos += row;
+            
+            var len = this.filtered.length -1;
+            if (this.cursorPos > len) this.cursorPos = len;
             if (this.cursorPos < 0) this.cursorPos = 0;
-            var length = this.listModel.getLength();
-            if (this.cursorPos > length) this.cursorPos = length;
-            var item = this.listModel.getItem(this.cursorPos);
+            
+            var item = this.filtered[this.cursorPos];
+            this.list.resetSelection();
             (<any>this.list.getSelection()).push(item);
+            // IDE.console.log("Cursor:" + this.cursorPos);
         }
         
-        private current() {
-            return this.list.getSelection().getItem(0);
-        }
-   
+  
         /**
          * Setup the different keybindings that would go to the 
          * popup window and not the editor
@@ -159,7 +161,7 @@
             this.handler.bindKey("PageUp", () => { this.moveCursor(-10) });
             this.handler.bindKey("Esc", () => { this.hidePopup() });
             this.handler.bindKey("Return|Tab", () => {
-                var current = this.current();
+                var current = this.list.getSelection().getItem(0);;
                 if (current) {
                     var inputText = this.getInputText()
                     for (var i = 0; i < inputText.length; i++) {
@@ -170,8 +172,24 @@
                 }
                 this.hidePopup();
             });
-
         }
+
+
+        private getIconForKind(name:string) {
+            switch (name) {
+                case "function":
+                case "keyword":
+                case "method": return "./img/16/method.png";
+                case "constructor": return "./img/16/constructor.png";
+                case "module": return "./img/16/module.png";
+                case "interface":return "./img/16/interface.png";
+                case "enum": return "./img/16/enum.png"; 
+                case "class":return "./img/16/class.png";
+                case "var":return "./img/16/variable.png";
+                default: return "./img/16/method.png";
+            }            
+        }
+
 
         /**
          * Show the popup and make sure the keybinding is in place
@@ -184,24 +202,29 @@
             
              var rawData = [];
              completions.forEach((completion) => {
+                  var extension="";
+                  if (completion.kind === "method") extension = "()"
                   rawData.push({
-                     label: completion.name,
-                     icon: "16"
+                     label: completion.name + extension,
+                     icon: completion.kind
                   });
               });
           
             this.listModel = qx.data.marshal.Json.createModel(rawData, false);
-            this.updateFilter()
-            this.list.setModel(this.listModel);
             
-            this.cursorPos = 0;
-            this.moveCursor(0);
+            
+
+            this.list.setModel(this.listModel);
+            this.updateFilter();
+            
+            this.cursorPos=0;
+			this.moveCursor(0);
+            
             this.show();
 
             this.changeListener = (ev) => this.onChange(ev);
             // this.editor.getSession().removeAllListeners('change');
             this.editor.getSession().on("change", this.changeListener);
-            this.active = true;
         }
 
         /**
@@ -211,10 +234,10 @@
         private hidePopup() {
             this.editor.keyBinding.removeKeyboardHandler(this.handler);
             this.exclude();
-            // this.wrap.style.display = 'none';
+       
             this.editor.getSession().removeListener('change', this.changeListener);
             // this.editor.getSession().removeAllListeners('change');
-            this.active = false;
+       
             // this.editor.getSession().on("change",CATS.onChangeHandler);
             // this.editor.getSession().removeAllListeners('change');
         }
@@ -249,7 +272,7 @@
 
      
         showCompletions(completions:TypeScript.Services.CompletionEntry[]) {
-            if (this.active || (completions.length === 0)) return;            
+            if (this.list.isSeeable()  || (completions.length === 0)) return;            
             console.info("Received completions: " + completions.length);
             var cursor = this.editor.getCursorPosition();
             var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column);

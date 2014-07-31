@@ -1,6 +1,41 @@
 class TabView extends qx.ui.tabview.TabView {
     
-    iconPath = "./img/eclipse/";
+    //@BUG icon alias doesn't work, resource not there
+    private iconFolder = "resource/qx/icon/Oxygen/16/";
+    private iconMapping = {
+        "search" : {
+            label : "Search",
+            icon: "actions/edit-find.png"
+        }, 
+        
+        "console" : {
+            icon : "apps/utilities-terminal.png"
+        },
+        
+                
+         "files" : {
+            icon: "actions/view-list-tree.png"
+        },
+        
+         "outline" : {
+            icon: "actions/code-class.png"
+        },
+        
+        
+        "todo" : {
+          icon: "actions/view-pim-tasks.png"  
+        },
+        
+        "properties" : {
+          icon: "actions/document-properties.png"  
+        },
+        
+        "problems" : {
+            icon: "status/task-attention.png"  
+        }
+        
+        
+    }
 
     constructor(tabNames: string[]) {
         super();
@@ -13,13 +48,21 @@ class TabView extends qx.ui.tabview.TabView {
   
     }
 
-    getIconName(name:string) {
-        return this.iconPath + name.toLowerCase() + "_view.gif";
+    private getLabel(name) {
+        var label;
+        var entry = this.iconMapping[name];
+        if (entry) label = entry.label;
+        if (! label) label = qx.Bootstrap.firstUp(name);
+        return label;
+    }
+
+    private getIconName(name:string) {
+        var entry = this.iconMapping[name];
+        if (entry) return this.iconFolder + entry.icon;
     }
 
     addPage(name:string, tooltipText?:string): qx.ui.tabview.Page {
-        
-        var tab = new qx.ui.tabview.Page(name, this.getIconName(name));
+        var tab = new qx.ui.tabview.Page(this.getLabel(name), this.getIconName(name));
         tab.setLayout(new qx.ui.layout.Canvas());
 
         var button = (<any>tab).getButton();
@@ -53,7 +96,6 @@ class TabView extends qx.ui.tabview.TabView {
         var pages = this.getChildren();
         for (var i = 0; i < pages.length; i++) {
             var page = pages[i];
-            console.log(page.getLabel());
             if (page.getLabel() === id) {
                 return page;
             }

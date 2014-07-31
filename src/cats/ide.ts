@@ -45,13 +45,6 @@ module Cats {
             return this.sessionTabView.getSessions();
         }
 
-         get activeSession() {
-            var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
-            if (! page) return null;
-            var editor:SourceEditor = <SourceEditor>page.getChildren()[0];
-            return editor.getSession();
-        }
-
         searchResult:ResultTable;
         problemResult:ResultTable;
 
@@ -73,7 +66,8 @@ module Cats {
 
         private layout() {
             // container layout
-            qx.theme.manager.Meta.getInstance().setTheme(qx.theme["Simple"]);
+
+            qx.theme.manager.Meta.getInstance().setTheme(Cats.theme.Theme);
             
             var layout = new qx.ui.layout.VBox();
     
@@ -92,7 +86,7 @@ module Cats {
             // Quick hack to make look better.
             if (this.toolBar.getBackgroundColor()) mainsplit.setBackgroundColor(this.toolBar.getBackgroundColor());
             
-            this.navigatorPane = new TabView(["Files", "Outline"]);
+            this.navigatorPane = new TabView(["files", "outline"]);
             var fileTree = new FileNavigator(process.cwd());
             this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
             
@@ -109,13 +103,13 @@ module Cats {
             infoSplit.set({ decorator: null });
             infoSplit.add(this.sessionTabView, 4); // editor
            
-            this.infoPane = new TabView(["Todo", "Properties"]);
+            this.infoPane = new TabView(["todo", "properties"]);
             infoSplit.add(this.infoPane, 1); // todo
     
             editorSplit.add(infoSplit, 4);
     
             // Setup Problems section
-            this.problemPane = new TabView(["Problems", "Search", "Console"]);
+            this.problemPane = new TabView(["problems", "search", "console"]);
             this.console = new ConsoleLog();
     
             editorSplit.add(this.problemPane, 2); // Info
@@ -201,15 +195,6 @@ module Cats {
         }
 
  
-        /**
-         * Add a new session to the IDE
-         * @param session The session to be added
-         */
-        addSession(session: Session) {
-            var p = IDE.sessionTabView.addSession(session);
-            IDE.console.log("Added File " + session.name);
-        }
-
         /**
          * Are there any session that have unsaved changes 
          */
@@ -327,8 +312,9 @@ module Cats {
          * Open an existing session or if it doesn't exist yet create
          * a new one.
          */ 
-        openSession(name: string, pos?:Ace.Position, cb?:Function):void {
-            var session = this.getSession(name);
+        openSession(name?: string, pos?:Ace.Position, cb?:Function):void {
+            var session:Session;
+            if (name) session = this.getSession(name);
             if (! session) {
                 var content="";
                 if (name) {
@@ -340,8 +326,8 @@ module Cats {
                     content = OS.File.readTextFile(name);
                 }
                 session = new Session(name, content);
-                if ((session.mode === "typescript") && (! this.project.containsTSFile(name))) {
-                    this.project.addTSFile(name,content);
+                if (session.isTypeScript()) {
+                    this.project.iSense.addScript(name,content);
                 }
                 var p = IDE.sessionTabView.addSession(session,pos);
             } else {
@@ -364,17 +350,13 @@ module Cats {
             if (cb) cb(session);
         }
 
-        persistSession(session: Session, shouldConfirm = false) {
-            session.persist(shouldConfirm);
-        }
-
         /**
          * Close a session
          * @param session The session to close
          */
         closeSession(session: Session) {
             var result = [];
-            this.persistSession(session, true);
+            session.persist(true);
             
             this.sessions.forEach((s) => {
                 if (s !== session) {
@@ -385,8 +367,8 @@ module Cats {
             this.removeFromSessionStack(session.name);
             
             // Check if was the current session displayed
-            if (IDE.activeSession === session) {
-                IDE.activeSession = null;
+            if (IDE.sessionTabView.getActiveSession() === session) {
+               
                 //@TODO IDE.mainEditor.hide();
                 if (this.hasPreviousSession()) {
                     var prevSession = this.previousSession();
@@ -425,7 +407,7 @@ module Cats {
             var sessions = IDE.sessions;
             for (var i = 0; i < sessions.length; i++) {
                 var session = sessions[i];
-                if (session.changed) IDE.persistSession(session,true);
+                if (session.changed) session.persist(true);
             }
             this.sessions = [];
             this.project.close();

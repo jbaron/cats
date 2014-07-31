@@ -16,25 +16,6 @@
 
 module Cats {
     
-     /**
-     * Generic interface for a session that is used for editing information
-     * 
-     * @TODO: implement save and load as part of session
-     */ 
-    export interface Session123 {
-        name: string;
-        content:string;
-        type: string;
-        project: Project;
-        mode: string;
-        changed: boolean;
-        shortName: string;
-        getValue(): string;
-        setValue(value: string);
-        persist(shouldConfirm:boolean);
-    }
-
- 
     export class Project {
 
 
@@ -42,23 +23,7 @@ module Cats {
         projectDir: string;
         name: string;
         
-        // The TypeScript files that are part of the project
-        private tsFiles: string[] = [];
-        
-
-        /**
-         * Check whether a certain TS file is part of this project
-         */ 
-        public containsTSFile(name:string) : boolean {
-            return (this.tsFiles.indexOf(name) > -1);
-        }
-
-        public addTSFile(name:string,content:string) : void {
-            this.tsFiles.push(name);
-            this.iSense.addScript(name,content);
-            console.info("Added TypeScript file: " + name);
-        }
-
+ 
         // The singleton TSWorker handler instance
         iSense: ISenseHandler;
         
@@ -99,7 +64,6 @@ module Cats {
          *  again from the filesystem to be fully in sync
          */
         refresh() {
-            this.tsFiles = [];
             this.config = ConfigLoader.load(this.projectDir);
             this.name = this.config.name || PATH.basename(this.projectDir);
             document.title = "CATS | " + this.name;
@@ -124,7 +88,6 @@ module Cats {
             srcPaths.forEach((srcPath: string) => {
                 var fullPath = PATH.join(this.projectDir, srcPath || '');
                 this.loadTypeScriptFiles(fullPath);
-                // this.initTSWorker(); @TODO still needed ?
             });
 
         }
@@ -137,17 +100,6 @@ module Cats {
             return "file://" + url;
         }
         
-        /**
-         * @BUG Somehow TS LanguageServices are not ready by default.
-         * This triggers it to be ready 
-         */
-        private initTSWorker() {
-            if (this.tsFiles.length > 0) {
-                this.iSense.initialize();
-            }
-        }
-
-
         /**
          * Load all the script that are part of the project into the tsworker
          * @param directory The source directory where to start the scan
@@ -162,7 +114,7 @@ module Cats {
                         var ext = PATH.extname(fullName);
                         if (ext === ".ts") {                            
                             OS.File.readTextFile2(fullName,(content) => {
-                                this.addTSFile(fullName,content);
+                                this.iSense.addScript(fullName,content);
                             });
                         }
                     }

@@ -69,6 +69,18 @@ module Cats {
             return PATH.basename(this.name);
         }
 
+
+        setContent(content) {
+            var page = <SessionPage>IDE.sessionTabView.getPageBySession(this);
+            return page.editor.setContent(content);
+        }
+        
+        
+        getContent() {
+            var page = <SessionPage>IDE.sessionTabView.getPageBySession(this);
+            return page.editor.getContent();
+        }
+
         /**
          * Persist the edit session
          */
@@ -84,7 +96,9 @@ module Cats {
             }
 
  
-            OS.File.writeTextFile(this.name, this.content);
+            OS.File.writeTextFile(this.name, this.getContent());
+            var page = <SessionPage>IDE.sessionTabView.getPageBySession(this);
+            page.setChanged(false);
             
             if (this.mode === "typescript") this.project.validate();
             
@@ -92,7 +106,6 @@ module Cats {
                     Commands.runCommand(Commands.CMDS.project_build);
                     
         }
-
 
 
         /**

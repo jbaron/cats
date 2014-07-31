@@ -9,16 +9,18 @@ class SessionPage extends qx.ui.tabview.Page {
         this.setLayout(new qx.ui.layout.Canvas());
         this.setPadding(0, 0, 0, 0);
         this.setMargin(0, 0, 0, 0);
-        this.setDecorator(null);
+        // this.setDecorator(null);
         this.editor = new SourceEditor(session,pos);
         this.add(this.editor, { edge: 0 });
         this.createContextMenu();
         this.createToolTip();
+        this.getButton().setShow("both");
         
         this.editor.addListener("editor.update", () => { this.setChanged(true);});
         this.editor.addListener("editor.errors", (ev) => { this.setHasErrors(ev.getData());});
     }  
     
+ 
     
     private createToolTip() {
         var button:qx.ui.tabview.TabButton = (<any>this).getButton();
@@ -44,13 +46,12 @@ class SessionPage extends qx.ui.tabview.Page {
 
     setHasErrors(errors:number) {
         if (errors > 0) {
-            if (! this.getIcon())
-                this.setIcon("./img/eclipse/warning.gif");
-            this.getButton().setShow("both");
+            this.setIcon("./resource/qx/icon/Oxygen/16/status/task-attention.png");
+            // this.getButton().setShow("both");
         } else {
-            this.getButton().setShow("label");
+            this.resetIcon();
+            // this.getButton().setShow("label");
         }
-        console.log(errors);
     }
 
     setChanged(changed:boolean) {
@@ -75,7 +76,9 @@ class SessionTabView extends qx.ui.tabview.TabView {
 
     addSession(session, pos?:Cats.Position) {
           var page = new SessionPage(session, pos);
+          // page.exclude();
           this.add(page);
+          page.fadeIn(500);
           this.setSelection([page]);
     }
     
@@ -85,6 +88,12 @@ class SessionTabView extends qx.ui.tabview.TabView {
             result.push(child.session);
         });
         return result;
+    }
+    
+    getActiveSession() {
+        var page = <SessionPage>this.getSelection()[0];
+        if (! page) return null;
+        return page.session;
     }
     
     /**
@@ -117,20 +126,13 @@ class SessionTabView extends qx.ui.tabview.TabView {
         return null;
     }
     
-    getPage(id: string): qx.ui.tabview.Page {
-        var pages = this.getChildren();
-        for (var i = 0; i < pages.length; i++) {
-            var page = pages[i];
-            console.log(page.getLabel());
-            if (page.getLabel() === id) {
-                return page;
-            }
-        }
-        return null;
+    getActivePage() {
+        return <SessionPage>this.getSelection()[0];
     }
+    
 
-    select(id: string) {
-        var page = this.getPage(id);
+    select(session:Cats.Session) {
+        var page = this.getPageBySession(session);
         if (page) this.setSelection([page]);
     }
 

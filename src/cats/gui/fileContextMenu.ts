@@ -12,12 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-var data = {
-        key: "",
-        isFolder: true,
-        element: null
-    }
-
 
 class FileContextMenu extends qx.ui.menu.Menu {
 
@@ -28,101 +22,99 @@ class FileContextMenu extends qx.ui.menu.Menu {
     }
 
 
-    getSelection() {
-        return this.fileNavigator.getSelection();
+    private getSelectedItem() {
+        return this.fileNavigator.getSelection().getItem(0);
     }
 
-    getSelectedFile() {
-        var item = this.getSelection().getItem(0);
-        if (! item) return null;
-        if (! item.getDirectory) return null;
-        if (! item.getDirectory()) {
-            return item;
-        }
-        return null;
-    }
-
-    getSelectedItem() {
-        console.log(this.getSelection().getItem(0));
-        var fileName = this.getSelection().getItem(0).getLabel();
+ 
+    private getFullPath() {
+        var fileName = this.getSelectedItem().getFullPath();
         return fileName;
     }
 
 
-    init() {
+    private init() {
          var refreshButton = new qx.ui.menu.Button("Refresh");
+        
         var renameButton = new qx.ui.menu.Button("Rename");
+        renameButton.addListener("execute",this.rename, this);
         
         var deleteButton = new qx.ui.menu.Button("Delete");
-        deleteButton.addListener("execute", () => { alert("going to delete " + this.getSelectedItem()); });
+        deleteButton.addListener("execute", this.deleteFile, this);
 
         var newFileButton = new qx.ui.menu.Button("New File");
+        newFileButton.addListener("execute", this.newFile, this);
+        
         var newDirButton = new qx.ui.menu.Button("New Directory");
+        newDirButton.addListener("execute", this.newFolder, this);
+    
         this.add(refreshButton);
         this.add(renameButton);
         this.add(deleteButton);
         this.add(newFileButton);
         this.add(newDirButton);
-        
     }
 
    
 
-    refresh() {
+    private refresh() {
         var item = this.getSelectedItem();
         // IDE.project.getTreeView().refresh();
     }
 
 
-    deleteFile() {
-        var basename = PATH.basename(data.key);
+    private deleteFile() {
+        var fullName = this.getFullPath();
+        var basename = PATH.basename(fullName);
         var sure = confirm("Delete " + basename + "?");
         if (sure) {
-            OS.File.remove(data.key);
+            OS.File.remove(fullName);
         }
         setTimeout(()=>{ this.refresh();}, 100);
     }
 
-    newFile() {
-        var basedir;
 
-        if (data.isFolder) {
-            basedir = data.key
-        } else {
-            basedir = PATH.dirname(data.key);
+    private getBaseDir() {
+        var item = this.getSelectedItem();
+        var fullPath = this.getFullPath();
+        
+        if (item.getDirectory()) {
+            return fullPath;
+        } else { 
+            return PATH.dirname(fullPath);
         }
+    }
 
-        var name = prompt("Enter new file name ");
+    private newFile() {
+        var basedir = this.getBaseDir();
+ 
+        var name = prompt("Enter new file name in directory " + basedir);
         if (name == null) return;
         var fullName = PATH.join(basedir, name);
         OS.File.writeTextFile(fullName, "");
+        this.refresh();
     }
 
-    newFolder() {
-        var basedir;
+    private newFolder() {
+        var basedir = this.getBaseDir();
 
-        if (data.isFolder) {
-            basedir = data.key
-        } else {
-            basedir = PATH.dirname(data.key);
-        }
-
-        var name = prompt("Please enter new name");
+        var name = prompt("Enter new folder name in directory " + basedir);
         if (name == null) return;
         var fullName = PATH.join(basedir, name);
         OS.File.mkdirRecursiveSync(fullName);
         this.refresh(); 
     }
     
-    rename() {
-        var dirname = PATH.dirname(data.key);
-        var basename = PATH.basename(data.key);
+    private rename() {
+        var fullName = this.getFullPath();
+        var dirname = PATH.dirname(fullName);
+        var basename = PATH.basename(fullName);
         var name = prompt("Enter new name", basename);
         if (name == null) return;
         var c = confirm("Going to rename " + basename + " to " + name);
         if (c) {        
             try {
-                OS.File.rename(data.key, PATH.join(dirname, name));
+                OS.File.rename(fullName, PATH.join(dirname, name));
             } catch (err) {
                 alert(err);
             }

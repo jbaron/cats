@@ -104,6 +104,8 @@ And of course some of the main 3rd party components that we have used within CAT
 
 - [TypeScript](http://www.typescriptlang.org) (of course), developed by Microsoft.
 
+- [Qooxdoo](http://www.qooxdoo.org), excellent JavaScript library with many great UI widgets.  
+
 - [ACE](http://ace.ajax.org), an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.
 
 - [Node-webkit](https://github.com/rogerwang/node-webkit). This is a great initiative from Intel to allow Node libraries to be used within a web page. CATS use this to read and write local files without the need for a server-side component.

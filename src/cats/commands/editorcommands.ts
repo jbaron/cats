@@ -29,19 +29,19 @@ module Cats.Commands {
  
 
       function formatText() {
-          /*
-            var session = IDE.activeSession;
+          
+            var session = IDE.sessionTabView.getActiveSession();
             if (session) {
-                session.project.iSense.getFormattedTextForRange( session.name, 0, session.getValue().length, (err, result) => {                    
+                session.project.iSense.getFormattedTextForRange( session.name, 0, -1 , (err, result) => {                    
                     if (!err) {
                         var pos = IDE.getActiveEditor().getPosition();
-                        session.setValue(result);
+                        session.setContent(result);
                         if (pos) IDE.getActiveEditor().moveToPosition(pos);
                     }
                     
                 });
             }
-            */
+            
         }
 
     /*
@@ -80,6 +80,17 @@ module Cats.Commands {
     }
 
     */
+
+    
+    function editorCommand(commandName:string) {
+        return function(arg) {
+             //@TODO fix,don't access private var
+              var aceEditor = IDE.getActiveEditor()["aceEditor"];
+              // var command:Function = aceEditor.commands.byName[commandName];
+              aceEditor.execCommand(commandName);
+        };
+        
+    }
     
     export class EditorCommands {
 
@@ -87,27 +98,27 @@ module Cats.Commands {
         static init(registry:(cmd:Command)=>void) {
 
             var editorCommands: any[] = [
-               { id: Cats.Commands.CMDS.edit_undo, label: "Undo", icon: "undo.png" },
-               { id: Cats.Commands.CMDS.edit_redo, label: "Redo", icon: "redo.png" },
+               { id: Cats.Commands.CMDS.edit_undo, label: "Undo", icon: "actions/edit-undo.png" },
+               { id: Cats.Commands.CMDS.edit_redo, label: "Redo", icon: "actions/edit-redo.png" },
         
-               { id: Cats.Commands.CMDS.edit_indent, label: "Indent" },
-               { id: Cats.Commands.CMDS.edit_outdent, label: "Outdent" },
+               { id: Cats.Commands.CMDS.edit_indent, label: "Indent", icon: "actions/format-indent-more.png" },
+               { id: Cats.Commands.CMDS.edit_outdent, label: "Outdent", icon: "actions/format-indent-less.png" },
         
                /*{ id: Cats.Commands.CMDS.edit_cut, label: "Cut" },
                { id: Cats.Commands.CMDS.edit_copy, label: "Copy" },
                { id: Cats.Commands.CMDS.edit_paste, label: "Paste" },*/
         
-               { id: Cats.Commands.CMDS.edit_find, label: "Find", cmd: "find" },
+               { id: Cats.Commands.CMDS.edit_find, label: "Find", cmd: "find", icon: "actions/edit-find.png" },
                { id: Cats.Commands.CMDS.edit_findNext, label: "Find Next", cmd: "findnext" },
                { id: Cats.Commands.CMDS.edit_findPrev, label: "Find Previous", cmd: "findprevious" },
-               { id: Cats.Commands.CMDS.edit_replace, label: "Find/Replace", cmd: "replace", icon: "find.png", },
+               { id: Cats.Commands.CMDS.edit_replace, label: "Find/Replace", cmd: "replace", icon: "actions/edit-find-replace.png", },
                { id: Cats.Commands.CMDS.edit_replaceAll, label: "Replace All", cmd: "replaceall" },
         
                { id: Cats.Commands.CMDS.edit_toggleComment, label: "Toggle Comment", cmd: "togglecomment", icon: "comment.png" },
-               { id: Cats.Commands.CMDS.edit_toggleRecording, label: "Start/Stop Recording", cmd: "togglerecording" },
-               { id: Cats.Commands.CMDS.edit_replayMacro, label: "Playback Macro", cmd: "replaymacro" },
+               { id: Cats.Commands.CMDS.edit_toggleRecording, label: "Start/Stop Recording", cmd: "togglerecording", icon: "actions/media-record.png"  },
+               { id: Cats.Commands.CMDS.edit_replayMacro, label: "Playback Macro", cmd: "replaymacro", icon: "actions/media-playback-start.png" },
                
-               { id: Cats.Commands.CMDS.navigate_gotoLine, label: "Goto Line", cmd: "gotoline" }
+               { id: Cats.Commands.CMDS.edit_gotoLine, label: "Goto Line", cmd: "gotoline" }
             ];
 
 
@@ -118,17 +129,18 @@ module Cats.Commands {
                 var item:Command = {
                     name: config.id,
                     label: config.label,
+                    icon: config.icon,
                     shortcut:null,
-                    command:null
+       //             command:null
         //            shortcut: getShortcut(config.cmd),
- //                   command: editorCommand(config.cmd),
+                    command: editorCommand(config.cmd),
                 }
-                if (config.icon) item.icon = config.icon;
+                // if (config.icon) item.icon = config.icon;
                 registry(item);
             });
             
            // registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
-            registry({name:CMDS.source_format, label:"Format Code", command: formatText, icon: "format.png"});
+            registry({name:CMDS.source_format, label:"Format Code", command: formatText});
         }
 
     }

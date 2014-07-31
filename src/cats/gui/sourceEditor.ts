@@ -55,6 +55,14 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
  
     }
 
+    setContent(content) {
+        this.aceEditor.getSession().setValue(content);
+    }
+
+           
+    getContent() {
+        return this.aceEditor.getSession().getValue();
+    }
 
         /**
          * Keep track of changes made to the content and update the 
@@ -104,10 +112,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         }, 100);
     }
 
-    getSession() : Cats.Session {
-        return this.session;
-    }
-    
+
     setFontSize(size) {
         this.aceEditor.setFontSize(size + "px");
     }
@@ -192,7 +197,6 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
             };
         }
 
-
         /**
          * Perform code autocompletion. Right now support for TS.
          */
@@ -269,7 +273,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
                     win: "F12",
                     mac: "F12"
                 },
-                exec: () => { Cats.Commands.runCommand(Cats.Commands.CMDS.navigate_declaration) }
+                exec: () => { this.gotoDeclaration() }
             },
 
 
@@ -279,7 +283,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
                     win: "Ctrl-S",
                     mac: "Command-S"
                 },
-                exec: () =>  { Cats.Commands.runCommand(Cats.Commands.CMDS.file_save) }
+                exec: () =>  { this.session.persist() }
             }
             ]);
  
@@ -301,16 +305,42 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
             return editor;
     }
 
-    setContent(value:string) {
-        this.aceEditor.getSession().setValue(value);
-    }
-    
-    private createContextMenuItem(name, commandID) {
-        var button = new qx.ui.menu.Button(name);
-        var command = Cats.Commands.get(commandID).command;
-        button.addListener("execute", () =>{
-           command();
+  private gotoDeclaration() {        
+        var session = this.session;
+      
+        session.project.iSense.getDefinitionAtPosition( session.name, this.getPosition(), (err, data:Cats.FileRange) => {
+            if (data && data.fileName)
+                IDE.openSession(data.fileName, data.range.start);
         });
+    }
+
+    private getInfoAt(type: string) {        
+        
+        IDE.problemPane.select("Search");
+    
+ 
+        this.session.project.iSense.getInfoAtPosition(type, this.session.name, this.getPosition(), (err, data:Cats.FileRange[]) => {
+            console.log("Called getInfoAt for with results #" + data.length);
+            IDE.searchResult.setData(data);
+        });
+    }
+
+    private findReferences() {
+        return this.getInfoAt("getReferencesAtPosition");        
+    }
+
+    private findOccurences() {
+        return this.getInfoAt("getOccurrencesAtPosition");        
+    }
+
+
+    private findImplementors() {
+        return this.getInfoAt("getImplementorsAtPosition");        
+    }
+
+    private createContextMenuItem(name:string, fn:Function) {
+        var button = new qx.ui.menu.Button(name);
+        button.addListener("execute", fn)
         return button;
     }
     
@@ -318,10 +348,10 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         var CMDS = Cats.Commands.CMDS;
         var menu = new qx.ui.menu.Menu();
     
-        menu.add(this.createContextMenuItem("Goto Declaration", CMDS.navigate_declaration));
-        menu.add(this.createContextMenuItem("Find References", CMDS.navigate_references));
-        menu.add(this.createContextMenuItem("Find Occurences", CMDS.navigate_occurences));
-        menu.add(this.createContextMenuItem("FInd Implementations", CMDS.navigate_implementors));
+        menu.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration.bind(this)));
+        menu.add(this.createContextMenuItem("Find References", this.findReferences.bind(this)));
+        menu.add(this.createContextMenuItem("Find Occurences", this.findOccurences.bind(this)));
+        menu.add(this.createContextMenuItem("FInd Implementations", this.findImplementors.bind(this)));
         
         this.setContextMenu(menu);
     }

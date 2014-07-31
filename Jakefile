@@ -26,10 +26,16 @@ var catsOptions = [
     "src/typings/node-webkit.d.ts",
     "src/typings/typescript.d.ts",
     "src/typings/qooxdoo.d.ts",
+    
+    "src/cats/theme/Color.ts",
+    "src/cats/theme/Decoration.ts",
+    "src/cats/theme/Font.ts",
+    "src/cats/theme/Appearance.ts",
+    "src/cats/theme/Theme.ts",
+    
     "src/cats/common.ts",
     "src/cats/infobus.ts",
     "src/cats/os.ts",
-    "src/cats/treewatcher.ts",
     "src/cats/ide.ts",
     "src/cats/session.ts",
     "src/cats/commands/commander.ts",
@@ -37,7 +43,6 @@ var catsOptions = [
     "src/cats/commands/filecommands.ts",
     "src/cats/commands/helpcommands.ts",
     "src/cats/commands/idecommands.ts",
-    "src/cats/commands/navigatecommands.ts",
     "src/cats/commands/projectcommands.ts",
     "src/cats/commands/refactorcommands.ts",
     "src/cats/configloader.ts",
@@ -55,6 +60,9 @@ var catsOptions = [
     "src/cats/gui/statusBar.ts",
     "src/cats/gui/autoCompletePopup.ts",
     "src/cats/gui/fileContextMenu.ts",
+    
+    "src/cats/util/mime.ts",
+    
     "src/cats/main.ts"
 ];
 

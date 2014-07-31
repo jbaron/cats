@@ -1,4 +1,4 @@
-var fs = require("fs");
+
 var path = require("path");
 
 var rootTop = {
@@ -21,6 +21,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     static COUNT = 0;
 
     private directoryModels = {};
+    private iconsForMime = {};
 
     constructor(directory) {
         super(null,"label", "children");
@@ -28,6 +29,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         rootTop.label = path.basename(directory);
         var root = qx.data.marshal.Json.createModel(rootTop, true);
         this.setModel(root);
+        // this.setItemHeight(18);
         // this.setLabelPath("label");
         // this.setChildProperty("children");
         this.setDecorator(null);
@@ -52,9 +54,11 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
             var data = event.getData();
             data.setLoaded(false);
         });
+        
+        this.loadAvailableIcons();
 
     }
-
+ßƒ
     getSelectedFile() {
         var item = this.getSelection().getItem(0);
         if (! item) return null;
@@ -66,15 +70,37 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     }
 
 
+    loadAvailableIcons() {
+        var iconFolder = "./static/resource/qx/icon/Oxygen/16/mimetypes";
+        var files = OS.File.readDir(iconFolder);
+        files.forEach((file) => {
+           if (file.isFile) {    
+               var mimetype =  path.basename(file.name, ".png");
+               this.iconsForMime[mimetype] = file.name;
+           }
+        });
+        
+    }
+
+    getIconForFile(fileName) {
+        var mimetype:string = MimeTypeFinder.lookup(fileName).replace("/","-");
+        
+        var icon = this.iconsForMime[mimetype];
+        if (! icon) icon = this.iconsForMime["text-plain"]; 
+        icon = "./resource/qx/icon/Oxygen/16/mimetypes/" + icon;
+        // IDE.console.log("Icon: " + icon);
+        return icon;
+    }
+
+
     setup() {
         this.setIconPath("");
         this.setIconOptions({
-            converter : function(value, model) {
+            converter : (value, model) => {
                if (value.getDirectory()) {
-                   return "./resource/qx/icon/Tango/16/places/folder.png";
+                   return "./resource/qx/icon/Oxygen/16/places/folder.png";
                }
-               return "./resource/qx/icon/Tango/16/mimetypes/text-plain.png";
-
+               return this.getIconForFile(value.getLabel());
             }
       });
 

@@ -103,6 +103,7 @@ module Cats.Menu {
             edit.append(getCmd(CMDS.edit_toggleInvisibles));
             edit.append(getCmd(CMDS.edit_toggleRecording));
             edit.append(getCmd(CMDS.edit_replayMacro));
+             edit.append(getCmd(CMDS.edit_gotoLine));
 
 
             var source = new GUI.Menu();
@@ -113,13 +114,6 @@ module Cats.Menu {
 
             var refactor = new GUI.Menu();
             refactor.append(getCmd(CMDS.refactor_rename));
-
-            var navigate = new GUI.Menu();
-            navigate.append(getCmd(CMDS.navigate_gotoLine));
-            navigate.append(getCmd(CMDS.navigate_declaration));
-            navigate.append(getCmd(CMDS.navigate_references));
-            navigate.append(getCmd(CMDS.navigate_occurences));
-            navigate.append(getCmd(CMDS.navigate_implementors));
 
             var proj = new GUI.Menu();
             proj.append(getCmd(CMDS.project_open));
@@ -159,7 +153,6 @@ module Cats.Menu {
             menubar.append(new GUI.MenuItem({ label: 'Edit', submenu: edit }));
             menubar.append(new GUI.MenuItem({ label: 'Source', submenu: source }));
             menubar.append(new GUI.MenuItem({ label: 'Refactor', submenu: refactor }));
-            menubar.append(new GUI.MenuItem({ label: 'Navigate', submenu: navigate }));
             menubar.append(new GUI.MenuItem({ label: 'Project', submenu: proj }));
             menubar.append(new GUI.MenuItem({ label: 'Run', submenu: run }));
             menubar.append(new GUI.MenuItem({ label: 'Window', submenu: window }));

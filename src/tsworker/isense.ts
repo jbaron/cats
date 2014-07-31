@@ -278,9 +278,13 @@ module Cats.TSWorker {
 
         getFormattedTextForRange(fileName: string, start: number, end: number):string {
             var options = new TypeScript.Services.FormatCodeOptions();
-            options.NewLineCharacter = "\n";
-            var edits = this.ls.getFormattingEditsForRange(fileName, start, end, options);
             var result = this.getScriptContent(fileName);
+            
+            options.NewLineCharacter = "\n";
+            if (end === -1) end = result.length;
+            
+            var edits = this.ls.getFormattingEditsForRange(fileName, start, end, options);
+            
             var offset = 0;
             for (var i = 0; i < edits.length; i++) {
                 var edit = edits[i];
@@ -294,7 +298,11 @@ module Cats.TSWorker {
          * Add a new script to the compiler environment
          */ 
         addScript(fileName: string, content: string) {
-            this.lsHost.addScript(fileName, content);
+            if (this.lsHost.scripts[fileName]) {
+                this.updateScript(fileName,content);
+            } else {
+                this.lsHost.addScript(fileName, content);
+            }
         }
 
 

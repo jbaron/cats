@@ -6692,7 +6692,7 @@ constructor (source:string);
 }
 declare module qx.ui.embed {
 class Canvas extends qx.ui.core.Widget {
-constructor (canvasWidth:number,canvasHeight:number);
+constructor (canvasWidth?:number,canvasHeight?:number);
  _applyCanvasHeight(value:number,old:number):void;
  _applyCanvasWidth(value:number,old:number):void;
  _draw(width:number,height:number,context:any):void;
