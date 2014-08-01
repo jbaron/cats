@@ -82,21 +82,5 @@ module Cats {
         emit(event: "worker.busy", value: boolean): void;
     }
 
-    /**
-     * Central infobus that transports all type of events
-     */ 
-    export class InfoBus2 {
-         on:any;
-         
-         IDE: IDEEvent = new Events.EventEmitter();
-         SESSION: IDEEvent= new Events.EventEmitter();
-         EDITOR: IDEEvent= new Events.EventEmitter();
-         IntelliSense: IntelliSenseEvent= new Events.EventEmitter();
-        
-        constructor() {
-            console.info("initiated new InfoBus");
-        }
-        
-    }
-
+   
 }

@@ -254,7 +254,7 @@ module Cats {
                         var config:IDEConfiguration = JSON.parse(configStr);
                         if (config.version === "1") return config;
                     } catch (err) {
-                        console.log("Error during parsing config " + err);
+                        console.error("Error during parsing config " + err);
                     }
             }
             
@@ -340,10 +340,10 @@ module Cats {
             // var mode = "getOutliningRegions";
             if (session.isTypeScript()) {
                 this.project.iSense.getScriptLexicalStructure(session.name, (err, data: NavigateToItem[]) => {
-                    this.outlineNavigator.setData(data);
+                    this.outlineNavigator.setData(session,data);
                 });    
             } else {
-                this.outlineNavigator.setData([]);
+                this.outlineNavigator.setData(session,[]);
             }
             
             

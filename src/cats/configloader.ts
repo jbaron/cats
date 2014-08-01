@@ -54,7 +54,7 @@ module Cats {
                 var content = OS.File.readTextFile(fileName);
                 return JSON.parse(content);
             } catch (err) {
-                console.log("Couldn't find project configuration, loading defaults");
+                console.info("Couldn't find project configuration, loading defaults");
                 return ConfigLoader.loadDefault();
             }
         }

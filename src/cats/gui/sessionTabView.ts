@@ -31,13 +31,27 @@ class SessionPage extends qx.ui.tabview.Page {
      private createContextMenu() {
         var button:qx.ui.tabview.TabButton = (<any>this).getButton();
         var menu = new qx.ui.menu.Menu();
+        
         var item1 = new qx.ui.menu.Button("Close");
         item1.addListener("execute", () => {
             IDE.sessionTabView.remove(this);
         });
 
         var item2 = new qx.ui.menu.Button("Close other");
+        item2.addListener("execute" , () =>{
+           var pages = <SessionPage[]>IDE.sessionTabView.getChildren().concat();
+           pages.forEach((page) => {
+               if (page !== this) IDE.sessionTabView.remove(page);
+           }); 
+        });
+        
         var item3 = new qx.ui.menu.Button("Close all");
+         item3.addListener("execute" , () =>{
+           var pages = <SessionPage[]>IDE.sessionTabView.getChildren().concat();
+           pages.forEach((page) => { IDE.sessionTabView.remove(page); }); 
+        });
+        
+        
         menu.add(item1);
         menu.add(item2);
         menu.add(item3);

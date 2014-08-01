@@ -331,6 +331,7 @@ private static types = {
     ".tiff" : "image/tiff",
     ".torrent" : "application/x-bittorrent",
     ".tr"   : "text/troff",
+    ".ts"   : "application/x-typescript",
     ".tsi"  : "audio/TSP-audio",
     ".tsp"  : "application/dsptype",
     ".tsv"  : "text/tab-separated-values",

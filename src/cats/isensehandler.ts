@@ -140,7 +140,7 @@ export class ISenseHandler {
                     handler(msg.error, msg.result); 
                 }
             } else {
-                console.log(msg);
+                console.info(msg);
             }
         };
     }

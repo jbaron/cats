@@ -273,7 +273,7 @@
      
         showCompletions(completions:TypeScript.Services.CompletionEntry[]) {
             if (this.list.isSeeable()  || (completions.length === 0)) return;            
-            console.info("Received completions: " + completions.length);
+            console.debug("Received completions: " + completions.length);
             var cursor = this.editor.getCursorPosition();
             var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
             this.showPopup(coords, completions);

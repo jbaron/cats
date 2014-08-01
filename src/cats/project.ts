@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-
-
+// 
 module Cats {
     
     export class Project {
@@ -122,7 +121,7 @@ module Cats {
                         this.loadTypeScriptFiles(fullName);
                     }
                 } catch (err) {
-                    console.log("Got error while handling file " + fullName);
+                    console.error("Got error while handling file " + fullName);
                     console.error(err);
                 }
             });
@@ -133,12 +132,3 @@ module Cats {
     }
 
 }
-
-
-
-
-
-
-
-
-

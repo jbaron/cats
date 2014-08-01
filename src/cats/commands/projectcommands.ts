@@ -55,7 +55,7 @@ module Cats.Commands {
             return;
         }
         var startPage = IDE.project.getStartURL();
-        console.log("Opening file: " + startPage);
+        console.info("Opening file: " + startPage);
         var win2 = GUI.Window.open(startPage, {
             toolbar: true,
             webkit: {
@@ -82,7 +82,7 @@ module Cats.Commands {
             
             window["dependencies"] = data;
             var startPage = "uml.html";
-            console.log("Opening file: " + startPage);
+            console.info("Opening file: " + startPage);
             var win2 = window.open(startPage,"dependencies","status=1,resizable=1,menubar=1,location=1,toolbar=1,titlebar=1,scrollbars=1");
             win2["dependencies"] = data;
         })

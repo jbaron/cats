@@ -11,6 +11,8 @@ interface OutlineNavigatorItem {
  */
 class OutlineNavigator extends qx.ui.tree.VirtualTree {
 
+    private session:Cats.Session;
+
     constructor() {
         super(null,"name", "kids");
         this.setDecorator(null);
@@ -21,6 +23,7 @@ class OutlineNavigator extends qx.ui.tree.VirtualTree {
             var item = <any>this.getSelectedItem();
             if (item) {
                 // @TODO fix getStart to use primitive types
+                
                 IDE.getActiveEditor().moveToPosition(item.getRange().getStart());
             }
         });
@@ -55,8 +58,9 @@ class OutlineNavigator extends qx.ui.tree.VirtualTree {
     /**
      * Set the data for outline navigator
      */ 
-    setData(data: Cats.NavigateToItem[]) {
+    setData(session:Cats.Session, data: Cats.NavigateToItem[]) {
         // console.log(data);
+        this.session = session;
         var json = this.createModel(data,{name:"", kind:"", fullName:"", range:null});
         
         // This could be very expensive call, look for better alternative.

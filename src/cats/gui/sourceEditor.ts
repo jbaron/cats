@@ -310,7 +310,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
     
  
         this.session.project.iSense.getInfoAtPosition(type, this.session.name, this.getPosition(), (err, data:Cats.FileRange[]) => {
-            console.log("Called getInfoAt for with results #" + data.length);
+            console.debug("Called getInfoAt for with results #" + data.length);
             IDE.searchResult.setData(data);
         });
     }

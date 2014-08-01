@@ -64,6 +64,10 @@ module Cats {
         isTypeScript(): boolean {
             return this.mode === "typescript";
         }
+        
+        isActive() : boolean {
+            return (IDE.sessionTabView.getActiveSession() === this); 
+        }
 
         get shortName():string {
             if (! this.name) return "Untitled";

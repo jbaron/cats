@@ -100,7 +100,7 @@ module Cats.Menu {
             edit.append(getCmd(CMDS.edit_replaceAll));
             
             edit.append(new GUI.MenuItem({ type: "separator" }));
-            edit.append(getCmd(CMDS.edit_toggleInvisibles));
+            // edit.append(getCmd(CMDS.edit_toggleInvisibles));
             edit.append(getCmd(CMDS.edit_toggleRecording));
             edit.append(getCmd(CMDS.edit_replayMacro));
              edit.append(getCmd(CMDS.edit_gotoLine));

@@ -40,7 +40,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         this.setContextMenu(contextMenu);
         this.setup();
 
-        console.log("Icon path:" + this.getIconPath());    
+        console.info("Icon path:" + this.getIconPath());    
         this.addListener("dblclick", () => {
             var file = this.getSelectedFile();
             if (file) {
@@ -58,7 +58,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         this.loadAvailableIcons();
 
     }
-ßƒ
+
     getSelectedFile() {
         var item = this.getSelection().getItem(0);
         if (! item) return null;
