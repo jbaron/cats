@@ -16,8 +16,8 @@ class SessionPage extends qx.ui.tabview.Page {
         this.createToolTip();
         this.getButton().setShow("both");
         
-        this.editor.addListener("editor.update", () => { this.setChanged(true);});
-        this.editor.addListener("editor.errors", (ev) => { this.setHasErrors(ev.getData());});
+        this.session.on("setChanged", this.setChanged.bind(this));
+        this.session.on("errors", this.setHasErrors.bind(this));
     }  
     
  
@@ -44,8 +44,8 @@ class SessionPage extends qx.ui.tabview.Page {
         button.setContextMenu(menu);
     }
 
-    setHasErrors(errors:number) {
-        if (errors > 0) {
+    setHasErrors(errors:any[]) {
+        if (errors.length > 0) {
             this.setIcon("./resource/qx/icon/Oxygen/16/status/task-attention.png");
             // this.getButton().setShow("both");
         } else {

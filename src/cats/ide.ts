@@ -87,7 +87,7 @@ module Cats {
             if (this.toolBar.getBackgroundColor()) mainsplit.setBackgroundColor(this.toolBar.getBackgroundColor());
             
             this.navigatorPane = new TabView(["files", "outline"]);
-            var fileTree = new FileNavigator(process.cwd());
+            var fileTree = new FileNavigator(this.project.projectDir);
             this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
             
             this.outlineNavigator = new OutlineNavigator()
@@ -200,7 +200,7 @@ module Cats {
          */
         hasUnsavedSessions(): boolean {
             for (var i = 0; i < this.sessions.length; i++) {
-                if (this.sessions[i].changed) return true;
+                if (this.sessions[i].getChanged()) return true;
             }
             return false;
         }
@@ -407,7 +407,7 @@ module Cats {
             var sessions = IDE.sessions;
             for (var i = 0; i < sessions.length; i++) {
                 var session = sessions[i];
-                if (session.changed) session.persist(true);
+                if (session.getChanged()) session.persist(true);
             }
             this.sessions = [];
             this.project.close();

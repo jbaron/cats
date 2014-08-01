@@ -3,7 +3,7 @@
  */
 class ToolBar extends qx.ui.toolbar.ToolBar {
 
-    private themes = ["Modern", "Indigo", "Simple", "Classic"];
+    private themes = ["Modern", "Indigo", "Simple", "Cats", "Classic"];
     private iconFolder = "resource/qx/icon/Oxygen/22/";
 
     private commands = [
@@ -46,8 +46,8 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
         var tooltip = new qx.ui.tooltip.ToolTip(cmd.label, null);
         button.setToolTip(tooltip);
         button.setBlockToolTip(false);
-        button.setDecorator(null);
-        button.setPadding(0,0,0,0);
+        // button.setDecorator(null);
+        // button.setPadding(0,0,0,0);
         button.addListener("click", () => {
             cmd.command();
         });
@@ -75,7 +75,7 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
             }
         });
         
-       // this.addThemes();
+       // this.addThemeButtons();
     }
 
     toggle() {
@@ -87,7 +87,7 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
     }
 
 
-    private addThemes() {
+    private addThemeButtons() {
         this.themes.forEach((theme) => {
             var themeButton = new qx.ui.toolbar.Button(theme);
             themeButton.addListener("click", () => { qx.theme.manager.Meta.getInstance().setTheme(qx.theme[theme]); });

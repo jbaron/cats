@@ -16,7 +16,7 @@
 module Cats {
     
     
-    export class Session  {
+    export class Session extends qx.event.Emitter {
 
         private static MODES = {
             ".js": "javascript",
@@ -41,7 +41,8 @@ module Cats {
 
         private static DEFAULT_MODE = "text";
         public mode:string;
-        public changed = false;
+        private changed = false;
+        private errors: Cats.FileRange[] = [];
         
         /**
          * Create a new session
@@ -51,8 +52,8 @@ module Cats {
          * @param content The content of the session
          */
         constructor(public name?: string, public content?: string) {
+            super();
             this.mode = Session.determineMode(name);
- 
         }
 
       
@@ -75,6 +76,16 @@ module Cats {
             return page.editor.setContent(content);
         }
         
+     
+     
+        getChanged() {
+            return this.changed;
+        }
+        
+        setChanged(value:boolean) {
+            this.changed = value;
+            this.emit("setChanged", this.changed);
+        }
         
         getContent() {
             var page = <SessionPage>IDE.sessionTabView.getPageBySession(this);
@@ -97,8 +108,7 @@ module Cats {
 
  
             OS.File.writeTextFile(this.name, this.getContent());
-            var page = <SessionPage>IDE.sessionTabView.getPageBySession(this);
-            page.setChanged(false);
+            this.setChanged(false);
             
             if (this.mode === "typescript") this.project.validate();
             
@@ -107,6 +117,30 @@ module Cats {
                     
         }
 
+        setErrors(errors:Cats.FileRange[]) {
+            if ((this.errors.length === 0) && (errors.length === 0)) return;
+            this.errors = errors;
+            this.emit("errors", this.errors);
+        }
+
+        updateContent(content) {
+            this.content = content;
+            IDE.project.iSense.updateScript(this.name, content);
+            this.getDiagnostics();
+        }
+
+
+        getDiagnostics() {
+            if (this.isTypeScript()) {
+               IDE.project.iSense.getErrors(this.name, (err, result: Cats.FileRange[]) => {
+                   this.setErrors(result);
+               });
+            }
+        }
+
+        sync() {
+            this.getDiagnostics();
+        }
 
         /**
          * Determine the edit mode based on the file name

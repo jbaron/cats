@@ -13,7 +13,6 @@
 // limitations under the License.
 //
 
-
 /**
  * This contain the common interfaces and enumerations that are being used to 
  * transfer data between the worker and the main thread. 

@@ -10,7 +10,6 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
     // private container:HTMLElement;
     private mouseMoveTimer;
     private updateSourceTimer;
-    private changed=false;
     private pendingWorkerUpdate = false;
 
     constructor(private session:Cats.Session, pos?:Cats.Position) {
@@ -49,8 +48,8 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         }, this);
         
       
-        this.addListener("appear", () => { this.showErrors(); });
-  
+        this.addListener("appear", () => { session.sync() });
+        session.on("errors", (errors) => { this.showErrors(errors)});
         this.addListener("resize", () => { this.resizeHandler(); });
  
     }
@@ -64,28 +63,26 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         return this.aceEditor.getSession().getValue();
     }
 
-        /**
-         * Keep track of changes made to the content and update the 
-         * worker if required.
-         */
-        private onChangeHandler(event) {
-            if (! this.changed) {
-                this.fireDataEvent("editor.update", this.session);
-                this.changed = true;
-            }
-            
-            this.pendingWorkerUpdate = true;
+    /**
+     * Keep track of changes made to the content and update the 
+     * worker if required.
+     */
+    private onChangeHandler(event) {
+        if (! this.session.getChanged()) this.session.setChanged(true);
+        
+        
+        this.pendingWorkerUpdate = true;
 
-            if (this.session.mode !== "typescript") return;
+        if (this.session.mode !== "typescript") return;
 
-            clearTimeout(this.updateSourceTimer);
+        clearTimeout(this.updateSourceTimer);
 
-            // Don't send too many updates to the worker
-            this.updateSourceTimer = setTimeout(() => {
-                if (this.pendingWorkerUpdate) this.update();
-                this.showErrors();
-            }, 1000);
-        }
+        // Don't send too many updates to the worker
+        this.updateSourceTimer = setTimeout(() => {
+            if (this.pendingWorkerUpdate) this.update();
+           
+        }, 1000);
+    }
 
     private createToolTip() {
         var tooltip = new qx.ui.tooltip.ToolTip("");
@@ -188,10 +185,10 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
          * Update the worker with the latest version of the content of this 
          * session.
          */
-        update() {
-            if (this.session.mode === "typescript") {
+        private update() {
+            if (this.session.isTypeScript()) {
                 var source = this.aceEditor.getSession().getValue();
-                IDE.project.iSense.updateScript(this.session.name, source);
+                this.session.updateContent(source);
                 clearTimeout(this.updateSourceTimer);
                 this.pendingWorkerUpdate = false;
             };
@@ -232,27 +229,20 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
        /**
          * Check if there are any errors for this session and show them.    
          */
-        showErrors() {
-            if (this.session.mode === "typescript") {
-                // TODO get its own timer
-                IDE.project.iSense.getErrors(this.session.name, (err, result: Cats.FileRange[]) => {
-                    var annotations: Ace.Annotation[] = [];
-                    if (result) {
-                        result.forEach((error: Cats.FileRange) => {
-                            annotations.push({
-                                row: error.range.start.row,
-                                column: error.range.start.column,
-                                type: error.severity === Cats.Severity.Error ? "error" : "warning",
-                                text: error.message
-                            });
-                        });
-                    }
-                    this.aceEditor.getSession().setAnnotations(annotations);
-                    this.fireDataEvent("editor.errors", annotations.length);
+        showErrors(result) {
+            var annotations = [];
+            result.forEach((error: Cats.FileRange) => {
+                annotations.push({
+                    row: error.range.start.row,
+                    column: error.range.start.column,
+                    type: error.severity === Cats.Severity.Error ? "error" : "warning",
+                    text: error.message
                 });
-            }
+            });
+            this.aceEditor.getSession().setAnnotations(annotations);
         }
-
+       
+       
           // Initialize the editor
         private createAceEditor(rootElement):Ace.Editor {
             var editor: Ace.Editor = ace.edit(rootElement);
