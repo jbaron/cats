@@ -43,6 +43,8 @@ module Cats {
         public mode:string;
         private changed = false;
         private errors: Cats.FileRange[] = [];
+        private outline:NavigateToItem[];
+        private outlineTimer:number;
         
         /**
          * Create a new session
@@ -126,6 +128,11 @@ module Cats {
             this.errors = errors;
             this.emit("errors", this.errors);
         }
+        
+        setOutline(outline) {
+            this.outline = outline;
+            this.emit("outline", this.outline);
+        }
 
         updateContent(content) {
             this.content = content;
@@ -141,9 +148,22 @@ module Cats {
                });
             }
         }
+        
+        getOutline() {
+            if (this.isTypeScript()) {
+                // Clear any pending updates
+                clearTimeout(this.outlineTimer);
+                this.outlineTimer = setTimeout(() => {
+                    IDE.project.iSense.getScriptLexicalStructure(this.name, (err, data: NavigateToItem[]) => {
+                        this.setOutline(data);
+                    });
+                }, 5000);
+            }
+        }    
 
         sync() {
             this.getDiagnostics();
+            this.getOutline();
         }
 
         /**

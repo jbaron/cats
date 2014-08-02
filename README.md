@@ -4,20 +4,18 @@ CATS is an IDE for the TypeScript developer. CATS is open source software releas
 
 Although not yet feature complete, it is getting there. Right now CATS already has built-in support for the following features:
 
-- Intelligent code editor with support for syntax highlighting and code completion.
-
+- Intelligent code editor and code completion for TypeScript sources.
+ 
 <img src="https://raw.github.com/jbaron/cats/master/artifacts/autocomplete.png" />
 
+- Syntax highlighting for over 110 languages (TextMate/Sublime Text.tmlanguage files can be imported)
 - Support for refactoring and smart navigation.
 - TypeScript compilation to JavaScript.
 - Validation of the source code while you are typing.
 - JavaScript JSHint support.
 - Editing features like folding and indentation.
 - Running your application from within IDE and using the WebKit debugger to debug.
-- External build systems
-- Theming:
-
-<img src="https://raw.github.com/jbaron/cats/master/artifacts/themes.png" height="220px" width="850px" />
+- Support for external build systems like Grunt and Jake.
 
 It is recommended to first make a backup before using CATS on your project since the software is still considered to be of alpha quality. 
 

@@ -1,4 +1,7 @@
-
+/**
+ * This class represents a page holding a session. Typically that means a 
+ * editor
+ */ 
 class SessionPage extends qx.ui.tabview.Page {
  
     editor:SourceEditor;
@@ -19,8 +22,6 @@ class SessionPage extends qx.ui.tabview.Page {
         this.session.on("setChanged", this.setChanged.bind(this));
         this.session.on("errors", this.setHasErrors.bind(this));
     }  
-    
- 
     
     private createToolTip() {
         var button:qx.ui.tabview.TabButton = (<any>this).getButton();
@@ -47,6 +48,9 @@ class SessionPage extends qx.ui.tabview.Page {
         button.setContextMenu(menu);
     }
 
+    /**
+     * Tell the Page that the editor on it has detected some errors in the code
+     */ 
     setHasErrors(errors:any[]) {
         if (errors.length > 0) {
             this.setIcon("./resource/qx/icon/Oxygen/16/status/task-attention.png");
@@ -86,7 +90,7 @@ class SessionTabView extends qx.ui.tabview.TabView {
     }
 
     /**
-     * close all open session
+     * close all open pages
      */ 
     closeAll() {
         var pages = <SessionPage[]>this.getChildren().concat();
@@ -94,12 +98,15 @@ class SessionTabView extends qx.ui.tabview.TabView {
     }
     
     /**
-     * close one session
+     * close one page
      */ 
     close(page=this.getActivePage()) {
         this.remove(page);
     }
     
+    /**
+     * Close the other pages
+     */ 
     closeOther(closePage=this.getActivePage()) {
            var pages = <SessionPage[]>this.getChildren().concat();
            pages.forEach((page) => {
@@ -107,6 +114,9 @@ class SessionTabView extends qx.ui.tabview.TabView {
            }); 
     }
     
+    /**
+     * Get all the open sessions
+     */ 
     getSessions():Cats.Session[] {
         var result = [];
         this.getChildren().forEach((child:SessionPage) =>{
@@ -115,6 +125,9 @@ class SessionTabView extends qx.ui.tabview.TabView {
         return result;
     }
     
+    /**
+     * Get the currently active session
+     */ 
     getActiveSession() {
         var page = <SessionPage>this.getSelection()[0];
         if (! page) return null;
@@ -142,6 +155,9 @@ class SessionTabView extends qx.ui.tabview.TabView {
         if (pos) page.editor.moveToPosition(pos);
     }
 
+    /**
+     * Find a page by its session
+     */ 
     getPageBySession(session):SessionPage {
         var pages = this.getChildren();
         for (var i=0;i<pages.length;i++) {

@@ -77,10 +77,10 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
 
         clearTimeout(this.updateSourceTimer);
 
-        // Don't send too many updates to the worker
+        // Don't send too many updates to the worker, wait for people to 
+        // finsih typing at least 1 second.
         this.updateSourceTimer = setTimeout(() => {
             if (this.pendingWorkerUpdate) this.update();
-           
         }, 1000);
     }
 

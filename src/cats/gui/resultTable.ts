@@ -23,18 +23,8 @@ class ResultTable extends qx.ui.table.Table {
                     row.range
                 ])
             });
-            /*
-            var grid = new Cats.UI.Grid();
-            grid.setColumns(["message", "fileName", "position"]);
-            grid.setRows(data);
-            grid.setAspect("position", (row) => { return rangeToPosition(row.range) });
-            grid.render();
-            grid.appendTo(searchResultsElem);
-            grid.onselect = (sel: Cats.FileRange) => {
-                IDE.openSession(sel.fileName, sel.range.start);
-            };
-            */
         }
+        
         tableModel.setColumns(ResultTable.HEADERS);
         tableModel.setData(rows);
         this.setTableModel(tableModel);
@@ -42,11 +32,7 @@ class ResultTable extends qx.ui.table.Table {
 
     constructor() {
         var tableModel = new qx.ui.table.model.Simple();
-
-        // table model
-        var headers = ["Message", "File", "Position"];
-
-        tableModel.setColumns(headers);
+        tableModel.setColumns(ResultTable.HEADERS);
         tableModel.setData([]);
 
         var custom: any = {

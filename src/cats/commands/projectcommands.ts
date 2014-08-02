@@ -123,12 +123,10 @@ module Cats.Commands {
 
             var child = exec(cmd,options,
               function (error, stdout, stderr) {
-                IDE.busy(false);
                 show(stdout);
                 show(stderr);
-                if (error !== null) {
-                  show('exec error: ' + error);
-                }
+                if (error !== null) show('exec error: ' + error);
+                IDE.busy(false);
             });
             
         } else {
@@ -142,7 +140,6 @@ module Cats.Commands {
             });
         }
     }
-
 
     /**
      * Configure the properties of a project
