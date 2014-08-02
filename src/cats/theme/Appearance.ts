@@ -55,7 +55,8 @@ qx.Theme.define("Cats.theme.Appearance",
         };
       }
     }
-
+    
+  
       
   }
 });

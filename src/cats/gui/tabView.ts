@@ -1,7 +1,7 @@
 class TabView extends qx.ui.tabview.TabView {
     
     //@BUG icon alias doesn't work, resource not there
-    private iconFolder = "resource/qx/icon/Oxygen/16/";
+    private iconFolder = "./resource/qx/icon/Oxygen/16/";
     private iconMapping = {
         "search" : {
             label : "Search",
@@ -15,12 +15,17 @@ class TabView extends qx.ui.tabview.TabView {
                 
          "files" : {
             icon: "actions/view-list-tree.png"
+            // icon: "filenav_nav.svg"
         },
         
          "outline" : {
             icon: "actions/code-class.png"
+            // icon: "outline_co.svg"
         },
         
+        "bookmarks" : {
+            icon: "actions/bookmarks-organize.png"
+        },
         
         "todo" : {
           icon: "actions/view-pim-tasks.png"  

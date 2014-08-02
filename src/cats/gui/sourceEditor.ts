@@ -199,7 +199,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
          */
         showAutoComplete(cursor: Ace.Position) {
             
-            if (this.session.mode !== "typescript") return;
+            if (! this.session.isTypeScript()) return;
 
             // Any pending changes that are not yet send to the worker?
             if (this.pendingWorkerUpdate) this.update();

@@ -9,7 +9,7 @@ class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.
  
     constructor() {
         super(null);
-
+        this.setPadding(2,2,2,2);
         this.setDecorator(null);
         //var w = new qx.ui.core.Widget();
         // this.add(w);
@@ -20,6 +20,13 @@ class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.
         this.setContextMenu(this.createContextMenu());
     }
      
+    /**
+     * Log a message to the console widget. This should only be used for 
+     * logging mesages that are useful to the enduser (= developer) and not for
+     * debug information.
+     * 
+     * @TODO implement a better performing solution using addChild
+     */ 
     log(msg:string,printTime:boolean=false,severity:number=0) {
         if (this.container) {
             var prefix = "" 
@@ -45,7 +52,7 @@ class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.
         return menu;
     }
     
-    clear() {
+    private clear() {
         if (this.container) this.container.innerHTML = "";
     }
     

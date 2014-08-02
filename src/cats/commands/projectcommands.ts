@@ -27,9 +27,7 @@ module Cats.Commands {
             }
             
             IDE.problemResult.setData([]);
-            var time = new Date();
-            var stamp = time.toLocaleTimeString();
-            IDE.console.log( stamp + " Successfully compiled " + Object.keys(data.source).length + " file(s).\n");
+            IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).\n", true);
         }
 
 

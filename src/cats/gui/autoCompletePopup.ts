@@ -40,15 +40,16 @@
             this.setHeight(200);
             this.createList();
             this.initHandler();
+            this.addListener("disappear", this.hidePopup, this);
         }
 
 
+        /**
+         * Create the list that hold the completions
+         */ 
         private createList() {
-                 // Creates the model data
-          
                 var self = this;
-              // var model = qx.data.marshal.Json.createModel([], false);
-        
+
               // Creates the list and configures it
               var list:qx.ui.list.List = new qx.ui.list.List(null).set({
                 scrollbarX: "on",
@@ -175,18 +176,21 @@
         }
 
 
+
+
         private getIconForKind(name:string) {
+            var iconPath = "./resource/qx/icon/Oxygen/16/types/"
             switch (name) {
                 case "function":
                 case "keyword":
-                case "method": return "./img/16/method.png";
-                case "constructor": return "./img/16/constructor.png";
-                case "module": return "./img/16/module.png";
-                case "interface":return "./img/16/interface.png";
-                case "enum": return "./img/16/enum.png"; 
-                case "class":return "./img/16/class.png";
-                case "var":return "./img/16/variable.png";
-                default: return "./img/16/method.png";
+                case "method": return iconPath + "method.png";
+                case "constructor": return iconPath + "constructor.png";
+                case "module": return iconPath + "module.png";
+                case "interface":return iconPath + "interface.png";
+                case "enum": return iconPath + "enum.png"; 
+                case "class":return iconPath + "class.png";
+                case "var":return iconPath + "variable.png";
+                default: return iconPath + "method.png";
             }            
         }
 
@@ -197,7 +201,7 @@
          */ 
         private showPopup(coords,completions:TypeScript.Services.CompletionEntry[]) {
             this.editor.keyBinding.addKeyboardHandler(this.handler);
-            this.moveTo(coords.pageX, coords.pageY+15);
+            this.moveTo(coords.pageX, coords.pageY+20);
             
             
              var rawData = [];

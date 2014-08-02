@@ -24,7 +24,6 @@ class DelegateEditor extends qx.event.Emitter implements Editor {
              editor.on(name,this.handler);
         });
         
-        
         this.delegate = editor;
         if (refreshListeners) {
             

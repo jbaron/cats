@@ -33,24 +33,13 @@ class SessionPage extends qx.ui.tabview.Page {
         var menu = new qx.ui.menu.Menu();
         
         var item1 = new qx.ui.menu.Button("Close");
-        item1.addListener("execute", () => {
-            IDE.sessionTabView.remove(this);
-        });
+        item1.addListener("execute", () => { IDE.sessionTabView.close(this);});
 
         var item2 = new qx.ui.menu.Button("Close other");
-        item2.addListener("execute" , () =>{
-           var pages = <SessionPage[]>IDE.sessionTabView.getChildren().concat();
-           pages.forEach((page) => {
-               if (page !== this) IDE.sessionTabView.remove(page);
-           }); 
-        });
-        
+        item2.addListener("execute" , () =>{ IDE.sessionTabView.closeOther(this);});
+      
         var item3 = new qx.ui.menu.Button("Close all");
-         item3.addListener("execute" , () =>{
-           var pages = <SessionPage[]>IDE.sessionTabView.getChildren().concat();
-           pages.forEach((page) => { IDE.sessionTabView.remove(page); }); 
-        });
-        
+        item3.addListener("execute" , () =>{ IDE.sessionTabView.closeAll(); });
         
         menu.add(item1);
         menu.add(item2);
@@ -94,6 +83,28 @@ class SessionTabView extends qx.ui.tabview.TabView {
           this.add(page);
           page.fadeIn(500);
           this.setSelection([page]);
+    }
+
+    /**
+     * close all open session
+     */ 
+    closeAll() {
+        var pages = <SessionPage[]>this.getChildren().concat();
+        pages.forEach((page) => { this.remove(page); });  
+    }
+    
+    /**
+     * close one session
+     */ 
+    close(page=this.getActivePage()) {
+        this.remove(page);
+    }
+    
+    closeOther(closePage=this.getActivePage()) {
+           var pages = <SessionPage[]>this.getChildren().concat();
+           pages.forEach((page) => {
+               if (page !== closePage) this.remove(page);
+           }); 
     }
     
     getSessions():Cats.Session[] {

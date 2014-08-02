@@ -14,6 +14,6 @@ qx.Theme.define("Cats.theme.Color",
 
   colors :
   {
-      // "light-background" : "#121314"
+      "light-background" : "#C0CCDF"
   }
 });

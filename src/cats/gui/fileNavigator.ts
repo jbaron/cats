@@ -69,7 +69,9 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         return null;
     }
 
-
+    /**
+     * Get all available icons for mime-types
+     */ 
     loadAvailableIcons() {
         var iconFolder = "./static/resource/qx/icon/Oxygen/16/mimetypes";
         var files = OS.File.readDir(iconFolder);
@@ -82,7 +84,10 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         
     }
 
-    getIconForFile(fileName) {
+    /**
+     * Get an icon for a file based on its mimetype
+     */ 
+    private getIconForFile(fileName) {
         var mimetype:string = MimeTypeFinder.lookup(fileName).replace("/","-");
         
         var icon = this.iconsForMime[mimetype];

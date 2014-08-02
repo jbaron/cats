@@ -62,6 +62,7 @@ module Cats {
             this.layout();
             // this.toolBar.init();
             Cats.Menu.createMenuBar();
+            this.initFileDropArea();
         }
 
         private layout() {
@@ -86,12 +87,12 @@ module Cats {
             // Quick hack to make look better.
             if (this.toolBar.getBackgroundColor()) mainsplit.setBackgroundColor(this.toolBar.getBackgroundColor());
             
-            this.navigatorPane = new TabView(["files", "outline"]);
+            this.navigatorPane = new TabView(["files", "bookmarks"]);
             var fileTree = new FileNavigator(this.project.projectDir);
             this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
             
-            this.outlineNavigator = new OutlineNavigator()
-            this.navigatorPane.getChildren()[1].add(this.outlineNavigator , { edge: 0 });
+            
+            
     
             mainsplit.add(this.navigatorPane, 1); // navigator
     
@@ -103,22 +104,21 @@ module Cats {
             infoSplit.set({ decorator: null });
             infoSplit.add(this.sessionTabView, 4); // editor
            
-            this.infoPane = new TabView(["todo", "properties"]);
+            this.infoPane = new TabView(["outline", "properties"]);
+            this.outlineNavigator = new OutlineNavigator();
+            this.infoPane.getChildren()[0].add(this.outlineNavigator , { edge: 0 });
             infoSplit.add(this.infoPane, 1); // todo
-    
+        
             editorSplit.add(infoSplit, 4);
     
             // Setup Problems section
             this.problemPane = new TabView(["problems", "search", "console"]);
-            this.console = new ConsoleLog();
-    
             editorSplit.add(this.problemPane, 2); // Info
     
-    
+            this.console = new ConsoleLog();
             this.problemResult = new ResultTable();
+            this.searchResult = new ResultTable();
             this.problemPane.getChildren()[0].add(this.problemResult, { edge: 0 });
-            
-            this.searchResult = new ResultTable()
             this.problemPane.getChildren()[1].add(this.searchResult, { edge: 0 });
             this.problemPane.getChildren()[2].add(this.console, { edge: 0 });
     
@@ -265,20 +265,24 @@ module Cats {
          * Persist the current IDE configuration to a file
          */ 
         saveConfig() {
-            var config = this.config;
-            config.sessions = [];
-            config.projects = [];
-            
-            this.sessions.forEach((session)=>{               
-                config.sessions.push({
-                    path: session.name
-                    // session.getPosition() //@TODO make session fully responsible
+            try {
+                var config = this.config;
+                config.sessions = [];
+                config.projects = [];
+                
+                this.sessions.forEach((session)=>{               
+                    config.sessions.push({
+                        path: session.name
+                        // session.getPosition() //@TODO make session fully responsible
+                    });
                 });
-            });
-
-            if (this.project) config.projects.push(this.project.projectDir);
-            var configStr = JSON.stringify(config);
-            localStorage[Ide.STORE_KEY] = configStr;
+    
+                if (this.project) config.projects.push(this.project.projectDir);
+                var configStr = JSON.stringify(config);
+                localStorage[Ide.STORE_KEY] = configStr;
+            } catch (err) {
+                console.error(err);
+            }
         }
 
 

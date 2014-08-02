@@ -29,31 +29,21 @@ module Cats.Commands {
      * Close the active edit session
      */ 
     function closeFile() {
-        var activeSession = IDE.sessionTabView.getActiveSession();
-        if (activeSession)
-            IDE.closeSession(activeSession);
+      IDE.sessionTabView.close();
     }
 
     /**
      * Close all edit sessions
      */ 
     function closeAllFiles() {
-        var sessions = IDE.sessions;
-        sessions.forEach((session: Session) => {IDE.closeSession(session)});
+        IDE.sessionTabView.closeAll();
     }
 
     /**
      * Close all edit sessions except the active session
      */ 
     function closeOtherFiles() {       
-        var sessions = IDE.sessions;
-        var activeSession = IDE.sessionTabView.getActiveSession();
-        for (var i = 0; i < sessions.length; i++) {
-            var session = sessions[i];
-            if (session !== activeSession) {
-                IDE.closeSession(session);
-            }
-        }
+        IDE.sessionTabView.closeOther();
     }
 
     /**

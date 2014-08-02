@@ -97,11 +97,24 @@ task('compile', {async:true}, function(outFile, options) {
 });
 
 
+task("compileMain" , {async:true}, function() {
+     jake.Task['compile'].invoke("lib/main.js", catsOptions);
+});
+
+task("compileWorker" , {async:true}, function() {
+   jake.Task['compile'].invoke("lib/tsworker.js", workerOptions);
+});
+
+task("compileUml" , {async:true}, function() {
+    jake.Task['compile'].invoke("lib/uml.js", umlOptions);
+});
+
+
 // Set the default task
 task("default", function() {
-   jake.Task['compile'].invoke("lib/main.js", catsOptions);
-   jake.Task['compile'].invoke("lib/tsworker.js", workerOptions);
-   jake.Task['compile'].invoke("lib/uml.js", umlOptions);
+   jake.Task['compileMain'].invoke();
+   jake.Task['compileWorker'].invoke();
+   jake.Task['compileUml'].invoke();
 });
 
 
