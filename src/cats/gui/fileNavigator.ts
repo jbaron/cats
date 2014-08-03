@@ -23,8 +23,9 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     private directoryModels = {};
     private iconsForMime = {};
 
-    constructor(directory) {
+    constructor(private project:Cats.Project) {
         super(null,"label", "children");
+        var directory= project.projectDir;
         rootTop.fullPath = directory;
         rootTop.label = path.basename(directory);
         var root = qx.data.marshal.Json.createModel(rootTop, true);

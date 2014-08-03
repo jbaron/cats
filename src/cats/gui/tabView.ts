@@ -17,6 +17,7 @@ class TabView extends qx.ui.tabview.TabView {
         
                 
          "files" : {
+            label: "Project Explorer",
             icon: "actions/view-list-tree.png"
             // icon: "filenav_nav.svg"
         },

@@ -19,16 +19,7 @@
 module Cats.Commands {
 
 
-        function showCompilationResults(data:Cats.CompileResults) {
 
-            if (data.errors && (data.errors.length > 0)) {
-                IDE.problemResult.setData(data.errors);
-                return;
-            }
-            
-            IDE.problemResult.setData([]);
-            IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).\n", true);
-        }
 
 
     function closeAllProjects() {
@@ -47,20 +38,7 @@ module Cats.Commands {
      * Run the project
      */ 
     function runProject() {
-        var main = IDE.project.config.main;
-        if (!main) {
-            alert("Please specify the main html file to run in the project settings.");
-            return;
-        }
-        var startPage = IDE.project.getStartURL();
-        console.info("Opening file: " + startPage);
-        var win2 = GUI.Window.open(startPage, {
-            toolbar: true,
-            webkit: {
-                "page-cache": false
-            }
-        });
-        // win2.reloadIgnoringCache()
+        IDE.project.run();
     };
 
     /**
@@ -92,10 +70,7 @@ module Cats.Commands {
      */ 
     function validateProject() {
         var project = IDE.project;
-
-        project.iSense.compile((err, data:Cats.CompileResults) => {                        
-            showCompilationResults(data);
-        });
+        project.validate();
     }
 
     function show(text:string, severity?:number) {
@@ -107,39 +82,7 @@ module Cats.Commands {
      * Build the project
      */ 
     function buildProject() {
-        // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
-        var project = IDE.project;
-        IDE.console.log("Start building project " + IDE.project.name + " ...", true);
-        if (project.config.customBuild) {
-            IDE.busy(true);
-            // IDE.resultbar.selectOption(2);
-            var cmd = project.config.customBuild.command;
-            var options = project.config.customBuild.options || {};
-            
-            if (! options.cwd) {
-                options.cwd = IDE.project.projectDir;
-            }
-            
-            var exec = require('child_process').exec;
-
-            var child = exec(cmd,options,
-              function (error, stdout, stderr) {
-                show(stdout);
-                show(stderr,2);
-                if (error !== null) show('Execution error: ' + error, 2);
-                IDE.busy(false);
-            });
-            
-        } else {
-            project.iSense.compile((err, data:Cats.CompileResults) => {                        
-                showCompilationResults(data);
-                if (data.errors && (data.errors.length > 0)) return;
-                var sources = data.source;
-                sources.forEach((source) => {
-                        OS.File.writeTextFile(source.fileName, source.content);
-                });
-            });
-        }
+        IDE.project.build();
     }
 
     /**

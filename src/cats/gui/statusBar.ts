@@ -20,7 +20,7 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
         // button.setPadding(1,1,1,1);
         button.setMargin(2, 10, 2, 10);
         button.setMinWidth(100);
-        // button.setDecorator(null);
+        button.setDecorator(null);
         return button;
     }
 
@@ -33,8 +33,8 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
        this.add(this.modeInfo);
        this.addSpacer();
 
-       this.busyInfo = this.createButton("","./img/loader.gif");
-       this.busyInfo.setShow("label");
+       this.busyInfo = this.createButton("","./resource/cats/loader.gif");
+       this.busyInfo.setShow("icon");
        this.add(this.busyInfo);
 
        this.overwriteInfo = this.createButton("INSERT");
@@ -46,9 +46,9 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
 
     setBusy(busy:boolean) {
         if (busy) {
-            this.busyInfo.setShow("icon");
+            this.busyInfo.setIcon("./resource/cats/loader_anim.gif");
         } else {
-            this.busyInfo.setShow("label");
+            this.busyInfo.setIcon("./resource/cats/loader.gif");
         }
     }
 

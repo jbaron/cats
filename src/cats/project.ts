@@ -54,9 +54,53 @@ module Cats {
         validate() {
             // @TODO don't compile just get the errors
             this.iSense.getAllDiagnostics( (err,data) => {
-               if (data) IDE.problemResult.setData(data);
+               if (data) {
+                   IDE.problemResult.setData(data);
+                   if (data.length === 0) { 
+                       IDE.console.log("Project has no errors", true);
+                       IDE.problemPane.selectPage("console");       
+                   } else {
+                       IDE.problemPane.selectPage("problems");
+                   }
+               }
+               
             });
         }
+
+        build() {
+        IDE.console.log("Start building project " + this.name + " ...", true);
+        if (this.config.customBuild) {
+            IDE.busy(true);
+            // IDE.resultbar.selectOption(2);
+            var cmd = this.config.customBuild.command;
+            var options = this.config.customBuild.options || {};
+            
+            if (! options.cwd) {
+                options.cwd = this.projectDir;
+            }
+            
+            var exec = require('child_process').exec;
+
+            var child = exec(cmd,options,
+              function (error, stdout, stderr) {
+                if (stdout) IDE.console.log(stdout,true);
+                if (stderr) IDE.console.log(stderr,true,2);
+                if (error !== null) IDE.console.log('Execution error: ' + error, true,2);
+                IDE.busy(false);
+            });
+            
+        } else {
+            this.iSense.compile((err, data:Cats.CompileResults) => {                        
+                this.showCompilationResults(data);
+                if (data.errors && (data.errors.length > 0)) return;
+                var sources = data.source;
+                sources.forEach((source) => {
+                        OS.File.writeTextFile(source.fileName, source.content);
+                });
+            });
+        }
+    }
+
 
         /**
          *  Refreshes the project and loads required artifacts
@@ -91,10 +135,47 @@ module Cats {
 
         }
        
+       /**
+        * Compile without actually saving the result
+        */ 
+        trialCompile() {
+            this.iSense.compile((err, data:Cats.CompileResults) => {                        
+                this.showCompilationResults(data);
+            });
+        }
+       
+       private showCompilationResults(data:Cats.CompileResults) {
+           
+            if (data.errors && (data.errors.length > 0)) {
+                IDE.problemResult.setData(data.errors);
+                return;
+            }
+            
+            IDE.problemResult.setData([]);
+            IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).\n", true);
+        }
+       
+       
+        run() {
+            var main = this.config.main;
+            if (!main) {
+                alert("Please specify the main html file to run in the project settings.");
+                return;
+            }
+            var startPage = this.getStartURL();
+            console.info("Opening file: " + startPage);
+            var win2 = GUI.Window.open(startPage, {
+                toolbar: true,
+                webkit: {
+                    "page-cache": false
+                }
+            });
+        }
+       
         /**
          * Get the URl for running the project
          */ 
-        getStartURL(): string {
+        private getStartURL(): string {
             var url = PATH.join(this.projectDir, this.config.main);
             return "file://" + url;
         }

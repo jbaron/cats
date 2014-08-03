@@ -6,7 +6,7 @@ class Greeter {
 
     /**
      * Create a new Greeter
-     * @param message Welcome message
+     * @param message The welcome message to use for all
      */ 
     constructor(message: string) {
         this.greeting = message;
@@ -14,19 +14,17 @@ class Greeter {
     
     /**
      * Give a warm welcome
+     * @param name The person to welcome
      */ 
-    greet() {
-        return "Hello " + this.greeting;
+    greet(name:string) {
+        alert(this.greeting + " " + name + "!");
     }
 }
 
+var greeter = new Greeter("Hello");
 
-var greeter = new Greeter("world!");
-
-var button = document.createElement('button');
+var button = document.createElement("button");
 button.innerText = "Say Hello";
-button.onclick = function() { 
-    alert(greeter.greet());
-};
+button.onclick = function() { greeter.greet("World"); };
 
 document.body.appendChild(button);

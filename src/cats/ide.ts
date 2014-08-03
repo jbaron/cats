@@ -87,12 +87,10 @@ module Cats {
             
             // ********************* Navigator Pane ********************
             this.navigatorPane = new TabView(["files", "bookmarks"]);
-            var fileTree = new FileNavigator(this.project.projectDir);
+            var fileTree = new FileNavigator(this.project);
             this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
             
-            
             mainsplit.add(this.navigatorPane, 1); // navigator
-    
     
             var editorSplit = new qx.ui.splitpane.Pane("vertical");
             // editorSplit.setDecorator(null);
