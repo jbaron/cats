@@ -30,6 +30,11 @@ module Cats.Commands {
         GUI.App.quit();
     }
 
+
+    function setIdeTheme(theme) {            
+        qx.theme.manager.Meta.getInstance().setTheme(theme);
+    }
+
     /**
      * Set the theme
      */ 
@@ -60,7 +65,7 @@ module Cats.Commands {
     export class IdeCommands {
         static init(registry:(cmd:Command)=>void) {
             registry({ name: CMDS.ide_quit, label: "Quit", command: quit });
-            registry({ name: CMDS.ide_theme, label: "Theme", command: setTheme });
+            registry({ name: CMDS.ide_theme, label: "Theme", command: setIdeTheme });
             registry({ name: CMDS.ide_fontSize, label: "Font Size", command: setFontSize });
             registry({ name: CMDS.ide_rightMargin, label : "Right Margin", command: setRightMargin });
             registry({ name: CMDS.ide_toggleView, label : "Toggle View", command: toggleView });

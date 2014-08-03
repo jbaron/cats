@@ -19,6 +19,16 @@ class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.
         });
         this.setContextMenu(this.createContextMenu());
     }
+    
+    private insertLine(line, severity?) {
+        if (line.trim()) {
+            var span = document.createElement("SPAN");
+            span.innerText = line;
+            if (severity) span.style.color = "red";
+            this.container.appendChild(span);
+        }
+        this.container.appendChild(document.createElement('BR'));
+    }
      
     /**
      * Log a message to the console widget. This should only be used for 
@@ -28,16 +38,29 @@ class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.
      * @TODO implement a better performing solution using addChild
      */ 
     log(msg:string,printTime:boolean=false,severity:number=0) {
+        IDE.problemPane.selectPage("console");
         if (this.container) {
             var prefix = "" 
             if (printTime) {
                var dt = new Date();
                prefix = dt.toLocaleTimeString() + " ";
-            } 
-            this.container.innerText += prefix + msg + "\n";
-            this.getContentElement().scrollToY(100000);
+            }
+            var lines = [].concat(msg.split("\n"));
+            lines.forEach((line) => {
+                if (line.trim()) line = prefix + line;
+                this.insertLine(line,severity);
+            });
+            
+            this.container.scrollTop = this.container.scrollHeight;
+             
+            // this.container.innerText += prefix + msg + "\n";
+            // this.container.insertAdjacentText("beforeend", prefix+msg+"\n");
+            // this.container.appendChild(document.createTextNode(prefix + msg));
+            // this.container.appendChild(document.createElement('BR'));
+           
+            // this.getContentElement().scrollToY(100000);
             // this.container.scrollTop = this.container.scrollHeight; // Scroll to bottom
-
+            
             // var t = document.createTextNode(prefix + msg);
             // this.container.appendChild(t);
             // this.container.appendChild(document.createElement("br"));

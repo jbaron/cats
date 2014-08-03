@@ -82,26 +82,24 @@ module Cats {
     
             // mainsplit, contains the editor splitpane and the info splitpane
             var mainsplit = new qx.ui.splitpane.Pane("horizontal");
-            mainsplit.set({ decorator: null });
+            // mainsplit.set({ decorator: null });
             
-            // Quick hack to make look better.
-            if (this.toolBar.getBackgroundColor()) mainsplit.setBackgroundColor(this.toolBar.getBackgroundColor());
             
+            // ********************* Navigator Pane ********************
             this.navigatorPane = new TabView(["files", "bookmarks"]);
             var fileTree = new FileNavigator(this.project.projectDir);
             this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
             
             
-            
-    
             mainsplit.add(this.navigatorPane, 1); // navigator
     
     
-            var editorSplit = new qx.ui.splitpane.Pane("vertical").set({ decorator: null });
+            var editorSplit = new qx.ui.splitpane.Pane("vertical");
+            // editorSplit.setDecorator(null);
     
             var infoSplit = new qx.ui.splitpane.Pane("horizontal");
             this.sessionTabView = new SessionTabView();
-            infoSplit.set({ decorator: null });
+            // infoSplit.set({ decorator: null });
             infoSplit.add(this.sessionTabView, 4); // editor
            
             this.infoPane = new TabView(["outline", "properties"]);
@@ -111,7 +109,7 @@ module Cats {
         
             editorSplit.add(infoSplit, 4);
     
-            // Setup Problems section
+            // **********************  Problem Pane ***************************
             this.problemPane = new TabView(["problems", "search", "console"]);
             editorSplit.add(this.problemPane, 2); // Info
     
@@ -122,14 +120,14 @@ module Cats {
             this.problemPane.getChildren()[1].add(this.searchResult, { edge: 0 });
             this.problemPane.getChildren()[2].add(this.console, { edge: 0 });
     
-            this.problemPane.select("Console");
+            this.problemPane.selectPage("console");
             // this.problemPane.setSelection([this.problemPane.getChildren()[2]]);
     
             mainsplit.add(editorSplit, 4); // main area
     
             mainContainer.add(mainsplit, { flex: 1 });
     
-            // Setup status bar
+            // ************************ Status Bar *****************************
             this.statusBar = new StatusBar();
             mainContainer.add(this.statusBar, { flex: 0 });
         }

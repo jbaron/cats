@@ -18,7 +18,7 @@
  * transfer data between the worker and the main thread. 
  */ 
 module Cats {
-    
+  
     export interface Range {
         start: Position;
         end: Position;

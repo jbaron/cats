@@ -78,7 +78,7 @@ class SessionTabView extends qx.ui.tabview.TabView {
     constructor() {
         super();
         this.setPadding(0, 0, 0, 0);
-        this.setContentPadding(1, 0, 0, 0);
+        this.setContentPadding(0, 0, 0, 0);
     }
 
     addSession(session, pos?:Cats.Position) {

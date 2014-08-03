@@ -1,7 +1,10 @@
+
+/**
+ * Used for all the tabs execpt the session tab
+ */ 
 class TabView extends qx.ui.tabview.TabView {
-    
-    //@BUG icon alias doesn't work, resource not there
-    private iconFolder = "./resource/qx/icon/Oxygen/16/";
+  private static IDNAME="___ID___" 
+  private iconFolder = "./resource/qx/icon/Oxygen/16/";
     private iconMapping = {
         "search" : {
             label : "Search",
@@ -40,12 +43,12 @@ class TabView extends qx.ui.tabview.TabView {
         }
         
         
-    }
+    }  
 
     constructor(tabNames: string[]) {
         super();
         this.setPadding(0, 0, 0, 0);
-        this.setContentPadding(1, 0, 0, 0);
+        this.setContentPadding(0, 0, 0, 0);
         tabNames.forEach((name) => {
             this.addPage(name);
         });           
@@ -66,8 +69,9 @@ class TabView extends qx.ui.tabview.TabView {
         if (entry) return this.iconFolder + entry.icon;
     }
 
-    addPage(name:string, tooltipText?:string): qx.ui.tabview.Page {
-        var tab = new qx.ui.tabview.Page(this.getLabel(name), this.getIconName(name));
+    addPage(id:string, tooltipText?:string): qx.ui.tabview.Page {
+        var tab = new qx.ui.tabview.Page(this.getLabel(id), this.getIconName(id));
+        tab[TabView.IDNAME] = id;
         tab.setLayout(new qx.ui.layout.Canvas());
 
         var button = (<any>tab).getButton();
@@ -101,14 +105,14 @@ class TabView extends qx.ui.tabview.TabView {
         var pages = this.getChildren();
         for (var i = 0; i < pages.length; i++) {
             var page = pages[i];
-            if (page.getLabel() === id) {
+            if (page[TabView.IDNAME] === id) {
                 return page;
             }
         }
         return null;
     }
 
-    select(id: string) {
+    selectPage(id: string) {
         var page = this.getPage(id);
         if (page) this.setSelection([page]);
     }

@@ -306,7 +306,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
 
     private getInfoAt(type: string) {        
         
-        IDE.problemPane.select("Search");
+        IDE.problemPane.selectPage("search");
     
  
         this.session.project.iSense.getInfoAtPosition(type, this.session.name, this.getPosition(), (err, data:Cats.FileRange[]) => {

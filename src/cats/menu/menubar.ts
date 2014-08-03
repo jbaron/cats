@@ -24,7 +24,15 @@ module Cats.Menu {
 
         private fontSizes = [8, 10, 12, 13, 14, 16, 18, 20, 24];
 
-        private themes = [
+        private themes = [                   
+                    { theme: Cats.theme.Theme, label: "CATS" },
+                    { theme: qx.theme.Classic, label: "Classic" },
+                    { theme: qx.theme.Indigo, label: "Indigo" },
+                    { theme: qx.theme.Modern, label: "Modern" },
+                    { theme: qx.theme.Simple, label: "Simple" }
+        ];
+
+        private themes2 = [
                     { theme: "cats", label: "CATS" },
                     { theme: "chrome", label: "Chrome" },
                     { theme: "clouds", label: "Clouds" },
@@ -190,8 +198,8 @@ module Cats.Menu {
             var CMDS = Cats.Commands.CMDS;
             var menu = new GUI.Menu();
             var views = [
-                {id:IDE.toolBar,name:"Toolbar"},    
-                {id:IDE.statusBar,name:"Statusbar"}
+                {id:IDE.toolBar,name:"Toggle Toolbar"},    
+                {id:IDE.statusBar,name:"Toggle Statusbar"}
             ];
             views.forEach((view:any) => {
                     var item = getCmd(CMDS.ide_toggleView,view.name,view.id);

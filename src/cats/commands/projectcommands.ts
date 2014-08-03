@@ -98,9 +98,9 @@ module Cats.Commands {
         });
     }
 
-    function show(text:string) {
+    function show(text:string, severity?:number) {
         if (! text) return;
-        IDE.console.log(text);
+        IDE.console.log(text, true, severity);
     }
 
     /**
@@ -109,6 +109,7 @@ module Cats.Commands {
     function buildProject() {
         // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
         var project = IDE.project;
+        IDE.console.log("Start building project " + IDE.project.name + " ...", true);
         if (project.config.customBuild) {
             IDE.busy(true);
             // IDE.resultbar.selectOption(2);
@@ -124,8 +125,8 @@ module Cats.Commands {
             var child = exec(cmd,options,
               function (error, stdout, stderr) {
                 show(stdout);
-                show(stderr);
-                if (error !== null) show('exec error: ' + error);
+                show(stderr,2);
+                if (error !== null) show('Execution error: ' + error, 2);
                 IDE.busy(false);
             });
             

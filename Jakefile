@@ -84,14 +84,12 @@ task('compile', {async:true}, function(outFile, options) {
 			process.stderr.write(error);
 		});
 		ex.addListener("cmdEnd", function() {
-		    var time = new Date();
-            var stamp = time.toLocaleTimeString();
-			console.log(stamp + " done creating file " + outFile);
+			console.log("Done creating file " + outFile);
 			complete();
 		});
 		ex.addListener("error", function() {
 			fs.unlinkSync(outFile);
-			console.log("Compilation of " + outFile + " unsuccessful");
+			console.error("Compilation of " + outFile + " unsuccessful");
 		});
 		ex.run();	
 });

@@ -17,10 +17,10 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
 
     private createButton(label?:string, icon?:string) {
         var button = new qx.ui.toolbar.Button(label,icon);
-        button.setPadding(1,1,1,1);
+        // button.setPadding(1,1,1,1);
         button.setMargin(2, 10, 2, 10);
         button.setMinWidth(100);
-        button.setDecorator(null);
+        // button.setDecorator(null);
         return button;
     }
 

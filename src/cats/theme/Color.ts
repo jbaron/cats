@@ -19,6 +19,7 @@ qx.Theme.define("Cats.theme.Color",
 
   colors :
   {
-      "light-background" : "#C0CCDF"
+      "light-background" : "#C0CCDF",
+      "button-box-bright" : "#B0BCCF"
   }
 });

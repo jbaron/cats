@@ -19,5 +19,16 @@ qx.Theme.define("Cats.theme.Decoration",
 
   decorations :
   {
+    "button-box" : {
+      style :
+      {
+        radius : 3,
+        width : 1,
+        color : "button-border",
+        backgroundColor : "button-box-bright"
+      }
+    }
+      
+      
   }
 });
