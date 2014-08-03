@@ -22,6 +22,7 @@
 module OS.File {
 
         var FS=require("fs");
+        var exec = require('child_process').exec;
         
         /**
          * Create recursively directories if they don't exist yet
@@ -32,6 +33,13 @@ module OS.File {
                 mkdirRecursiveSync(PATH.dirname(path));
                 FS.mkdirSync(path,509); //, 0775);
             }
+        }
+
+        /**
+         * Used to integrate external build tools
+         */ 
+        export function executeProcess(cmd,options, callback) {
+            var child = exec(cmd,options, callback);
         }
 
         /**

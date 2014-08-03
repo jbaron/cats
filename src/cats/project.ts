@@ -79,9 +79,7 @@ module Cats {
                 options.cwd = this.projectDir;
             }
             
-            var exec = require('child_process').exec;
-
-            var child = exec(cmd,options,
+            var child = OS.File.executeProcess(cmd,options,
               function (error, stdout, stderr) {
                 if (stdout) IDE.console.log(stdout,true);
                 if (stderr) IDE.console.log(stderr,true,2);
