@@ -70,7 +70,6 @@ module Cats {
     });
    
    
-    
     // Catch the close of the windows in order to save any unsaved changes
     var win = GUI.Window.get();
     win.on("close", function() {

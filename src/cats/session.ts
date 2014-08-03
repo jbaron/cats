@@ -129,8 +129,9 @@ module Cats {
             this.emit("errors", this.errors);
         }
         
-        setOutline(outline) {
+        setOutline(outline:NavigateToItem[]) {
             this.outline = outline;
+            if (this.isActive()) IDE.outlineNavigator.setData(this,this.outline);
             this.emit("outline", this.outline);
         }
 
@@ -149,7 +150,7 @@ module Cats {
             }
         }
         
-        getOutline() {
+        getOutline(timeout=5000) {
             if (this.isTypeScript()) {
                 // Clear any pending updates
                 clearTimeout(this.outlineTimer);
@@ -157,13 +158,15 @@ module Cats {
                     IDE.project.iSense.getScriptLexicalStructure(this.name, (err, data: NavigateToItem[]) => {
                         this.setOutline(data);
                     });
-                }, 5000);
+                }, timeout);
+            } else {
+                this.setOutline([]);
             }
         }    
 
         sync() {
             this.getDiagnostics();
-            this.getOutline();
+            this.getOutline(10);
         }
 
         /**

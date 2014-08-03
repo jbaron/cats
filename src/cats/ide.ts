@@ -336,17 +336,7 @@ module Cats {
 
             this.addToSessionStack(name, pos, cb);
             var project = session.project;
-            
-            // var mode = "getOutliningRegions";
-            if (session.isTypeScript()) {
-                this.project.iSense.getScriptLexicalStructure(session.name, (err, data: NavigateToItem[]) => {
-                    this.outlineNavigator.setData(session,data);
-                });    
-            } else {
-                this.outlineNavigator.setData(session,[]);
-            }
-            
-            
+        
             if (cb) cb(session);
         }
 

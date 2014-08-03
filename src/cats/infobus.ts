@@ -17,69 +17,22 @@ var Events = require('events');
 
 module Cats {
     
-    /**
-     * Events related to the editor
-     */ 
-    export interface EditorEvent extends EventEmitter {
-        on(event: string, listener: Function): void;
-        on(event: "changed", cb: (fileName: string, content: string) => void): void;
-        on(event: "hoover", cb: (fileName: string, content: string) => void): void;
-        on(event: "completion", cb: (fileName: string, content: string) => void): void;
-        on(event: "mode", cb): void;
-        on(event: "overwrite", cb): void;
-
-        emit(event: string, arg1: any, arg2: any): void;
-        emit(event: "changed", fileName: string, content: string): void;
-    }
-
-    /**
-     * Events related to the whole IDE
-     */ 
-    export interface IDEEvent extends EventEmitter {
-        emit(event: string, ...args): void;
-        emit(event: "busy", busy: boolean): void;
-        emit(event: "sessions", sessions): void;
-        emit(event: "activeSession", newsession, oldsession): void;
-        emit(event: "toggleView", viewName:string): void;
-
-
-        on(event: string, fn: any): void;
-        on(event: "busy", fn: (flag: boolean) => void): void;
-        on(event: "sessions", fn: (sessions) => void): void;
-        on(event: "toggleView", fn: (viewName:string) => void): void;
-        on(event: "activeSession", fn: (newsession, oldsession) => void): void;
-    }
-
-    /**
-     * Events related to the intellisense features
-     */ 
-    export interface IntelliSenseEvent extends EventEmitter {
-        emit(event: string, ...args): void;
-        emit(event: "busy", busy: boolean): void;
-        emit(event: "sessions", sessions): void;
-        emit(event: "activeSession", newsession, oldsession): void;
-
-        on(event: string, fn: any): void;
-        on(event: "busy", fn: (flag: boolean) => void): void;
-        on(event: "sessions", fn: (sessions) => void): void;
-        on(event: "activeSession", fn: (newsession, oldsession) => void): void;
-    }
-
     export interface InfoBus extends EventEmitter {
         on(event: string, fn: any): void;
+        emit(event: string, ...args): void;
+        
+        // Editor events
         on(ev:"editor.overwrite", fn: (value:boolean) => void): void; 
         on(ev:"editor.mode", fn: (value:string) => void): void;
         on(ev:"editor.position", fn: (value:Position) => void): void;
-
-
-        on(ev:"worker.busy", fn: (value:boolean) => void): void;
-        
-        emit(event: string, ...args): void;
+      
         emit(event: "editor.overwrite", value: boolean): void;
         emit(event: "editor.mode", value: string): void;
         emit(event: "editor.position", value: Position): void;
-        
+
+        on(ev:"worker.busy", fn: (value:boolean) => void): void;
         emit(event: "worker.busy", value: boolean): void;
+        
     }
 
    

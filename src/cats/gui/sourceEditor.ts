@@ -44,11 +44,19 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
              this.autoCompletePopup.show();
              this.autoCompletePopup.hide();
                
+             this.aceEditor.on("changeSelection", () => {
+                 IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
+             }); 
                
         }, this);
         
+        
       
-        this.addListener("appear", () => { session.sync() });
+        this.addListener("appear", () => { 
+            this.session.sync(); 
+            this.updateWorld();
+        });
+        
         session.on("errors", (errors) => { this.showErrors(errors)});
         this.addListener("resize", () => { this.resizeHandler(); });
  
@@ -58,6 +66,12 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         this.aceEditor.getSession().setValue(content);
     }
 
+    updateWorld() {
+        IDE.infoBus.emit("editor.overwrite", this.aceEditor.getSession().getOverwrite());
+        IDE.infoBus.emit("editor.mode", this.session.mode);
+        IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
+    }
+  
            
     getContent() {
         return this.aceEditor.getSession().getValue();

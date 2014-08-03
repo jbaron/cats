@@ -98,6 +98,7 @@ declare module Ace {
 		find(value:string,options,something);
 		focus();
 		resize();
+		on(event:string,callback);
         setReadOnly(readOnly:boolean);
         getReadOnly():boolean;
 		replace(value:string,options);

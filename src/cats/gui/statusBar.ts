@@ -3,10 +3,10 @@
  */
 class StatusBar extends qx.ui.toolbar.ToolBar {
 
-    modeInfo:qx.ui.toolbar.Button;
-    overwriteInfo:qx.ui.toolbar.Button;
-    positionInfo;
-    busyInfo
+    private modeInfo:qx.ui.toolbar.Button;
+    private overwriteInfo:qx.ui.toolbar.Button;
+    private positionInfo;
+    private busyInfo
     
 
     constructor() {
@@ -24,12 +24,12 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
         return button;
     }
 
-    init() {
+    private init() {
         
-       this.positionInfo = this.createButton("1:1");
+       this.positionInfo = this.createButton("-:-");
        this.add(this.positionInfo);
        
-       this.modeInfo = this.createButton("No Mode");
+       this.modeInfo = this.createButton("Unknown");
        this.add(this.modeInfo);
        this.addSpacer();
 
@@ -60,30 +60,22 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
         }
     }
 
-        // Leftover past
 
-        private render() {
-            /*
-            var act = <Cats.AceSession>IDE.activeSession;
-            var session = act.editSession;
-            if (session) {
-                document.getElementById("sessionmode").innerText = session.getMode();
-                document.getElementById("overwritemode").innerText = session.getOverwrite() ? "overwrite" : "insert";
-                this.updateSelectionText();
-            }
-            */
-        }
-
-
-        private setupListeners() {
-            IDE.infoBus.on("editor.overwrite", (value) => {
-                if (value) 
-                    this.overwriteInfo.setLabel("OVERWRITE");
-                else 
-                    this.overwriteInfo.setLabel("INESRT");
-            });
-        }
-
+    private setupListeners() {
+        IDE.infoBus.on("editor.overwrite", (value:boolean) => {
+            this.overwriteInfo.setLabel(value ? "OVERWRITE" : "INSERT");
+        });
+        
+        IDE.infoBus.on("editor.mode" , (value:string) => {
+            this.modeInfo.setLabel(value.toUpperCase());
+        });
+        
+        IDE.infoBus.on("editor.position", (value:Ace.Position) => {
+             var label = (value.row +1) + ":" + (value.column+1);
+             this.positionInfo.setLabel(label);
+        });
+        
+    }
 
         initStatusBar() {
             var overwriteMode = document.getElementById("overwritemode");

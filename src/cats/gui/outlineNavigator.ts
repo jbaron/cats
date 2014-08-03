@@ -103,7 +103,7 @@ class OutlineNavigator extends qx.ui.table.Table /* qx.ui.tree.VirtualTree */ {
     /**
      * Set the data for outline navigator
      */
-    setData2(session: Cats.Session, data: Cats.NavigateToItem[]) {
+    private setData2(session: Cats.Session, data: Cats.NavigateToItem[]) {
         // console.log(data);
         this.session = session;
         var json = this.createModel(data, { name: "", kind: "", fullName: "", range: null });
