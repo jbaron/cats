@@ -64,7 +64,7 @@ module Cats {
          */
         private static loadDefault():ProjectConfiguration {
             var result:ProjectConfiguration = {
-                version: "0.7",
+                version: "1.0",
                 main: "index.html",
                 sourcePath: null, //If not set, the whole project directory is searched for source files
                 buildOnSave: false,

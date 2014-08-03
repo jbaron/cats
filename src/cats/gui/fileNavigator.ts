@@ -33,6 +33,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         // this.setLabelPath("label");
         // this.setChildProperty("children");
         this.setDecorator(null);
+        this.setPadding(0,0,0,0);
 
         this.setupDelegate();
         

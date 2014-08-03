@@ -30,17 +30,13 @@ class OutlineNavigator extends qx.ui.table.Table /* qx.ui.tree.VirtualTree */ {
         super(tableModel, custom);
 
         this.setDecorator(null);
-        // this.setPadding(0, 0, 0, 0);
-        // this.setHideRoot(true);
+        this.getSelectionModel().addListener("changeSelection", (data) => {
+            var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
+            var data = this.getTableModel().getRowData(selectedRow);
+            // IDE.console.log("Selected row:" + selectedRow);
 
-        this.addListener("dblclick", () => {
-            var item = <any>this.getSelectedItem();
-            if (item) {
-                // @TODO fix getStart to use primitive types
-
-                IDE.getActiveEditor().moveToPosition(item.getRange().getStart());
-            }
-        });
+            if (data) IDE.sessionTabView.navigateTo(this.session, data[2].start);
+        })
 
     }
 
@@ -77,17 +73,11 @@ class OutlineNavigator extends qx.ui.table.Table /* qx.ui.tree.VirtualTree */ {
             ]);
         });
 
-        tableModel.setColumns(["Name", "Position"]);
-        tableModel.setData(rows);
-        this.setTableModel(tableModel);
-
-        this.getSelectionModel().addListener("changeSelection", (data) => {
-            var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
-            var data = this.getTableModel().getRowData(selectedRow);
-            // IDE.console.log("Selected row:" + selectedRow);
-
-            if (data) IDE.sessionTabView.navigateTo(this.session, data[2].start);
-        })
+        // tableModel.setColumns(["Name", "Position"]);
+        // tableModel.setData(rows);
+        // this.setTableModel(tableModel);
+        this.getTableModel().setData(rows);
+        this.getSelectionModel().resetSelection(); 
     }
 
 

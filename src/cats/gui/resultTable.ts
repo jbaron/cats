@@ -25,9 +25,11 @@ class ResultTable extends qx.ui.table.Table {
             });
         }
         
-        tableModel.setColumns(ResultTable.HEADERS);
-        tableModel.setData(rows);
-        this.setTableModel(tableModel);
+        // tableModel.setColumns(ResultTable.HEADERS);
+        // tableModel.setData(rows);
+        // this.setTableModel(tableModel);
+        this.getTableModel().setData(rows);
+        this.getSelectionModel().resetSelection(); 
     }
 
     constructor() {
