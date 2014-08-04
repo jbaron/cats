@@ -32,15 +32,25 @@ To install CATS, just follow these steps:
 
 3. Go to the cats directory and type: 
 
+        node-webkit </path/CATSInstallationDirectory> 
+        
+
+There are some option you can use. For example to open CATS with a specific project, use:
+        
         node-webkit </path/CATSInstallationDirectory> --project </path/projectDirectory>
 
-With CATS you also get a samples directory with several small projects you can try out. Of course you can also open a directory that contains your own project. 
+Or to open CATS with the same project as last time use the following option:
+
+        node-webkit </path/CATSInstallationDirectory> --restore
+
+
+With CATS you also get a samples directory with some small projects you can try out. Of course you can also open a directory that contains your own project. 
 When you want to start CATS with a specific project, you have to pass the project directory as a command line parameter:
 
 
 Windows example:
 
-		node-webkit C:\cats --project C:\cats\samples\greeter
+		nw.exe C:\cats --project C:\cats\samples\greeter
    
 OSX and Linux example: 
 
@@ -49,8 +59,6 @@ OSX and Linux example:
 I'm using the nw alias in my ~/.bash_profile as explained on the node-webkit page:
 
         alias nw="/Applications/node-webkit.app/Contents/MacOS/node-webkit"
-
-TIP: If you start CATS without the project parameter, it will re-open the last one and also restore the sessions that were still open when hen you quit the IDE.
 
 
 Configuration

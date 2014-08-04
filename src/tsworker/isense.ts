@@ -22,9 +22,9 @@ module Cats.TSWorker {
      * not available in a worker.
      */ 
     export var console = {
-        log: function(str) { postMessage({level: "log" , msg: str}, null); },
-        error: function(str) { postMessage({level: "error" , msg: str}, null); },
-        info: function(str) { postMessage({level: "info" , msg: str}, null); }
+        log: function(str) { postMessage({method: "console",  data: str}, null); },
+        error: function(str) { postMessage({method: "console" , data: str}, null); },
+        info: function(str) { postMessage({method: "console" , data: str}, null); }
     }
 
     /**
@@ -413,11 +413,15 @@ module Cats.TSWorker {
             }
             */
             // Lets find out what autocompletion there is possible		
-            var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode);
+            var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode) || <TypeScript.Services.CompletionInfo>{};
             if (! completions.entries) completions.entries = []; // @Bug in TS
             completions.entries.sort(caseInsensitiveSort); // Sort case insensitive
             return completions;
         }
+    }
+
+    function setBusy(value:boolean) {
+        postMessage({method:"setBusy" ,data:value}, null);
     }
 
     /*******************************************************************
@@ -427,6 +431,7 @@ module Cats.TSWorker {
     var tsh = new ISense();
 
     addEventListener('message', function(e) {
+        setBusy(true);
         var msg = e["data"];
 
         var method = msg.method;
@@ -448,6 +453,8 @@ module Cats.TSWorker {
             }
             console.error("Error during processing message " + method);
             postMessage({ id: id, error: error }, null);
+        } finally {
+            setBusy(false);
         }
     }, false);
 

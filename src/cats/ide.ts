@@ -53,19 +53,19 @@ module Cats {
 
         // mainEditor: TextEditor;
 
-        constructor(private doc) {
-            this.config = this.loadConfig(true);
+        constructor() {
+            this.config = this.loadConfig();
         }
 
-        init() {
+        init(rootDoc) {
             Cats.Commands.init();
-            this.layout();
+            this.layout(rootDoc);
             // this.toolBar.init();
-            Cats.Menu.createMenuBar();
+            this.mainMenu = Cats.Menu.createMenuBar();
             this.initFileDropArea();
         }
 
-        private layout() {
+        private layout(rootDoc) {
             // container layout
 
             qx.theme.manager.Meta.getInstance().setTheme(Cats.theme.Theme);
@@ -74,7 +74,7 @@ module Cats {
     
             // main container
             var mainContainer = new qx.ui.container.Composite(layout);
-            this.doc.add(mainContainer, { edge: 0 });
+            rootDoc.add(mainContainer, { edge: 0 });
     
             this.toolBar = new ToolBar();
     
@@ -194,6 +194,7 @@ module Cats {
          * Are there any session that have unsaved changes 
          */
         hasUnsavedSessions(): boolean {
+            if (! this.sessions) return false;
             for (var i = 0; i < this.sessions.length; i++) {
                 if (this.sessions[i].getChanged()) return true;
             }
@@ -229,9 +230,8 @@ module Cats {
 
         /**
          * Load the configuration for the IDE
-         * @param project Also load the project
          */ 
-        private loadConfig(project:boolean) {
+        private loadConfig() {
             var defaultConfig:IDEConfiguration = {
                 version: "1",
                 theme: "cats",

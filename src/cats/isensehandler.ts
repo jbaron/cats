@@ -104,10 +104,7 @@ export class ISenseHandler {
         }
         this.worker.postMessage(message);
         console.info("Send message: " + message.method);
-        if (handler) {
-            IDE.busy(true);
-            this.registry[this.messageId] = handler;
-        }
+        if (handler) this.registry[this.messageId] = handler;
     }
 
     /**
@@ -133,14 +130,17 @@ export class ISenseHandler {
             // @TODO handle exceptions better and call callback
             var id = msg.id;
             if (id) {
-                IDE.busy(false);
                 var handler = this.registry[id];
                 if (handler) {
                     delete this.registry[id];
                     handler(msg.error, msg.result); 
                 }
             } else {
-                console.info(msg);
+                if (msg.method && (msg.method === "setBusy")) {
+                    IDE.statusBar.setBusy(msg.data);
+                } else {
+                    console.info(msg.data);
+                }
             }
         };
     }
