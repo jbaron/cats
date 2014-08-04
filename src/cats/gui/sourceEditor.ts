@@ -6,8 +6,6 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
 
     private aceEditor:Ace.Editor;
     private autoCompletePopup:AutoCompletePopup;
-    // private autoCompleteView: Cats.UI.AutoCompleteView;
-    // private container:HTMLElement;
     private mouseMoveTimer;
     private updateSourceTimer;
     private pendingWorkerUpdate = false;
@@ -36,13 +34,17 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
             }
             
         
-             if (session.mode === "typescript") this.createContextMenu();
+             if (session.isTypeScript()) {
+                 this.createContextMenu();
+                 this.autoCompletePopup = new AutoCompletePopup(this.aceEditor);
+                 this.autoCompletePopup.show();
+                 this.autoCompletePopup.hide();
+             }
+                 
              if (pos) setTimeout(() => { this.moveToPosition(pos); }, 100);
               
               
-             this.autoCompletePopup = new AutoCompletePopup(this.aceEditor);
-             this.autoCompletePopup.show();
-             this.autoCompletePopup.hide();
+            
                
              this.aceEditor.on("changeSelection", () => {
                  IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
@@ -225,25 +227,17 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         }
 
 
-     autoComplete() {
+     private autoComplete() {
             if (this.session.mode === "typescript") {
                 var cursor = this.aceEditor.getCursorPosition();
                 this.showAutoComplete(cursor);
             }                        
         }
 
-    autoComplete123() {
-        // alert("auto complete");
-        var cursor = this.aceEditor.getCursorPosition();
-        var coords = this.aceEditor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
-        this.autoCompletePopup.moveTo(coords.pageX, coords.pageY);
-        this.autoCompletePopup.show();
-    }
-
        /**
          * Check if there are any errors for this session and show them.    
          */
-        showErrors(result) {
+     showErrors(result) {
             var annotations = [];
             result.forEach((error: Cats.FileRange) => {
                 annotations.push({
@@ -255,6 +249,15 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
             });
             this.aceEditor.getSession().setAnnotations(annotations);
         }
+       
+       
+       /**
+        * @TODO Put all the typescript feauture setup in here
+        */ 
+       private setupTypeScriptFeatures() {
+           
+       }
+       
        
        
           // Initialize the editor

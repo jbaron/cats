@@ -57,7 +57,7 @@ module Cats {
                if (data) {
                    IDE.problemResult.setData(data);
                    if (data.length === 0) { 
-                       IDE.console.log("Project has no errors", true);
+                       IDE.console.log("Project has no errors");
                        IDE.problemPane.selectPage("console");       
                    } else {
                        IDE.problemPane.selectPage("problems");
@@ -68,7 +68,7 @@ module Cats {
         }
 
         build() {
-        IDE.console.log("Start building project " + this.name + " ...", true);
+        IDE.console.log("Start building project " + this.name + " ...");
         if (this.config.customBuild) {
             IDE.busy(true);
             // IDE.resultbar.selectOption(2);
@@ -81,9 +81,9 @@ module Cats {
             
             var child = OS.File.executeProcess(cmd,options,
               function (error, stdout, stderr) {
-                if (stdout) IDE.console.log(stdout,true);
-                if (stderr) IDE.console.log(stderr,true,2);
-                if (error !== null) IDE.console.log('Execution error: ' + error, true,2);
+                if (stdout) IDE.console.log(stdout);
+                if (stderr) IDE.console.log(stderr,2);
+                if (error !== null) IDE.console.log('Execution error: ' + error,2);
                 IDE.busy(false);
             });
             
@@ -150,7 +150,7 @@ module Cats {
             }
             
             IDE.problemResult.setData([]);
-            IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).\n", true);
+            IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).");
         }
        
        

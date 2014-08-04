@@ -6,6 +6,7 @@
 class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.Widget */ {
  
     private container:HTMLElement;
+    private printTime = true;
  
     constructor() {
         super(null);
@@ -37,11 +38,11 @@ class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.
      * 
      * @TODO implement a better performing solution using addChild
      */ 
-    log(msg:string,printTime:boolean=false,severity:number=0) {
+    log(msg:string,severity:number=0) {
         IDE.problemPane.selectPage("console");
         if (this.container) {
             var prefix = "" 
-            if (printTime) {
+            if (this.printTime) {
                var dt = new Date();
                prefix = dt.toLocaleTimeString() + " ";
             }
@@ -72,6 +73,11 @@ class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.
         var item1 = new qx.ui.menu.Button("Clear Output");
         item1.addListener("execute", () => { this.clear();});
         menu.add(item1);
+        
+        var item2 = new qx.ui.menu.Button("Toggle Print Time");
+        item2.addListener("execute", () => { this.printTime = ! this.printTime;});
+        menu.add(item2);
+        
         return menu;
     }
     

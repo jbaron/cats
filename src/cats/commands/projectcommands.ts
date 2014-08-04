@@ -75,7 +75,7 @@ module Cats.Commands {
 
     function show(text:string, severity?:number) {
         if (! text) return;
-        IDE.console.log(text, true, severity);
+        IDE.console.log(text, severity);
     }
 
     /**
