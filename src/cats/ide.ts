@@ -87,8 +87,7 @@ module Cats {
             
             // ********************* Navigator Pane ********************
             this.navigatorPane = new TabView(["files", "bookmarks"]);
-            var fileTree = new FileNavigator(this.project);
-            this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
+          
             
             mainsplit.add(this.navigatorPane, 1); // navigator
     
@@ -282,31 +281,6 @@ module Cats {
         }
 
 
-        private sessionStack: {name: string; pos: Ace.Position; cb: Function}[] = [];
-        
-        private addToSessionStack(name: string, pos: Ace.Position, cb: Function) {
-            this.removeFromSessionStack(name);
-            this.sessionStack.push({
-                name: name,
-                pos: pos,
-                cb: cb
-            });
-        }
-        
-        private removeFromSessionStack (name: string): void {
-            this.sessionStack = this.sessionStack.filter(session => {
-                return session.name != name;
-            });
-        }
-        
-        private hasPreviousSession(): boolean {
-            return this.sessionStack.length > 0;
-        }
-        
-        private previousSession() {
-            return this.sessionStack[this.sessionStack.length - 1];
-        }
-
        
         /**
          * Open an existing session or if it doesn't exist yet create
@@ -334,43 +308,12 @@ module Cats {
                  this.sessionTabView.navigateTo(session,pos);
             }
 
-            this.addToSessionStack(name, pos, cb);
             var project = session.project;
         
             if (cb) cb(session);
         }
 
-        /**
-         * Close a session
-         * @param session The session to close
-         */
-        closeSession(session: Session) {
-            var result = [];
-            session.persist(true);
-            
-            this.sessions.forEach((s) => {
-                if (s !== session) {
-                    result.push(s);
-                }
-            })
-            
-            this.removeFromSessionStack(session.name);
-            
-            // Check if was the current session displayed
-            if (IDE.sessionTabView.getActiveSession() === session) {
-               
-                //@TODO IDE.mainEditor.hide();
-                if (this.hasPreviousSession()) {
-                    var prevSession = this.previousSession();
-                    setTimeout(() => {
-                        this.openSession(prevSession.name, prevSession.pos, prevSession.cb);
-                    }, 0);
-                }
-            }
-            
-            this.sessions = result;
-        }
-
+ 
         /**
          * Set the theme of the IDE
          * @param theme The name of the new theme
@@ -386,6 +329,12 @@ module Cats {
          */
         addProject(project: Project) {
             this.project = project;
+              
+            if (this.project) {
+                var fileTree = new FileNavigator(this.project);
+                this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
+            }
+            
         }
         
          /**

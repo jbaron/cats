@@ -73,18 +73,25 @@ module Cats {
     // Catch the close of the windows in order to save any unsaved changes
     var win = GUI.Window.get();
     win.on("close", function() {
+	
+		/*
         if (IDE.hasUnsavedSessions()) {
             if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
         }
         
+		
         IDE.saveConfig();
+		*/
+		
         this.close(true);
     });
 
     function main(app?) {
        
          // Instantiate the global ide   
-        IDE = new Ide(app.getRoot());     
+        IDE = new Ide(app.getRoot());
+		IDE.init();		
+        
         
         var prjName = determineProject();
         if (prjName) {
@@ -92,8 +99,8 @@ module Cats {
         } else {
             IDE.restorePreviousProjects();
         }
+       
         
-        IDE.init();
     }
     
     qx.registry.registerMainMethod(main);
