@@ -46,11 +46,12 @@ module Cats.Commands {
      * Set the font size
      */ 
     function setFontSize(size:number) {
-        IDE.sessionTabView.setFontSize(size);
+        SourceEditor.CONFIG["setFontSize"](size + "px");
+       //  IDE.infoBus.emit("editor.fontSize",size);
     }
 
     function setRightMargin(margin) {
-        IDE.sessionTabView.setRightMargin(margin);
+        IDE.infoBus.emit("editor.rightMargin",margin);
     }
 
     function toggleView(component) {

@@ -9,6 +9,11 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
     private mouseMoveTimer;
     private updateSourceTimer;
     private pendingWorkerUpdate = false;
+    
+    static CONFIG = qx.data.marshal.Json.createModel({
+        fontSize: "12px",
+        printMarginColumn: 100
+    }, true);
 
     constructor(private session:Cats.Session, pos?:Cats.Position) {
         super();
@@ -61,12 +66,22 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         
         session.on("errors", (errors) => { this.showErrors(errors)});
         this.addListener("resize", () => { this.resizeHandler(); });
- 
+        
+        SourceEditor.CONFIG.addListener("changeFontSize", (ev) => { this.config(ev.getData())});
+        
+        IDE.infoBus.on("editor.fontSize", (size) => { this.aceEditor.setFontSize(size + "px"); });
+        IDE.infoBus.on("editor.rightMargin", (margin) => { this.aceEditor.setPrintMarginColumn(margin);});
     }
 
     setContent(content) {
         this.aceEditor.getSession().setValue(content);
     }
+
+    private config(data) {
+        console.log(data);
+        this.aceEditor.setFontSize(data);
+    }
+
 
     updateWorld() {
         IDE.infoBus.emit("editor.overwrite", this.aceEditor.getSession().getOverwrite());
@@ -125,11 +140,6 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         }, 100);
     }
 
-
-    setFontSize(size) {
-        this.aceEditor.setFontSize(size + "px");
-    }
-    
     private setupEvents() {
         var session = this.aceEditor.getSession();
         session.on("changeOverwrite",(a)=>{

@@ -136,21 +136,6 @@ class SessionTabView extends qx.ui.tabview.TabView {
         return page.session;
     }
     
-    /**
-      * Set the right margin of the IDE
-       * @param margin number of columns
-        */
-    setRightMargin(margin: number) {
-            // IDE.config.rightMargin = margin;
-            // IDE.mainEditor.aceEditor.setPrintMarginColumn(margin);
-    }
-
-    setFontSize(size) {
-        this.getChildren().forEach((child:SessionPage)=>{
-           child.editor.setFontSize(size); 
-        });
-    }
-    
     navigateTo(session, pos?:Ace.Position) {
         var page = this.getPageBySession(session);
         this.setSelection([page]);

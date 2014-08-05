@@ -72,11 +72,6 @@ module Cats.Commands {
         project.validate();
     }
 
-    function show(text:string, severity?:number) {
-        if (! text) return;
-        IDE.console.log(text, severity);
-    }
-
     /**
      * Build the project
      */ 
@@ -109,7 +104,8 @@ module Cats.Commands {
     }
 
     /**
-     * Open a (new) project in a separate window
+     * Open a project. If current windows doesn't have a project yet, opene there.
+     * Otherwise open the project in a new window
      */ 
     function openProject() {
         var chooser: any = document.getElementById('fileDialog');

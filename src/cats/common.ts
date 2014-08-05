@@ -30,7 +30,6 @@ module Cats {
         Error
     }
     
-  
    export interface FileRange {
         fileName: string;
         range: Range;
