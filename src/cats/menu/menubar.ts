@@ -19,8 +19,7 @@ module Cats.Menu {
     /**
      * This class creates the main menubar. 
      */
-    class Menubar {
-
+    export class Menubar {
 
         private fontSizes = [8, 10, 12, 13, 14, 16, 18, 20, 24];
 
@@ -228,8 +227,7 @@ module Cats.Menu {
     }
 
     export function createMenuBar() {
-        var m = new Menubar();
-        
+        return new Menubar();
     }
 
 }

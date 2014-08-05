@@ -114,10 +114,14 @@ module Cats.Commands {
     function openProject() {
         var chooser: any = document.getElementById('fileDialog');
         chooser.onchange = function(evt) {
-            console.log(this.value);
-            var param = encodeURIComponent(this.value)
-            this.value = ""; // Make sure the change event goes off next tome
-            
+            var projectPath: string = this.value;
+            if (! IDE.project) {
+                IDE.addProject(new Project(projectPath));
+            } else {
+                var param = encodeURIComponent(projectPath)
+                this.value = ""; // Make sure the change event goes off next tome
+                window.open('index.html?project=' + param, '_blank');
+            }
             /*
             var gui = require('nw.gui'); 
             gui.Window.open(
@@ -126,7 +130,7 @@ module Cats.Commands {
             );
             */
             
-            window.open('index.html?project=' + param, '_blank');
+            
         };
         chooser.click();
     };

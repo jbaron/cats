@@ -22,7 +22,7 @@ if (args.indexOf("--debug") === -1 ) {
     console.debug = function() {};
 }
 
-var IDE:Cats.Ide;
+var IDE = new Cats.Ide();
 
 /**
  * This is the file that is included in the index.html and 
@@ -87,20 +87,15 @@ module Cats {
     });
 
     function main(app?) {
-       
-         // Instantiate the global ide   
-        IDE = new Ide(app.getRoot());
-		IDE.init();		
-        
+
+		IDE.init(app.getRoot());		
         
         var prjName = determineProject();
         if (prjName) {
             IDE.addProject(new Project(prjName));
         } else {
-            IDE.restorePreviousProjects();
+            if (args.indexOf("--restore") > -1) IDE.restorePreviousProjects();
         }
-       
-        
     }
     
     qx.registry.registerMainMethod(main);
