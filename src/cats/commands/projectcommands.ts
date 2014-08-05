@@ -23,8 +23,7 @@ module Cats.Commands {
 
 
     function closeAllProjects() {
-        var sure = confirm("Do you really want to quit?");
-        if (sure) GUI.App.closeAllWindows();
+        IDE.closeProject(IDE.project);
     }
 
     /**

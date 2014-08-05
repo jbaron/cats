@@ -94,7 +94,9 @@ class SessionTabView extends qx.ui.tabview.TabView {
      */ 
     closeAll() {
         var pages = <SessionPage[]>this.getChildren().concat();
-        pages.forEach((page) => { this.remove(page); });  
+        pages.forEach((page) => { 
+            this.remove(page);
+        });  
     }
     
     /**

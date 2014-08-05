@@ -343,12 +343,6 @@ module Cats {
          */
         closeProject(project) {
             // TODO put code on IDE
-            var sessions = IDE.sessions;
-            for (var i = 0; i < sessions.length; i++) {
-                var session = sessions[i];
-                if (session.getChanged()) session.persist(true);
-            }
-            this.sessions = [];
             this.project.close();
             this.project = null;
         }

@@ -40,6 +40,11 @@ class OutlineNavigator extends qx.ui.table.Table /* qx.ui.tree.VirtualTree */ {
 
     }
 
+    clear() {
+        this.setData(null, []);
+    }
+
+
     private getSelectedItem(): OutlineNavigatorItem {
         // var item = this.getSelection().getItem(0);
         // return item;

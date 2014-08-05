@@ -11,6 +11,10 @@ class ResultTable extends qx.ui.table.Table {
     }
 
 
+    clear() {
+        this.setData([]);
+    }
+
     setData(data: Cats.FileRange[]) {
         var tableModel = new qx.ui.table.model.Simple();
         var rows = [];

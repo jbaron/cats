@@ -39,13 +39,27 @@ module Cats {
             this.refresh();
         }
 
+
+        hasUnsavedSessions() {
+            var sessions = IDE.sessions;
+             for (var i = 0; i < sessions.length; i++) {
+                if (sessions[i].getChanged()) return true;
+            }
+            return false;
+        }
+
         /**
          * Close the project
          */ 
         close() {
-            var gui = require('nw.gui');
-            var win = gui.Window.get();
-            win.close();
+            if (this.hasUnsavedSessions()) {
+                var c = confirm("You have some unsaved changes that will get lost.\n Continue anyway ?");
+                if (! c) return;
+            }
+            IDE.sessionTabView.closeAll();
+            IDE.navigatorPane.getPage("files").removeAll();
+            IDE.outlineNavigator.clear();
+            IDE.problemResult.clear();            
         }
 
         /**
