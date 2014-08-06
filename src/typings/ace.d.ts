@@ -18,6 +18,8 @@
 
 declare module Ace {
 
+
+
 	interface EditorCommand {
 		name:string;
         bindKey:any;

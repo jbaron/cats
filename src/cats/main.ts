@@ -37,7 +37,7 @@ module Cats {
     /**
      * Get a parameter from the URL
      */ 
-    function getParameterByName(name):string {
+    function getParameterByName(name:string):string {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regexS = "[\\?&]" + name + "=([^&#]*)";
         var regex = new RegExp(regexS);
@@ -86,7 +86,7 @@ module Cats {
         this.close(true);
     });
 
-    function main(app?) {
+    function main(app:qx.application.Standalone) {
 
 		IDE.init(app.getRoot());		
         

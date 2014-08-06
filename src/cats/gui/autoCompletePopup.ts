@@ -97,7 +97,7 @@
         }
 
 
-		private matchText(text, completion) {
+		private matchText(text:string, completion:string) {
 			if (! text) return true;
 			if (completion.indexOf(text) === 0) return true;
 			return false;

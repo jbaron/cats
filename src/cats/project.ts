@@ -59,7 +59,9 @@ module Cats {
             IDE.sessionTabView.closeAll();
             IDE.navigatorPane.getPage("files").removeAll();
             IDE.outlineNavigator.clear();
-            IDE.problemResult.clear();            
+            IDE.problemResult.clear();
+            IDE.searchResult.clear();
+            if (this.iSense) this.iSense.stop();
         }
 
         /**
@@ -124,6 +126,7 @@ module Cats {
             document.title = "CATS | " + this.name;
 
             // this.initJSSense();
+            if (this.iSense) this.iSense.stop();
             this.iSense = new ISenseHandler(this);
             
             if (this.config.compiler.outFileOption) {

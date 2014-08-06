@@ -131,8 +131,8 @@ export class ScriptInfo {
              var result =  TypeScript.ScriptSnapshot.fromString(script.content);
              
              // Quick hack
-             result["getTextChangeRangeSinceVersion"] =  (version) => {
-                    return null;
+             result.getTextChangeRangeSinceVersion =  (version) => {
+                    return <TypeScript.TextChangeRange>null;
                     // return new TypeScript.TextChangeRange(new TypeScript.TextSpan(0, script.content.length),script.content.length);
              };
              
@@ -203,80 +203,7 @@ export class ScriptInfo {
             return script.version;
         }
 
-        /**
-         * Apply an array of text edits to a string, and return the resulting string.
-         */
-        public applyEdits(content: string, edits: TypeScript.Services.TextEdit[]): string {
-            var result = content;
-            edits = this.normalizeEdits(edits);
-
-            for (var i = edits.length - 1; i >= 0; i--) {
-                var edit = edits[i];
-                var prefix = result.substring(0, edit.minChar);
-                var middle = edit.text;
-                var suffix = result.substring(edit.limChar);
-                result = prefix + middle + suffix;
-            }
-            return result;
-        }
-
-        //
-        // Normalize an array of edits by removing overlapping entries and sorting
-        // entries on the "minChar" position.
-        //
-        private normalizeEdits(edits: TypeScript.Services.TextEdit[]): TypeScript.Services.TextEdit[] {
-            var result: TypeScript.Services.TextEdit[] = [];
-
-            function mapEdits(edits: TypeScript.Services.TextEdit[]): { edit: TypeScript.Services.TextEdit; index: number; }[] {
-                var result = [];
-                for (var i = 0; i < edits.length; i++) {
-                    result.push({ edit: edits[i], index: i });
-                }
-                return result;
-            }
-
-            var temp = mapEdits(edits).sort(function(a, b) {
-                var result = a.edit.minChar - b.edit.minChar;
-                if (result === 0) result = a.index - b.index;
-                return result;
-            });
-
-            var current = 0;
-            var next = 1;
-            while (current < temp.length) {
-                var currentEdit = temp[current].edit;
-
-                // Last edit
-                if (next >= temp.length) {
-                    result.push(currentEdit);
-                    current++;
-                    continue;
-                }
-                var nextEdit = temp[next].edit;
-
-                var gap = nextEdit.minChar - currentEdit.limChar;
-
-                // non-overlapping edits
-                if (gap >= 0) {
-                    result.push(currentEdit);
-                    current = next;
-                    next++;
-                    continue;
-                }
-
-                // overlapping edits: for now, we only support ignoring an next edit 
-                // entirely contained in the current edit.
-                if (currentEdit.limChar >= nextEdit.limChar) {
-                    next++;
-                    continue;
-                }
-                else {
-                    throw new Error("Trying to apply overlapping edits");
-                }
-            }
-
-            return result;
-        }
+       
 
     }
 

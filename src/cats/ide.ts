@@ -19,7 +19,7 @@ module Cats {
 
         navigatorPane: TabView;
         problemPane: TabView;
-        toolBar: ToolBar
+        toolBar: ToolBar;
         infoPane: TabView;
         statusBar: StatusBar;
         sessionTabView: SessionTabView;
@@ -48,7 +48,7 @@ module Cats {
         searchResult:ResultTable;
         problemResult:ResultTable;
 
-        mainMenu = null;
+        mainMenu:Menu.Menubar = null;
         private config:IDEConfiguration;
 
         // mainEditor: TextEditor;
@@ -57,7 +57,7 @@ module Cats {
             this.config = this.loadConfig();
         }
 
-        init(rootDoc) {
+        init(rootDoc:qx.ui.core.Widget) {
             Cats.Commands.init();
             this.layout(rootDoc);
             // this.toolBar.init();
@@ -337,7 +337,7 @@ module Cats {
             
         }
         
-         /**
+        /**
          * Close an open project
          * @param project to be closed
          */

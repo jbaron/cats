@@ -67,7 +67,11 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         session.on("errors", (errors) => { this.showErrors(errors)});
         this.addListener("resize", () => { this.resizeHandler(); });
         
-        SourceEditor.CONFIG.addListener("changeFontSize", (ev) => { this.config(ev.getData())});
+        SourceEditor.CONFIG.addListener("changeFontSize", 
+                (ev) => { this.aceEditor.setFontSize(ev.getData())});
+        
+        SourceEditor.CONFIG.addListener("changePrintMarginColumn", 
+                (ev) => { this.aceEditor.setPrintMarginColumn(ev.getData())});
         
         IDE.infoBus.on("editor.fontSize", (size) => { this.aceEditor.setFontSize(size + "px"); });
         IDE.infoBus.on("editor.rightMargin", (margin) => { this.aceEditor.setPrintMarginColumn(margin);});
@@ -76,12 +80,6 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
     setContent(content) {
         this.aceEditor.getSession().setValue(content);
     }
-
-    private config(data) {
-        console.log(data);
-        this.aceEditor.setFontSize(data);
-    }
-
 
     updateWorld() {
         IDE.infoBus.emit("editor.overwrite", this.aceEditor.getSession().getOverwrite());

@@ -21,7 +21,7 @@ module Cats {
  */
 export class ISenseHandler {
 
-    private worker;
+    private worker:Worker;
     private messageId = 0;
     private registry = {};
 
@@ -29,6 +29,10 @@ export class ISenseHandler {
         // Create a new webworker
         this.worker = new Worker("../lib/tsworker.js");
         this.initWorker();
+    }
+
+    stop() {
+        this.worker.terminate();
     }
 
     getErrors(fileName:string,cb:(err, result: FileRange[]) => void) {
