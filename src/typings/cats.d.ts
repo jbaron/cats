@@ -60,7 +60,7 @@ declare module Cats {
         version: string;
         name?: string;
         main?: string;
-        sourcePath?: string;
+        src?: string;
         destPath?: string;
         buildOnSave?: boolean;
         customBuild?:any;

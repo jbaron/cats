@@ -17,7 +17,7 @@
 function noDecorator() {
     return {
         base: true,
-        style : function(states) { return { decorator : undefined }; } 
+        style : function(states:any) { return { decorator : undefined }; } 
     };    
 }
 

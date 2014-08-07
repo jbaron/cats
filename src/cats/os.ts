@@ -23,6 +23,7 @@ module OS.File {
 
         var FS=require("fs");
         var exec = require('child_process').exec;
+        var glob = require("glob");
         
         /**
          * Create recursively directories if they don't exist yet
@@ -38,7 +39,7 @@ module OS.File {
         /**
          * Used to integrate external build tools
          */ 
-        export function executeProcess(cmd,options, callback) {
+        export function executeProcess(cmd:string,options:{}, callback:Function) {
             var child = exec(cmd,options, callback);
         }
 
@@ -58,6 +59,10 @@ module OS.File {
         export class PlatForm {
             static OSX = "darwin";
             
+        }
+
+        export function find(pattern:string, rootDir:string, cb:Function) {
+            glob(pattern, {cwd:rootDir}, cb) ;
         }
 
        /**

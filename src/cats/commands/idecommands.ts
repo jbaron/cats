@@ -50,7 +50,7 @@ module Cats.Commands {
        //  IDE.infoBus.emit("editor.fontSize",size);
     }
 
-    function setRightMargin(margin) {
+    function setRightMargin(margin:number) {
         IDE.infoBus.emit("editor.rightMargin",margin);
     }
 

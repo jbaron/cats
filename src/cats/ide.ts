@@ -46,6 +46,7 @@ module Cats {
         }
 
         searchResult:ResultTable;
+        bookmarks:ResultTable;
         problemResult:ResultTable;
 
         mainMenu:Menu.Menubar = null;
@@ -57,7 +58,7 @@ module Cats {
             this.config = this.loadConfig();
         }
 
-        init(rootDoc:qx.ui.core.Widget) {
+        init(rootDoc:qx.ui.container.Composite) {
             Cats.Commands.init();
             this.layout(rootDoc);
             // this.toolBar.init();
@@ -65,7 +66,7 @@ module Cats {
             this.initFileDropArea();
         }
 
-        private layout(rootDoc) {
+        private layout(rootDoc:qx.ui.container.Composite) {
             // container layout
 
             qx.theme.manager.Meta.getInstance().setTheme(Cats.theme.Theme);
@@ -87,7 +88,8 @@ module Cats {
             
             // ********************* Navigator Pane ********************
             this.navigatorPane = new TabView(["files", "bookmarks"]);
-          
+            this.bookmarks = new ResultTable(["Bookmark"]);
+            this.navigatorPane.getPage("bookmarks").add(this.bookmarks, { edge: 0 });
             
             mainsplit.add(this.navigatorPane, 1); // navigator
     
@@ -341,7 +343,7 @@ module Cats {
          * Close an open project
          * @param project to be closed
          */
-        closeProject(project) {
+        closeProject(project:Project) {
             // TODO put code on IDE
             this.project.close();
             this.project = null;

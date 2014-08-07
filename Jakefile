@@ -12,14 +12,12 @@ var workerOptions = [
 ];
 
 var umlOptions = [
-   "--target ES5",
    "src/typings/arbor.d.ts",
    "src/typings/jsuml2.d.ts",
    "src/uml/layout.ts"
 ];
 
 var catsOptions = [
-    "--target ES5",
     "src/typings/ace.d.ts",
     "src/typings/cats.d.ts",
     "src/typings/jsuml2.d.ts",
@@ -71,7 +69,7 @@ var catsOptions = [
  * Compiler task
  */
 task('compile', {async:true}, function(outFile, options) {
-		var cmd = "tsc --out " + outFile + " " + options.join(" ") ;
+		var cmd = "tsc --target ES5 --out " + outFile + " " + options.join(" ") ;
 
 		// console.log(cmd + "\n");
 		var ex = jake.createExec([cmd]);
@@ -95,7 +93,7 @@ task('compile', {async:true}, function(outFile, options) {
 });
 
 
-task("compileMain" , {async:true}, function() {
+file("lib/main.js" , catsOptions, {async:true}, function() {
      jake.Task['compile'].invoke("lib/main.js", catsOptions);
 });
 
@@ -103,16 +101,21 @@ task("compileWorker" , {async:true}, function() {
    jake.Task['compile'].invoke("lib/tsworker.js", workerOptions);
 });
 
-task("compileUml" , {async:true}, function() {
+file("lib/tsworker.js" , workerOptions, {async:true}, function() {
+   jake.Task['compile'].invoke("lib/tsworker.js", workerOptions);
+});
+
+
+file("lib/uml.js", umlOptions, {async:true}, function() {
     jake.Task['compile'].invoke("lib/uml.js", umlOptions);
 });
 
 
 // Set the default task
-task("default", function() {
-   jake.Task['compileMain'].invoke();
-   jake.Task['compileWorker'].invoke();
-   jake.Task['compileUml'].invoke();
+task("default", [], function() {
+   jake.Task['lib/main.js'].invoke();
+   jake.Task['lib/tsworker.js'].invoke();
+   jake.Task['lib/uml.js'].invoke();
 });
 
 

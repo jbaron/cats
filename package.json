@@ -10,7 +10,10 @@
     "width": 1000,
     "height": 800
   },
-  "devDependencies": {
-    "jake": "^0.7.17"
+  "dependencies": {
+    "glob": "^4.0.5"
+  },
+  "_devDependencies": {
+    "jake": "^8.0.1"
   }
 }

@@ -1,31 +1,14 @@
 {
     "version": "0.8",
     "main": "static/index.html",
-    "sourcePath": "src",
+    "src": "src/**/*.ts",
     "customBuild": {
         "command": "jake"
     },
-    "builds": [
-        {
-            "name": "worker",
-            "main": "cats/tsworker/isense.ts",
-            "output": "lib/worker.js"
-        },
-        {
-            "name": "ide",
-            "main": "cats/main.ts",
-            "output": "lib/main.js"
-        },
-        {
-            "name": "uml",
-            "main": "cats/uml/layout.ts",
-            "output": "lib/uml.js"
-        }
-    ],
     "compiler": {
         "useDefaultLib": true,
         "emitComments": false,
-        "outputOption": "/Users/peter/Development/cats/tmp",
+        "noImplicitAny" : false,
         "generateDeclarationFiles": false,
         "mapSourceFiles": false,
         "codeGenTarget": 1,

@@ -1,9 +1,7 @@
 {
     "version": "1.0",
     "main": "greeter.html",
-    "sourcePath": null,
     "buildOnSave": true,
-    "outputPath": null,
     "compiler": {
         "useDefaultLib": true,
         "emitComments": false,

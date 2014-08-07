@@ -17,7 +17,6 @@ module Cats {
     
     export class Project {
 
-
         // The home directory of the project
         projectDir: string;
         name: string;
@@ -101,6 +100,7 @@ module Cats {
                 if (stderr) IDE.console.log(stderr,2);
                 if (error !== null) IDE.console.log('Execution error: ' + error,2);
                 IDE.busy(false);
+                IDE.console.log("Done building project " + this.name + " ...");
             });
             
         } else {
@@ -111,6 +111,7 @@ module Cats {
                 sources.forEach((source) => {
                         OS.File.writeTextFile(source.fileName, source.content);
                 });
+                IDE.console.log("Done building project " + this.name + " ...");
             });
         }
     }
@@ -142,10 +143,9 @@ module Cats {
                 this.iSense.addScript(fullName, libdts);
             }
 
-            var srcPaths = [].concat(<any>this.config.sourcePath);
-            srcPaths.forEach((srcPath: string) => {
-                var fullPath = PATH.join(this.projectDir, srcPath || '');
-                this.loadTypeScriptFiles(fullPath);
+            var srcs = [].concat(this.config.src);
+            srcs.forEach((src: string) => {
+                this.loadTypeScriptFiles(src);
             });
 
         }
@@ -199,23 +199,14 @@ module Cats {
          * Load all the script that are part of the project into the tsworker
          * @param directory The source directory where to start the scan
          */
-        private loadTypeScriptFiles(directory: string) {
-            OS.File.readDir2(directory, (files) => {
+        private loadTypeScriptFiles( pattern = "**/*.ts") {
+            OS.File.find(pattern,this.projectDir,  (err,files) => {
             files.forEach((file) => {
                 try {
-                    var fullName = file.fullName;
-                    if (file.isFile) {                       
-                        console.info("FullName: " + fullName);
-                        var ext = PATH.extname(fullName);
-                        if (ext === ".ts") {                            
-                            OS.File.readTextFile2(fullName,(content) => {
+                    var fullName = path.join(this.projectDir, file);
+                    OS.File.readTextFile2(fullName,(content) => {
                                 this.iSense.addScript(fullName,content);
-                            });
-                        }
-                    }
-                    if (file.isDirectory) {
-                        this.loadTypeScriptFiles(fullName);
-                    }
+                    });
                 } catch (err) {
                     console.error("Got error while handling file " + fullName);
                     console.error(err);

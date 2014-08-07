@@ -21,7 +21,7 @@ class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.
         this.setContextMenu(this.createContextMenu());
     }
     
-    private insertLine(line, severity?) {
+    private insertLine(line:string, severity?:number) {
         if (line.trim()) {
             var span = document.createElement("SPAN");
             span.innerText = line;
@@ -46,25 +46,13 @@ class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.
                var dt = new Date();
                prefix = dt.toLocaleTimeString() + " ";
             }
-            var lines = [].concat(msg.split("\n"));
+            var lines = msg.split("\n");
             lines.forEach((line) => {
                 if (line.trim()) line = prefix + line;
                 this.insertLine(line,severity);
             });
             
             this.container.scrollTop = this.container.scrollHeight;
-             
-            // this.container.innerText += prefix + msg + "\n";
-            // this.container.insertAdjacentText("beforeend", prefix+msg+"\n");
-            // this.container.appendChild(document.createTextNode(prefix + msg));
-            // this.container.appendChild(document.createElement('BR'));
-           
-            // this.getContentElement().scrollToY(100000);
-            // this.container.scrollTop = this.container.scrollHeight; // Scroll to bottom
-            
-            // var t = document.createTextNode(prefix + msg);
-            // this.container.appendChild(t);
-            // this.container.appendChild(document.createElement("br"));
         }
     } 
     

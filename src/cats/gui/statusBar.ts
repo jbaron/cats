@@ -5,8 +5,8 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
 
     private modeInfo:qx.ui.toolbar.Button;
     private overwriteInfo:qx.ui.toolbar.Button;
-    private positionInfo;
-    private busyInfo
+    private positionInfo:qx.ui.toolbar.Button;
+    private busyInfo: qx.ui.toolbar.Button;
     
 
     constructor() {

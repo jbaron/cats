@@ -1,11 +1,3 @@
-
-interface OutlineNavigatorItem {
-    name: string;
-    fullName: string;
-    range: Cats.Range;
-    kind: string;
-    kids?: OutlineNavigatorItem[];
-}
 /**      
  * Create a simple Tree to mimic outline functionality      
  */
@@ -44,13 +36,6 @@ class OutlineNavigator extends qx.ui.table.Table /* qx.ui.tree.VirtualTree */ {
         this.setData(null, []);
     }
 
-
-    private getSelectedItem(): OutlineNavigatorItem {
-        // var item = this.getSelection().getItem(0);
-        // return item;
-        return null;
-    }
-
     private rangeToPosition(range: Cats.Range): string {
         return (range.start.row + 1) + ":" + (range.start.column + 1);
     }
@@ -63,7 +48,7 @@ class OutlineNavigator extends qx.ui.table.Table /* qx.ui.tree.VirtualTree */ {
         var indentation = ["", " -- ", " ---- ", " ------ ", " -------- "];
 
         var tableModel = new qx.ui.table.model.Simple();
-        var rows = [];
+        var rows:any[] = [];
         data.forEach((item) => {
             var prefix = "";
             var nrSpaces = item.containerName.split(".").length;
@@ -86,36 +71,6 @@ class OutlineNavigator extends qx.ui.table.Table /* qx.ui.tree.VirtualTree */ {
     }
 
 
-    private createModel(data: Cats.NavigateToItem[], parent: OutlineNavigatorItem) {
-        if (!parent.kids) parent.kids = [];
-        data.forEach((item) => {
-            // var fullName = parent.containerName ? parent.containerName + "." + parent.name : parent.name;
-            if ((item.containerKind === parent.kind) && (item.containerName === parent.fullName)) {
-                var fullName = parent.name ? parent.name + "." + item.name : item.name;
-                var newItem = {
-                    name: item.name,
-                    fullName: fullName,
-                    kind: item.kind,
-                    range: item.range
-                }
-                 parent.kids.push(newItem);
-                this.createModel(data, newItem);
-            }
-        });
-        return parent;
-    }
-
-    /**
-     * Set the data for outline navigator
-     */
-    private setData2(session: Cats.Session, data: Cats.NavigateToItem[]) {
-        // console.log(data);
-        this.session = session;
-        var json = this.createModel(data, { name: "", kind: "", fullName: "", range: null });
-
-        // This could be very expensive call, look for better alternative.
-        var model = qx.data.marshal.Json.createModel(json, true);
-        // this.setModel(model);
-    }
+  
 
 }

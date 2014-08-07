@@ -136,7 +136,7 @@ class SessionTabView extends qx.ui.tabview.TabView {
         return page.session;
     }
     
-    navigateTo(session, pos?:Ace.Position) {
+    navigateTo(session:Cats.Session, pos?:Ace.Position) {
         var page = this.getPageBySession(session);
         this.setSelection([page]);
         if (pos) page.editor.moveToPosition(pos);
@@ -145,7 +145,7 @@ class SessionTabView extends qx.ui.tabview.TabView {
     /**
      * Find a page by its session
      */ 
-    getPageBySession(session):SessionPage {
+    getPageBySession(session: Cats.Session):SessionPage {
         var pages = this.getChildren();
         for (var i=0;i<pages.length;i++) {
             var page = <SessionPage>pages[i];

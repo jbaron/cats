@@ -43,15 +43,15 @@ export class ISenseHandler {
         this.perform("getAllDiagnostics", cb);
     }
 
-    getFormattedTextForRange(sessionName:string, start, end, cb) {
+    getFormattedTextForRange(sessionName:string, start:number, end:number, cb:Function) {
         this.perform("getFormattedTextForRange", sessionName, start, end, cb);
     }                    
                 
-    getDefinitionAtPosition(sessionName:string, cursor, cb:(err, data:FileRange) => void) {
+    getDefinitionAtPosition(sessionName:string, cursor:Cats.Position, cb:(err:any, data:FileRange) => void) {
         this.perform("getDefinitionAtPosition", sessionName, cursor, cb);
     }
              
-    getInfoAtPosition(type, sessionName, cursor, cb:(err, data:Cats.FileRange[]) => void) {
+    getInfoAtPosition(type:string, sessionName:string, cursor:Cats.Position, cb:(err:any, data:Cats.FileRange[]) => void) {
         this.perform("getInfoAtPosition", type, sessionName, cursor, cb);
     }
     
@@ -59,11 +59,11 @@ export class ISenseHandler {
         this.perform("compile", cb);
     }
 
-    getScriptLexicalStructure(sessionName:string, cb: (err, data: NavigateToItem[])=>void) {
+    getScriptLexicalStructure(sessionName:string, cb: (err:any, data: NavigateToItem[])=>void) {
         this.perform("getScriptLexicalStructure",sessionName,cb);
     }
     
-    getTypeAtPosition(name:string, docPos:Ace.Position, cb:(err, data: TypeInfo)=>void) {
+    getTypeAtPosition(name:string, docPos:Ace.Position, cb:(err:any, data: TypeInfo)=>void) {
         this.perform("getTypeAtPosition", name, docPos, cb);
     }
 

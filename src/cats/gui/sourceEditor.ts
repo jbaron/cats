@@ -6,8 +6,8 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
 
     private aceEditor:Ace.Editor;
     private autoCompletePopup:AutoCompletePopup;
-    private mouseMoveTimer;
-    private updateSourceTimer;
+    private mouseMoveTimer:number;
+    private updateSourceTimer:number;
     private pendingWorkerUpdate = false;
     
     static CONFIG = qx.data.marshal.Json.createModel({
@@ -38,9 +38,9 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
                 this.aceEditor.setReadOnly(false);                
             }
             
+            this.createContextMenu();
         
              if (session.isTypeScript()) {
-                 this.createContextMenu();
                  this.autoCompletePopup = new AutoCompletePopup(this.aceEditor);
                  this.autoCompletePopup.show();
                  this.autoCompletePopup.hide();
@@ -245,8 +245,8 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
        /**
          * Check if there are any errors for this session and show them.    
          */
-     showErrors(result) {
-            var annotations = [];
+     showErrors(result: Cats.FileRange[]) {
+            var annotations:Ace.Annotation[] = [];
             result.forEach((error: Cats.FileRange) => {
                 annotations.push({
                     row: error.range.start.row,
@@ -269,7 +269,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
        
        
           // Initialize the editor
-        private createAceEditor(rootElement):Ace.Editor {
+        private createAceEditor(rootElement:HTMLElement):Ace.Editor {
             var editor: Ace.Editor = ace.edit(rootElement);
 
             editor.commands.addCommands([
@@ -304,7 +304,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
  
             
             var originalTextInput = editor.onTextInput;
-            editor.onTextInput = (text) => {
+            editor.onTextInput = (text:string) => {
                 originalTextInput.call(editor, text);
                 if (text === ".") this.autoComplete();
             };
@@ -359,14 +359,32 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         return button;
     }
     
+    private bookmark() {
+        var name = prompt("please provide bookmark name");
+        if (name) {
+            var pos = this.getPosition();
+            IDE.bookmarks.addData({
+                message:name, 
+                fileName:this.session.name, 
+                range: {
+                    start: pos,
+                    end: pos
+                }
+            });
+        }
+    }
+    
     private createContextMenu() {
         var CMDS = Cats.Commands.CMDS;
         var menu = new qx.ui.menu.Menu();
-    
-        menu.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration.bind(this)));
-        menu.add(this.createContextMenuItem("Find References", this.findReferences.bind(this)));
-        menu.add(this.createContextMenuItem("Find Occurences", this.findOccurences.bind(this)));
-        menu.add(this.createContextMenuItem("FInd Implementations", this.findImplementors.bind(this)));
+        if (this.session.isTypeScript()) {
+            menu.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration.bind(this)));
+            menu.add(this.createContextMenuItem("Find References", this.findReferences.bind(this)));
+            menu.add(this.createContextMenuItem("Find Occurences", this.findOccurences.bind(this)));
+            menu.add(this.createContextMenuItem("FInd Implementations", this.findImplementors.bind(this)));
+            menu.addSeparator();
+        }
+        menu.add(this.createContextMenuItem("Bookmark", this.bookmark.bind(this)));
         
         this.setContextMenu(menu);
     }

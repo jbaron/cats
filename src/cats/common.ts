@@ -18,7 +18,7 @@
  * transfer data between the worker and the main thread. 
  */ 
 module Cats {
-  
+
     export interface Range {
         start: Position;
         end: Position;
@@ -29,7 +29,7 @@ module Cats {
         Warning,
         Error
     }
-    
+
    export interface FileRange {
         fileName: string;
         range: Range;

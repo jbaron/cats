@@ -39,7 +39,7 @@ There are some option you can use. For example to open CATS with a specific proj
         
         node-webkit </path/CATSInstallationDirectory> --project </path/projectDirectory>
 
-Or to open CATS with the same project as last time use the following option:
+Or to open CATS with the same project as last time use the --restore option:
 
         node-webkit </path/CATSInstallationDirectory> --restore
 

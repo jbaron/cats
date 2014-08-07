@@ -57,8 +57,8 @@ class TabView extends qx.ui.tabview.TabView {
   
     }
 
-    private getLabel(name) {
-        var label;
+    private getLabel(name:string) {
+        var label:string;
         var entry = this.iconMapping[name];
         if (entry) label = entry.label;
         if (! label) label = qx.Bootstrap.firstUp(name);

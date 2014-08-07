@@ -89,7 +89,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     /**
      * Get an icon for a file based on its mimetype
      */ 
-    private getIconForFile(fileName) {
+    private getIconForFile(fileName:string) {
         var mimetype:string = MimeTypeFinder.lookup(fileName).replace("/","-");
         
         var icon = this.iconsForMime[mimetype];

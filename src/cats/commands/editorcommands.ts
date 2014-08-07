@@ -83,7 +83,7 @@ module Cats.Commands {
 
     
     function editorCommand(commandName:string) {
-        return function(arg) {
+        return function(...args) {
              //@TODO fix,don't access private var
               var aceEditor = IDE.getActiveEditor()["aceEditor"];
               // var command:Function = aceEditor.commands.byName[commandName];

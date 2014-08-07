@@ -3,8 +3,6 @@
  */
 class ResultTable extends qx.ui.table.Table {
 
-    private static HEADERS = ["Message", "File", "Position"];
-
 
    private rangeToPosition(range: Cats.Range): string {
         return (range.start.row + 1) + ":" + (range.start.column + 1);
@@ -15,20 +13,24 @@ class ResultTable extends qx.ui.table.Table {
         this.setData([]);
     }
 
-    setData(data: Cats.FileRange[]) {
-        var tableModel = new qx.ui.table.model.Simple();
-        var rows = [];
-        if (data) {
-            data.forEach((row)=>{
-                rows.push([
+
+    private convert(row:Cats.FileRange) {
+        return [
                     row.message,
                     row.fileName,
                     this.rangeToPosition(row.range),
                     row.range
-                ])
+                ];
+    }
+
+    setData(data: Cats.FileRange[]) {
+        var tableModel = new qx.ui.table.model.Simple();
+        var rows:any[] = [];
+        if (data) {
+            data.forEach((row)=>{
+                rows.push(this.convert(row));
             });
         }
-        
         // tableModel.setColumns(ResultTable.HEADERS);
         // tableModel.setData(rows);
         // this.setTableModel(tableModel);
@@ -36,9 +38,14 @@ class ResultTable extends qx.ui.table.Table {
         this.getSelectionModel().resetSelection(); 
     }
 
-    constructor() {
+    addData(row: Cats.FileRange) {
+        this.getTableModel().addRows([this.convert(row)]);
+    }
+
+    constructor(headers = ["Message", "File", "Position"]) {
+        
         var tableModel = new qx.ui.table.model.Simple();
-        tableModel.setColumns(ResultTable.HEADERS);
+        tableModel.setColumns(headers);
         tableModel.setData([]);
 
         var custom: any = {
@@ -56,8 +63,19 @@ class ResultTable extends qx.ui.table.Table {
             var data = this.getTableModel().getRowData(selectedRow);
             // IDE.console.log("Selected row:" + selectedRow);
             if (data) IDE.openSession(data[1], data[3].start);
-        })
+        });
         
+        this.setContextMenu(this.createContextMenu());
     }
+
+   private createContextMenu() {
+        var menu = new qx.ui.menu.Menu();
+        var item1 = new qx.ui.menu.Button("Clear Output");
+        item1.addListener("execute", () => { this.clear();});
+        menu.add(item1);
+        
+        return menu;
+    }
+
 
 }

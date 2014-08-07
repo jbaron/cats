@@ -63,7 +63,7 @@ module Cats {
     }
    
     // Catch unhandled expections so they don't showup in the IDE.
-    process.on('uncaughtException', function (err) {
+    process.on('uncaughtException', function (err:any) {
         console.error("Uncaught exception occured: " + err);
         console.error(err.stack);
         alert(err);
@@ -88,7 +88,7 @@ module Cats {
 
     function main(app:qx.application.Standalone) {
 
-		IDE.init(app.getRoot());		
+		IDE.init(<qx.ui.container.Composite>app.getRoot());		
         
         var prjName = determineProject();
         if (prjName) {

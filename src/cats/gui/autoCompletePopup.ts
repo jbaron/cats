@@ -27,7 +27,7 @@
         private handler;
         private changeListener;
         private list:qx.ui.list.List;
-        private filtered;
+        private filtered:any[];
 
         private cursorPos = 0;
 
