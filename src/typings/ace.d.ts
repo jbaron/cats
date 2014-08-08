@@ -18,6 +18,8 @@
 
 declare module Ace {
 
+
+
 	interface EditorCommand {
 		name:string;
         bindKey:any;
@@ -65,8 +67,8 @@ declare module Ace {
 		value: string;
 	}
 
-	interface EditSession {
-		new(content:string, mode:string);
+	class EditSession {
+		constructor(content:string, mode:string);
 		getUndoManager():UndoManager;
 		getValue():string;
         setOverwrite(val:boolean):void;
@@ -97,6 +99,8 @@ declare module Ace {
 	interface Editor {
 		find(value:string,options,something);
 		focus();
+		resize();
+		on(event:string,callback);
         setReadOnly(readOnly:boolean);
         getReadOnly():boolean;
 		replace(value:string,options);

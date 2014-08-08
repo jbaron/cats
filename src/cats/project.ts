@@ -12,117 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-
-
+// 
 module Cats {
     
-     /**
-     * Generic interface for a session that is used for editing information
-     * 
-     * @TODO: implement save and load as part of session
-     */ 
-    export interface Session {
-        name: string;
-        type: string;
-        project: Project;
-        mode: string;
-        changed: boolean;
-        shortName: string;
-        getValue(): string;
-        setValue(value: string);
-        getPosition():any;
-        persist(shouldConfirm:boolean);
-    }
-
-    class ProjectWatcher extends TreeWatcher {
-        
-        private _treeView: Cats.UI.TreeView;
-        
-        constructor(public path) {
-            super();
-            this.setDirectory(path);
-        }
-        
-        public setTreeView(view: Cats.UI.TreeView) {
-            this._treeView = view;
-        }
-        
-        public onFileCreate(path: string): void {
-            if (this._treeView != null) {
-                this._treeView.refresh();
-            }
-        }
-        public onFileDelete(path: string): void {
-            if (this._treeView != null) {
-                this._treeView.refresh();
-            }
-        }
-        public onDirectoryCreate(path: string): void {
-            if (this._treeView != null) {
-                this._treeView.refresh();
-            }
-        }
-        public onDirectoryDelete(path: string): void {
-            if (this._treeView != null) {
-                this._treeView.refresh();
-            }
-        }
-        public onFileChange(filepath: any): void {
-            var session = IDE.getSession(filepath);
-            if (session) {
-                if (confirm('File ' + filepath + ' modifed out of the editor, reload it ?')) {
-                    IDE.getSession(filepath).setValue(OS.File.readTextFile(filepath));
-                    session.changed = false;
-                } else {
-                    session.changed = true;
-                }
-            }
-        }
-        public onError(error: any): void {
-            console.log('Watcher error');
-            console.log(error);
-        }
-    }
-
     export class Project {
-
 
         // The home directory of the project
         projectDir: string;
         name: string;
         
-        // The TypeScript files that are part of the project
-        private tsFiles: string[] = [];
-        
-        private watcher: ProjectWatcher;
-        private _treeView: Cats.UI.TreeView;
-        public setTreeView(view: Cats.UI.TreeView): void {
-            this._treeView = view;
-            this.watcher.setTreeView(view);
-        }
-        public getTreeView(): Cats.UI.TreeView {
-            return this._treeView;
-        }
-        public getWatcher(): TreeWatcher {
-            return this.watcher;
-        }
-
-        /**
-         * Check whether a certain TS file is part of this project
-         */ 
-        public containsTSFile(name:string) : boolean {
-            return (this.tsFiles.indexOf(name) > -1);
-        }
-
-        public addTSFile(name:string,content:string) : void {
-            this.tsFiles.push(name);
-            this.iSense.addScript(name,content);
-            console.info("Added TypeScript file: " + name);
-        }
-
+ 
         // The singleton TSWorker handler instance
-        iSense: ISenseHandler;
+        iSense: TSWorkerProxy;
+        
+        // Stores the project configuration paramters
         config: ProjectConfiguration;
+       
+
 
         /**    
          * Set the project to a new directory and make sure 
@@ -131,17 +37,48 @@ module Cats {
         constructor(projectDir: string) {
             IDE.project = this;
             this.projectDir = PATH.resolve(projectDir);
-            this.watcher = new ProjectWatcher(this.projectDir);
             this.refresh();
+        }
+
+
+        private getConfigFileName() {
+            return PATH.join(this.projectDir, ".settings", "config.json");
+        }
+
+        editConfig()  {
+            var existing = IDE.getSession(this.getConfigFileName());
+            if (existing) {
+                IDE.sessionTabView.select(existing);
+            } else {
+                var content = JSON.stringify(this.config, null, 4);
+                var session = new Session(this.getConfigFileName(),content);
+                IDE.sessionTabView.addSession(session);
+            }
+           
+        }
+
+        hasUnsavedSessions() {
+            var sessions = IDE.sessions;
+             for (var i = 0; i < sessions.length; i++) {
+                if (sessions[i].getChanged()) return true;
+            }
+            return false;
         }
 
         /**
          * Close the project
          */ 
         close() {
-            var gui = require('nw.gui');
-            var win = gui.Window.get();
-            win.close();
+            if (this.hasUnsavedSessions()) {
+                var c = confirm("You have some unsaved changes that will get lost.\n Continue anyway ?");
+                if (! c) return;
+            }
+            IDE.sessionTabView.closeAll();
+            IDE.navigatorPane.getPage("files").removeAll();
+            IDE.outlineNavigator.clear();
+            IDE.problemResult.clear();
+            IDE.searchResult.clear();
+            if (this.iSense) this.iSense.stop();
         }
 
         /**
@@ -150,22 +87,67 @@ module Cats {
         validate() {
             // @TODO don't compile just get the errors
             this.iSense.getAllDiagnostics( (err,data) => {
-             if (data) View.showErrors(data);
+               if (data) {
+                   IDE.problemResult.setData(data);
+                   if (data.length === 0) { 
+                       IDE.console.log("Project has no errors");
+                       IDE.problemPane.selectPage("console");       
+                   } else {
+                       IDE.problemPane.selectPage("problems");
+                   }
+               }
+               
             });
         }
+
+        build() {
+        IDE.console.log("Start building project " + this.name + " ...");
+        if (this.config.customBuild) {
+            IDE.busy(true);
+            // IDE.resultbar.selectOption(2);
+            var cmd = this.config.customBuild.command;
+            var options = this.config.customBuild.options || {};
+            
+            if (! options.cwd) {
+                options.cwd = this.projectDir;
+            }
+            
+            var child = OS.File.executeProcess(cmd,options,
+              function (error, stdout, stderr) {
+                if (stdout) IDE.console.log(stdout);
+                if (stderr) IDE.console.log(stderr,2);
+                if (error !== null) IDE.console.log('Execution error: ' + error,2);
+                IDE.busy(false);
+                IDE.console.log("Done building project " + this.name + " ...");
+            });
+            
+        } else {
+            this.iSense.compile((err, data:Cats.CompileResults) => {                        
+                this.showCompilationResults(data);
+                if (data.errors && (data.errors.length > 0)) return;
+                var sources = data.source;
+                sources.forEach((source) => {
+                        OS.File.writeTextFile(source.fileName, source.content);
+                });
+                IDE.console.log("Done building project " + this.name + " ...");
+            });
+        }
+    }
+
 
         /**
          *  Refreshes the project and loads required artifacts
          *  again from the filesystem to be fully in sync
          */
         refresh() {
-            this.tsFiles = [];
-            this.config = ConfigLoader.load(this.projectDir);
+            var projectConfig = new ProjectConfig(this.projectDir);
+            this.config = projectConfig.load();
             this.name = this.config.name || PATH.basename(this.projectDir);
             document.title = "CATS | " + this.name;
 
             // this.initJSSense();
-            this.iSense = new ISenseHandler(this);
+            if (this.iSense) this.iSense.stop();
+            this.iSense = new TSWorkerProxy(this);
             
             if (this.config.compiler.outFileOption) {
                 this.config.compiler.outFileOption = PATH.join(this.projectDir,this.config.compiler.outFileOption);
@@ -175,62 +157,78 @@ module Cats {
             this.iSense.setCompilationSettings(this.config.compiler);
 
             if (this.config.compiler.useDefaultLib) {
-                var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
+                var fullName = PATH.join(IDE.catsHomeDir, "typings/lib.d.ts");
                 var libdts = OS.File.readTextFile(fullName);
                 this.iSense.addScript(fullName, libdts);
             }
 
-            var srcPaths = [].concat(<any>this.config.sourcePath);
-            srcPaths.forEach((srcPath: string) => {
-                var fullPath = PATH.join(this.projectDir, srcPath || '');
-                this.loadTypeScriptFiles(fullPath);
-                // this.initTSWorker(); @TODO still needed ?
+            var srcs = [].concat(this.config.src);
+            srcs.forEach((src: string) => {
+                this.loadTypeScriptFiles(src);
             });
 
+        }
+       
+       /**
+        * Compile without actually saving the result
+        */ 
+        trialCompile() {
+            this.iSense.compile((err, data:Cats.CompileResults) => {                        
+                this.showCompilationResults(data);
+            });
+        }
+       
+       private showCompilationResults(data:Cats.CompileResults) {
+           
+            if (data.errors && (data.errors.length > 0)) {
+                IDE.problemResult.setData(data.errors);
+                return;
+            }
+            
+            IDE.problemResult.setData([]);
+            IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).");
+        }
+       
+       
+        run() {
+            var main = this.config.main;
+            if (!main) {
+                alert("Please specify the main html file to run in the project settings.");
+                return;
+            }
+            var startPage = this.getStartURL();
+            console.info("Opening file: " + startPage);
+            var win2 = GUI.Window.open(startPage, {
+                toolbar: true,
+                webkit: {
+                    "page-cache": false
+                }
+            });
         }
        
         /**
          * Get the URl for running the project
          */ 
-        getStartURL(): string {
+        private getStartURL(): string {
             var url = PATH.join(this.projectDir, this.config.main);
             return "file://" + url;
         }
         
         /**
-         * @BUG Somehow TS LanguageServices are not ready by default.
-         * This triggers it to be ready 
-         */
-        private initTSWorker() {
-            if (this.tsFiles.length > 0) {
-                this.iSense.initialize();
-            }
-        }
-
-
-        /**
          * Load all the script that are part of the project into the tsworker
          * @param directory The source directory where to start the scan
          */
-        private loadTypeScriptFiles(directory: string) {
-            OS.File.readDir2(directory, (files) => {
+        private loadTypeScriptFiles(pattern:string) {
+            if (! pattern) pattern = "**/*.ts";
+            OS.File.find(pattern,this.projectDir,  (err,files) => {
             files.forEach((file) => {
                 try {
-                    var fullName = file.fullName;
-                    if (file.isFile) {                       
-                        console.info("FullName: " + fullName);
-                        var ext = PATH.extname(fullName);
-                        if (ext === ".ts") {                            
-                            OS.File.readTextFile2(fullName,(content) => {
-                                this.addTSFile(fullName,content);
-                            });
-                        }
-                    }
-                    if (file.isDirectory) {
-                        this.loadTypeScriptFiles(fullName);
-                    }
+                    var fullName = path.join(this.projectDir, file);
+                    OS.File.readTextFile2(fullName,(content) => {
+                                this.iSense.addScript(fullName,content);
+                    });
                 } catch (err) {
-                    console.log("Got error while handling file " + fullName);
+                    console.error("Got error while handling file " + fullName);
                     console.error(err);
                 }
             });
@@ -241,12 +239,3 @@ module Cats {
     }
 
 }
-
-
-
-
-
-
-
-
-

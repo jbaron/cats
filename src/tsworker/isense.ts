@@ -22,9 +22,9 @@ module Cats.TSWorker {
      * not available in a worker.
      */ 
     export var console = {
-        log: function(str) { postMessage({level: "log" , msg: str}, null); },
-        error: function(str) { postMessage({level: "error" , msg: str}, null); },
-        info: function(str) { postMessage({level: "info" , msg: str}, null); }
+        log: function(str:string) { postMessage({method: "console",  data: str}, null); },
+        error: function(str:string) { postMessage({method: "console" , data: str}, null); },
+        info: function(str:string) { postMessage({method: "console" , data: str}, null); }
     }
 
     /**
@@ -178,7 +178,7 @@ module Cats.TSWorker {
          */  
         getAllDiagnostics() {
             var scripts = this.lsHost.scripts;
-            var errors = [];
+            var errors:FileRange[] = [];
 
             for (var fileName in scripts) {
                 errors = errors.concat(this.getErrors(fileName));
@@ -194,7 +194,7 @@ module Cats.TSWorker {
             var scripts = this.lsHost.scripts;
                                     
             var result:{ fileName: string; content: string; }[] = [];
-            var errors = [];
+            var errors:FileRange[] = [];
 
             for (var fileName in scripts) {
                 try {
@@ -227,7 +227,7 @@ module Cats.TSWorker {
         /**
          * Configure the compiler settings
          */ 
-        setCompilationSettings(options:any) {
+        setCompilationSettings(options:{}) {
             var compOptions = new TypeScript.CompilationSettings();
 
             // Do a quick mixin
@@ -240,13 +240,13 @@ module Cats.TSWorker {
 
 
         public getDependencyGraph() {
-            var result = [];
+            var result:any = [];
             var scripts = this.lsHost.scripts;
             for (var fileName in scripts) {
                 var script = scripts[fileName];
                 var entry = {
                     src: script.fileName,
-                    ref:[]
+                    ref: <Array<string>>[]
                 };
                 
                 var i = TypeScript.ScriptSnapshot.fromString(script.content);
@@ -272,15 +272,19 @@ module Cats.TSWorker {
             if (script) return script.content;
         }
      
-        private splice(str, start, max, replacement) {
+        private splice(str:string, start:number, max:number, replacement:string) {
             return str.substring(0, start) + replacement + str.substring(max);
         }
 
         getFormattedTextForRange(fileName: string, start: number, end: number):string {
             var options = new TypeScript.Services.FormatCodeOptions();
-            options.NewLineCharacter = "\n";
-            var edits = this.ls.getFormattingEditsForRange(fileName, start, end, options);
             var result = this.getScriptContent(fileName);
+            
+            options.NewLineCharacter = "\n";
+            if (end === -1) end = result.length;
+            
+            var edits = this.ls.getFormattingEditsForRange(fileName, start, end, options);
+            
             var offset = 0;
             for (var i = 0; i < edits.length; i++) {
                 var edit = edits[i];
@@ -294,7 +298,11 @@ module Cats.TSWorker {
          * Add a new script to the compiler environment
          */ 
         addScript(fileName: string, content: string) {
-            this.lsHost.addScript(fileName, content);
+            if (this.lsHost.scripts[fileName]) {
+                this.updateScript(fileName,content);
+            } else {
+                this.lsHost.addScript(fileName, content);
+            }
         }
 
 
@@ -322,7 +330,7 @@ module Cats.TSWorker {
         }
 
         // Get the position
-        public getTypeAtPosition(fileName: string, coord): TypeInfo {
+        public getTypeAtPosition(fileName: string, coord:Cats.Position): TypeInfo {
             var pos = this.getPositionFromCursor(fileName, coord);
             if (!pos) return;
             var result = <TypeInfo>this.ls.getTypeAtPosition(fileName, pos);
@@ -405,33 +413,42 @@ module Cats.TSWorker {
             }
             */
             // Lets find out what autocompletion there is possible		
-            var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode);
+            var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode) || <TypeScript.Services.CompletionInfo>{};
             if (! completions.entries) completions.entries = []; // @Bug in TS
             completions.entries.sort(caseInsensitiveSort); // Sort case insensitive
             return completions;
         }
     }
 
+    function setBusy(value:boolean) {
+        postMessage({method:"setBusy" ,data:value}, null);
+    }
+
     /*******************************************************************
       Create and initiate the message listener for incomming messages
      *******************************************************************/ 
 
-    var tsh = new ISense();
+    var tsh:ISense;
 
     addEventListener('message', function(e) {
-        var msg = e["data"];
+        if (! tsh) tsh = new ISense();
+        
+        setBusy(true);
+        var msg: Cats.JSONRPCRequest = e["data"];
 
         var method = msg.method;
         var id = msg.id;
         var params = msg.params;
         try {
-            var result;
-            var obj;
+            var result:any;
+            /*
+            var obj:any;
             if (tsh[method])
                 obj = tsh
             else
                 tsh.ls;
-            result = obj[method].apply(obj, params);
+            */
+            result = tsh[method].apply(tsh, params);
             postMessage({ id: id, result: result }, null);
         } catch (err) {
             var error = {
@@ -440,6 +457,8 @@ module Cats.TSWorker {
             }
             console.error("Error during processing message " + method);
             postMessage({ id: id, error: error }, null);
+        } finally {
+            setBusy(false);
         }
     }, false);
 

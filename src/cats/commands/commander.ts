@@ -50,6 +50,7 @@ module Cats.Commands {
         edit_toggleComment,
         edit_indent,
         edit_outdent,
+        edit_gotoLine,
         
         source_format,
         source_openDeclaration,
@@ -65,12 +66,6 @@ module Cats.Commands {
         project_refresh,
         project_properties,
         project_dependencies,
-        
-        navigate_gotoLine,
-        navigate_references,
-        navigate_occurences,
-        navigate_implementors,
-        navigate_declaration,
         
         refactor_rename,
         
@@ -157,7 +152,8 @@ module Cats.Commands {
         
         // if (cmd.shortcut) item.label += " [" + cmd.shortcut + "]";
         if (cmd.shortcut) item.label = addShortcut(item.label, cmd.shortcut);        
-        if (cmd.icon) item.icon = IDE.getIconDir() + cmd.icon;
+        
+        // if (cmd.icon) item.icon = "static/resource/qx/icon/Oxygen/22/" + cmd.icon;
                 
         return new GUI.MenuItem(item);
     }
@@ -181,7 +177,6 @@ module Cats.Commands {
 	    ProjectCommands.init(register);
         IdeCommands.init(register);
         RefactorCommands.init(register);
-        NavigateCommands.init(register);
 	}
 
 

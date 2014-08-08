@@ -4,7 +4,7 @@ var fs = require("fs");
 var path = require("path");
 
 var workerOptions = [
-   "src/typings/typescript.d.ts",
+   "src/typings/typescriptServices.d.ts",
    "src/typings/cats.d.ts",
    "src/cats/common.ts",
    "src/tsworker/languageservicehost.ts",    
@@ -12,58 +12,55 @@ var workerOptions = [
 ];
 
 var umlOptions = [
-   "--target ES5",
    "src/typings/arbor.d.ts",
    "src/typings/jsuml2.d.ts",
    "src/uml/layout.ts"
 ];
 
 var catsOptions = [
-    "--target ES5",
     "src/typings/ace.d.ts",
     "src/typings/cats.d.ts",
     "src/typings/jsuml2.d.ts",
     "src/typings/node-webkit.d.ts",
-    "src/typings/typescript.d.ts",
+    "src/typings/typescriptServices.d.ts",
+    "src/typings/qooxdoo.d.ts",
+    
+    "src/cats/theme/color.ts",
+    "src/cats/theme/decoration.ts",
+    "src/cats/theme/font.ts",
+    "src/cats/theme/appearance.ts",
+    "src/cats/theme/theme.ts",
+    
     "src/cats/common.ts",
-    "src/cats/promise.ts",
     "src/cats/infobus.ts",
     "src/cats/os.ts",
-    "src/cats/observable.ts",
-    "src/cats/treewatcher.ts",
     "src/cats/ide.ts",
-    "src/cats/layout.ts",
-    "src/cats/acesession.ts",
+    "src/cats/session.ts",
     "src/cats/commands/commander.ts",
-    "src/cats/commands/editorcommands.ts",
-    "src/cats/commands/filecommands.ts",
-    "src/cats/commands/helpcommands.ts",
-    "src/cats/commands/idecommands.ts",
-    "src/cats/commands/navigatecommands.ts",
-    "src/cats/commands/projectcommands.ts",
-    "src/cats/commands/refactorcommands.ts",
-    "src/cats/configloader.ts",
-    "src/cats/editor.ts",
-    "src/cats/isensehandler.ts",
-    "src/cats/menu/editorcontextmenu.ts",
-    "src/cats/menu/filecontextmenu.ts",
+    "src/cats/commands/editorCommands.ts",
+    "src/cats/commands/fileCommands.ts",
+    "src/cats/commands/helpCommands.ts",
+    "src/cats/commands/ideCommands.ts",
+    "src/cats/commands/projectCommands.ts",
+    "src/cats/commands/refactorCommands.ts",
+    "src/cats/projectConfig.ts",
+    "src/cats/tsWorkerProxy.ts",
     "src/cats/menu/menubar.ts",
-    "src/cats/menu/tabcontextmenu.ts",
     "src/cats/project.ts",
-    "src/cats/ui/autocompleteview.ts",
-    "src/cats/ui/elemtabadapter.ts",
-    "src/cats/ui/grid.ts",
-    "src/cats/ui/mvc.ts",
-    "src/cats/ui/tabbar.ts",
-    "src/cats/ui/tooltip.ts",
-    "src/cats/ui/tree.ts",
-    "src/cats/pane/toolbar.ts",
-    "src/cats/pane/compilationresults.ts",
-    "src/cats/pane/navigator.ts",
-    "src/cats/pane/outline.ts",
-    "src/cats/pane/searchresults.ts",
-    "src/cats/pane/statusbar.ts",
-    "src/cats/pane/tasklist.ts",
+    "src/cats/gui/console.ts",
+    "src/cats/gui/fileNavigator.ts",
+    "src/cats/gui/outlineNavigator.ts",
+    "src/cats/gui/resultTable.ts",
+    "src/cats/gui/sourceEditor.ts",
+    "src/cats/gui/tabView.ts",
+    "src/cats/gui/toolBar.ts",
+    "src/cats/gui/sessionTabView.ts",
+    "src/cats/gui/statusBar.ts",
+    "src/cats/gui/autoCompletePopup.ts",
+    "src/cats/gui/fileContextMenu.ts",
+    
+    "src/cats/util/mime.ts",
+    
     "src/cats/main.ts"
 ];
 
@@ -72,7 +69,7 @@ var catsOptions = [
  * Compiler task
  */
 task('compile', {async:true}, function(outFile, options) {
-		var cmd = "tsc --out " + outFile + " " + options.join(" ") ;
+		var cmd = "tsc --target ES5 --out " + outFile + " " + options.join(" ") ;
 
 		// console.log(cmd + "\n");
 		var ex = jake.createExec([cmd]);
@@ -85,24 +82,40 @@ task('compile', {async:true}, function(outFile, options) {
 			process.stderr.write(error);
 		});
 		ex.addListener("cmdEnd", function() {
-		    var time = new Date();
-            var stamp = time.toLocaleTimeString();
-			console.log(stamp + " done creating file " + outFile);
+			console.log("Done creating file " + outFile);
 			complete();
 		});
 		ex.addListener("error", function() {
-			fs.unlinkSync(outFile);
-			console.log("Compilation of " + outFile + " unsuccessful");
+			// fs.unlinkSync(outFile);
+			console.error("Compilation of " + outFile + " had some errors");
 		});
 		ex.run();	
 });
 
 
-// Set the default task
-task("default", function() {
-   jake.Task['compile'].invoke("lib/main.js", catsOptions);
+file("lib/main.js" , catsOptions, {async:true}, function() {
+     jake.Task['compile'].invoke("lib/main.js", catsOptions);
+});
+
+task("compileWorker" , {async:true}, function() {
    jake.Task['compile'].invoke("lib/tsworker.js", workerOptions);
-   jake.Task['compile'].invoke("lib/uml.js", umlOptions);
+});
+
+file("lib/tsworker.js" , workerOptions, {async:true}, function() {
+   jake.Task['compile'].invoke("lib/tsworker.js", workerOptions);
+});
+
+
+file("lib/uml.js", umlOptions, {async:true}, function() {
+    jake.Task['compile'].invoke("lib/uml.js", umlOptions);
+});
+
+
+// Set the default task
+task("default", [], function() {
+   jake.Task['lib/main.js'].invoke();
+   jake.Task['lib/tsworker.js'].invoke();
+   jake.Task['lib/uml.js'].invoke();
 });
 
 

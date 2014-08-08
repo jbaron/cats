@@ -19,9 +19,11 @@
 module Cats.Commands {
 
 
+
+
+
     function closeAllProjects() {
-        var sure = confirm("Do you really want to quit?");
-        if (sure) GUI.App.closeAllWindows();
+        IDE.closeProject(IDE.project);
     }
 
     /**
@@ -35,20 +37,7 @@ module Cats.Commands {
      * Run the project
      */ 
     function runProject() {
-        var main = IDE.project.config.main;
-        if (!main) {
-            alert("Please specify the main html file to run in the project settings.");
-            return;
-        }
-        var startPage = IDE.project.getStartURL();
-        console.log("Opening file: " + startPage);
-        var win2 = GUI.Window.open(startPage, {
-            toolbar: true,
-            webkit: {
-                "page-cache": false
-            }
-        });
-        // win2.reloadIgnoringCache()
+        IDE.project.run();
     };
 
     /**
@@ -68,7 +57,7 @@ module Cats.Commands {
             
             window["dependencies"] = data;
             var startPage = "uml.html";
-            console.log("Opening file: " + startPage);
+            console.info("Opening file: " + startPage);
             var win2 = window.open(startPage,"dependencies","status=1,resizable=1,menubar=1,location=1,toolbar=1,titlebar=1,scrollbars=1");
             win2["dependencies"] = data;
         })
@@ -80,78 +69,17 @@ module Cats.Commands {
      */ 
     function validateProject() {
         var project = IDE.project;
-        IDE.compilationResult.innerHTML = "";
-        
-        project.iSense.compile((err, data:Cats.CompileResults) => {                        
-            View.showCompilationResults(data);
-        });
-    }
-
-    function show(text:string) {
-        if (! text) return;
-        IDE.console.innerText += text;
-        IDE.console.scrollTop = IDE.console.scrollHeight; // Scroll to bottom
+        project.validate();
     }
 
     /**
      * Build the project
      */ 
     function buildProject() {
-        // this.defaultOutput = window.prompt("Output file",this.defaultOutput);
-        var project = IDE.project;
-        if (project.config.customBuild) {
-            IDE.busy(true);
-            IDE.resultbar.selectOption(2);
-            var cmd = project.config.customBuild.command;
-            var options = project.config.customBuild.options || {};
-            
-            if (! options.cwd) {
-                options.cwd = IDE.project.projectDir;
-            }
-            
-            var exec = require('child_process').exec;
-
-            var child = exec(cmd,options,
-              function (error, stdout, stderr) {
-                IDE.busy(false);
-                show(stdout);
-                show(stderr);
-                if (error !== null) {
-                  show('exec error: ' + error);
-                }
-            });
-            
-        } else {
-            IDE.compilationResult.innerHTML = "";
-            project.iSense.compile((err, data:Cats.CompileResults) => {                        
-                View.showCompilationResults(data);
-                if (data.errors && (data.errors.length > 0)) return;
-                var sources = data.source;
-                sources.forEach((source) => {
-                        console.log(source.fileName);
-                        OS.File.writeTextFile(source.fileName, source.content);
-                });
-            });
-        }
+        IDE.project.build();
     }
 
 
-    /**
-     * Configure the properties of a project
-     */ 
-    function propertiesProject() {
-        var project = IDE.project;
-        var name = ConfigLoader.getFileName(project.projectDir);
-        if (IDE.getSession(name)) {
-            IDE.openSession(name);
-        } else {
-            var content = JSON.stringify(project.config, null, 4);
-            var session = new AceSession(name,content);
-            IDE.addSession(session);
-            IDE.openSession(name);
-        }
-    }
-    
     /**
      * Refresh the project so everything is in sync again.
      */ 
@@ -159,16 +87,29 @@ module Cats.Commands {
         IDE.project.refresh();
     }
 
+
     /**
-     * Open a (new) project in a separate window
+     * Configure the properties of a project
+     */ 
+    function propertiesProject() {
+        IDE.project.editConfig();
+    }
+
+    /**
+     * Open a project. If current windows doesn't have a project yet, opene there.
+     * Otherwise open the project in a new window
      */ 
     function openProject() {
         var chooser: any = document.getElementById('fileDialog');
         chooser.onchange = function(evt) {
-            console.log(this.value);
-            var param = encodeURIComponent(this.value)
-            this.value = ""; // Make sure the change event goes off next tome
-            
+            var projectPath: string = this.value;
+            if (! IDE.project) {
+                IDE.addProject(new Project(projectPath));
+            } else {
+                var param = encodeURIComponent(projectPath)
+                this.value = ""; // Make sure the change event goes off next tome
+                window.open('index.html?project=' + param, '_blank');
+            }
             /*
             var gui = require('nw.gui'); 
             gui.Window.open(
@@ -177,7 +118,7 @@ module Cats.Commands {
             );
             */
             
-            window.open('index.html?project=' + param, '_blank');
+            
         };
         chooser.click();
     };
@@ -185,15 +126,15 @@ module Cats.Commands {
 
     export class ProjectCommands {
         static init(registry) {
-            registry({ name: CMDS.project_open, label: "Open Project...", command: openProject, icon: "open.png" });
-            registry({ name: CMDS.project_close, label: "Close project", command: closeProject });
-            registry({ name: CMDS.project_build, label: "Build Project", command: buildProject, icon: "build.png" });
+            registry({ name: CMDS.project_open, label: "Open Project...", command: openProject, icon: "actions/project-open.png" });
+            registry({ name: CMDS.project_close, label: "Close project", command: closeProject, icon:"actions/project-development-close.png" });
+            registry({ name: CMDS.project_build, label: "Build Project", command: buildProject, icon: "categories/applications-development.png" });
             registry({ name: CMDS.project_validate, label: "Validate Project", command: validateProject });
-            registry({ name: CMDS.project_refresh, label: "Refresh Project", command: refreshProject, icon: "refresh.png" });
-            registry({ name: CMDS.project_run, label: "Run Project", command: runProject, icon: "run.png" });
+            registry({ name: CMDS.project_refresh, label: "Refresh Project", command: refreshProject, icon: "actions/view-refresh.png" });
+            registry({ name: CMDS.project_run, label: "Run Project", command: runProject, icon: "actions/arrow-right.png" });
             // registry({ name: CMDS.project_debug, label: "Debug Project", command: null, icon: "debug.png" });
             registry({ name: CMDS.project_properties, label: "Properties", command: propertiesProject });
-            registry({ name: CMDS.project_dependencies, label: "Show Dependencies", command: showDependency });
+            // registry({ name: CMDS.project_dependencies, label: "Show Dependencies", command: showDependency });
         }
 
     }

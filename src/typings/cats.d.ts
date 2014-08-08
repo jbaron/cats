@@ -14,29 +14,20 @@
 //
 
 
-// Declare the global JQuery $
-declare var $;
-
 declare module Cats {
+
+    var theme:any
+    
+    interface JSONRPCRequest {
+        id?: number;
+        method:string;
+        params?:any;
+    }
 
     interface Map<T>  {
         [index:string]:T;
     }
 
-
-    interface Editor {
-        hide();
-        show();
-        edit(session, position);
-    }
-    
-    interface IView {
-        icon: string;
-        name: string;
-        show();
-        hide();
-        appendTo(root: HTMLElement);
-    }
 
     interface FileEntry {
         name: string; // Just the file/directory name without path
@@ -58,7 +49,7 @@ declare module Cats {
         projects: string[];
         sessions: {
             path: string;
-            pos: Position;
+            state?: any;
         }[];
     }
 
@@ -69,7 +60,7 @@ declare module Cats {
         version: string;
         name?: string;
         main?: string;
-        sourcePath?: string;
+        src?: string;
         destPath?: string;
         buildOnSave?: boolean;
         customBuild?:any;
@@ -109,5 +100,7 @@ declare module Cats {
     class NavigateToItem extends TypeScript.Services.NavigateToItem {
         range: Range;
     }
+    
+     
 
 }

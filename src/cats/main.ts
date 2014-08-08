@@ -22,8 +22,7 @@ if (args.indexOf("--debug") === -1 ) {
     console.debug = function() {};
 }
 
-var IDE:Cats.Ide;
-var infoBus= new Cats.InfoBus(); 
+var IDE = new Cats.Ide();
 
 /**
  * This is the file that is included in the index.html and 
@@ -38,7 +37,7 @@ module Cats {
     /**
      * Get a parameter from the URL
      */ 
-    function getParameterByName(name):string {
+    function getParameterByName(name:string):string {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regexS = "[\\?&]" + name + "=([^&#]*)";
         var regex = new RegExp(regexS);
@@ -64,33 +63,44 @@ module Cats {
     }
    
     // Catch unhandled expections so they don't showup in the IDE.
-    process.on('uncaughtException', function (err) {
+    process.on('uncaughtException', function (err:any) {
         console.error("Uncaught exception occured: " + err);
         console.error(err.stack);
         alert(err);
     });
    
-    // Instantiate the global ide   
-    IDE = new Ide();     
-    
-    var prjName = determineProject();
-    if (prjName) {
-        IDE.addProject(new Project(prjName));
-    } else {
-        IDE.restorePreviousProjects();
-    }
-    
-    IDE.init();
-    
+   
     // Catch the close of the windows in order to save any unsaved changes
     var win = GUI.Window.get();
     win.on("close", function() {
+	
+		/*
         if (IDE.hasUnsavedSessions()) {
             if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
         }
         
+		
         IDE.saveConfig();
+		*/
+		
         this.close(true);
     });
 
+    function main(app:qx.application.Standalone) {
+
+		IDE.init(<qx.ui.container.Composite>app.getRoot());		
+        
+        var prjName = determineProject();
+        if (prjName) {
+            IDE.addProject(new Project(prjName));
+        } else {
+            if (args.indexOf("--restore") > -1) IDE.restorePreviousProjects();
+        }
+    }
+    
+    qx.registry.registerMainMethod(main);
+
 }
+
+
+

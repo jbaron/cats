@@ -19,12 +19,19 @@ module Cats.Menu {
     /**
      * This class creates the main menubar. 
      */
-    class Menubar {
-
+    export class Menubar {
 
         private fontSizes = [8, 10, 12, 13, 14, 16, 18, 20, 24];
 
-        private themes = [
+        private themes = [                   
+                    { theme: Cats.theme.Theme, label: "CATS" },
+                    { theme: qx.theme.Classic, label: "Classic" },
+                    { theme: qx.theme.Indigo, label: "Indigo" },
+                    { theme: qx.theme.Modern, label: "Modern" },
+                    { theme: qx.theme.Simple, label: "Simple" }
+        ];
+
+        private themes2 = [
                     { theme: "cats", label: "CATS" },
                     { theme: "chrome", label: "Chrome" },
                     { theme: "clouds", label: "Clouds" },
@@ -100,9 +107,10 @@ module Cats.Menu {
             edit.append(getCmd(CMDS.edit_replaceAll));
             
             edit.append(new GUI.MenuItem({ type: "separator" }));
-            edit.append(getCmd(CMDS.edit_toggleInvisibles));
+            // edit.append(getCmd(CMDS.edit_toggleInvisibles));
             edit.append(getCmd(CMDS.edit_toggleRecording));
             edit.append(getCmd(CMDS.edit_replayMacro));
+             edit.append(getCmd(CMDS.edit_gotoLine));
 
 
             var source = new GUI.Menu();
@@ -113,13 +121,6 @@ module Cats.Menu {
 
             var refactor = new GUI.Menu();
             refactor.append(getCmd(CMDS.refactor_rename));
-
-            var navigate = new GUI.Menu();
-            navigate.append(getCmd(CMDS.navigate_gotoLine));
-            navigate.append(getCmd(CMDS.navigate_declaration));
-            navigate.append(getCmd(CMDS.navigate_references));
-            navigate.append(getCmd(CMDS.navigate_occurences));
-            navigate.append(getCmd(CMDS.navigate_implementors));
 
             var proj = new GUI.Menu();
             proj.append(getCmd(CMDS.project_open));
@@ -135,7 +136,7 @@ module Cats.Menu {
             }
             proj.append(getCmd(CMDS.project_refresh));
             proj.append(getCmd(CMDS.project_properties));
-            proj.append(getCmd(CMDS.project_dependencies));
+            // proj.append(getCmd(CMDS.project_dependencies));
 
 
             var run = new GUI.Menu();
@@ -159,7 +160,6 @@ module Cats.Menu {
             menubar.append(new GUI.MenuItem({ label: 'Edit', submenu: edit }));
             menubar.append(new GUI.MenuItem({ label: 'Source', submenu: source }));
             menubar.append(new GUI.MenuItem({ label: 'Refactor', submenu: refactor }));
-            menubar.append(new GUI.MenuItem({ label: 'Navigate', submenu: navigate }));
             menubar.append(new GUI.MenuItem({ label: 'Project', submenu: proj }));
             menubar.append(new GUI.MenuItem({ label: 'Run', submenu: run }));
             menubar.append(new GUI.MenuItem({ label: 'Window', submenu: window }));
@@ -197,10 +197,10 @@ module Cats.Menu {
             var CMDS = Cats.Commands.CMDS;
             var menu = new GUI.Menu();
             var views = [
-                {id:"north",name:"Toolbar"},    
-                {id:"south",name:"Statusbar"}
-            ]
-            views.forEach((view) => {
+                {id:IDE.toolBar,name:"Toggle Toolbar"},    
+                {id:IDE.statusBar,name:"Toggle Statusbar"}
+            ];
+            views.forEach((view:any) => {
                     var item = getCmd(CMDS.ide_toggleView,view.name,view.id);
                     menu.append(item);
             });
@@ -227,8 +227,7 @@ module Cats.Menu {
     }
 
     export function createMenuBar() {
-        var m = new Menubar();
-        
+        return new Menubar();
     }
 
 }

@@ -21,6 +21,8 @@ module Cats.Commands {
      * Show the available keyboard shortcuts
      */ 
     function showShortcuts() {
+         var w = window.open("keyboard_shortcuts.html", "_blank", "width=800; height=595");
+        /*
         var isDark = document.getElementsByClassName("ace_dark").length > 0;
         var elem = <HTMLElement>document.getElementsByClassName("ace_scroller")[0];
         var bg = window.getComputedStyle(elem, null).backgroundColor;
@@ -28,7 +30,9 @@ module Cats.Commands {
         var fg = window.getComputedStyle(elem, null).color;
         var w = window.open("keyboard_shortcuts.html", "_blank", "width=800; height=595");
         
+        
         w.onload = () => {
+            
             var body = w.document.body;
             
             $(body)
@@ -38,14 +42,16 @@ module Cats.Commands {
             if (isDark) {
                 $(body).addClass("dark");
             }
+            
         };
+        */
     }
 
     /**
      * Show the version of CATS
      */ 
     function showAbout() {
-        alert("Code Assisitant for TypeScript, version 0.9.5.alpha\nCreated by JBaron\nIcons from icons8.com");
+        alert("Code Assisitant for TypeScript, version 1.0.1\nCreated by JBaron\n");
     }
 
     /**

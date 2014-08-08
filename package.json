@@ -2,7 +2,7 @@
   "name": "CATS",
   "main": "static/index.html",
   "description": "Code Assistant for TypeScript",
-  "version": "0.9.8",
+  "version": "1.0.1",
   "window": {
     "icon": "static/img/logo.png",
     "toolbar": false,
@@ -10,7 +10,10 @@
     "width": 1000,
     "height": 800
   },
-  "devDependencies": {
-    "jake": "^0.7.17"
+  "dependencies": {
+    "glob": "^4.0.5"
+  },
+  "_devDependencies": {
+    "jake": "^8.0.1"
   }
 }

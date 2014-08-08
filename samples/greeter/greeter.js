@@ -1,29 +1,16 @@
-/**
-* Greets you with a warm welcome.
-*/
 var Greeter = (function () {
-    /**
-    * Create a new Greeter
-    * @param message Welcome message
-    */
     function Greeter(message) {
         this.greeting = message;
     }
-    /**
-    * Give a warm welcome
-    */
-    Greeter.prototype.greet = function () {
-        return "Hello " + this.greeting;
+    Greeter.prototype.greet = function (name) {
+        alert(this.greeting + " " + name + "!");
     };
     return Greeter;
 })();
-
-var greeter = new Greeter("world!");
-
-var button = document.createElement('button');
+var greeter = new Greeter("Hello");
+var button = document.createElement("button");
 button.innerText = "Say Hello";
 button.onclick = function () {
-    alert(greeter.greet());
+    greeter.greet("World");
 };
-
 document.body.appendChild(button);

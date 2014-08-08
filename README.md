@@ -1,28 +1,72 @@
-Introduction
-============
-CATS is an IDE for the TypeScript developer. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. CATS itself is written in TypeScript and even being developed using CATS as the IDE. 
+## CATS
 
-Although not yet feature complete, it is getting there. Right now CATS already has built-in support for the following features:
+CATS is an IDE for the TypeScript developer. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. 
+CATS itself is written in TypeScript and even being developed using CATS as the IDE. 
 
-- Intelligent code editor with support for syntax highlighting and code completion.
+Right now CATS already has built-in support for the following features:
 
+- Intelligent code editor and code completion for TypeScript sources.
+ 
 <img src="https://raw.github.com/jbaron/cats/master/artifacts/autocomplete.png" />
 
+- Syntax highlighting for over 110 languages (TextMate/Sublime Text.tmlanguage files can be imported)
 - Support for refactoring and smart navigation.
 - TypeScript compilation to JavaScript.
 - Validation of the source code while you are typing.
 - JavaScript JSHint support.
 - Editing features like folding and indentation.
 - Running your application from within IDE and using the WebKit debugger to debug.
-- External build systems
-- Theming:
+- Support for external build systems like Grunt and Jake.
 
-<img src="https://raw.github.com/jbaron/cats/master/artifacts/themes.png" height="220px" width="850px" />
+## Building
 
-It is recommended to first make a backup before using CATS on your project since the software is still considered to be of alpha quality. 
+In order to build the TypeScript compiler, ensure that you have 
+[Git](http://git-scm.com/downloads) and [Node.js](http://nodejs.org/) installed.
 
-Installation & Running CATS
-===========================
+Clone a copy of the CATS repo:
+
+```
+git clone https://github.com/jbaron/cats.git
+```
+
+Change to the cats directory:
+
+```
+cd cats
+```
+
+Install Jake tools and the dependencies:
+
+```
+npm install -g jake
+npm install
+```
+
+Use one of the following to build and test:
+
+```
+jake local           # Build the compiler into built/local 
+jake clean           # Delete the built compiler 
+jake LKG             # Replace the last known good with the built one.
+                     # Bootstrapping step to be executed when the built compiler reaches a stable state.
+jake tests           # Build the test infrastructure using the built compiler. 
+jake runtests        # Run tests using the built compiler and test infrastructure. 
+                     # You can override the host or specify a test for this command. 
+                     # Use host=<hostName> or tests=<testPath>. 
+jake baseline-accept # This replaces the baseline test results with the results obtained from jake runtests. 
+jake -T              # List the above commands. 
+```
+
+
+## Usage
+
+```shell
+node-webkit </path/CATSInstallationDirectory>
+```
+
+
+## Building
+
 To install CATS, just follow these steps:
 
 1. Download the CATS from Github: 
@@ -34,15 +78,25 @@ To install CATS, just follow these steps:
 
 3. Go to the cats directory and type: 
 
+        node-webkit </path/CATSInstallationDirectory> 
+        
+
+There are some option you can use. For example to open CATS with a specific project, use:
+        
         node-webkit </path/CATSInstallationDirectory> --project </path/projectDirectory>
 
-With CATS you also get a samples directory with several small projects you can try out. Of course you can also open a directory that contains your own project. 
+Or to open CATS with the same project as last time use the --restore option:
+
+        node-webkit </path/CATSInstallationDirectory> --restore
+
+
+With CATS you also get a samples directory with some small projects you can try out. Of course you can also open a directory that contains your own project. 
 When you want to start CATS with a specific project, you have to pass the project directory as a command line parameter:
 
 
 Windows example:
 
-		node-webkit C:\cats --project C:\cats\samples\greeter
+		nw.exe C:\cats --project C:\cats\samples\greeter
    
 OSX and Linux example: 
 
@@ -51,8 +105,6 @@ OSX and Linux example:
 I'm using the nw alias in my ~/.bash_profile as explained on the node-webkit page:
 
         alias nw="/Applications/node-webkit.app/Contents/MacOS/node-webkit"
-
-TIP: If you start CATS without the project parameter, it will re-open the last one and also restore the sessions that were still open when hen you quit the IDE.
 
 
 Configuration
@@ -103,6 +155,8 @@ contributed some code to this project.
 And of course some of the main 3rd party components that we have used within CATS and couldn't have done without:
 
 - [TypeScript](http://www.typescriptlang.org) (of course), developed by Microsoft.
+
+- [Qooxdoo](http://www.qooxdoo.org), excellent JavaScript library with many great UI widgets.  
 
 - [ACE](http://ace.ajax.org), an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.
 

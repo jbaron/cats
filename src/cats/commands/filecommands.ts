@@ -22,37 +22,28 @@ module Cats.Commands {
      * Create a new edit session
      */ 
     function newFile() {
-        IDE.openSession("Untitled");
+        IDE.openSession();
     }
 
     /**
      * Close the active edit session
      */ 
     function closeFile() {
-        if (IDE.activeSession)
-            IDE.closeSession(IDE.activeSession);
+      IDE.sessionTabView.close();
     }
 
     /**
      * Close all edit sessions
      */ 
     function closeAllFiles() {
-        var sessions = IDE.sessions;
-        sessions.forEach((session: Session) => {IDE.closeSession(session)});
+        IDE.sessionTabView.closeAll();
     }
 
     /**
      * Close all edit sessions except the active session
      */ 
     function closeOtherFiles() {       
-        var sessions = IDE.sessions;
-        var activeSession = IDE.activeSession;
-        for (var i = 0; i < sessions.length; i++) {
-            var session = sessions[i];
-            if (session !== activeSession) {
-                IDE.closeSession(session);
-            }
-        }
+        IDE.sessionTabView.closeOther();
     }
 
     /**
@@ -62,7 +53,7 @@ module Cats.Commands {
         var sessions = IDE.sessions;
         for (var i = 0; i < sessions.length; i++) {
             var session = sessions[i];
-            if (session.changed) IDE.persistSession(session);
+            if (session.getChanged()) session.persist();
         }
     }
         
@@ -70,12 +61,12 @@ module Cats.Commands {
      * Save the active sessions under a different name
      */     
      function saveAs() {
-        var session = IDE.activeSession;
+        var session = IDE.sessionTabView.getActiveSession();
         if (session) {
             var newName = prompt("Enter new name", session.name);
             if (newName) {
                 session.name = newName;
-                IDE.persistSession(session);
+                session.persist();
             }
         }
     }
@@ -84,19 +75,19 @@ module Cats.Commands {
      * Save the active session
      */     
     function saveFile() {
-        var session = IDE.activeSession;
-        if (session) IDE.persistSession(session);
+        var session = IDE.sessionTabView.getActiveSession();
+        if (session) session.persist();
     }
 
     export class FileCommands {
         static init(registry: (cmd: Command) => void ) {
-            registry({ name: CMDS.file_new, label: "New File", command: newFile, icon: "new.png" });
-            registry({ name: CMDS.file_close, label: "Close File", command: closeFile });
+            registry({ name: CMDS.file_new, label: "New File", command: newFile, icon: "actions/document-new.png" });
+            registry({ name: CMDS.file_close, label: "Close File", command: closeFile, icon: "actions/project-development-close.png" });
             registry({ name: CMDS.file_closeOther, label: "Close Other Files", command: closeOtherFiles });
-            registry({ name: CMDS.file_closeAll, label: "Close All Files", command: closeAllFiles });
-            registry({ name: CMDS.file_save, label: "Save File", command: saveFile });
-            registry({ name: CMDS.file_saveAll, label: "Save All", command: saveAll, icon: "save.png" });
-            registry({ name: CMDS.file_saveAs, label: "Save As...", command: saveAs });
+            registry({ name: CMDS.file_closeAll, label: "Close All Files", command: closeAllFiles,icon: "actions/project-development-close-all.png"  });
+            registry({ name: CMDS.file_save, label: "Save File", command: saveFile, icon: "actions/document-save.png"  });
+            registry({ name: CMDS.file_saveAll, label: "Save All", command: saveAll, icon: "actions/document-save-all.png" });
+            registry({ name: CMDS.file_saveAs, label: "Save As...", command: saveAs,  icon: "actions/document-save-as.png"});
         }
 
     }
