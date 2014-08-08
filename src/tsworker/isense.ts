@@ -77,8 +77,7 @@ module Cats.TSWorker {
         /**
          * Convert a TS offset position to a Cats Position
          */
-        private positionToLineCol(fileName: string, position: number): Position {
-            var script = this.getScript(fileName);
+        private positionToLineCol(script:Cats.TSWorker.ScriptInfo, position: number): Position {
             var result = script.getLineMap().getLineAndCharacterFromPosition(position);
             return {
                 row: result.line(),
@@ -207,6 +206,8 @@ module Cats.TSWorker {
                             content: file.text
                         });
                     });
+                    
+                    // No need to request other files if there is only one output file
                     if (this.lsHost.getCompilationSettings().outFileOption) {
                         break;
                     }
@@ -227,7 +228,7 @@ module Cats.TSWorker {
         /**
          * Configure the compiler settings
          */ 
-        setCompilationSettings(options:{}) {
+        setCompilationSettings(options:{}):TypeScript.CompilationSettings {
             var compOptions = new TypeScript.CompilationSettings();
 
             // Do a quick mixin
@@ -236,6 +237,7 @@ module Cats.TSWorker {
             }
 
             this.lsHost.setCompilationSettings(compOptions);
+            return compOptions;
         }
 
 
@@ -313,9 +315,10 @@ module Cats.TSWorker {
 
         // Get an Ace Range from TS minChars and limChars
         private getRange(fileName: string, minChar: number, limChar: number):Cats.Range {
+            var script = this.getScript(fileName);
             var result = {
-                start : this.positionToLineCol(fileName, minChar),        
-                end :  this.positionToLineCol(fileName, limChar)
+                start : this.positionToLineCol(script, minChar),        
+                end :  this.positionToLineCol(script, limChar)
             };
             return result;
         }

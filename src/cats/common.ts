@@ -16,7 +16,7 @@
 /**
  * This contain the common interfaces and enumerations that are being used to 
  * transfer data between the worker and the main thread. 
- */ 
+ */
 module Cats {
 
     export interface Range {
@@ -24,18 +24,18 @@ module Cats {
         end: Position;
     }
 
- export enum Severity {
+    export enum Severity {
         Info,
         Warning,
         Error
     }
 
-   export interface FileRange {
+    export interface FileRange {
         fileName: string;
         range: Range;
         message?: string;
         context?: string;
         severity?: Severity;
     }
-    
+
 }

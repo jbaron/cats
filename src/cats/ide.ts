@@ -187,10 +187,10 @@ module Cats {
                         this.openSession(session.path);
                     } catch (err) {
                         console.error("error " + err);
-                        alert("Couldn't open file " + session.path);
                     }
                 });
-            }            
+            }
+            this.project.refresh();
         }
 
  
@@ -268,15 +268,18 @@ module Cats {
                 var config = this.config;
                 config.sessions = [];
                 config.projects = [];
+                if (this.project) {
+                    config.projects.push(this.project.projectDir);
+                    if  (this.sessions) {
+                          this.sessions.forEach((session)=>{               
+                            config.sessions.push({ 
+                                path: session.name
+                                // session.getPosition() //@TODO make session fully responsible
+                            });
+                          });
+                    }      
+                };
                 
-                this.sessions.forEach((session)=>{               
-                    config.sessions.push({
-                        path: session.name
-                        // session.getPosition() //@TODO make session fully responsible
-                    });
-                });
-    
-                if (this.project) config.projects.push(this.project.projectDir);
                 var configStr = JSON.stringify(config);
                 localStorage[Ide.STORE_KEY] = configStr;
             } catch (err) {

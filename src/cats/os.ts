@@ -62,7 +62,8 @@ module OS.File {
         }
 
         export function find(pattern:string, rootDir:string, cb:Function) {
-            glob(pattern, {cwd:rootDir}, cb) ;
+            var files = glob.sync(pattern, {cwd:rootDir}) ;
+            cb(null,files);
         }
 
        /**
