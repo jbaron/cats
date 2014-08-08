@@ -7,7 +7,7 @@ Right now CATS already has built-in support for the following features:
 
 - Intelligent code editor and code completion for TypeScript sources.
  
-<img src="https://raw.github.com/jbaron/cats/master/artifacts/autocomplete.png" />
+<img width="680" src="https://raw.github.com/jbaron/cats/master/artifacts/cats_screenshot.png" />
 
 - Syntax highlighting for over 110 languages (TextMate/Sublime Text.tmlanguage files can be imported)
 - Support for refactoring and smart navigation.
