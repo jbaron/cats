@@ -67,8 +67,8 @@ declare module Ace {
 		value: string;
 	}
 
-	interface EditSession {
-		new(content:string, mode:string);
+	class EditSession {
+		constructor(content:string, mode:string);
 		getUndoManager():UndoManager;
 		getValue():string;
         setOverwrite(val:boolean):void;

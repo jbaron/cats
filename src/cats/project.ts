@@ -23,10 +23,12 @@ module Cats {
         
  
         // The singleton TSWorker handler instance
-        iSense: ISenseHandler;
+        iSense: TSWorkerProxy;
         
         // Stores the project configuration paramters
         config: ProjectConfiguration;
+       
+
 
         /**    
          * Set the project to a new directory and make sure 
@@ -38,6 +40,22 @@ module Cats {
             this.refresh();
         }
 
+
+        private getConfigFileName() {
+            return PATH.join(this.projectDir, ".settings", "config.json");
+        }
+
+        editConfig()  {
+            var existing = IDE.getSession(this.getConfigFileName());
+            if (existing) {
+                IDE.sessionTabView.select(existing);
+            } else {
+                var content = JSON.stringify(this.config, null, 4);
+                var session = new Session(this.getConfigFileName(),content);
+                IDE.sessionTabView.addSession(session);
+            }
+           
+        }
 
         hasUnsavedSessions() {
             var sessions = IDE.sessions;
@@ -122,13 +140,14 @@ module Cats {
          *  again from the filesystem to be fully in sync
          */
         refresh() {
-            this.config = ConfigLoader.load(this.projectDir);
+            var projectConfig = new ProjectConfig(this.projectDir);
+            this.config = projectConfig.load();
             this.name = this.config.name || PATH.basename(this.projectDir);
             document.title = "CATS | " + this.name;
 
             // this.initJSSense();
             if (this.iSense) this.iSense.stop();
-            this.iSense = new ISenseHandler(this);
+            this.iSense = new TSWorkerProxy(this);
             
             if (this.config.compiler.outFileOption) {
                 this.config.compiler.outFileOption = PATH.join(this.projectDir,this.config.compiler.outFileOption);
@@ -138,7 +157,7 @@ module Cats {
             this.iSense.setCompilationSettings(this.config.compiler);
 
             if (this.config.compiler.useDefaultLib) {
-                var fullName = PATH.join(process.cwd(), "typings/lib.d.ts");
+                var fullName = PATH.join(IDE.catsHomeDir, "typings/lib.d.ts");
                 var libdts = OS.File.readTextFile(fullName);
                 this.iSense.addScript(fullName, libdts);
             }
@@ -199,7 +218,8 @@ module Cats {
          * Load all the script that are part of the project into the tsworker
          * @param directory The source directory where to start the scan
          */
-        private loadTypeScriptFiles( pattern = "**/*.ts") {
+        private loadTypeScriptFiles(pattern:string) {
+            if (! pattern) pattern = "**/*.ts";
             OS.File.find(pattern,this.projectDir,  (err,files) => {
             files.forEach((file) => {
                 try {

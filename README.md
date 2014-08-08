@@ -1,8 +1,9 @@
-Introduction
-============
-CATS is an IDE for the TypeScript developer. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. CATS itself is written in TypeScript and even being developed using CATS as the IDE. 
+## CATS
 
-Although not yet feature complete, it is getting there. Right now CATS already has built-in support for the following features:
+CATS is an IDE for the TypeScript developer. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. 
+CATS itself is written in TypeScript and even being developed using CATS as the IDE. 
+
+Right now CATS already has built-in support for the following features:
 
 - Intelligent code editor and code completion for TypeScript sources.
  
@@ -17,10 +18,55 @@ Although not yet feature complete, it is getting there. Right now CATS already h
 - Running your application from within IDE and using the WebKit debugger to debug.
 - Support for external build systems like Grunt and Jake.
 
-It is recommended to first make a backup before using CATS on your project since the software is still considered to be of alpha quality. 
+## Building
 
-Installation & Running CATS
-===========================
+In order to build the TypeScript compiler, ensure that you have 
+[Git](http://git-scm.com/downloads) and [Node.js](http://nodejs.org/) installed.
+
+Clone a copy of the CATS repo:
+
+```
+git clone https://github.com/jbaron/cats.git
+```
+
+Change to the cats directory:
+
+```
+cd cats
+```
+
+Install Jake tools and the dependencies:
+
+```
+npm install -g jake
+npm install
+```
+
+Use one of the following to build and test:
+
+```
+jake local           # Build the compiler into built/local 
+jake clean           # Delete the built compiler 
+jake LKG             # Replace the last known good with the built one.
+                     # Bootstrapping step to be executed when the built compiler reaches a stable state.
+jake tests           # Build the test infrastructure using the built compiler. 
+jake runtests        # Run tests using the built compiler and test infrastructure. 
+                     # You can override the host or specify a test for this command. 
+                     # Use host=<hostName> or tests=<testPath>. 
+jake baseline-accept # This replaces the baseline test results with the results obtained from jake runtests. 
+jake -T              # List the above commands. 
+```
+
+
+## Usage
+
+```shell
+node-webkit </path/CATSInstallationDirectory>
+```
+
+
+## Building
+
 To install CATS, just follow these steps:
 
 1. Download the CATS from Github: 

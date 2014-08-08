@@ -17,6 +17,7 @@ module Cats {
 
     export class Ide  {
 
+        catsHomeDir: string;
         navigatorPane: TabView;
         problemPane: TabView;
         toolBar: ToolBar;
@@ -48,13 +49,14 @@ module Cats {
         searchResult:ResultTable;
         bookmarks:ResultTable;
         problemResult:ResultTable;
-
+  
         mainMenu:Menu.Menubar = null;
         private config:IDEConfiguration;
 
         // mainEditor: TextEditor;
 
         constructor() {
+            this.catsHomeDir = process.cwd();
             this.config = this.loadConfig();
         }
 
@@ -288,7 +290,7 @@ module Cats {
          * Open an existing session or if it doesn't exist yet create
          * a new one.
          */ 
-        openSession(name?: string, pos?:Ace.Position, cb?:Function):void {
+        openSession(name?: string, pos?:Ace.Position):Session {
             var session:Session;
             if (name) session = this.getSession(name);
             if (! session) {
@@ -311,8 +313,7 @@ module Cats {
             }
 
             var project = session.project;
-        
-            if (cb) cb(session);
+            return session;
         }
 
  

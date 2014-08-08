@@ -4,7 +4,7 @@ var fs = require("fs");
 var path = require("path");
 
 var workerOptions = [
-   "src/typings/typescript.d.ts",
+   "src/typings/typescriptServices.d.ts",
    "src/typings/cats.d.ts",
    "src/cats/common.ts",
    "src/tsworker/languageservicehost.ts",    
@@ -22,14 +22,14 @@ var catsOptions = [
     "src/typings/cats.d.ts",
     "src/typings/jsuml2.d.ts",
     "src/typings/node-webkit.d.ts",
-    "src/typings/typescript.d.ts",
+    "src/typings/typescriptServices.d.ts",
     "src/typings/qooxdoo.d.ts",
     
-    "src/cats/theme/Color.ts",
-    "src/cats/theme/Decoration.ts",
-    "src/cats/theme/Font.ts",
-    "src/cats/theme/Appearance.ts",
-    "src/cats/theme/Theme.ts",
+    "src/cats/theme/color.ts",
+    "src/cats/theme/decoration.ts",
+    "src/cats/theme/font.ts",
+    "src/cats/theme/appearance.ts",
+    "src/cats/theme/theme.ts",
     
     "src/cats/common.ts",
     "src/cats/infobus.ts",
@@ -37,14 +37,14 @@ var catsOptions = [
     "src/cats/ide.ts",
     "src/cats/session.ts",
     "src/cats/commands/commander.ts",
-    "src/cats/commands/editorcommands.ts",
-    "src/cats/commands/filecommands.ts",
-    "src/cats/commands/helpcommands.ts",
-    "src/cats/commands/idecommands.ts",
-    "src/cats/commands/projectcommands.ts",
-    "src/cats/commands/refactorcommands.ts",
-    "src/cats/configloader.ts",
-    "src/cats/isensehandler.ts",
+    "src/cats/commands/editorCommands.ts",
+    "src/cats/commands/fileCommands.ts",
+    "src/cats/commands/helpCommands.ts",
+    "src/cats/commands/ideCommands.ts",
+    "src/cats/commands/projectCommands.ts",
+    "src/cats/commands/refactorCommands.ts",
+    "src/cats/projectConfig.ts",
+    "src/cats/tsWorkerProxy.ts",
     "src/cats/menu/menubar.ts",
     "src/cats/project.ts",
     "src/cats/gui/console.ts",
@@ -86,8 +86,8 @@ task('compile', {async:true}, function(outFile, options) {
 			complete();
 		});
 		ex.addListener("error", function() {
-			fs.unlinkSync(outFile);
-			console.error("Compilation of " + outFile + " unsuccessful");
+			// fs.unlinkSync(outFile);
+			console.error("Compilation of " + outFile + " had some errors");
 		});
 		ex.run();	
 });

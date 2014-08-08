@@ -17,33 +17,29 @@ module Cats.Commands {
 
     var Range: Ace.Range = ace.require("ace/range").Range;
 
-    function refactor(rows:FileRange[],name:string, i=0) {
-            if (i >= rows.length) return;
-            var data = rows[i];
-            IDE.openSession(data.fileName,null, (session) => {
-                var r = data.range;
-                var range: Ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
-                session.editSession.replace(range, name);
-                refactor(rows,name,++i);
-            });        
+    function refactor(rows,name:string) {
+    
+        rows.forEach((data) => {
+            var session = IDE.openSession(data.fileName);
+            var p = IDE.sessionTabView.getPageBySession(session);
+            var r = data.range;
+            var range: Ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
+            p.editor.replace(range,name);
+        });        
     }
 
 
     function rename() {
-        /*
-        @TODO
-        var table = <HTMLElement>document.querySelector("#searchresults table");
-        if (!table) {
-            alert("Cannot rename if there are no search results available");
+        
+        var rows  = IDE.searchResult.getData();
+        if (rows.length === 0) {
+            alert("Need search results to refactor");
             return;
         }
-        var grid = Cats.UI.Grid.getGridFromElement(table);
-        var rows: FileRange[] = grid.getRows();
-        var msg = "Going to rename " + rows.length + " instances.\nPlease enter new name";
+        var msg = "Using the search results. \n Going to rename " + rows.length + " instances.\nPlease enter new name";
         var newName = prompt(msg);
         if (!newName) return;
         refactor(rows,newName);
-        */
     }
 
 

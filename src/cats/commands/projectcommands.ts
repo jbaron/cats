@@ -79,28 +79,20 @@ module Cats.Commands {
         IDE.project.build();
     }
 
-    /**
-     * Configure the properties of a project
-     */ 
-    function propertiesProject() {
-        var project = IDE.project;
-        var name = ConfigLoader.getFileName(project.projectDir);
-        if (IDE.getSession(name)) {
-            IDE.openSession(name);
-        } else {
-            var content = JSON.stringify(project.config, null, 4);
-            // @TODO fix
-            // var session = new AceSession(name,content);
-            // IDE.addSession(session);
-            // IDE.openSession(name);
-        }
-    }
-    
+
     /**
      * Refresh the project so everything is in sync again.
      */ 
     function refreshProject() {
         IDE.project.refresh();
+    }
+
+
+    /**
+     * Configure the properties of a project
+     */ 
+    function propertiesProject() {
+        IDE.project.editConfig();
     }
 
     /**
@@ -142,7 +134,7 @@ module Cats.Commands {
             registry({ name: CMDS.project_run, label: "Run Project", command: runProject, icon: "actions/arrow-right.png" });
             // registry({ name: CMDS.project_debug, label: "Debug Project", command: null, icon: "debug.png" });
             registry({ name: CMDS.project_properties, label: "Properties", command: propertiesProject });
-            registry({ name: CMDS.project_dependencies, label: "Show Dependencies", command: showDependency });
+            // registry({ name: CMDS.project_dependencies, label: "Show Dependencies", command: showDependency });
         }
 
     }

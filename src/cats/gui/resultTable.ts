@@ -3,6 +3,7 @@
  */
 class ResultTable extends qx.ui.table.Table {
 
+    private data:Cats.FileRange[];
 
    private rangeToPosition(range: Cats.Range): string {
         return (range.start.row + 1) + ":" + (range.start.column + 1);
@@ -23,7 +24,12 @@ class ResultTable extends qx.ui.table.Table {
                 ];
     }
 
+    getData() :Cats.FileRange[] {
+        return this.data;
+    }
+
     setData(data: Cats.FileRange[]) {
+        this.data = data;
         var tableModel = new qx.ui.table.model.Simple();
         var rows:any[] = [];
         if (data) {

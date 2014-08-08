@@ -9,6 +9,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
     private mouseMoveTimer:number;
     private updateSourceTimer:number;
     private pendingWorkerUpdate = false;
+    private editSession: Ace.EditSession;
     
     static CONFIG = qx.data.marshal.Json.createModel({
         fontSize: "12px",
@@ -20,17 +21,21 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         this.setDecorator(null);
         this.setFont(null);
         this.setAppearance(null);
+        this.editSession = new (<any>ace).EditSession(session.content,"ace/mode/" + session.mode);
+        this.editSession.on("change", this.onChangeHandler.bind(this));
+     
+
         this.addListenerOnce("appear", () => {
             var container = this.getContentElement().getDomElement();
             container.style.lineHeight="normal";
              // this.configEditor(this.project.config.editor);
 
             this.aceEditor = this.createAceEditor(container);
-            var aceSession = this.aceEditor.getSession();
-            aceSession.setMode("ace/mode/" + session.mode)
-            aceSession.setValue(session.content);
+            this.aceEditor.setSession(this.editSession);
+            // var aceSession = this.aceEditor.getSession();
+            // aceSession.setMode("ace/mode/" + session.mode)
+            // aceSession.setValue(session.content);
             
-            aceSession.on("change", this.onChangeHandler.bind(this));
             
              if (session.mode === "binary") {
                 this.aceEditor.setReadOnly(true);
@@ -87,6 +92,9 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
     }
   
+    replace(range:Ace.Range,content:string) {
+        this.editSession.replace(range,content);
+    }
            
     getContent() {
         return this.aceEditor.getSession().getValue();
@@ -99,10 +107,10 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
     private onChangeHandler(event) {
         if (! this.session.getChanged()) this.session.setChanged(true);
         
-        
-        this.pendingWorkerUpdate = true;
+         this.pendingWorkerUpdate = true;
+       
 
-        if (this.session.mode !== "typescript") return;
+        if (! this.session.isTypeScript()) return;
 
         clearTimeout(this.updateSourceTimer);
 
