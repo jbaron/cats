@@ -118,6 +118,7 @@ module Cats.Menu {
             source.append(getCmd(CMDS.edit_indent));
             source.append(getCmd(CMDS.edit_outdent));
             source.append(getCmd(CMDS.source_format));
+            source.append(getCmd(CMDS.source_tslint));
 
             var refactor = new GUI.Menu();
             refactor.append(getCmd(CMDS.refactor_rename));

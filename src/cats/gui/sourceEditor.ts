@@ -250,6 +250,16 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
             }                        
         }
 
+    mapSeverity(level: Cats.Severity) : string {
+        switch (level) {
+            case Cats.Severity.Error: return "error"
+            case Cats.Severity.Warning: return "warning"
+            case Cats.Severity.Info: return "info"
+        }
+        
+    }
+        
+
        /**
          * Check if there are any errors for this session and show them.    
          */
@@ -259,7 +269,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
                 annotations.push({
                     row: error.range.start.row,
                     column: error.range.start.column,
-                    type: error.severity === Cats.Severity.Error ? "error" : "warning",
+                    type: this.mapSeverity(error.severity),
                     text: error.message
                 });
             });

@@ -26,12 +26,64 @@ module Cats.Commands {
     }
 */
 
+
+    function getLintConfig() {
+        var fileName = path.join(IDE.catsHomeDir, "static/tslint.json");
+        var content = OS.File.readTextFile(fileName);
+        return JSON.parse(content);
+    }
  
+ 
+    function convertPos(item): Cats.Range {
+        return {
+            start : {
+                row: item.startPosition.line,
+                column : item.startPosition.character
+            },
+            end : {
+                row: item.endPosition.line,
+                column : item.endPosition.position.character
+            }
+        }
+        
+    }
+ 
+    function lint() {
+        var session = IDE.sessionTabView.getActiveSession();
+        var options = {
+            formatter: "json",
+            configuration: getLintConfig(),
+            rulesDirectory: "customRules/",
+            formattersDirectory: "customFormatters/"
+        };
+        
+        if (session && session.isTypeScript()) {
+                var Linter = require("tslint");
+                var ll = new Linter(session.name, session.content, options);
+                var result:Array<any> = JSON.parse(ll.lint().output);
+                // console.log(result);
+                // IDE.console.log(JSON.stringify(result,null,4));
+                var r:Cats.FileRange[] = [];
+                result.forEach((msg) => {
+                        var item:Cats.FileRange = {
+                              fileName : msg.name,
+                              message: msg.failure,
+                              severity: Cats.Severity.Info,
+                              range: convertPos(msg)
+                        };
+                        r.push(item)
+                });
+                session.setErrors(r);
+                IDE.problemResult.setData(r);
+                
+        }
+    }
+
 
       function formatText() {
           
             var session = IDE.sessionTabView.getActiveSession();
-            if (session) {
+            if (session && session.isTypeScript()) {
                 session.project.iSense.getFormattedTextForRange( session.name, 0, -1 , (err, result) => {                    
                     if (!err) {
                         var pos = IDE.getActiveEditor().getPosition();
@@ -141,6 +193,7 @@ module Cats.Commands {
             
            // registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
             registry({name:CMDS.source_format, label:"Format Code", command: formatText});
+            registry({name:CMDS.source_tslint, label:"Lint Code", command: lint});
         }
 
     }

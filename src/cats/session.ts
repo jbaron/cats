@@ -116,7 +116,7 @@ module Cats {
             OS.File.writeTextFile(this.name, this.getContent());
             this.setChanged(false);
             
-            if (this.mode === "typescript") this.project.validate();
+            if (this.isTypeScript()) this.project.validate(false);
             
             if (IDE.project.config.buildOnSave && (this.mode === "typescript") ) 
                     Commands.runCommand(Commands.CMDS.project_build);

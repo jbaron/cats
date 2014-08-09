@@ -56,6 +56,7 @@ module Cats.Commands {
         source_openDeclaration,
         source_findRef,
         source_findDecl,
+        source_tslint,
         
         project_open,
         project_close,

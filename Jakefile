@@ -93,25 +93,30 @@ task('compile', {async:true}, function(outFile, options) {
 });
 
 
+desc("Builds the main frontend for CATS");
 file("lib/main.js" , catsOptions, {async:true}, function() {
      jake.Task['compile'].invoke("lib/main.js", catsOptions);
 });
 
-task("compileWorker" , {async:true}, function() {
-   jake.Task['compile'].invoke("lib/tsworker.js", workerOptions);
-});
-
+desc("Builds the Web workers");
 file("lib/tsworker.js" , workerOptions, {async:true}, function() {
    jake.Task['compile'].invoke("lib/tsworker.js", workerOptions);
 });
 
-
+desc("Builds the UML module");
 file("lib/uml.js", umlOptions, {async:true}, function() {
     jake.Task['compile'].invoke("lib/uml.js", umlOptions);
 });
 
+desc("Cleans the compiler output, declare files, and tests");
+task("clean", function() {
+    jake.rmRf("lib/uml.js");
+    jake.rmRf("lib/tsworker.js");
+    jake.rmRf("lib/main.js");
+});
 
-// Set the default task
+
+desc("Builds the full CATS application");
 task("default", [], function() {
    jake.Task['lib/main.js'].invoke();
    jake.Task['lib/tsworker.js'].invoke();

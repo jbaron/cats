@@ -20,7 +20,7 @@ Right now CATS already has built-in support for the following features:
 
 ## Building
 
-In order to build the TypeScript compiler, ensure that you have 
+In order to build CATS, ensure that you have 
 [Git](http://git-scm.com/downloads) and [Node.js](http://nodejs.org/) installed.
 
 Clone a copy of the CATS repo:

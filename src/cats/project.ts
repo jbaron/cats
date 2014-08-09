@@ -84,14 +84,16 @@ module Cats {
         /**
          * Show the errors on a project level
          */ 
-        validate() {
+        validate(verbose=true) {
             // @TODO don't compile just get the errors
             this.iSense.getAllDiagnostics( (err,data) => {
                if (data) {
                    IDE.problemResult.setData(data);
-                   if (data.length === 0) { 
-                       IDE.console.log("Project has no errors");
-                       IDE.problemPane.selectPage("console");       
+                   if (data.length === 0) {
+                       if (verbose) {
+                            IDE.console.log("Project has no errors");
+                            IDE.problemPane.selectPage("console"); 
+                       }
                    } else {
                        IDE.problemPane.selectPage("problems");
                    }
@@ -188,8 +190,7 @@ module Cats {
             IDE.problemResult.setData([]);
             IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).");
         }
-       
-       
+
         run() {
             var main = this.config.main;
             if (!main) {
@@ -205,7 +206,7 @@ module Cats {
                 }
             });
         }
-       
+
         /**
          * Get the URl for running the project
          */ 
