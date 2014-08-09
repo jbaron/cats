@@ -178,19 +178,19 @@ module Cats {
             if (this.config.projects && this.config.projects.length) { 
                 var projectDir = this.config.projects[0]; 
                 this.addProject(new Project(projectDir));
-            }
             
-            if (this.config.sessions) {
-                console.info("Found previous sessions: ", this.config.sessions.length);
-                this.config.sessions.forEach((session) => {
-                    try {
-                        this.openSession(session.path);
-                    } catch (err) {
-                        console.error("error " + err);
-                    }
-                });
+                if (this.config.sessions) {
+                    console.info("Found previous sessions: ", this.config.sessions.length);
+                    this.config.sessions.forEach((session) => {
+                        try {
+                            this.openSession(session.path);
+                        } catch (err) {
+                            console.error("error " + err);
+                        }
+                    });
+                }
+                this.project.refresh();
             }
-            this.project.refresh();
         }
 
  

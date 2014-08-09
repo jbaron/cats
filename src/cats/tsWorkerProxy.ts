@@ -106,10 +106,10 @@ export class TSWorkerProxy {
             id: this.messageId,
             method: method,
             params: data
-        }
+        };
         this.worker.postMessage(message);
         console.info("Send message: " + message.method);
-        if (handler) this.registry[this.messageId] = handler;
+        if (handler) { this.registry[this.messageId] = handler; }
     }
 
     /**
@@ -122,7 +122,7 @@ export class TSWorkerProxy {
     /**
      * Setup the message communication with the worker
      */ 
-    private initWorker(){
+    private initWorker() {
         // Setup the message handler
         this.worker.onmessage = (e) => {
             var msg = e.data;

@@ -13,10 +13,10 @@ Right now CATS already has built-in support for the following features:
 - Support for refactoring and smart navigation.
 - TypeScript compilation to JavaScript.
 - Validation of the source code while you are typing.
-- JavaScript JSHint support.
+- Lint support for TypeScript and JavaScript.
 - Editing features like folding and indentation.
 - Running your application from within IDE and using the WebKit debugger to debug.
-- Support for external build systems like Grunt and Jake.
+- Support for external build systems like Grunt, Jake and Makefiles.
 
 ## Building
 
@@ -38,6 +38,7 @@ cd cats
 Install Jake tools and the dependencies:
 
 ```
+npm install -g nodewebkit
 npm install -g jake
 npm install
 ```
@@ -51,21 +52,22 @@ jake -T              # List the above commands.
 
 
 ## Usage
+From the cats directory run 
 
 ```shell
-node-webkit </path/CATSInstallationDirectory>
+nodewebkit
 ```
 
 There are some option you can use. For example to open CATS with a specific project, use:
 
 ```shell        
-node-webkit </path/CATSInstallationDirectory> --project </path/projectDirectory>
+nodewebkit --project </path/projectDirectory>
 ```
 
 Or to open CATS with the same project as last time use the --restore option:
 
 ```shell
-node-webkit </path/CATSInstallationDirectory> --restore
+nodewebkit --restore
 ```
 
 With CATS you also get a samples directory with some small projects you can try out. Of course you can also open a directory that contains your own project. 
@@ -75,18 +77,7 @@ When you want to start CATS with a specific project, you have to pass the projec
 Windows example:
 
 ```shell
-nw.exe C:\cats --project C:\cats\samples\greeter
-```
-
-OSX and Linux example: 
-
-```shell
-nw /Users/peter/Development/cats --project /Users/peter/Development/cats/samples/greeter 
-```
-I'm using the nw alias in my ~/.bash_profile as explained on the node-webkit page:
-
-```shell
-alias nw="/Applications/node-webkit.app/Contents/MacOS/node-webkit"
+nodewebkit --project samples/greeter
 ```
 
 ## Configuration
@@ -98,20 +89,21 @@ You can edit this file (or the default values if you don't have this file yet) f
 ## Goals
 
 One of the main goals of CATS is to make the developer that is used to IDE's like Eclipse, NetBeans, Visual Studio or IntelliJ, feel right at home. So the same support you got from your IDE when you developed in Java or C#, is now available for TypeScript projects.
-And in order to be productive, it is also very important that an IDE is responsive. So while designing and developing CATS, performance is one of the key aspects.
+However a lot of effort is spent to assure CATS deosn't become a resource hog. So while designing and developing CATS, performance is one of the key aspects.
 In fact, CATS runs fine on older hardware.
 
 
 ## Bugs and Issues
 
-In case you encounter an issue, you can open a ticket on Github. Also enhancement requests can be entered here: [Github issue tracker](https://github.com/jbaron/cats/issues)
+In case you encounter an issue, you can open a ticket on Github. 
+Also enhancement requests can be entered here: [Github issue tracker](https://github.com/jbaron/cats/issues)
 
 
 ## Couldn't have done it without ....
 
-There is not a lot of documentation yet explaining the structure of CATS and how the different parts relate to eachother. 
+There is not a lot of documentation yet explaining the structure of CATS and how the different parts work together. 
 So the more surprised we were when we received some pull request that added functionality or fixed some bugs. So thanks to everyone who
-contributed some code to this project.
+already contributed to this project.
 
 And of course some of the main 3rd party components that we have used within CATS and couldn't have done without:
 
@@ -121,7 +113,8 @@ And of course some of the main 3rd party components that we have used within CAT
 
 - [ACE](http://ace.ajax.org), an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.
 
-- [Node-webkit](https://github.com/rogerwang/node-webkit). This is a great initiative from Intel to allow Node libraries to be used within a web page. CATS use this to read and write local files without the need for a server-side component.
+- [Node-webkit](https://github.com/rogerwang/node-webkit). This is a great initiative from Intel to allow Node libraries to be used within a web page. 
+  CATS use this to read and write local files without the need for a server-side component.
 
 - [jsUML2](http://www.jrromero.net/tools/jsUML2). This is library for creating UML diagrams done in pure JavaScript.
 
@@ -129,6 +122,8 @@ And of course some of the main 3rd party components that we have used within CAT
 
 The todo list items are tracked as enhancement requests on GitHub. You can check them out at:
 
-[ToDo List](https://github.com/jbaron/cats/issues?labels=enhancement&page=1&state=open)
+[Todo List](https://github.com/jbaron/cats/issues?labels=enhancement&page=1&state=open)
+
+There is also a milestone planning in there when some enhancements should be delivered. 
 
 

@@ -18,8 +18,8 @@ var GUI = require('nw.gui');
 
 var args = GUI.App.argv;
 if (args.indexOf("--debug") === -1 ) {
-    console.info = function() {};
-    console.debug = function() {};
+    console.info = function() { /* NOP */};
+    console.debug = function() { /* NOP */};
 }
 
 var IDE = new Cats.Ide();
@@ -42,10 +42,11 @@ module Cats {
         var regexS = "[\\?&]" + name + "=([^&#]*)";
         var regex = new RegExp(regexS);
         var results = regex.exec(window.location.search);
-        if (results == null)
+        if (results == null) {
             return "";
-        else
+        } else {
             return decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
     }
 
     /**
@@ -63,7 +64,7 @@ module Cats {
     }
    
     // Catch unhandled expections so they don't showup in the IDE.
-    process.on('uncaughtException', function (err:any) {
+    process.on("uncaughtException", function (err:any) {
         console.error("Uncaught exception occured: " + err);
         console.error(err.stack);
         alert(err);

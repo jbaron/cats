@@ -2,6 +2,9 @@
     "name": "CATS",
     "author": "JBaron",
     "main": "static/index.html",
+    "scripts": {
+        "start": "nodewebkit --restore"
+    },
     "description": "Code Assistant for TypeScript",
     "keywords": [ "TypeScript", "JBaron",  "editor",  "IDE" ],
     "bugs": { "url" : "https://github.com/JBaron/cats/issues" },

@@ -46,7 +46,7 @@ module Cats {
         /**
          * Get the name of the configuation file
          */
-        private getFileName():string {
+        private getFileName() : string {
             return PATH.join(this.projectRoot, ".settings", "config.json");
         }
 
@@ -55,7 +55,7 @@ module Cats {
         /**
          * Load the configuration for this project
          */
-        load() :ProjectConfiguration {
+        load() : ProjectConfiguration {
             var fileName = this.getFileName();
             try {
                 var content = OS.File.readTextFile(fileName);
@@ -69,7 +69,7 @@ module Cats {
         /**
          * Load the default configuration for a project
          */
-        private loadDefault(){
+        private loadDefault() {
             return {
                 version: "1.0",
                 main: "index.html",
@@ -96,5 +96,4 @@ module Cats {
         }
 
     }
-
 }

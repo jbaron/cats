@@ -7,15 +7,15 @@ class Greeter {
     /**
      * Create a new Greeter
      * @param message The welcome message to use for all
-     */ 
+     */
     constructor(message: string) {
         this.greeting = message;
     }
-    
+
     /**
      * Give a warm welcome
      * @param name The person to welcome
-     */ 
+     */
     greet(name:string) {
         alert(this.greeting + " " + name + "!");
     }
