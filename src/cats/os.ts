@@ -21,9 +21,50 @@
  */
 module OS.File {
 
+        window["EventEmitter"] = require("events").EventEmitter;
+
+        /**
+         * Very lightweight watcher for files and directories
+         */ 
+        export class Watcher extends EventEmitter {
+            
+            private watches = {}
+            
+            constructor() {
+                super();
+            }
+            
+            add(name:string) {
+                if (this.watches[name]) return;
+                var w = FS.watch(name, (event,filename) => {
+                    console.info("Node changed " + name + " event " + event + " fileName " + filename);
+                    this.emit("change", name, event, filename);
+                });
+                this.watches[name] = w;
+            }
+            
+            addDir(name:string) {
+                if (this.watches[name]) return;
+                var w = FS.watch(name, (event,filename) => {
+                    console.info("Node changed " + name + " event " + event + " fileName " + filename);
+                    if (event === "rename") this.emit("change", name, event, filename);
+                });
+                this.watches[name] = w;
+            }
+            
+            remove(name:string) {
+                var w = this.watches[name];
+                if (w) w.close();
+            }
+            
+            
+        }
+
+
         var FS=require("fs");
         var exec = require('child_process').exec;
         var glob = require("glob");
+ 
         
         /**
          * Create recursively directories if they don't exist yet
@@ -34,6 +75,14 @@ module OS.File {
                 mkdirRecursiveSync(PATH.dirname(path));
                 FS.mkdirSync(path,509); //, 0775);
             }
+        }
+
+        /**
+         * Create a file watcher
+         */ 
+        export function getWatcher() {
+            var watcher = new Watcher();
+            return watcher;
         }
 
         /**

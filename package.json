@@ -1,6 +1,11 @@
 {
     "name": "CATS",
     "author": "JBaron",
+    "homepage": "https://github.com/jbaron/cats.git",
+    "licenses": [{
+        "type": "Apache License 2.0", 
+        "url": "https://github.com/jbaron/cats/blob/master/LICENSE.txt"
+    }],
     "main": "static/index.html",
     "scripts": {
         "start": "nodewebkit --restore"

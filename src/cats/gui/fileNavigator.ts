@@ -22,9 +22,18 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
 
     private directoryModels = {};
     private iconsForMime = {};
+    private watcher:OS.File.Watcher;
+    private parents = {};
+
 
     constructor(private project:Cats.Project) {
         super(null,"label", "children");
+        this.watcher = new OS.File.Watcher();
+        this.watcher.on("change", (dir) => {
+             var parent = this.parents[dir];
+             if (parent) this.readDir(parent);
+        });
+        
         var directory= project.projectDir;
         rootTop.fullPath = directory;
         rootTop.label = path.basename(directory);
@@ -52,11 +61,12 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
 
 
         // Force a relaod after a close
+        /*
         this.addListener("close", (event) => {
             var data = event.getData();
             data.setLoaded(false);
         });
-        
+        */
         this.loadAvailableIcons();
 
     }
@@ -159,7 +169,11 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
      * @param directory The directory name that should be read
      */ 
     readDir(parent){
-            var entries = OS.File.readDir(parent.getFullPath(), true);
+            var directory = parent.getFullPath();
+            this.watcher.addDir(directory);
+            this.parents[directory] = parent;
+            parent.getChildren().removeAll();
+            var entries = OS.File.readDir(directory, true);
             entries.forEach((entry:Cats.FileEntry) => {
                 var node = {
                    label: entry.name,

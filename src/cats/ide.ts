@@ -140,13 +140,13 @@ module Cats {
          */
         private initFileDropArea(): void {
             // Listen onto file drop events
-            document.documentElement.addEventListener('drop', this.acceptFileDrop.bind(this), false);
+            document.documentElement.addEventListener("drop", this.acceptFileDrop.bind(this), false);
 
             // Prevent the browser from redirecting to the file
-            document.documentElement.addEventListener('dragover', (event: DragEvent) => {
+            document.documentElement.addEventListener("dragover", (event: DragEvent) => {
                 event.stopPropagation();
                 event.preventDefault();
-                event.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+                event.dataTransfer.dropEffect = "copy"; // Explicitly show this is a copy.
             }, false);
         }
 
@@ -243,7 +243,7 @@ module Cats {
                 iconDir: "static/img/eclipse/",
                 rightMargin: 80,
                 sessions: [],
-                projects:[PATH.join(process.cwd(), "samples", "greeter")],
+                projects:[PATH.join(process.cwd(), "samples", "greeter")]
             };
             
             var configStr = localStorage[Ide.STORE_KEY];

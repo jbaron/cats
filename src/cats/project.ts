@@ -27,9 +27,6 @@ module Cats {
         
         // Stores the project configuration paramters
         config: ProjectConfiguration;
-       
-
-
         /**    
          * Set the project to a new directory and make sure 
          * we remove old artifacts.
