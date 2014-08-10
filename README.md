@@ -71,10 +71,6 @@ nodewebkit --restore
 ```
 
 With CATS you also get a samples directory with some small projects you can try out. Of course you can also open a directory that contains your own project. 
-When you want to start CATS with a specific project, you have to pass the project directory as a command line parameter:
-
-
-Windows example:
 
 ```shell
 nodewebkit --project samples/greeter
@@ -88,7 +84,9 @@ You can edit this file (or the default values if you don't have this file yet) f
 
 ## Goals
 
-One of the main goals of CATS is to make the developer that is used to IDE's like Eclipse, NetBeans, Visual Studio or IntelliJ, feel right at home. So the same support you got from your IDE when you developed in Java or C#, is now available for TypeScript projects.
+One of the main goals of CATS is to make the developer that is used to IDE's like Eclipse, NetBeans, Visual Studio or IntelliJ, feel right at home. 
+So the same support you got from your IDE when you developed in Java or C#, is now available for TypeScript projects.
+
 However a lot of effort is spent to assure CATS deosn't become a resource hog. So while designing and developing CATS, performance is one of the key aspects.
 In fact, CATS runs fine on older hardware.
 

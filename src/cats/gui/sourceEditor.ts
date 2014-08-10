@@ -2,7 +2,7 @@
  * Wrapper around the ACE editor. The rest of the code base should not use
  * ACE editor directly so it can be easily changed for another editor if required.
  */
-class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
+class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Html */{
 
     private aceEditor:Ace.Editor;
     private autoCompletePopup:AutoCompletePopup;
@@ -32,11 +32,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
 
             this.aceEditor = this.createAceEditor(container);
             this.aceEditor.setSession(this.editSession);
-            // var aceSession = this.aceEditor.getSession();
-            // aceSession.setMode("ace/mode/" + session.mode)
-            // aceSession.setValue(session.content);
-            
-            
+          
              if (session.mode === "binary") {
                 this.aceEditor.setReadOnly(true);
             } else {
@@ -53,17 +49,12 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
                  
              if (pos) setTimeout(() => { this.moveToPosition(pos); }, 100);
               
-              
-            
-               
              this.aceEditor.on("changeSelection", () => {
                  IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
              }); 
                
         }, this);
         
-        
-      
         this.addListener("appear", () => { 
             this.session.sync(); 
             this.updateWorld();
@@ -82,8 +73,10 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         IDE.infoBus.on("editor.rightMargin", (margin) => { this.aceEditor.setPrintMarginColumn(margin);});
     }
 
-    setContent(content) {
+    setContent(content, keepPosition=true) {
+        var pos = this.getPosition();
         this.aceEditor.getSession().setValue(content);
+        if (pos && keepPosition) this.moveToPosition(pos);
     }
 
     updateWorld() {
@@ -126,7 +119,6 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         tooltip.exclude();
         tooltip.setRich(true);
         tooltip.setMaxWidth(500);
-        // tooltip.setWidth(300);
         this.setToolTip(tooltip);
         return tooltip;
     }
@@ -138,7 +130,6 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
              this.resizeEditor();   
         }
     }
-
 
     private resizeEditor() {
          setTimeout(() => {
@@ -159,14 +150,14 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         this.aceEditor.centerSelection();
     }
 
-    getPosition() {
+    private getPosition() {
         return this.aceEditor.getCursorPosition();
     }
 
        /**
          * Get the Position based on mouse x,y coordinates
          */
-    getPositionFromScreenOffset(x: number, y: number): Ace.Position {
+    private getPositionFromScreenOffset(x: number, y: number): Ace.Position {
             var r = this.aceEditor.renderer;
             // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
             var offset = (x - r.$padding) / r.characterWidth;
@@ -184,7 +175,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         /**
          * Show info at Screen location
          */
-        showToolTipAt(ev: MouseEvent) {
+        private showToolTipAt(ev: MouseEvent) {
             // if (this.mode !== "typescript") return;
 
             var docPos = this.getPositionFromScreenOffset(ev.offsetX, ev.offsetY);
@@ -229,7 +220,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
         /**
          * Perform code autocompletion. Right now support for TS.
          */
-        showAutoComplete(cursor: Ace.Position) {
+        private showAutoComplete(cursor: Ace.Position) {
             
             if (! this.session.isTypeScript()) return;
 
@@ -250,7 +241,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
             }                        
         }
 
-    mapSeverity(level: Cats.Severity) : string {
+    private mapSeverity(level: Cats.Severity) : string {
         switch (level) {
             case Cats.Severity.Error: return "error"
             case Cats.Severity.Warning: return "warning"
@@ -263,7 +254,7 @@ class SourceEditor extends qx.ui.core.Widget /* qx.ui.embed.Html */{
        /**
          * Check if there are any errors for this session and show them.    
          */
-     showErrors(result: Cats.FileRange[]) {
+     private showErrors(result: Cats.FileRange[]) {
             var annotations:Ace.Annotation[] = [];
             result.forEach((error: Cats.FileRange) => {
                 annotations.push({

@@ -67,6 +67,10 @@ module Cats {
             return this.mode === "typescript";
         }
         
+        isImage() : boolean {
+            return this.mode === "binary";
+        }
+        
         isActive() : boolean {
             return (IDE.sessionTabView.getActiveSession() === this); 
         }
@@ -76,14 +80,12 @@ module Cats {
             return PATH.basename(this.name);
         }
 
-
+        // @TODO make this a real MVC pattern, not pushing
         setContent(content) {
             var page = <SessionPage>IDE.sessionTabView.getPageBySession(this);
             return page.editor.setContent(content);
         }
         
-     
-     
         getChanged() {
             return this.changed;
         }
@@ -93,6 +95,7 @@ module Cats {
             this.emit("setChanged", this.changed);
         }
         
+        // @TODO make this a real MVC pattern, not pulling
         getContent() {
             var page = <SessionPage>IDE.sessionTabView.getPageBySession(this);
             return page.editor.getContent();

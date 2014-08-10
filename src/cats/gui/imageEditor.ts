@@ -1,8 +1,11 @@
-class ImageEditor extends qx.ui.embed.Canvas {
+class ImageEditor extends qx.ui.embed.Canvas implements Editor {
+	 
+	 private backgroundColors = ["white", "black" , "grey"];
 	 
 	 constructor(private session:Cats.Session) {
 		 super();
 		 this.loadImage(session.name);
+		 this.createContextMenu();
 	 }
 
 	 private loadImage(url) {
@@ -28,5 +31,33 @@ class ImageEditor extends qx.ui.embed.Canvas {
             this.getCanvasHeight() / 2 - image.height / 2
         );
 	 }
+ 
+    private setBackground(color) {
+        this.setBackgroundColor(color);
+    }
+ 
+     private createContextMenu() {
+        var menu = new qx.ui.menu.Menu();
+        this.backgroundColors.forEach((color) => {
+            var button = new qx.ui.menu.Button("Background " + color);
+            button.addListener("execute",() => {
+                this.setBackgroundColor(color);
+            });
+            menu.add(button);
+        });
+        this.setContextMenu(menu);
+    }
+ 
+ 
+     replace(range:Ace.Range,content:string) {}  
+    
+    getContent() { return null}
+    
+    setContent(content, keepPosition=true) {}
+    
+    updateWorld() {}
+    
+    moveToPosition(pos: Ace.Position) {}
+ 
  
 }

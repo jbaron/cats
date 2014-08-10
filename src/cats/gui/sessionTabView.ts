@@ -4,7 +4,7 @@
  */ 
 class SessionPage extends qx.ui.tabview.Page {
  
-    editor:SourceEditor;
+    editor:Editor;
 
     constructor(public session:Cats.Session, pos?:Cats.Position) {
         super(session.shortName);
@@ -12,9 +12,9 @@ class SessionPage extends qx.ui.tabview.Page {
         this.setLayout(new qx.ui.layout.Canvas());
         this.setPadding(0, 0, 0, 0);
         this.setMargin(0, 0, 0, 0);
-        // this.setDecorator(null);
-        this.editor = new SourceEditor(session,pos);
-        this.add(this.editor, { edge: 0 });
+        this.createEditor(pos);
+        // this.editor = new SourceEditor(session,pos);
+        // this.add(this.editor, { edge: 0 });
         this.createContextMenu();
         this.createToolTip();
         this.getButton().setShow("both");
@@ -22,6 +22,16 @@ class SessionPage extends qx.ui.tabview.Page {
         this.session.on("setChanged", this.setChanged.bind(this));
         this.session.on("errors", this.setHasErrors.bind(this));
     }  
+    
+    
+    private createEditor(pos?:Cats.Position) {
+        if (this.session.isImage()) {
+            this.editor = new ImageEditor(this.session);
+        } else {
+            this.editor = new SourceEditor(this.session,pos)
+        }
+        this.add(this.editor, { edge: 0 });
+    }
     
     private createToolTip() {
         var button:qx.ui.tabview.TabButton = (<any>this).getButton();

@@ -86,9 +86,7 @@ module Cats.Commands {
             if (session && session.isTypeScript()) {
                 session.project.iSense.getFormattedTextForRange( session.name, 0, -1 , (err, result) => {                    
                     if (!err) {
-                        var pos = IDE.getActiveEditor().getPosition();
                         session.setContent(result);
-                        if (pos) IDE.getActiveEditor().moveToPosition(pos);
                     }
                     
                 });

@@ -19,7 +19,7 @@
         "url": "https://github.com/jbaron/cats.git"
     },
     "window": {
-        "icon": "static/img/logo.png",
+        "icon": "static/logo.png",
         "toolbar": false,
         "position": "center",
         "width": 1000,
