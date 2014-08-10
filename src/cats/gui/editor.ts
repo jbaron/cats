@@ -1,6 +1,9 @@
 /**
- * Base class for Editors. Implements most generic methods as 
- * NOP
+ * Minimal required interface for Editors. Editors should at least implement these methods
+ * (if only as NOP)
+ * 
+ * @TODO cleanup it a bit. Editor should only expose a generic command pattern interface and possible a
+ * sync/updateWorld.
  */ 
 interface Editor extends qx.ui.core.Widget {
        

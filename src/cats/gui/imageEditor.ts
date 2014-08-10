@@ -32,10 +32,6 @@ class ImageEditor extends qx.ui.embed.Canvas implements Editor {
         );
 	 }
  
-    private setBackground(color) {
-        this.setBackgroundColor(color);
-    }
- 
      private createContextMenu() {
         var menu = new qx.ui.menu.Menu();
         this.backgroundColors.forEach((color) => {

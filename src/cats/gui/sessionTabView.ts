@@ -25,7 +25,9 @@ class SessionPage extends qx.ui.tabview.Page {
     
     
     private createEditor(pos?:Cats.Position) {
-        if (this.session.isImage()) {
+        if (this.session.uml) {
+            this.editor = new UMLEditor(this.session);
+        } else if (this.session.isImage()) {
             this.editor = new ImageEditor(this.session);
         } else {
             this.editor = new SourceEditor(this.session,pos)

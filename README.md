@@ -35,7 +35,7 @@ Change to the cats directory:
 cd cats
 ```
 
-Install Jake tools and the dependencies:
+Install Nodewebkit, Jake and the module dependencies:
 
 ```
 npm install -g nodewebkit
@@ -46,10 +46,13 @@ npm install
 Use one of the following to build:
 
 ```
-jake                 # run the default task, to build all
-jake -T              # List the above commands. 
+jake lib/main.js            # Builds the main frontend for CATS
+jake lib/tsworker.js        # Builds the Web workers
+jake lib/uml.js             # Builds the UML module
+jake clean                  # Cleans the compiler output, declare files, and tests
+jake default                # Builds the full CATS application
+jake -T                     # List the above commands. 
 ```
-
 
 ## Usage
 From the cats directory run 

@@ -11,11 +11,6 @@ var workerOptions = [
    "src/tsworker/isense.ts"
 ];
 
-var umlOptions = [
-   "src/typings/arbor.d.ts",
-   "src/typings/jsuml2.d.ts",
-   "src/uml/layout.ts"
-];
 
 var catsOptions = [
     "src/typings/ace.d.ts",
@@ -55,12 +50,14 @@ var catsOptions = [
     "src/cats/gui/resultTable.ts",
     "src/cats/gui/sourceEditor.ts",
     "src/cats/gui/imageEditor.ts",
+    "src/cats/gui/umlEditor.ts",
     "src/cats/gui/tabView.ts",
     "src/cats/gui/toolBar.ts",
     "src/cats/gui/sessionTabView.ts",
     "src/cats/gui/statusBar.ts",
     "src/cats/gui/autoCompletePopup.ts",
     "src/cats/gui/fileContextMenu.ts",
+    
     
     "src/cats/util/mime.ts",
     
@@ -85,7 +82,7 @@ task('compile', {async:true}, function(outFile, options) {
 			process.stderr.write(error);
 		});
 		ex.addListener("cmdEnd", function() {
-			console.log("Done creating file " + outFile);
+			console.log("Done creating module " + outFile);
 			complete();
 		});
 		ex.addListener("error", function() {
@@ -106,24 +103,16 @@ file("lib/tsworker.js" , workerOptions, {async:true}, function() {
    jake.Task['compile'].invoke("lib/tsworker.js", workerOptions);
 });
 
-desc("Builds the UML module");
-file("lib/uml.js", umlOptions, {async:true}, function() {
-    jake.Task['compile'].invoke("lib/uml.js", umlOptions);
-});
-
 desc("Cleans the compiler output, declare files, and tests");
 task("clean", function() {
-    jake.rmRf("lib/uml.js");
     jake.rmRf("lib/tsworker.js");
     jake.rmRf("lib/main.js");
 });
-
 
 desc("Builds the full CATS application");
 task("default", [], function() {
    jake.Task['lib/main.js'].invoke();
    jake.Task['lib/tsworker.js'].invoke();
-   jake.Task['lib/uml.js'].invoke();
 });
 
 

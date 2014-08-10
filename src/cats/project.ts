@@ -112,7 +112,7 @@ module Cats {
             }
             
             var child = OS.File.executeProcess(cmd,options,
-              function (error, stdout, stderr) {
+              (error, stdout, stderr) => {
                 if (stdout) IDE.console.log(stdout);
                 if (stderr) IDE.console.log(stderr,2);
                 if (error !== null) IDE.console.log('Execution error: ' + error,2);

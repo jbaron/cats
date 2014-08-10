@@ -3,8 +3,12 @@
 declare var UMLDependency;
 declare var UMLClassDiagram;
 declare var UMLPackage;
+declare var UMLClass;
+declare var UMLGeneralization;
 
 declare module JSUML2 {
+    
+    var UMLClass:any;
     
     
     class Node {
@@ -35,19 +39,6 @@ declare module JSUML2 {
     class UMLDependency extends Relation {
         
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
 }

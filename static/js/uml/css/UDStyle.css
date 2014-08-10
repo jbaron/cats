@@ -38,19 +38,6 @@
 **/
 
 
-
-/*****************************************
- [UDCore] Div container for Canvas
-*****************************************/
-div.ud_diagram_div {
-  position: relative;
-  float: left;
-  background: #ffffff;
-  border: 1px solid black;
-}
-
-
-
 /*****************************************
  [UDCore] Canvas elements style
 *****************************************/

@@ -15,7 +15,6 @@
 
 module Cats {
     
-    
     export class Session extends qx.event.Emitter {
 
         private static MODES = {
@@ -45,6 +44,7 @@ module Cats {
         private errors: Cats.FileRange[] = [];
         private outline:NavigateToItem[];
         private outlineTimer:number;
+        uml = false;
         
         /**
          * Create a new session

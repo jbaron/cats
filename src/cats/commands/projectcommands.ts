@@ -40,9 +40,15 @@ module Cats.Commands {
         IDE.project.run();
     };
 
+    function showDiagram() {
+        var session = new Session("Class Diagram");
+        session.uml = true;
+        IDE.sessionTabView.addSession(session);
+    }
+
     /**
      * Run the project
-     */ 
+     
     function showDependency() {
         IDE.project.iSense.getDependencyGraph((err,data:any[])=>{
             
@@ -63,6 +69,8 @@ module Cats.Commands {
         })
         // win2.reloadIgnoringCache()
     };
+    
+    */
 
     /**
      * Compile all the sources without saving them
@@ -134,7 +142,7 @@ module Cats.Commands {
             registry({ name: CMDS.project_run, label: "Run Project", command: runProject, icon: "actions/arrow-right.png" });
             // registry({ name: CMDS.project_debug, label: "Debug Project", command: null, icon: "debug.png" });
             registry({ name: CMDS.project_properties, label: "Properties", command: propertiesProject });
-            // registry({ name: CMDS.project_dependencies, label: "Show Dependencies", command: showDependency });
+            registry({ name: CMDS.project_dependencies, label: "Class Diagram", command: showDiagram });
         }
 
     }

@@ -1,3 +1,6 @@
+    var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
+    var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
+
 /**
  * Wrapper around the ACE editor. The rest of the code base should not use
  * ACE editor directly so it can be easily changed for another editor if required.
@@ -22,6 +25,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         this.setFont(null);
         this.setAppearance(null);
         this.editSession = new (<any>ace).EditSession(session.content,"ace/mode/" + session.mode);
+        this.editSession.setUndoManager(new UndoManager());
         this.editSession.on("change", this.onChangeHandler.bind(this));
      
 
@@ -275,9 +279,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
            
        }
        
-       
-       
-          // Initialize the editor
+        // Initialize the editor
         private createAceEditor(rootElement:HTMLElement):Ace.Editor {
             var editor: Ace.Editor = ace.edit(rootElement);
 
@@ -394,6 +396,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
             menu.addSeparator();
         }
         menu.add(this.createContextMenuItem("Bookmark", this.bookmark.bind(this)));
+        menu.add(this.createContextMenuItem("Undo", () => {this.aceEditor.execCommand("undo")}));
         
         this.setContextMenu(menu);
     }
