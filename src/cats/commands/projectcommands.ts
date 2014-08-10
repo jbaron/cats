@@ -41,7 +41,7 @@ module Cats.Commands {
     };
 
     function showDiagram() {
-        alert("Right now this is just in a concept phase.");
+        alert("Right now just showing some demo classes.");
         var session = new Session("Class Diagram");
         session.uml = true;
         IDE.sessionTabView.addSession(session);
