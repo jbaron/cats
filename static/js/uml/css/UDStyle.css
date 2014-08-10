@@ -62,7 +62,8 @@ canvas.ud_diagram_canvas {
   padding: 10px;
   background: #b1cad5;
   border: 1px solid black;
-  font-size: 0.8em;  
+  font-size: 0.8em; 
+  z-index: 999;
 }
 
 .ud_popupDirection {
