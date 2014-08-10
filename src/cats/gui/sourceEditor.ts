@@ -396,7 +396,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
             menu.addSeparator();
         }
         menu.add(this.createContextMenuItem("Bookmark", this.bookmark.bind(this)));
-        menu.add(this.createContextMenuItem("Undo", () => {this.aceEditor.execCommand("undo")}));
+        // menu.add(this.createContextMenuItem("Undo", () => {this.aceEditor.execCommand("undo")}));
         
         this.setContextMenu(menu);
     }
