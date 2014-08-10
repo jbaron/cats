@@ -117,7 +117,7 @@ module Cats {
                 if (stderr) IDE.console.log(stderr,2);
                 if (error !== null) IDE.console.log('Execution error: ' + error,2);
                 IDE.busy(false);
-                IDE.console.log("Done building project " + this.name + " ...");
+                IDE.console.log("Done building project " + this.name + ".");
             });
             
         } else {
@@ -128,7 +128,7 @@ module Cats {
                 sources.forEach((source) => {
                         OS.File.writeTextFile(source.fileName, source.content);
                 });
-                IDE.console.log("Done building project " + this.name + " ...");
+                IDE.console.log("Done building project " + this.name + ".");
             });
         }
     }
@@ -155,7 +155,7 @@ module Cats {
                 
             this.iSense.setCompilationSettings(this.config.compiler);
 
-            if (this.config.compiler.useDefaultLib) {
+            if (! (this.config.compiler.useDefaultLib === false)) {
                 var fullName = PATH.join(IDE.catsHomeDir, "typings/lib.d.ts");
                 var libdts = OS.File.readTextFile(fullName);
                 this.iSense.addScript(fullName, libdts);

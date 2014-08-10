@@ -65,13 +65,13 @@ declare module Cats {
         buildOnSave?: boolean;
         customBuild?:any;
         compiler: {
-            useDefaultLib: boolean;
-            outFileOption: string;
-            emitComments: boolean;
-            generateDeclarationFiles: boolean;
-            mapSourceFiles: boolean;
-            codeGenTarget: number;
-            moduleGenTarget: number;
+            useDefaultLib?: boolean;
+            outFileOption?: string;
+            emitComments?: boolean;
+            generateDeclarationFiles?: boolean;
+            mapSourceFiles?: boolean;
+            codeGenTarget?: number;
+            moduleGenTarget?: number;
         };
         editor: {
             newLineMode: string; //unix, windows, auto

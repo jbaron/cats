@@ -167,7 +167,7 @@ module Cats.TSWorker {
             newErrors = this.convertErrors(fileErrors, Severity.Warning);
             
             errors = errors.concat(newErrors);
-                    
+            
             return errors;        
         }
 
@@ -182,6 +182,12 @@ module Cats.TSWorker {
             for (var fileName in scripts) {
                 errors = errors.concat(this.getErrors(fileName));
             }
+            
+            var compilerSettingsErrors = this.ls.getCompilerOptionsDiagnostics();
+            var newErrors =  this.convertErrors(compilerSettingsErrors, Severity.Error);
+            
+            errors =  errors.concat(newErrors);
+            
             return errors;
         }
 
@@ -198,8 +204,7 @@ module Cats.TSWorker {
             for (var fileName in scripts) {
                 try {
                     var emitOutput = this.ls.getEmitOutput(fileName);
-                    // errors = errors.concat(this.getErrors(fileName));
-                    
+                   
                     emitOutput.outputFiles.forEach((file:TypeScript.OutputFile)=>{
                          result.push({
                             fileName : file.name,
@@ -217,7 +222,7 @@ module Cats.TSWorker {
             };
             
             errors  = this.getAllDiagnostics();
-            console.error("Errors found: " + errors.length);
+            console.info("Errors found: " + errors.length);
             return {
                 source: result,
                 errors: errors

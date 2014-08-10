@@ -76,13 +76,13 @@ module Cats {
                 src: null, //If not set, the whole project directory is searched for source files
                 buildOnSave: false,
                 compiler: {
-                    useDefaultLib: true,
-                    outFileOption: "",
-                    emitComments: false,
-                    generateDeclarationFiles: false,
-                    mapSourceFiles: false,
-                    codeGenTarget: 1,
-                    moduleGenTarget: 0
+                    "moduleGenTarget": 1,
+                    "useDefaultLib": true,
+                    "emitComments": false,
+                    "noImplicitAny" : false,
+                    "generateDeclarationFiles": false,
+                    "mapSourceFiles": false,
+                    "codeGenTarget": 1,
                 },
                 minify: false,
                 rememberOpenFiles: false,
