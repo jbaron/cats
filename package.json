@@ -1,5 +1,5 @@
 {
-    "name": "CATS",
+    "name": "cats",
     "author": "JBaron",
     "homepage": "https://github.com/jbaron/cats.git",
     "licenses": [{
@@ -28,8 +28,5 @@
     "dependencies": {
         "glob": "^4.0.5",
         "tslint" : "^0.4.12"
-    },
-    "_devDependencies": {
-        "jake": "^8.0.1"
     }
 }
