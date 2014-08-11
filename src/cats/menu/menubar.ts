@@ -89,7 +89,7 @@ module Cats.Menu {
             file.append(getCmd(CMDS.file_closeAll));
             file.append(getCmd(CMDS.file_closeOther));
             file.append(new GUI.MenuItem({ type: "separator" }));
-            // @1.1 file.append(getCmd(CMDS.ide_configure));
+            file.append(getCmd(CMDS.ide_configure));
             file.append(getCmd(CMDS.ide_quit));
 
             var edit = new GUI.Menu();
@@ -138,9 +138,9 @@ module Cats.Menu {
             }
             proj.append(getCmd(CMDS.project_refresh));
             proj.append(getCmd(CMDS.project_properties));
-            // @2.0 proj.append(getCmd(CMDS.project_dependencies));
-            // @1.1 proj.append(new GUI.MenuItem({ type: "separator" }));
-            // @1.1 proj.append(getCmd(CMDS.project_configure)); 
+            proj.append(getCmd(CMDS.project_dependencies));
+            proj.append(new GUI.MenuItem({ type: "separator" }));
+            proj.append(getCmd(CMDS.project_configure)); 
 
             var run = new GUI.Menu();
             run.append(getCmd(CMDS.project_run));
