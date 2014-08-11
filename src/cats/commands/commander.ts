@@ -67,7 +67,7 @@ module Cats.Commands {
         project_refresh,
         project_properties,
         project_dependencies,
-        project_configCompilerSettings,
+        project_configure,
         
         refactor_rename,
         
@@ -76,6 +76,7 @@ module Cats.Commands {
         ide_fontSize,
         ide_rightMargin,
         ide_toggleView,
+        ide_configure
         
     }
 

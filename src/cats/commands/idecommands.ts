@@ -59,7 +59,11 @@ module Cats.Commands {
         // infoBus.IDE.emit("toggleView", name);
     }
     
-
+    function configureIde() {
+        var w = new IdeConfigDialog();
+        // w.setData(IDE.project.config.compiler);
+        w.show();
+    }
     /**
      * Register the IDE commands
      */ 
@@ -70,6 +74,8 @@ module Cats.Commands {
             registry({ name: CMDS.ide_fontSize, label: "Font Size", command: setFontSize });
             registry({ name: CMDS.ide_rightMargin, label : "Right Margin", command: setRightMargin });
             registry({ name: CMDS.ide_toggleView, label : "Toggle View", command: toggleView });
+            registry({ name: CMDS.ide_configure, label: "Settings", command: configureIde });
+
         }
     }
 

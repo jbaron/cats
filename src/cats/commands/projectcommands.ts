@@ -89,9 +89,9 @@ module Cats.Commands {
     }
 
 
-    function configCompilerSettings() {
-        var w = new ConfigCompilerSettings();
-        w.setData(IDE.project.config.compiler);
+    function configureProject() {
+        var w = new ProjectConfigDialog();
+        // w.setData(IDE.project.config.compiler);
         w.show();
     }
 
@@ -150,7 +150,7 @@ module Cats.Commands {
             // registry({ name: CMDS.project_debug, label: "Debug Project", command: null, icon: "debug.png" });
             registry({ name: CMDS.project_properties, label: "Properties", command: propertiesProject });
             registry({ name: CMDS.project_dependencies, label: "Class Diagram", command: showDiagram });
-            registry({ name: CMDS.project_configCompilerSettings, label: "Configure Settings", command: configCompilerSettings });
+            registry({ name: CMDS.project_configure, label: "Settings", command: configureProject });
 
         }
 
