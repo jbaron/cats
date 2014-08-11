@@ -264,8 +264,9 @@
          * the auto-complete task
          */ 
         private onChange(ev) {
-            var key = ev.data.text;
-            if (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0))) {
+            var key:string = ev.data.text;
+        
+            if ((key == null) || (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0)))) {
                 this.hidePopup();
                 return;
             }
