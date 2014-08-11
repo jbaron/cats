@@ -1,3 +1,7 @@
+/**
+ * Base class for all the configuration dialogs forms in
+ * CATS.
+ */ 
 class ConfigDialog extends qx.ui.window.Window {
 
     form = new qx.ui.form.Form();
@@ -66,7 +70,9 @@ class ConfigDialog extends qx.ui.window.Window {
     
 }
 
-
+/**
+ * Dialog window to set the compiler settings
+ */ 
 class ConfigCompilerSettings extends ConfigDialog {
 
     constructor() {
@@ -92,7 +98,50 @@ class ConfigCompilerSettings extends ConfigDialog {
 
 
 
+class ProjectSettings extends ConfigDialog {
+
+    constructor() {
+        super("Project Settings");
+        this.createForm();
+        this.finalStep();
+    }
+
+    createForm() {
+        this.addTextField("Source Path", "src");
+        this.addTextField("Startup HTML page", "main");
+        this.addTextField("Completion Mode", "completionMode");
+    }
+}
 
 
+class CustomBuildSettings extends ConfigDialog {
+
+    constructor(name="Settings") {
+        super(name);
+        this.createForm();
+        this.finalStep();
+    }
+
+    createForm() {
+        this.addTextField("Custom command", "commmand");
+        this.addTextField("Custom work directory", "directory");
+        this.addTextField("Environment variables", "environment");
+    }
+} 
+
+class CustomRunSettings extends CustomBuildSettings {
+
+    constructor() {
+        super("Project Settings");
+        this.createForm();
+        this.finalStep();
+    }
+
+    createForm() {
+        this.addTextField("Custom Build command", "commmand");
+        this.addTextField("Custom Build work directory", "directory");
+        this.addTextField("Environment variables", "environment");
+    }
+} 
 
 

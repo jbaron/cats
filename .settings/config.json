@@ -15,6 +15,5 @@
         "moduleGenTarget": 0
     },
     "completionMode": "loose",
-    "minify": false,
     "rememberOpenFiles": true
 }
