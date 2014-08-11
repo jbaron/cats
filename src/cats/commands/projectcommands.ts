@@ -89,6 +89,12 @@ module Cats.Commands {
     }
 
 
+    function configCompilerSettings() {
+        var w = new ConfigCompilerSettings();
+        w.setData(IDE.project.config.compiler);
+        w.show();
+    }
+
     /**
      * Refresh the project so everything is in sync again.
      */ 
@@ -144,6 +150,8 @@ module Cats.Commands {
             // registry({ name: CMDS.project_debug, label: "Debug Project", command: null, icon: "debug.png" });
             registry({ name: CMDS.project_properties, label: "Properties", command: propertiesProject });
             registry({ name: CMDS.project_dependencies, label: "Class Diagram", command: showDiagram });
+            registry({ name: CMDS.project_configCompilerSettings, label: "Configure Settings", command: configCompilerSettings });
+
         }
 
     }

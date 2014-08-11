@@ -46,9 +46,8 @@ npm install
 Use one of the following to build:
 
 ```
-jake lib/main.js            # Builds the main frontend for CATS
-jake lib/tsworker.js        # Builds the Web workers
-jake lib/uml.js             # Builds the UML module
+jake lib/main.js            # Builds the main frontend module for CATS
+jake lib/tsworker.js        # Builds the Web workers module
 jake clean                  # Cleans the compiler output, declare files, and tests
 jake default                # Builds the full CATS application
 jake -T                     # List the above commands. 

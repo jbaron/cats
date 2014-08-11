@@ -1490,7 +1490,7 @@ constructor (model:any,target:any,selfUpdate?:boolean);
  _applyModel(value:qx.core.Object,old:qx.core.Object):void;
  _applyTarget(value:qx.ui.form.Form,old:qx.ui.form.Form):void;
  addBindingOptions(name:string,model2target:IMap,target2model:IMap):void;
- createModel(includeBubbleEvents:boolean):qx.core.Object;
+ createModel(includeBubbleEvents?:boolean):qx.core.Object;
  getModel():any;
  getTarget():any;
  initModel(value:any):any;
@@ -6925,7 +6925,7 @@ class AbstractField extends qx.ui.core.Widget implements qx.ui.form.IStringForm,
  resetValid():void;
  toggleRequired():boolean;
  toggleValid():boolean;
-constructor (value:string);
+constructor (value?:string);
  _applyMaxLength(value:number,old:number):void;
  _applyPlaceholder(value:string,old:string):void;
  _applyReadOnly(value:boolean,old:boolean):void;
@@ -7861,7 +7861,7 @@ class Spinner extends qx.ui.core.Widget implements qx.ui.form.INumberForm,qx.ui.
  resetValid():void;
  toggleRequired():boolean;
  toggleValid():boolean;
-constructor (min:number,value:number,max:number);
+constructor (min?:number,value?:number,max?:number);
  _applyEditable(value:boolean,old:boolean):void;
  _applyMaximum(value:number,old:number):void;
  _applyMinimum(value:number,old:number):void;

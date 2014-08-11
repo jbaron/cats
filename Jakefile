@@ -57,6 +57,7 @@ var catsOptions = [
     "src/cats/gui/statusBar.ts",
     "src/cats/gui/autoCompletePopup.ts",
     "src/cats/gui/fileContextMenu.ts",
+    "src/cats/gui/configDialog.ts",
     
     
     "src/cats/util/mime.ts",

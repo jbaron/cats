@@ -129,7 +129,7 @@ module Cats.Menu {
             proj.append(new GUI.MenuItem({ type: "separator" }));
             proj.append(getCmd(CMDS.project_build));
             proj.append(getCmd(CMDS.project_validate));
-     
+
             var buildOnSaveItem = new GUI.MenuItem({ label: 'Build on Save', checked: false, type: "checkbox" });
             proj.append(buildOnSaveItem);
             buildOnSaveItem.click = () => {
@@ -138,7 +138,8 @@ module Cats.Menu {
             proj.append(getCmd(CMDS.project_refresh));
             proj.append(getCmd(CMDS.project_properties));
             proj.append(getCmd(CMDS.project_dependencies));
-
+            proj.append(new GUI.MenuItem({ type: "separator" }));
+            proj.append(getCmd(CMDS.project_configCompilerSettings)); 
 
             var run = new GUI.Menu();
             run.append(getCmd(CMDS.project_run));

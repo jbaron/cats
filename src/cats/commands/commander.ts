@@ -67,6 +67,7 @@ module Cats.Commands {
         project_refresh,
         project_properties,
         project_dependencies,
+        project_configCompilerSettings,
         
         refactor_rename,
         
