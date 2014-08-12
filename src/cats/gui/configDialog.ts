@@ -109,6 +109,15 @@ class ConfigDialogPage extends qx.ui.tabview.Page {
         this.form.add(t, label, null, model); 
     }
     
+    addSelectBox(label:string, model:string, items:Array<any>) {
+        var s = new qx.ui.form.SelectBox();
+        items.forEach((item) => {
+            var listItem = new qx.ui.form.ListItem(item.label, null,item.model);
+            s.add(listItem);
+        });
+        this.form.add(s,label, null, model)
+    }
+    
     setData(data) {
         for (var key in data) {
             try {
@@ -133,6 +142,17 @@ class ConfigDialogPage extends qx.ui.tabview.Page {
  */ 
 class ConfigCompilerSettings extends ConfigDialogPage {
 
+    private moduleGenTarget = [
+        {label:"none", model : 0},
+        {label:"commonjs", model : 1},
+        {label:"amd", model : 2},
+    ];
+    
+    private jsTarget = [
+        {label:"es5", model : 0},
+        {label:"es6", model : 1},
+    ];
+
     constructor() {
         super("Compiler");
         this.createForm();
@@ -146,8 +166,8 @@ class ConfigCompilerSettings extends ConfigDialogPage {
         this.addCheckBox("Generate declaration files", "generateDeclarationFiles");
         this.addCheckBox("Generate map source files", "mapSourceFiles");
         this.addCheckBox("Propagate enum constants", "propagateEnumConstants");
-        this.addSpinner("ES5/ES6 target", "codeGenTarget", 0, 1);
-        this.addSpinner("No module/commonjs/amd", "moduleGenTarget", 0, 2);
+        this.addSelectBox("JavaScript target", "codeGenTarget", this.jsTarget);
+        this.addSelectBox("Module generation", "moduleGenTarget", this.moduleGenTarget);
         this.addTextField("Output to directory", "outDirOption");
         this.addTextField("Output to single file", "outFileOption");
     }
@@ -166,7 +186,6 @@ class ProjectSettings extends ConfigDialogPage {
     createForm() {
         this.addTextField("Source Path", "src");
         this.addTextField("Startup HTML page", "main");
-        this.addTextField("Completion Mode", "completionMode");
     }
 }
 
@@ -197,6 +216,11 @@ class CustomRunSettings extends CustomBuildSettings {
 } 
 
 class EditorSettings extends ConfigDialogPage {
+    private completionMode = [
+        {label:"strict", model : "strict"},
+        {label:"forgiven", model : "forgiven"}
+    ];
+
 
     constructor() {
         super("Editor");
@@ -207,10 +231,18 @@ class EditorSettings extends ConfigDialogPage {
     createForm() {
         this.addSpinner("Font size", "fontSize", 6, 24);
         this.addSpinner("Right Margin", "rightMargin", 40, 240);
+        this.addSelectBox("Code completion mode", "completionMode",this.completionMode);
+        
     }
 } 
 
 class IDEGenericSettings extends ConfigDialogPage {
+
+    private theme = [
+        {label:"CATS", model : "Cats"},
+        {label:"Classic", model : "Classic"}
+    ];
+
 
     constructor() {
         super("Generic");
@@ -219,8 +251,7 @@ class IDEGenericSettings extends ConfigDialogPage {
     }
 
     createForm() {
-        this.addTextField("Theme", "theme");
-        this.addCheckBox("Strict Code Completion", "usestrictCompletionRules");
+        this.addSelectBox("Theme", "theme", this.theme);
     }
 } 
 

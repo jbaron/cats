@@ -22,7 +22,6 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
         null,
         Cats.Commands.CMDS.edit_undo,
         Cats.Commands.CMDS.edit_redo,
-        Cats.Commands.CMDS.edit_outdent,
         Cats.Commands.CMDS.edit_find,
         Cats.Commands.CMDS.edit_replace,
         Cats.Commands.CMDS.edit_indent,
