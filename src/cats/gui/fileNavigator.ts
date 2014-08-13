@@ -173,7 +173,10 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
             this.watcher.addDir(directory);
             this.parents[directory] = parent;
             parent.getChildren().removeAll();
-            var entries = OS.File.readDir(directory, true);
+            var entries:Cats.FileEntry[] = [];
+            try {
+                entries = OS.File.readDir(directory, true);
+            } catch(err) {/* the directory has been delete */}
             entries.forEach((entry:Cats.FileEntry) => {
                 var node = {
                    label: entry.name,

@@ -116,6 +116,7 @@ module Cats.Menu {
 
             var source = new GUI.Menu();
             source.append(getCmd(CMDS.edit_toggleComment));
+            source.append(getCmd(CMDS.edit_toggleInvisibles));
             source.append(getCmd(CMDS.edit_indent));
             source.append(getCmd(CMDS.edit_outdent));
             source.append(getCmd(CMDS.source_format));

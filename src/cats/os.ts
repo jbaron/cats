@@ -217,6 +217,7 @@ module OS.File {
         /**
          * Read the content from a text file
          * @param name The full name/path of the file
+         * @TODO Make async again and return fulfill a promise when all loading is done 
          */ 
         export function readTextFile2(name: string, cb:(param:string)=>any) {
             if (name === "Untitled") return "";

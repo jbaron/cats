@@ -125,11 +125,17 @@ module Cats.Commands {
         return result;
     }
     
+    
+    */
+    
+    
     function toggleInvisibles() {
-        IDE.getActiveEditor().setShowInvisibles(!IDE.mainEditor.aceEditor.getShowInvisibles());
+        //@TODO fix,don't access private var
+        var aceSession = IDE.getActiveEditor()["aceEditor"];
+        aceSession.setShowInvisibles(!aceSession.getShowInvisibles());
     }
 
-    */
+    
 
     
     function editorCommand(commandName:string) {
@@ -189,7 +195,7 @@ module Cats.Commands {
                 registry(item);
             });
             
-           // registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
+            registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
             registry({name:CMDS.source_format, label:"Format Code", command: formatText});
             registry({name:CMDS.source_tslint, label:"Lint Code", command: lint});
         }

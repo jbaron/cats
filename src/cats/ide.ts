@@ -189,7 +189,7 @@ module Cats {
                         }
                     });
                 }
-                this.project.refresh();
+                // this.project.refresh();
             }
         }
 
