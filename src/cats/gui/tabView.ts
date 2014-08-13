@@ -15,6 +15,9 @@ class TabView extends qx.ui.tabview.TabView {
             icon : "apps/utilities-terminal.png"
         },
         
+        "process" : {
+            icon: "actions/view-process-all.png"  
+        },
                 
          "files" : {
             label: "Project Explorer",

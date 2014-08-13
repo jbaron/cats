@@ -1,0 +1,18 @@
+{
+    "version": "1.0",
+    "main": null,
+    "buildOnSave": true,
+    "customRun" : {
+        "command": "node",
+        "args" : ["example.js"]
+    },
+    "compiler": {
+        "useDefaultLib": true,
+        "emitComments": false,
+        "generateDeclarationFiles": false,
+        "mapSourceFiles": false,
+        "outputOption": "",
+        "codeGenTarget": 1,
+        "moduleGenTarget": 1
+    }
+}

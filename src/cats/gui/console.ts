@@ -56,6 +56,11 @@ class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.
         }
     } 
     
+    error(msg:string) {
+        this.log(msg,2);
+    }
+    
+    
     private createContextMenu() {
         var menu = new qx.ui.menu.Menu();
         var item1 = new qx.ui.menu.Button("Clear Output");

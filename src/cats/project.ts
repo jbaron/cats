@@ -99,38 +99,35 @@ module Cats {
             });
         }
 
+
+        /**
+         * Build this project either with the buitl-in capabilities or by calling 
+         * and external build tool
+         */ 
         build() {
-        IDE.console.log("Start building project " + this.name + " ...");
-        if (this.config.customBuild) {
-            IDE.busy(true);
-            // IDE.resultbar.selectOption(2);
-            var cmd = this.config.customBuild.command;
-            var options = this.config.customBuild.options || {};
-            
-            if (! options.cwd) {
-                options.cwd = this.projectDir;
-            }
-            
-            var child = OS.File.executeProcess(cmd,options,
-              (error, stdout, stderr) => {
-                if (stdout) IDE.console.log(stdout);
-                if (stderr) IDE.console.log(stderr,2);
-                if (error !== null) IDE.console.log('Execution error: ' + error,2);
-                IDE.busy(false);
-                IDE.console.log("Done building project " + this.name + ".");
-            });
-            
-        } else {
-            this.iSense.compile((err, data:Cats.CompileResults) => {                        
-                this.showCompilationResults(data);
-                if (data.errors && (data.errors.length > 0)) return;
-                var sources = data.source;
-                sources.forEach((source) => {
-                        OS.File.writeTextFile(source.fileName, source.content);
+            IDE.console.log("Start building project " + this.name + " ...");
+            if (this.config.customBuild) {
+                // IDE.resultbar.selectOption(2);
+                var cmd = this.config.customBuild.command;
+                var options = this.config.customBuild.options || {};
+                
+                if (! options.cwd) {
+                    options.cwd = this.projectDir;
+                }
+                
+                var child = OS.File.runCommand(cmd,[],options);
+               
+            } else {
+                this.iSense.compile((err, data:Cats.CompileResults) => {                        
+                    this.showCompilationResults(data);
+                    if (data.errors && (data.errors.length > 0)) return;
+                    var sources = data.source;
+                    sources.forEach((source) => {
+                            OS.File.writeTextFile(source.fileName, source.content);
+                    });
+                    IDE.console.log("Done building project " + this.name + ".");
                 });
-                IDE.console.log("Done building project " + this.name + ".");
-            });
-        }
+            }
     }
 
 
@@ -188,10 +185,29 @@ module Cats {
             IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).");
         }
 
+       /**
+         * Run this project either with the built-in capabilities (only for web apps) or by calling 
+         * and external command (for example node).
+         */ 
         run() {
+            if (this.config.customRun) {
+                
+                var cmd = this.config.customRun.command;
+                var options = this.config.customRun.options || {};
+                var args = this.config.customRun.args || [];
+                
+                if (! options.cwd) {
+                    options.cwd = this.projectDir;
+                }
+                
+                var child = OS.File.runCommand(cmd,args, options);
+         
+                
+            } else {
+            
             var main = this.config.main;
             if (!main) {
-                alert("Please specify the main html file to run in the project settings.");
+                alert("Please specify the main html file or customRun in the project settings.");
                 return;
             }
             var startPage = this.getStartURL();
@@ -202,6 +218,7 @@ module Cats {
                     "page-cache": false
                 }
             });
+            }
         }
 
         /**

@@ -25,6 +25,7 @@ module Cats {
         statusBar: StatusBar;
         sessionTabView: SessionTabView;
         console:ConsoleLog;
+        processTable:ProcessTable;
 
         // sessions: Session[] = [];
         project: Project;
@@ -111,15 +112,17 @@ module Cats {
             editorSplit.add(infoSplit, 4);
     
             // **********************  Problem Pane ***************************
-            this.problemPane = new TabView(["problems", "search", "console"]);
+            this.problemPane = new TabView(["problems", "search", "console", "process"]);
             editorSplit.add(this.problemPane, 2); // Info
     
             this.console = new ConsoleLog();
             this.problemResult = new ResultTable();
             this.searchResult = new ResultTable();
+            this.processTable = new ProcessTable();
             this.problemPane.getChildren()[0].add(this.problemResult, { edge: 0 });
             this.problemPane.getChildren()[1].add(this.searchResult, { edge: 0 });
             this.problemPane.getChildren()[2].add(this.console, { edge: 0 });
+            this.problemPane.getChildren()[3].add(this.processTable, { edge: 0 });
     
             this.problemPane.selectPage("console");
             // this.problemPane.setSelection([this.problemPane.getChildren()[2]]);

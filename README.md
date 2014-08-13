@@ -18,6 +18,7 @@ Right now CATS already has built-in support for the following features:
 - Running your application from within IDE and using the WebKit debugger to debug.
 - Support for external build systems like Grunt, Jake and Makefiles.
 
+
 ## Building
 
 In order to build CATS, ensure that you have 
@@ -35,10 +36,11 @@ Change to the cats directory:
 cd cats
 ```
 
-Install Nodewebkit, Jake and the module dependencies:
+Install Nodewebkit, TypeScript, Jake and the module dependencies:
 
 ```
 npm install -g nodewebkit
+npm install -g typescript
 npm install -g jake
 npm install
 ```
@@ -109,7 +111,7 @@ And of course some of the main 3rd party components that we have used within CAT
 
 - [TypeScript](http://www.typescriptlang.org) (of course), developed by Microsoft.
 
-- [Qooxdoo](http://www.qooxdoo.org), excellent JavaScript library with many great UI widgets.  
+- [Qooxdoo](http://www.qooxdoo.org), an excellent JavaScript library with many great UI widgets.  
 
 - [ACE](http://ace.ajax.org), an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.
 

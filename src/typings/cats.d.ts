@@ -64,6 +64,7 @@ declare module Cats {
         destPath?: string;
         buildOnSave?: boolean;
         customBuild?:any;
+        customRun?:any;
         compiler: {
             useDefaultLib?: boolean;
             outFileOption?: string;

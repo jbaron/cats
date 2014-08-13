@@ -22,6 +22,10 @@
 module OS.File {
 
         window["EventEmitter"] = require("events").EventEmitter;
+        var spawn = require('child_process').spawn;
+        var FS=require("fs");
+        var exec = require('child_process').exec;
+        var glob = require("glob");
 
         /**
          * Very lightweight watcher for files and directories
@@ -61,9 +65,7 @@ module OS.File {
         }
 
 
-        var FS=require("fs");
-        var exec = require('child_process').exec;
-        var glob = require("glob");
+        
  
         
         /**
@@ -85,13 +87,31 @@ module OS.File {
             return watcher;
         }
 
+       
         /**
-         * Used to integrate external build tools
+         * Run an external command like a build tool
+         * 
          */ 
-        export function executeProcess(cmd:string,options:{}, callback:Function) {
-            var child = exec(cmd,options, callback);
-        }
+        export function runCommand(cmd:string, args:Array<any>, options:{}, logger?) {
+            if (! logger) logger = IDE.console;
+            
+            var child = spawn(cmd, args, options);
+            var id = child.pid;
+            IDE.processTable.addProcess(child, cmd, args)
+           
+            child.stdout.on('data', function (data) {
+              logger.log("" + data);
+            });
+            
+            child.stderr.on('data', function (data) {
+              logger.error("" + data);
+            });
+            
+            child.on('close', function (code) {
+              logger.log("Done");
+            });
 
+        }
         /**
          * Remove a file or empty directory
          * @param path the path of the file or directory
