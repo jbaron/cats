@@ -35,7 +35,8 @@ var IDE = new Cats.Ide();
 module Cats {
 
     /**
-     * Get a parameter from the URL
+     * Get a parameter from the URL. This is used when a new project is opened from within
+     * the IDE.
      */ 
     function getParameterByName(name:string):string {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -51,7 +52,7 @@ module Cats {
 
     /**
      * Determine which project(s) we should load during 
-     * startup.
+     * startup. This is used when the IDE is started from the command line
      */ 
     function determineProject():string {
         var projectName = getParameterByName("project");
@@ -67,7 +68,7 @@ module Cats {
     process.on("uncaughtException", function (err:any) {
         console.error("Uncaught exception occured: " + err);
         console.error(err.stack);
-        alert(err);
+        alert(err); // @TODO remove in production mode
     });
    
    
@@ -83,6 +84,10 @@ module Cats {
         this.close(true);
     });
 
+    /**
+     * This is the functions that start kicks it all of. When Qooxdoo is loaded it will 
+     * call this main to start the application 
+     */ 
     function main(app:qx.application.Standalone) {
 
 		IDE.init(<qx.ui.container.Composite>app.getRoot());		

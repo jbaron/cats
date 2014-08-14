@@ -61,6 +61,10 @@ module Cats {
             this.config = this.loadConfig();
         }
 
+        /**
+         * Initialize the different modules within the IDE.
+         * 
+         */ 
         init(rootDoc:qx.ui.container.Composite) {
             Cats.Commands.init();
             this.layout(rootDoc);
@@ -236,7 +240,8 @@ module Cats {
         }
 
         /**
-         * Load the configuration for the IDE
+         * Load the configuration for the IDE. If there is no configuration
+         * found, create the default one to use.
          */ 
         private loadConfig() {
             var defaultConfig:IDEConfiguration = {
