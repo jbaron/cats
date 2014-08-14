@@ -53,6 +53,13 @@ declare module Cats {
         }[];
     }
 
+
+    interface RunExternal {
+        command: string;
+        args?: Array<any>;
+        options?:any;
+    }
+
     /**
      * Used for storing project specific settings
      */
@@ -63,8 +70,8 @@ declare module Cats {
         src?: string;
         destPath?: string;
         buildOnSave?: boolean;
-        customBuild?:any;
-        customRun?:any;
+        customBuild?:RunExternal;
+        customRun?:RunExternal;
         compiler: {
             useDefaultLib?: boolean;
             outFileOption?: string;
@@ -87,12 +94,10 @@ declare module Cats {
         column: number;
     }
 
-
     class TypeInfo extends TypeScript.Services.TypeInfo {
         description: string;
     }
 
- 
     interface CompileResults {
         source: { fileName: string; content: string; }[];
         errors: FileRange[];

@@ -92,8 +92,11 @@ module OS.File {
          * Run an external command like a build tool
          * 
          */ 
-        export function runCommand(cmd:string, args:Array<any>, options:{}, logger?) {
-            if (! logger) logger = IDE.console;
+        export function runCommand(cmd:string, args:Array<any>, options:any, logger=IDE.console) {
+        
+            if (! options.env) {
+                    options.env = process.env;
+            }
             
             var child = spawn(cmd, args, options);
             var id = child.pid;
@@ -110,8 +113,8 @@ module OS.File {
             child.on('close', function (code) {
               logger.log("Done");
             });
-
         }
+        
         /**
          * Remove a file or empty directory
          * @param path the path of the file or directory
@@ -124,7 +127,6 @@ module OS.File {
                 FS.rmdirSync(path);
         }
 
-
         export class PlatForm {
             static OSX = "darwin";
             
@@ -136,7 +138,7 @@ module OS.File {
         }
 
        /**
-         * Get platform
+         * Get the platform
          */ 
         export function platform():string {
             return process.platform;
@@ -165,8 +167,9 @@ module OS.File {
             return path.replace(/\\/g, "/");
         }
          
-         
-         // Sort first on directory versus file and then on alphabet
+        /**
+         * Sort first on directory versus file and then on alphabet
+         */ 
         function sort(a: Cats.FileEntry, b: Cats.FileEntry) {
             if ((!a.isDirectory) && b.isDirectory) return 1;
             if (a.isDirectory && (!b.isDirectory)) return -1;
