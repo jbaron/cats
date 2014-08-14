@@ -3,8 +3,8 @@
     "main": null,
     "buildOnSave": true,
     "customRun" : {
-        "command": "node",
-        "args" : ["example.js"]
+        "command": "node example.js",
+        "ownConsole" : true
     },
     "compiler": {
         "useDefaultLib": true,

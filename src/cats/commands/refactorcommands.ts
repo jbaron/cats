@@ -17,7 +17,7 @@ module Cats.Commands {
 
     var Range: Ace.Range = ace.require("ace/range").Range;
 
-    function refactor(rows,name:string) {
+    export function refactor(rows:Cats.FileRange[],name:string) {
     
         rows.forEach((data) => {
             var session = IDE.openSession(data.fileName);

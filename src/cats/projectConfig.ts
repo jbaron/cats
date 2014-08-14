@@ -38,8 +38,6 @@ module Cats {
      */
     export class ProjectConfig {
 
-        
-
         constructor(private projectRoot: string) {
         }
         
@@ -84,8 +82,6 @@ module Cats {
                     "mapSourceFiles": false,
                     "codeGenTarget": 1,
                 },
-                minify: false,
-                rememberOpenFiles: false,
                 editor: {
                     newLineMode: "unix",
                     useSoftTabs: true,

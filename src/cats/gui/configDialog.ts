@@ -252,6 +252,8 @@ class IDEGenericSettings extends ConfigDialogPage {
 
     createForm() {
         this.addSelectBox("Theme", "theme", this.theme);
+        this.addCheckBox("Remember open files","rememberOpenFiles");
+        this.addCheckBox("Build On save","buildOnSave");
     }
 } 
 

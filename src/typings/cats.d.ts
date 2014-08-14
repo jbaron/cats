@@ -56,8 +56,11 @@ declare module Cats {
 
     interface RunExternal {
         command: string;
-        args?: Array<any>;
-        options?:any;
+        useOwnConsole?: boolean;
+        options?: {
+            env?: string;
+            cwd?: string;
+        }
     }
 
     /**

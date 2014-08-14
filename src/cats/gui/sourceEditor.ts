@@ -351,6 +351,15 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         });
     }
 
+
+    private refactor() {
+        var newName = prompt("Replace with");
+        if (! newName) return;
+        this.session.project.iSense.getInfoAtPosition("getReferencesAtPosition", this.session.name, this.getPosition(), (err, data:Cats.FileRange[]) => {
+            Cats.Commands.refactor(data,newName);
+        });
+    }
+
     private findReferences() {
         return this.getInfoAt("getReferencesAtPosition");        
     }
@@ -393,6 +402,8 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
             menu.add(this.createContextMenuItem("Find References", this.findReferences.bind(this)));
             menu.add(this.createContextMenuItem("Find Occurences", this.findOccurences.bind(this)));
             menu.add(this.createContextMenuItem("FInd Implementations", this.findImplementors.bind(this)));
+            menu.addSeparator();
+            menu.add(this.createContextMenuItem("Rename", this.refactor.bind(this)));
             menu.addSeparator();
         }
         menu.add(this.createContextMenuItem("Bookmark", this.bookmark.bind(this)));

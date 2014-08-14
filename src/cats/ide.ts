@@ -31,7 +31,6 @@ module Cats {
         project: Project;
         private static STORE_KEY = "cats.config";
 
-
         infoBus= <InfoBus> new Events.EventEmitter();
 
         outlineNavigator:OutlineNavigator; 
@@ -248,6 +247,7 @@ module Cats {
                 version: "1",
                 theme: "cats",
                 fontSize: 13,
+                rememberOpenFiles: false,
                 iconDir: "static/img/eclipse/",
                 rightMargin: 80,
                 sessions: [],

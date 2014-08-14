@@ -40,6 +40,10 @@ export class TSWorkerProxy {
         this.perform("getErrors",fileName, cb);
     }
 
+    getNavigateToItems(search:string, cb:(err,result:NavigateToItem[])=> void ) {
+        this.perform("getNavigateToItems", search, cb);
+    }
+
     getAllDiagnostics(cb:(err, result: FileRange[]) => void) {
         this.perform("getAllDiagnostics", cb);
     }

@@ -115,7 +115,7 @@ module Cats {
                     options.cwd = this.projectDir;
                 }
                 
-                var child = OS.File.runCommand(cmd,[],options);
+                var child = OS.File.runCommand(cmd,options);
                
             } else {
                 this.iSense.compile((err, data:Cats.CompileResults) => {                        
@@ -194,13 +194,10 @@ module Cats {
                 
                 var cmd = this.config.customRun.command;
                 var options = this.config.customRun.options || {};
-                var args = this.config.customRun.args || [];
-                
                 if (! options.cwd) {
                     options.cwd = this.projectDir;
                 }
-                
-                var child = OS.File.runCommand(cmd,args, options);
+                var child = OS.File.runCommand(cmd, options);
          
                 
             } else {

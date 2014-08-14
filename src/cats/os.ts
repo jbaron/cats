@@ -92,13 +92,15 @@ module OS.File {
          * Run an external command like a build tool
          * 
          */ 
-        export function runCommand(cmd:string, args:Array<any>, options:any, logger=IDE.console) {
+        export function runCommand(cmd:string, options:any, logger=IDE.console) {
         
             if (! options.env) {
                     options.env = process.env;
             }
             
-            var child = spawn(cmd, args, options);
+            var child = exec(cmd, options, () => {
+                /* ignore the buffers */
+            });
             var id = child.pid;
             IDE.processTable.addProcess(child, cmd, args)
            
@@ -114,7 +116,7 @@ module OS.File {
               logger.log("Done");
             });
         }
-        
+       
         /**
          * Remove a file or empty directory
          * @param path the path of the file or directory
