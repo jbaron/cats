@@ -102,7 +102,7 @@ module OS.File {
                 /* ignore the buffers */
             });
             var id = child.pid;
-            IDE.processTable.addProcess(child, cmd, args)
+            IDE.processTable.addProcess(child, cmd)
            
             child.stdout.on('data', function (data) {
               logger.log("" + data);

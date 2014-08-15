@@ -38,14 +38,19 @@ declare module Cats {
 
  
     /**
-     * Used for storing IDE specific settings
+     * Interface for the possible IDE specific settings
      */
     interface IDEConfiguration {
         version: string;
-        theme: string;
-        fontSize: number;
-        rightMargin: number;
-        iconDir: string;
+        theme?: string;
+        editor?: {
+            rightMargin?: number;
+            fontSize?: number;
+            theme?: string;   
+        }
+        iconDir?:string;
+        remembeOpenFile?: boolean;
+        locale?:string;
         projects: string[];
         sessions: {
             path: string;

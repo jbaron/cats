@@ -10812,7 +10812,7 @@ constructor (label:any,icon?:any,command?:any);
 }
 declare module qx.ui.toolbar {
 class CheckBox extends qx.ui.form.ToggleButton {
-constructor (label:any,icon:any);
+constructor (label?:any,icon?:any);
 }
 }
 declare module qx.ui.toolbar {

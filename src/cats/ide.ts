@@ -243,15 +243,18 @@ module Cats {
          * found, create the default one to use.
          */ 
         private loadConfig() {
+            
             var defaultConfig:IDEConfiguration = {
                 version: "1",
                 theme: "cats",
-                fontSize: 13,
+                editor : {
+                    fontSize: 13,
+                    rightMargin: 100
+                },
+                locale: "en",
                 rememberOpenFiles: false,
-                iconDir: "static/img/eclipse/",
-                rightMargin: 80,
                 sessions: [],
-                projects:[PATH.join(process.cwd(), "samples", "greeter")]
+                projects:[]
             };
             
             var configStr = localStorage[Ide.STORE_KEY];
@@ -295,8 +298,6 @@ module Cats {
             }
         }
 
-
-       
         /**
          * Open an existing session or if it doesn't exist yet create
          * a new one.
