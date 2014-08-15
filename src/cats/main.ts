@@ -17,13 +17,9 @@ var PATH = require("path");
 var GUI = require('nw.gui');
 
 
-
+// GLOBAL variable used for accessing the singleton IDE instance
 var IDE:Cats.Ide;
 
-/**
- * This is the file that is included in the index.html and 
- * bootstraps the starting of CATS.
- */
  
 /**
  * Main module of the CATS IDE

@@ -66,7 +66,7 @@ module Cats {
             Cats.Commands.init();
             this.layout(rootDoc);
             // this.toolBar.init();
-            this.mainMenu = Cats.Menu.createMenuBar();
+            this.mainMenu = new Cats.Menu.Menubar();
             this.initFileDropArea();
         }
 

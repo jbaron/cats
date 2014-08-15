@@ -15,9 +15,10 @@
 
 /**
  * This module abstracts out the native File IO. Right now it uses Nodejs, but this
- * could be easily changed to another implementation like a cloud storage API.
+ * could be changed to another implementation like a cloud storage API.
  * 
- * @TODO make this an async api. 
+ * @TODO make this more an async api so it becomes easier to switch to other implementations
+ * Perhaps after TS has implement await type of functionality
  */
 module OS.File {
 
@@ -265,13 +266,7 @@ module OS.File {
             return FS.statSync(path);
         }
         
-        /**
-         * Return a watcher object on a file
-         * @param name The fulle name/path of the file
-         */
-        export function watch(path: string) {
-            return FS.watch(path);
-        }
+       
       
 }
 

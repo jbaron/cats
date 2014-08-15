@@ -66,6 +66,41 @@ module Cats.Menu {
         ];
 
 
+        // TODO i18n
+        private addShortcut(label:string, shortCut: string) {
+            var result = label;
+            var tabs = 5 - Math.floor((result.length / 4));
+            result = result + "     " + "\t\t\t\t\t\t".substring(0, tabs) + shortCut;
+            return result;
+        }
+
+
+       /**
+        * Create a menu item for a certain command.
+        */
+        private getMenuCommand(name,label?:string, ...params:Array<any>) {
+            var cmd = Cats.Commands.get(name);
+            if (! cmd) {
+                console.error("No implementation available for command " + name);
+                return new GUI.MenuItem({label:"Unknow command"});
+            }
+            var click;
+            if (params.length > 0) {
+                // lets generate a closure
+                click = function() { cmd.command.apply(this,params); }
+            } else {
+                click = cmd.command;
+            }
+            var item:any = {
+                label: label || cmd.label,
+                click: click
+            };
+  
+            if (cmd.shortcut) item.label = this.addShortcut(item.label, cmd.shortcut);        
+            return new GUI.MenuItem(item);
+        }
+
+
         constructor() {
             var menubar = new GUI.Menu({ type: 'menubar' });
             
@@ -75,7 +110,7 @@ module Cats.Menu {
                 GUI.Window.get().menu = menubar;
             }
             
-            var getCmd = Cats.Commands.getMenuCommand;
+            var getCmd = this.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
 
             var file = new GUI.Menu();
@@ -175,29 +210,26 @@ module Cats.Menu {
          
   
         private createFontSizeMenu() {
-            var getCmd = Cats.Commands.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
             var menu = new GUI.Menu();
             this.fontSizes.forEach((size: number) => {
-                var item = getCmd(CMDS.ide_fontSize,size+"px",size);
+                var item = this.getMenuCommand(CMDS.ide_fontSize,size+"px",size);
                 menu.append(item);
             });
             return menu;
         }
 
         private createMarginMenu() {
-            var getCmd = Cats.Commands.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
             var menu = new GUI.Menu();
             [80, 100, 120, 140, 160, 180, 200].forEach((margin) => {
-                var item = getCmd(CMDS.ide_rightMargin, margin.toString(), margin);
+                var item = this.getMenuCommand(CMDS.ide_rightMargin, margin.toString(), margin);
                 menu.append(item);
             });
             return menu;
         }
 
         private createViewMenu() {
-            var getCmd = Cats.Commands.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
             var menu = new GUI.Menu();
             var views = [
@@ -205,19 +237,18 @@ module Cats.Menu {
                 {id:IDE.statusBar,name:"Toggle Statusbar"}
             ];
             views.forEach((view:any) => {
-                    var item = getCmd(CMDS.ide_toggleView,view.name,view.id);
+                    var item = this.getMenuCommand(CMDS.ide_toggleView,view.name,view.id);
                     menu.append(item);
             });
             return menu;
         }
 
         private createThemeMenu() {
-            var getCmd = Cats.Commands.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
             var menu = new GUI.Menu();
             this.themes.forEach((theme) => {
                 if (theme.theme) {
-                    var item = getCmd(CMDS.ide_theme,theme.label,theme.theme);
+                    var item = this.getMenuCommand(CMDS.ide_theme,theme.label,theme.theme);
                     menu.append(item);
                 } else {
                     menu.append(new GUI.MenuItem({
@@ -230,9 +261,6 @@ module Cats.Menu {
 
     }
 
-    export function createMenuBar() {
-        return new Menubar();
-    }
-
+  
 }
 
