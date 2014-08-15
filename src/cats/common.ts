@@ -14,7 +14,7 @@
 //
 
 /**
- * This contain the common interfaces and enumerations that are being used to 
+ * This section contain the common interfaces and enumerations that are being used to 
  * transfer data between the worker and the main thread. 
  */
 module Cats {

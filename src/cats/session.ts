@@ -63,6 +63,9 @@ module Cats {
             return IDE.project;
         }
 
+        /**
+         * Is this session a TypeScript session
+         */ 
         isTypeScript(): boolean {
             return this.mode === "typescript";
         }
@@ -71,10 +74,16 @@ module Cats {
             return this.mode === "binary";
         }
         
+        /**
+         * Is this session active right now in the main editor
+         */ 
         isActive() : boolean {
             return (IDE.sessionTabView.getActiveSession() === this); 
         }
 
+        /**
+         * What is the short name of this session to show on buttons etc
+         */ 
         get shortName():string {
             if (! this.name) return "Untitled";
             return PATH.basename(this.name);
@@ -86,6 +95,9 @@ module Cats {
             return page.editor.setContent(content);
         }
         
+        /**
+         * Has this session be changed since last save
+         */ 
         getChanged() {
             return this.changed;
         }
@@ -102,7 +114,7 @@ module Cats {
         }
 
         /**
-         * Persist the edit session
+         * Persist this session to the file system
          */
         persist(shouldConfirm=false) {
             // Select proper folder separator according to platform used 
@@ -132,7 +144,7 @@ module Cats {
             this.emit("errors", this.errors);
         }
         
-        setOutline(outline:NavigateToItem[]) {
+        private setOutline(outline:NavigateToItem[]) {
             this.outline = outline;
             if (this.isActive()) IDE.outlineNavigator.setData(this,this.outline);
             this.emit("outline", this.outline);
@@ -141,11 +153,14 @@ module Cats {
         updateContent(content) {
             this.content = content;
             IDE.project.iSense.updateScript(this.name, content);
-            this.getDiagnostics();
+            this.updateDiagnostics();
         }
 
-
-        getDiagnostics() {
+        /**
+         * Lets check the worker if something changed in the diagnostic.
+         * 
+         */ 
+        private updateDiagnostics() {
             if (this.isTypeScript()) {
                IDE.project.iSense.getErrors(this.name, (err, result: Cats.FileRange[]) => {
                    this.setErrors(result);
@@ -153,7 +168,11 @@ module Cats {
             }
         }
         
-        getOutline(timeout=5000) {
+        /**
+         * Lets check the worker if something changed in the outline of the source.
+         * But lets not call this too often.
+         */ 
+        private updateOutline(timeout=5000) {
             if (this.isTypeScript()) {
                 // Clear any pending updates
                 clearTimeout(this.outlineTimer);
@@ -167,9 +186,12 @@ module Cats {
             }
         }    
 
+        /**
+         * Lets make sure all the state of the session is up to date with the worker
+         */ 
         sync() {
-            this.getDiagnostics();
-            this.getOutline(10);
+            this.updateDiagnostics();
+            this.updateOutline(10);
         }
 
         /**

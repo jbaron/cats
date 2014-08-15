@@ -222,12 +222,12 @@ module OS.File {
             cb(result);
         }
         
-         /**
+        /**
          * Read the content from a text file
          * @param name The full name/path of the file
          */ 
         export function readTextFile(name: string): string {
-            if (name === "Untitled") return "";
+            if (name == null ) return "";
 
             var data = FS.readFileSync(name, "utf8");
 

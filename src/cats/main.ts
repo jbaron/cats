@@ -16,13 +16,9 @@
 var PATH = require("path");
 var GUI = require('nw.gui');
 
-var args = GUI.App.argv;
-if (args.indexOf("--debug") === -1 ) {
-    console.info = function() { /* NOP */};
-    console.debug = function() { /* NOP */};
-}
 
-var IDE = new Cats.Ide();
+
+var IDE:Cats.Ide;
 
 /**
  * This is the file that is included in the index.html and 
@@ -89,6 +85,14 @@ module Cats {
      * call this main to start the application 
      */ 
     function main(app:qx.application.Standalone) {
+
+        var args = GUI.App.argv;
+        if (args.indexOf("--debug") === -1 ) {
+                console.info = function() { /* NOP */};
+                console.debug = function() { /* NOP */};
+        }
+
+        IDE = new Cats.Ide();
 
 		IDE.init(<qx.ui.container.Composite>app.getRoot());		
         

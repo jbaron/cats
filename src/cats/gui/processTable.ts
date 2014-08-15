@@ -45,6 +45,7 @@ class ProcessTable extends qx.ui.container.Composite  {
     private sendSignal(signal?:string) {
         var table = this.table;
         var selectedRow = table.getSelectionModel().getLeadSelectionIndex();
+        if (selectedRow < 0) return;
         var data = table.getTableModel().getRowData(selectedRow);
         var child = data[2];
         child.kill(signal);
@@ -58,19 +59,19 @@ class ProcessTable extends qx.ui.container.Composite  {
       bar.add(part);
 
       button = new qx.ui.toolbar.Button("Stop process", "icon/22/actions/edit-undo.png");
-      button.addListener("execute", (evt) => { this.sendSignal() });
+      button.addListener("execute", (evt) => { this.sendSignal("SIGTERM") });
       part.add(button);
 
       button = new qx.ui.toolbar.Button("Kill process", "icon/22/actions/edit-undo.png");
-      button.addListener("execute", (evt) => { this.sendSignal("") });
+      button.addListener("execute", (evt) => { this.sendSignal("SIGKILL") });
       part.add(button);
 
       button = new qx.ui.toolbar.Button("Pause process", "icon/22/actions/edit-undo.png");
-      button.addListener("execute", (evt) => { this.sendSignal("") });
+      button.addListener("execute", (evt) => { this.sendSignal("SIGSTOP") });
       part.add(button);
 
       button = new qx.ui.toolbar.Button("Resume process", "icon/22/actions/edit-undo.png");
-      button.addListener("execute", (evt) => { this.sendSignal("") });
+      button.addListener("execute", (evt) => { this.sendSignal("SIGCONT") });
       part.add(button);
       
       bar.add(part);

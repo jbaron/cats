@@ -53,8 +53,6 @@ module Cats {
         mainMenu:Menu.Menubar = null;
         private config:IDEConfiguration;
 
-        // mainEditor: TextEditor;
-
         constructor() {
             this.catsHomeDir = process.cwd();
             this.config = this.loadConfig();

@@ -25,6 +25,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         this.setFont(null);
         this.setAppearance(null);
         this.editSession = new (<any>ace).EditSession(session.content,"ace/mode/" + session.mode);
+        this.editSession.setNewLineMode("unix");
         this.editSession.setUndoManager(new UndoManager());
         this.editSession.on("change", this.onChangeHandler.bind(this));
      
