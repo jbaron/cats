@@ -156,11 +156,26 @@ module OS.File {
         }
 
         /**
+         * Determine the newLineMode
+         */ 
+        function determineNewLIneMode(): string {
+            var mode = IDE.project.config.codingStandards.newLineMode;
+            if ((mode === "dos") || (mode ==="unix")) return mode;
+         
+            if (process.platform === 'win32') return "dos";
+            return "unix"
+        }
+
+        /**
          * Write text content to a file. If a directory doesn't exist, create it
          * @param name The full name of the file
          * @param value The content of the file
          */ 
          export function writeTextFile(name: string, value: string) {
+            var newLineMode = determineNewLIneMode();
+            if (newLineMode === "dos") {
+                value = value.replace(/\n/g, "\r\n");
+            }
             mkdirRecursiveSync(PATH.dirname(name));
             FS.writeFileSync(name, value, "utf8");
         }

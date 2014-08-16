@@ -16,7 +16,7 @@
         "moduleGenTarget": 0
     },
    "codingStandards": {
-        "newLineMode": "unix",
+        "newLineMode": "auto",
         "useSoftTabs": true,
         "tabSize": 4,
         "useLint": false,

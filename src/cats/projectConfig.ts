@@ -57,7 +57,12 @@ module Cats {
             var fileName = this.getFileName();
             try {
                 var content = OS.File.readTextFile(fileName);
-                return JSON.parse(content);
+                var result:ProjectConfiguration = JSON.parse(content);
+                
+                // Do some basic sanitizing
+                if (! result.codingStandards) result.codingStandards = {};
+                if (! result.compiler) result.compiler = {};
+                return result;
             } catch (err) {
                 console.info("Couldn't find project configuration, loading defaults");
                 return this.loadDefault();
@@ -81,11 +86,6 @@ module Cats {
                     "generateDeclarationFiles": false,
                     "mapSourceFiles": false,
                     "codeGenTarget": 1,
-                },
-                editor: {
-                    newLineMode: "unix",
-                    useSoftTabs: true,
-                    tabSize: 4
                 },
                 codingStandards: {
                     newLineMode: "unix",
