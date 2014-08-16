@@ -15,6 +15,8 @@ class ConfigDialog extends qx.ui.window.Window {
         
         this.addTabs();
         this.addButtons();
+        this.addListener("resize", this.center);
+
     }
     
     addTabs() {
@@ -47,44 +49,6 @@ class ConfigDialog extends qx.ui.window.Window {
         // this.add(form);
     }
     
-}
-
-class ProjectConfigDialog extends ConfigDialog {
-
-    compilerSettings:ConfigDialogPage;
-    projectSettings:ConfigDialogPage;
-    codingStandards:ConfigDialogPage;
-
-     constructor() {
-        super("Project Settings");
-     }
-     
-     addTabs() {
-        var tab = new qx.ui.tabview.TabView();
-        this.compilerSettings = new ConfigCompilerSettings();
-        
-        tab.add(this.compilerSettings);
-        tab.add(new ProjectSettings());
-        tab.add(new CodingStandardsSettings());
-        tab.add(new CustomBuildSettings());
-        tab.add(new CustomRunSettings());
-        this.add(tab); 
-     }
-}
-
-
-class IdeConfigDialog extends ConfigDialog {
-     constructor() {
-        super("CATS Settings");
-     }
-     
-     
-     addTabs() {
-        var tab = new qx.ui.tabview.TabView();
-        tab.add(new EditorSettings());
-        tab.add(new IDEGenericSettings());
-        this.add(tab); 
-     }
 }
 
 
@@ -125,7 +89,7 @@ class ConfigDialogPage extends qx.ui.tabview.Page {
         this.form.add(s,label, null, model)
     }
     
-    setData(data) {
+    setData(data:any) {
         for (var key in data) {
             try {
                 this.model.set(key, data[key]);
@@ -140,14 +104,63 @@ class ConfigDialogPage extends qx.ui.tabview.Page {
         this.add(renderer);
     }
     
-    
-    
 }
+
+// ########################################################################
+// #########   Project Settings
+// #########################################################################
+
+
+class ProjectConfigDialog extends ConfigDialog {
+
+    private compilerSettings:ConfigDialogPage;
+    private projectSettings:ConfigDialogPage;
+    private codingStandards:ConfigDialogPage;
+    private customBuild: ConfigDialogPage;
+    private customRun: ConfigDialogPage;
+
+     constructor(private project:Cats.Project) {
+        super("Project Settings");
+        this.loadValues();
+     }
+     
+     private loadValues() {
+         var config = this.project.config
+         this.projectSettings.setData(config);
+         this.compilerSettings.setData(config.compiler);
+         this.codingStandards.setData(config.codingStandards);
+         this.customBuild.setData(config.customBuild);
+         this.customRun.setData(config.customRun);
+     }
+     
+     addTabs() {
+        var tab = new qx.ui.tabview.TabView();
+        
+        this.compilerSettings = new ProjectCompilerSettings();
+        tab.add(this.compilerSettings);
+        
+        this.projectSettings = new ProjectGeneric();
+        tab.add(this.projectSettings);
+        
+        this.codingStandards = new CodingStandardsSettings();
+        tab.add(this.codingStandards);
+        
+        this.customBuild = new CustomBuildSettings();
+        tab.add(this.customBuild);
+        
+        this.customRun = new CustomRunSettings();
+        tab.add(this.customRun);
+        
+        this.add(tab); 
+     }
+}
+
+
 
 /**
  * Dialog window to set the compiler settings
  */ 
-class ConfigCompilerSettings extends ConfigDialogPage {
+class ProjectCompilerSettings extends ConfigDialogPage {
 
     private moduleGenTarget = [
         {label:"none", model : 0},
@@ -182,7 +195,7 @@ class ConfigCompilerSettings extends ConfigDialogPage {
 
 
 
-class ProjectSettings extends ConfigDialogPage {
+class ProjectGeneric extends ConfigDialogPage {
 
     constructor() {
         super("Generic");
@@ -230,7 +243,7 @@ class CustomBuildSettings extends ConfigDialogPage {
 
     createForm() {
         this.addTextField("Name", "name");
-        this.addTextField("Commandline", "commmand");
+        this.addTextField("Command line", "command");
         this.addTextField("Working directory", "directory");
         this.addTextField("Environment variables", "environment");
         this.addCheckBox("Own output console", "ownConsole");
@@ -244,6 +257,25 @@ class CustomRunSettings extends CustomBuildSettings {
     }
 
 } 
+
+
+// ########################################################################
+// #########   IDE Settings
+// #########################################################################
+
+class IdeConfigDialog extends ConfigDialog {
+     constructor() {
+        super("CATS Settings");
+     }
+     
+     
+     addTabs() {
+        var tab = new qx.ui.tabview.TabView();
+        tab.add(new EditorSettings());
+        tab.add(new IDEGenericSettings());
+        this.add(tab); 
+     }
+}
 
 class EditorSettings extends ConfigDialogPage {
     private completionMode = [

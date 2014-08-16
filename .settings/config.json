@@ -3,6 +3,7 @@
     "main": "static/index.html",
     "src": "src/**/*.ts",
     "customBuild": {
+        "name" : "Jake Build Process",
         "command": "jake"
     },
     "compiler": {
@@ -13,5 +14,13 @@
         "mapSourceFiles": false,
         "codeGenTarget": 1,
         "moduleGenTarget": 0
+    },
+   "codingStandards": {
+        "newLineMode": "unix",
+        "useSoftTabs": true,
+        "tabSize": 4,
+        "useLint": false,
+        "lintFile": null
     }
+         
 }
