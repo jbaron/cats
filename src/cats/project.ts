@@ -118,7 +118,7 @@ module Cats {
                 var child = OS.File.runCommand(cmd,options);
                
             } else {
-                this.iSense.compile((err, data:Cats.CompileResults) => {                        
+                this.iSense.compile((err:Error, data:Cats.CompileResults) => {                        
                     this.showCompilationResults(data);
                     if (data.errors && (data.errors.length > 0)) return;
                     var sources = data.source;
@@ -158,7 +158,7 @@ module Cats {
                 this.iSense.addScript(fullName, libdts);
             }
 
-            var srcs = [].concat(this.config.src);
+            var srcs = new Array<string>().concat(this.config.src);
             srcs.forEach((src: string) => {
                 this.loadTypeScriptFiles(src);
             });
@@ -169,7 +169,7 @@ module Cats {
         * Compile without actually saving the result
         */ 
         trialCompile() {
-            this.iSense.compile((err, data:Cats.CompileResults) => {                        
+            this.iSense.compile((err:Error, data:Cats.CompileResults) => {                        
                 this.showCompilationResults(data);
             });
         }
@@ -185,7 +185,7 @@ module Cats {
             IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).");
         }
 
-       /**
+        /**
          * Run this project either with the built-in capabilities (only for web apps) or by calling 
          * and external command (for example node).
          */ 
@@ -197,9 +197,7 @@ module Cats {
                 if (! options.cwd) {
                     options.cwd = this.projectDir;
                 }
-                var child = OS.File.runCommand(cmd, options);
-         
-                
+                OS.File.runCommand(cmd, options);
             } else {
             
             var main = this.config.main;
@@ -232,7 +230,7 @@ module Cats {
          */
         private loadTypeScriptFiles(pattern:string) {
             if (! pattern) pattern = "**/*.ts";
-            OS.File.find(pattern,this.projectDir,  (err,files) => {
+            OS.File.find(pattern,this.projectDir,  (err:Error,files:Array<string>) => {
             files.forEach((file) => {
                 try {
                     var fullName = path.join(this.projectDir, file);

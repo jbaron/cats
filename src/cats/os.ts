@@ -23,9 +23,8 @@
 module OS.File {
 
         window["EventEmitter"] = require("events").EventEmitter;
-        var spawn = require('child_process').spawn;
         var FS=require("fs");
-        var exec = require('child_process').exec;
+        var exec = require("child_process").exec;
         var glob = require("glob");
 
         /**
@@ -33,7 +32,7 @@ module OS.File {
          */ 
         export class Watcher extends EventEmitter {
             
-            private watches = {}
+            private watches = {};
             
             constructor() {
                 super();
@@ -105,15 +104,15 @@ module OS.File {
             var id = child.pid;
             IDE.processTable.addProcess(child, cmd)
            
-            child.stdout.on('data', function (data) {
+            child.stdout.on("data", function (data) {
               logger.log("" + data);
             });
             
-            child.stderr.on('data', function (data) {
+            child.stderr.on("data", function (data) {
               logger.error("" + data);
             });
             
-            child.on('close', function (code) {
+            child.on("close", function (code) {
               logger.log("Done");
             });
         }

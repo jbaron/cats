@@ -234,7 +234,8 @@ module Cats.Menu {
             var menu = new GUI.Menu();
             var views = [
                 {id:IDE.toolBar,name:"Toggle Toolbar"},    
-                {id:IDE.statusBar,name:"Toggle Statusbar"}
+                {id:IDE.statusBar,name:"Toggle Statusbar"},
+                {id:IDE.infoPane,name:"Toggle Info"}
             ];
             views.forEach((view:any) => {
                     var item = this.getMenuCommand(CMDS.ide_toggleView,view.name,view.id);

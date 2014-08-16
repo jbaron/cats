@@ -31,7 +31,7 @@ module Cats.Commands {
     }
 
 
-    function setIdeTheme(theme) {            
+    function setIdeTheme(theme:string) {            
         qx.theme.manager.Meta.getInstance().setTheme(theme);
     }
 
@@ -54,9 +54,12 @@ module Cats.Commands {
         IDE.infoBus.emit("editor.rightMargin",margin);
     }
 
-    function toggleView(component) {
-        component.toggle();
-        // infoBus.IDE.emit("toggleView", name);
+    function toggleView(component:qx.ui.core.Widget) {
+       if (component.isVisible()) { 
+            component.exclude();    
+        } else {
+            component.show();
+        }
     }
     
     function configureIde() {

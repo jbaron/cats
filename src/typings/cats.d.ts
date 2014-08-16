@@ -94,7 +94,14 @@ declare module Cats {
             useSoftTabs: boolean;
             tabSize: number;
         };
-        completionMode?: string; // strict, loose
+        codingStandards: {
+            newLineMode?: string; // unix, windows. auto
+            useSoftTabs?: boolean; // true by default
+            tabSize?: number; // 4 by default
+            useLint?: boolean; // false by default
+            lintFile?: string; // <cats>/static/jslint.json by default 
+        }
+       
     }
 
     interface Position {

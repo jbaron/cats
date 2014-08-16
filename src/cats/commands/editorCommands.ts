@@ -34,7 +34,7 @@ module Cats.Commands {
     }
  
  
-    function convertPos(item): Cats.Range {
+    function convertPos(item:any): Cats.Range {
         return {
             start : {
                 row: item.startPosition.line,
@@ -84,7 +84,7 @@ module Cats.Commands {
           
             var session = IDE.sessionTabView.getActiveSession();
             if (session && session.isTypeScript()) {
-                session.project.iSense.getFormattedTextForRange( session.name, 0, -1 , (err, result) => {                    
+                session.project.iSense.getFormattedTextForRange( session.name, 0, -1 , (err:Error, result:string) => {                    
                     if (!err) {
                         session.setContent(result);
                     }
@@ -139,7 +139,7 @@ module Cats.Commands {
 
     
     function editorCommand(commandName:string) {
-        return function(...args) {
+        return function(...args:Array<any>) {
              //@TODO fix,don't access private var
               var aceEditor = IDE.getActiveEditor()["aceEditor"];
               // var command:Function = aceEditor.commands.byName[commandName];

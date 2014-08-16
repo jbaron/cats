@@ -75,12 +75,5 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
         return;
     }
 
-    toggle() {
-        if (this.isVisible()) { 
-            this.exclude();    
-        } else {
-            this.show();
-        }
-    }
 
 }

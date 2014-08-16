@@ -1,5 +1,5 @@
 {
-    "version": "0.8",
+    "version": "1.0",
     "main": "static/index.html",
     "src": "src/**/*.ts",
     "customBuild": {
@@ -7,13 +7,11 @@
     },
     "compiler": {
         "useDefaultLib": true,
-        "emitComments": false,
+        "emitComments": true,
         "noImplicitAny" : false,
         "generateDeclarationFiles": false,
         "mapSourceFiles": false,
         "codeGenTarget": 1,
         "moduleGenTarget": 0
-    },
-    "completionMode": "loose",
-    "rememberOpenFiles": true
+    }
 }

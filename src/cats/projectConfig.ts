@@ -67,7 +67,7 @@ module Cats {
         /**
          * Load the default configuration for a project
          */
-        private loadDefault() {
+        private loadDefault() : ProjectConfiguration {
             return {
                 version: "1.0",
                 main: "index.html",
@@ -87,7 +87,14 @@ module Cats {
                     useSoftTabs: true,
                     tabSize: 4
                 },
-                completionMode: "strict"
+                codingStandards: {
+                    newLineMode: "unix",
+                    useSoftTabs: true,
+                    tabSize: 4,
+                    useLint: false,
+                    lintFile: null
+                }
+                
             };
         }
 

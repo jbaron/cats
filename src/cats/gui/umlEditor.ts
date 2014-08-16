@@ -1,10 +1,12 @@
 class UMLEditor extends qx.ui.embed.Html implements Editor {
 	 
 	 private backgroundColors = ["white", "black" , "grey"];
-	 private diagram;
+	 private diagram:any;
+	 private static LoadedResources = false;
 	 
 	 constructor(private session:Cats.Session) {
 		 super(null);
+		 // UMLEditor.LoadResources();
 		 // this.createContextMenu();
 		 this.setOverflow("auto", "auto");
 		 
@@ -17,9 +19,20 @@ class UMLEditor extends qx.ui.embed.Html implements Editor {
 		     this.render(div);
 		     this.focus();
 		  });
-	 }
+	}
 
-    private render(container) {
+
+    static LoadResources() {
+        if (this.LoadedResources) {
+            return;
+        }
+        // IDE.loadCSSFile("js/uml/css/UDStyle.css");
+        // IDE.loadJSFile("js/uml/UDCore.js");
+        // IDE.loadJSFile("js/uml/UDModules.js");
+        this.LoadedResources = true;
+    }
+
+    private render(container:HTMLElement) {
             var classDiagram = new UMLClassDiagram({id: container, width: 2000, height: 2000 });
 
             // Adding classes...
@@ -78,9 +91,9 @@ class UMLEditor extends qx.ui.embed.Html implements Editor {
  
     replace(range:Ace.Range,content:string) {}  
     
-    getContent() { return null}
+    getContent():string { return null}
     
-    setContent(content, keepPosition=true) {}
+    setContent(content:string, keepPosition=true) {}
     
     updateWorld() {}
     

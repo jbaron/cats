@@ -79,9 +79,10 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
     }
 
     setContent(content, keepPosition=true) {
-        var pos = this.getPosition();
+        var pos;
+        if (keepPosition) this.getPosition();
         this.aceEditor.getSession().setValue(content);
-        if (pos && keepPosition) this.moveToPosition(pos);
+        if (pos) this.moveToPosition(pos);
     }
 
     updateWorld() {

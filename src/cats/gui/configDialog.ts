@@ -50,15 +50,22 @@ class ConfigDialog extends qx.ui.window.Window {
 }
 
 class ProjectConfigDialog extends ConfigDialog {
+
+    compilerSettings:ConfigDialogPage;
+    projectSettings:ConfigDialogPage;
+    codingStandards:ConfigDialogPage;
+
      constructor() {
         super("Project Settings");
      }
      
-     
      addTabs() {
         var tab = new qx.ui.tabview.TabView();
-        tab.add(new ConfigCompilerSettings());
+        this.compilerSettings = new ConfigCompilerSettings();
+        
+        tab.add(this.compilerSettings);
         tab.add(new ProjectSettings());
+        tab.add(new CodingStandardsSettings());
         tab.add(new CustomBuildSettings());
         tab.add(new CustomRunSettings());
         this.add(tab); 
@@ -189,6 +196,29 @@ class ProjectSettings extends ConfigDialogPage {
     }
 }
 
+
+class CodingStandardsSettings extends ConfigDialogPage {
+
+    private newLineMode = [
+        {label:"auto", model : "auto"},
+        {label:"unix", model : "unix"},
+        {label:"dos", model : "dos"},
+    ];
+
+    constructor() {
+        super("Coding Standards");
+        this.createForm();
+        this.finalStep();
+    }
+
+    createForm() {
+        this.addSelectBox("Newline mode","newLineMode", this.newLineMode);
+        this.addCheckBox("Use soft tabs","useSoftTabs");
+        this.addSpinner("Tab size", "tabSize", 1, 16);
+        this.addCheckBox("Use TSLint","useLint");
+        this.addTextField("TSLint configuration file", "lintFile");
+    }
+}
 
 class CustomBuildSettings extends ConfigDialogPage {
 

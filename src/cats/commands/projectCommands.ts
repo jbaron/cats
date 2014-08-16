@@ -91,6 +91,7 @@ module Cats.Commands {
 
     function configureProject() {
         var w = new ProjectConfigDialog();
+        w.compilerSettings.setData(IDE.project.config.compiler);
         // w.setData(IDE.project.config.compiler);
         w.show();
     }

@@ -359,7 +359,7 @@ module Cats {
             this.project.close();
             this.project = null;
         }
-
+ 
     }
 
 }

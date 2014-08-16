@@ -1,10 +1,10 @@
 
  
-declare var UMLDependency;
-declare var UMLClassDiagram;
-declare var UMLPackage;
-declare var UMLClass;
-declare var UMLGeneralization;
+declare var UMLDependency:any;
+declare var UMLClassDiagram:any;
+declare var UMLPackage:any;
+declare var UMLClass:any;
+declare var UMLGeneralization:any;
 
 declare module JSUML2 {
     
@@ -12,8 +12,8 @@ declare module JSUML2 {
     
     
     class Node {
-        setName(name:string);
-        notifyChange();        
+        setName(name:string):void;
+        notifyChange():void;        
     }
     
     class Relation {
@@ -21,8 +21,8 @@ declare module JSUML2 {
     }
     
     class Diagram {
-        addElement(element);
-        setName(name:string);
+        addElement(element:any):void;
+        setName(name:string):void;
         _nodes:Node[];
         _relations:Relation[];
         

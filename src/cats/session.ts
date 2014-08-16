@@ -90,7 +90,7 @@ module Cats {
         }
 
         // @TODO make this a real MVC pattern, not pushing
-        setContent(content) {
+        setContent(content:String) {
             var page = <SessionPage>IDE.sessionTabView.getPageBySession(this);
             return page.editor.setContent(content);
         }
@@ -150,7 +150,7 @@ module Cats {
             this.emit("outline", this.outline);
         }
 
-        updateContent(content) {
+        updateContent(content:string) {
             this.content = content;
             IDE.project.iSense.updateScript(this.name, content);
             this.updateDiagnostics();
@@ -162,7 +162,7 @@ module Cats {
          */ 
         private updateDiagnostics() {
             if (this.isTypeScript()) {
-               IDE.project.iSense.getErrors(this.name, (err, result: Cats.FileRange[]) => {
+               IDE.project.iSense.getErrors(this.name, (err:Error, result: Cats.FileRange[]) => {
                    this.setErrors(result);
                });
             }
@@ -177,7 +177,7 @@ module Cats {
                 // Clear any pending updates
                 clearTimeout(this.outlineTimer);
                 this.outlineTimer = setTimeout(() => {
-                    IDE.project.iSense.getScriptLexicalStructure(this.name, (err, data: NavigateToItem[]) => {
+                    IDE.project.iSense.getScriptLexicalStructure(this.name, (err:Error, data: NavigateToItem[]) => {
                         this.setOutline(data);
                     });
                 }, timeout);
