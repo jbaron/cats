@@ -1,26 +1,37 @@
 {
-    "version": "1.0",
-    "main": "static/index.html",
     "src": "src/**/*.ts",
-    "customBuild": {
-        "name" : "Jake Build Process",
-        "command": "jake"
-    },
+    "main": "static/index.html",
     "compiler": {
-        "useDefaultLib": true,
-        "emitComments": true,
-        "noImplicitAny" : false,
+        "noLib": false,
+        "removeComments": false,
+        "noImplicitAny": false,
         "generateDeclarationFiles": false,
         "mapSourceFiles": false,
+        "propagateEnumConstants": false,
         "codeGenTarget": 1,
-        "moduleGenTarget": 0
+        "moduleGenTarget": 0,
+        "outDirOption": null,
+        "outFileOption": null
     },
-   "codingStandards": {
+    "codingStandards": {
         "newLineMode": "auto",
         "useSoftTabs": true,
         "tabSize": 4,
         "useLint": false,
         "lintFile": null
+    },
+    "customBuild": {
+        "name": "Jake Build Process",
+        "command": "jake",
+        "directory": null,
+        "environment": null,
+        "ownConsole": false
+    },
+    "customRun": {
+        "name": null,
+        "command": null,
+        "directory": null,
+        "environment": null,
+        "ownConsole": false
     }
-         
 }

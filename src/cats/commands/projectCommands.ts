@@ -103,13 +103,6 @@ module Cats.Commands {
 
 
     /**
-     * Configure the properties of a project
-     */ 
-    function propertiesProject() {
-        IDE.project.editConfig();
-    }
-
-    /**
      * Open a project. If current windows doesn't have a project yet, opene there.
      * Otherwise open the project in a new window
      */ 
@@ -147,7 +140,6 @@ module Cats.Commands {
             registry({ name: CMDS.project_refresh, label: "Refresh Project", command: refreshProject, icon: "actions/view-refresh.png" });
             registry({ name: CMDS.project_run, label: "Run Project", command: runProject, icon: "actions/arrow-right.png" });
             // registry({ name: CMDS.project_debug, label: "Debug Project", command: null, icon: "debug.png" });
-            registry({ name: CMDS.project_properties, label: "Properties", command: propertiesProject });
             registry({ name: CMDS.project_dependencies, label: "Class Diagram", command: showDiagram });
             registry({ name: CMDS.project_configure, label: "Settings", command: configureProject });
 

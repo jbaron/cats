@@ -123,7 +123,7 @@ module Cats {
             var dirSlash = process.platform == "win32" ? "\\" : "/";
             
             if (this.name == null ) {
-                this.name = prompt("Please enter the file name", IDE.project.projectDir + dirSlash);
+                this.name = prompt("Please enter the file name", this.project.projectDir + dirSlash);
                 if (! this.name) return;
             }
 
@@ -133,7 +133,7 @@ module Cats {
             
             if (this.isTypeScript()) this.project.validate(false);
             
-            if (IDE.project.config.buildOnSave && (this.mode === "typescript") ) 
+            if (this.project.config.buildOnSave && (this.mode === "typescript") ) 
                     Commands.runCommand(Commands.CMDS.project_build);
                     
         }
@@ -152,7 +152,7 @@ module Cats {
 
         updateContent(content:string) {
             this.content = content;
-            IDE.project.iSense.updateScript(this.name, content);
+            this.project.iSense.updateScript(this.name, content);
             this.updateDiagnostics();
         }
 
@@ -162,7 +162,7 @@ module Cats {
          */ 
         private updateDiagnostics() {
             if (this.isTypeScript()) {
-               IDE.project.iSense.getErrors(this.name, (err:Error, result: Cats.FileRange[]) => {
+               this.project.iSense.getErrors(this.name, (err:Error, result: Cats.FileRange[]) => {
                    this.setErrors(result);
                });
             }
@@ -177,7 +177,7 @@ module Cats {
                 // Clear any pending updates
                 clearTimeout(this.outlineTimer);
                 this.outlineTimer = setTimeout(() => {
-                    IDE.project.iSense.getScriptLexicalStructure(this.name, (err:Error, data: NavigateToItem[]) => {
+                    this.project.iSense.getScriptLexicalStructure(this.name, (err:Error, data: NavigateToItem[]) => {
                         this.setOutline(data);
                     });
                 }, timeout);

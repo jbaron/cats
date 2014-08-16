@@ -171,13 +171,16 @@ module OS.File {
          * @param name The full name of the file
          * @param value The content of the file
          */ 
-         export function writeTextFile(name: string, value: string) {
+         export function writeTextFile(name: string, value: string, stat=false) {
             var newLineMode = determineNewLIneMode();
             if (newLineMode === "dos") {
                 value = value.replace(/\n/g, "\r\n");
             }
             mkdirRecursiveSync(PATH.dirname(name));
             FS.writeFileSync(name, value, "utf8");
+            
+            if (stat) return FS.statSync(name);
+            return null;
         }
         
         export function switchToForwardSlashes(path:string):string {
@@ -217,26 +220,7 @@ module OS.File {
             return result;
         }
         
-         /**
-         * Read the files from a directory
-         * @param directory The directory name that should be read
-         */ 
-        export function readDir2(directory:string,cb:(param:Cats.FileEntry[])=>any){
-            var files:string[] = FS.readdirSync(directory);
-            var result = [];
-            files.forEach((file) => {
-                var fullName = PATH.join(directory, file);
-                var stats = FS.statSync(fullName);
-                result.push({
-                   name:file,
-                   fullName: switchToForwardSlashes(fullName),
-                   isFile: stats.isFile() ,
-                   isDirectory: stats.isDirectory()
-                });
-            });
-            cb(result);
-        }
-        
+      
         /**
          * Read the content from a text file
          * @param name The full name/path of the file
@@ -254,33 +238,6 @@ module OS.File {
             return data;
         } 
                    
-        /**
-         * Read the content from a text file
-         * @param name The full name/path of the file
-         * @TODO Make async again and return fulfill a promise when all loading is done 
-         */ 
-        export function readTextFile2(name: string, cb:(param:string)=>any) {
-            if (name === "Untitled") return "";
-
-            var data = FS.readFileSync(name, "utf8");
-
-            // Use single character line returns
-            data = data.replace(/\r\n?/g, "\n");
-
-            // Remove the BOM (only MS uses BOM for UTF8)
-            data = data.replace(/^\uFEFF/, '');
-            cb(data);
-        }
-
-        /**
-         * Return stats info about a path
-         * @param name The fulle name/path of the file
-         */
-        export function stat(path: string) {
-            return FS.statSync(path);
-        }
-        
-       
       
 }
 

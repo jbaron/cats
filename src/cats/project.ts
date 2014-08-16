@@ -15,6 +15,10 @@
 // 
 module Cats {
     
+    /**
+     * The project hold the informaiton related to a single project. This include 
+     * a reference to a worker thread that does much of the TypeScript intelli sense.
+     */ 
     export class Project {
 
         // The home directory of the project
@@ -37,23 +41,17 @@ module Cats {
             this.refresh();
         }
 
-
-        private getConfigFileName() {
-            return PATH.join(this.projectDir, ".settings", "config.json");
+        /**
+         * Save the project configuration
+         */ 
+        saveConfig()  {
+           var pc = new ProjectConfig(this.projectDir);
+           pc.store(this.config);
         }
 
-        editConfig()  {
-            var existing = IDE.getSession(this.getConfigFileName());
-            if (existing) {
-                IDE.sessionTabView.select(existing);
-            } else {
-                var content = JSON.stringify(this.config, null, 4);
-                var session = new Session(this.getConfigFileName(),content);
-                IDE.sessionTabView.addSession(session);
-            }
-           
-        }
-
+        /**
+         * Are there session active that have unsaved changes
+         */ 
         hasUnsavedSessions() {
             var sessions = IDE.sessions;
              for (var i = 0; i < sessions.length; i++) {
@@ -101,12 +99,12 @@ module Cats {
 
 
         /**
-         * Build this project either with the buitl-in capabilities or by calling 
-         * and external build tool
+         * Build this project either with the built-in capabilities or by calling 
+         * an external build tool.
          */ 
         build() {
             IDE.console.log("Start building project " + this.name + " ...");
-            if (this.config.customBuild) {
+            if (this.config.customBuild && this.config.customBuild.command) {
                 // IDE.resultbar.selectOption(2);
                 var cmd = this.config.customBuild.command;
                 var options = this.config.customBuild.options || {};
@@ -128,11 +126,11 @@ module Cats {
                     IDE.console.log("Done building project " + this.name + ".");
                 });
             }
-    }
+        }
 
 
         /**
-         *  Refreshes the project and loads required artifacts
+         *  Refresh the project and loads required artifacts
          *  again from the filesystem to be fully in sync
          */
         refresh() {
@@ -190,7 +188,7 @@ module Cats {
          * and external command (for example node).
          */ 
         run() {
-            if (this.config.customRun) {
+            if (this.config.customRun && this.config.customRun.command) {
                 
                 var cmd = this.config.customRun.command;
                 var options = this.config.customRun.options || {};
@@ -225,8 +223,8 @@ module Cats {
         }
         
         /**
-         * Load all the script that are part of the project into the tsworker
-         * @param directory The source directory where to start the scan
+         * Load the TypeScript source files that match the pattern into the tsworker
+         * @param pattern The pattern to apply when searching for files
          */
         private loadTypeScriptFiles(pattern:string) {
             if (! pattern) pattern = "**/*.ts";
@@ -234,9 +232,8 @@ module Cats {
             files.forEach((file) => {
                 try {
                     var fullName = path.join(this.projectDir, file);
-                    OS.File.readTextFile2(fullName,(content) => {
-                                this.iSense.addScript(fullName,content);
-                    });
+                    var content = OS.File.readTextFile(fullName);
+                    this.iSense.addScript(fullName,content);
                 } catch (err) {
                     console.error("Got error while handling file " + fullName);
                     console.error(err);

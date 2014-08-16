@@ -49,7 +49,6 @@ module Cats {
         }
 
        
-
         /**
          * Load the configuration for this project
          */
@@ -67,6 +66,13 @@ module Cats {
                 console.info("Couldn't find project configuration, loading defaults");
                 return this.loadDefault();
             }
+        }
+
+
+        store(config:ProjectConfiguration) {
+            var name = this.getFileName();
+            var content = JSON.stringify(config, null, 4);
+            OS.File.writeTextFile(name,content);
         }
 
         /**

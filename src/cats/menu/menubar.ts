@@ -17,7 +17,9 @@ module Cats.Menu {
 
 
     /**
-     * This class creates the main menubar. 
+     * This class creates the main menubar. This is the only GUI component that 
+     * is not using Qooxdoo but some API exposed by nodewebkit. 
+     * This makes it possible to have the feeling of a native menubar.
      */
     export class Menubar {
 
@@ -173,7 +175,6 @@ module Cats.Menu {
                 IDE.project.config.buildOnSave = buildOnSaveItem.checked;
             }
             proj.append(getCmd(CMDS.project_refresh));
-            proj.append(getCmd(CMDS.project_properties));
             proj.append(getCmd(CMDS.project_dependencies));
             proj.append(new GUI.MenuItem({ type: "separator" }));
             proj.append(getCmd(CMDS.project_configure)); 

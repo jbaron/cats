@@ -23,6 +23,9 @@ class ConfigDialog extends qx.ui.window.Window {
         // to do in subclasses;
     }
     
+    saveValues() {
+        // to do in subclass
+    }
 
     addButtons() {
              // Save button
@@ -31,8 +34,7 @@ class ConfigDialog extends qx.ui.window.Window {
         form.addButton(okbutton);
         okbutton.addListener("execute", () => {
             if (form.validate()) {
-                // var usrData = qx.util.Serializer.toJson(this.model);
-                // this.fireDataEvent("changeUserData", usrData);
+                this.saveValues();
                 this.close();
             };
         }, this);
@@ -97,6 +99,14 @@ class ConfigDialogPage extends qx.ui.tabview.Page {
         }
     }
     
+    /**
+     * Get the data back as a JSON object
+     */ 
+    getData() {
+        var result = JSON.parse(qx.util.Serializer.toJson(this.model));
+        return result
+    }
+    
     finalStep() {
         var controller = new qx.data.controller.Form(null, this.form);
         this.model = controller.createModel();
@@ -131,6 +141,17 @@ class ProjectConfigDialog extends ConfigDialog {
          this.codingStandards.setData(config.codingStandards);
          this.customBuild.setData(config.customBuild);
          this.customRun.setData(config.customRun);
+     }
+     
+     saveValues() {
+         var config:Cats.ProjectConfiguration = this.projectSettings.getData();
+         config.compiler = this.compilerSettings.getData();
+         config.codingStandards = this.codingStandards.getData();
+         config.customBuild = this.customBuild.getData();
+         config.customRun = this.customRun.getData();
+         IDE.project.config = config;
+         IDE.project.saveConfig();
+         // console.log(config);
      }
      
      addTabs() {

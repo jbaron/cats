@@ -346,7 +346,6 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         
         IDE.problemPane.selectPage("search");
     
- 
         this.session.project.iSense.getInfoAtPosition(type, this.session.name, this.getPosition(), (err, data:Cats.FileRange[]) => {
             console.debug("Called getInfoAt for with results #" + data.length);
             IDE.searchResult.setData(data);
