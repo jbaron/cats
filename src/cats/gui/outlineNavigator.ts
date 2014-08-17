@@ -28,7 +28,7 @@ class OutlineNavigator extends qx.ui.table.Table /* qx.ui.tree.VirtualTree */ {
             // IDE.console.log("Selected row:" + selectedRow);
 
             if (data) IDE.sessionTabView.navigateTo(this.session, data[2].start);
-        })
+        });
 
     }
 

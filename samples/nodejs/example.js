@@ -1,4 +1,3 @@
-/// <reference path="node.d.ts" />
 var http = require('http');
 
 http.createServer(function (req, res) {

@@ -17,6 +17,15 @@ module Cats {
 
     export class Ide  {
 
+        private themes = {                  
+            cats : cats.theme.Default,
+            classic: qx.theme.Classic,
+            indigo: qx.theme.Indigo,
+            modern:qx.theme.Modern,
+            simple:qx.theme.Simple
+        };
+
+
         catsHomeDir: string;
         navigatorPane: TabView;
         problemPane: TabView;
@@ -51,7 +60,7 @@ module Cats {
         problemResult:ResultTable;
   
         mainMenu:Menu.Menubar = null;
-        private config:IDEConfiguration;
+        config:IDEConfiguration;
 
         constructor() {
             this.catsHomeDir = process.cwd();
@@ -73,7 +82,7 @@ module Cats {
         private layout(rootDoc:qx.ui.container.Composite) {
             // container layout
 
-            qx.theme.manager.Meta.getInstance().setTheme(Cats.theme.Theme);
+            qx.theme.manager.Meta.getInstance().setTheme(this.themes.cats);
             
             var layout = new qx.ui.layout.VBox();
     
@@ -243,7 +252,7 @@ module Cats {
         private loadConfig() {
             
             var defaultConfig:IDEConfiguration = {
-                version: "1",
+                version: "1.1",
                 theme: "cats",
                 editor : {
                     fontSize: 13,
@@ -260,7 +269,7 @@ module Cats {
             if (configStr) {
                     try {
                         var config:IDEConfiguration = JSON.parse(configStr);
-                        if (config.version === "1") return config;
+                        if (config.version === "1.1") return config;
                     } catch (err) {
                         console.error("Error during parsing config " + err);
                     }
@@ -315,7 +324,7 @@ module Cats {
                 }
                 session = new Session(name, content);
                 if (session.isTypeScript()) {
-                    this.project.iSense.addScript(name,content);
+                    this.project.addScript(name,content);
                 }
                 var p = IDE.sessionTabView.addSession(session,pos);
             } else {

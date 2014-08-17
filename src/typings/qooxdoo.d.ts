@@ -1,5 +1,5 @@
 interface IMap { [key:string] : any; } 
-declare class ErrorImpl implements Error {name: string; message:string } 
+declare class ErrorImpl implements Error {name: string; message:string; } 
 declare module qx {
 class Bootstrap {
  static base(args:any,varargs:any):any;

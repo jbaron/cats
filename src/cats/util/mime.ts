@@ -367,6 +367,6 @@ class MimeTypeFinder {
         ".yaml": "text/yaml",
         ".yml": "text/yaml",
         ".zip": "application/zip"
-    }
+    };
 
 }

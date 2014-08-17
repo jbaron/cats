@@ -13,6 +13,10 @@
 // limitations under the License.
 //
 
+/**
+ * The context menu for the file navigator. This menu provides basic 
+ * file operations like, rename, delete and create.
+ */ 
 class FileContextMenu extends qx.ui.menu.Menu {
 
 
@@ -34,7 +38,7 @@ class FileContextMenu extends qx.ui.menu.Menu {
 
 
     private init() {
-         var refreshButton = new qx.ui.menu.Button("Refresh");
+         // var refreshButton = new qx.ui.menu.Button("Refresh");
         
         var renameButton = new qx.ui.menu.Button("Rename");
         renameButton.addListener("execute",this.rename, this);
@@ -48,7 +52,7 @@ class FileContextMenu extends qx.ui.menu.Menu {
         var newDirButton = new qx.ui.menu.Button("New Directory");
         newDirButton.addListener("execute", this.newFolder, this);
     
-        this.add(refreshButton);
+        // this.add(refreshButton);
         this.add(renameButton);
         this.add(deleteButton);
         this.add(newFileButton);

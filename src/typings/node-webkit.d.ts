@@ -70,7 +70,7 @@ declare module nw.gui {
 	}
 
 	var MenuItem:MenuItem;
-	var Menu:Menu
+	var Menu:Menu;
 	var Window: { 
         get() : IWindow; 
         open(url:string, options):IWindow;
@@ -79,5 +79,5 @@ declare module nw.gui {
         argv: any;  
         closeAllWindows();
         quit();
-	}
+	};
 }

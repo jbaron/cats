@@ -1,18 +1,37 @@
 {
-    "version": "1.0",
+    "src": null,
     "main": null,
-    "buildOnSave": true,
-    "customRun" : {
-        "command": "node example.js",
-        "ownConsole" : true
-    },
     "compiler": {
-        "useDefaultLib": true,
-        "emitComments": false,
+        "noLib": false,
+        "removeComments": false,
+        "noImplicitAny": false,
         "generateDeclarationFiles": false,
         "mapSourceFiles": false,
-        "outputOption": "",
+        "propagateEnumConstants": false,
         "codeGenTarget": 1,
-        "moduleGenTarget": 1
+        "moduleGenTarget": 1,
+        "outDirOption": null,
+        "outFileOption": null
+    },
+    "codingStandards": {
+        "newLineMode": "auto",
+        "useSoftTabs": true,
+        "tabSize": 4,
+        "useLint": false,
+        "lintFile": null
+    },
+    "customBuild": {
+        "name": null,
+        "command": null,
+        "directory": null,
+        "environment": null,
+        "ownConsole": false
+    },
+    "customRun": {
+        "name": null,
+        "command": "node example.js",
+        "directory": null,
+        "environment": null,
+        "ownConsole": true
     }
 }

@@ -25,7 +25,7 @@ module Cats.TSWorker {
         log: function(str:string) { postMessage({method: "console",  data: str}, null); },
         error: function(str:string) { postMessage({method: "console" , data: str}, null); },
         info: function(str:string) { postMessage({method: "console" , data: str}, null); }
-    }
+    };
 
     /**
      * Case insensitive sorting algoritme
@@ -361,7 +361,7 @@ module Cats.TSWorker {
             var result = {
                 pos: newPos,
                 memberMode: memberMode
-            }
+            };
 
             // console.log("Autocompletion determine: " + JSON.stringify(result));
             return result;
@@ -385,7 +385,7 @@ module Cats.TSWorker {
 
         public getScriptLexicalStructure(fileName: string):NavigateToItem[] {
             var results = this.ls.getScriptLexicalStructure(fileName);
-            var finalResults = results.filter((entry)=>{return entry.fileName === fileName});
+            var finalResults = results.filter((entry)=>{return entry.fileName === fileName ;});
             return this.convertNavigateTo(finalResults);
         }
 
@@ -462,7 +462,7 @@ module Cats.TSWorker {
             var error = {
                 description: err.description,
                 stack: err.stack
-            }
+            };
             console.error("Error during processing message " + method);
             postMessage({ id: id, error: error }, null);
         } finally {

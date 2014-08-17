@@ -88,6 +88,12 @@ module Cats.Commands {
         IDE.project.build();
     }
 
+   /**
+     * Build the project
+     */ 
+    function documentProject() {
+        IDE.project.document();
+    }
 
     function configureProject() {
         var w = new ProjectConfigDialog(IDE.project);
@@ -113,7 +119,7 @@ module Cats.Commands {
             if (! IDE.project) {
                 IDE.addProject(new Project(projectPath));
             } else {
-                var param = encodeURIComponent(projectPath)
+                var param = encodeURIComponent(projectPath);
                 this.value = ""; // Make sure the change event goes off next tome
                 window.open('index.html?project=' + param, '_blank');
             }
@@ -142,6 +148,7 @@ module Cats.Commands {
             // registry({ name: CMDS.project_debug, label: "Debug Project", command: null, icon: "debug.png" });
             registry({ name: CMDS.project_dependencies, label: "Class Diagram", command: showDiagram });
             registry({ name: CMDS.project_configure, label: "Settings", command: configureProject });
+             registry({ name: CMDS.project_document, label: "Generate Documentation", command: documentProject });
 
         }
 

@@ -7,8 +7,6 @@ class ConfigDialog extends qx.ui.window.Window {
     constructor(name) {
         super(name);
 
-        // Layout
-        // var layout = new qx.ui.layout.Basic();
         var layout = new qx.ui.layout.VBox();
         this.setLayout(layout);
         this.setModal(true);
@@ -54,7 +52,10 @@ class ConfigDialog extends qx.ui.window.Window {
 }
 
 
-
+/**
+ * Base class for all configuration tab pages. Contains a number
+ * of helper methods to quickly add a form element.
+ */ 
 class ConfigDialogPage extends qx.ui.tabview.Page {
    
     form = new qx.ui.form.Form();
@@ -88,7 +89,7 @@ class ConfigDialogPage extends qx.ui.tabview.Page {
             var listItem = new qx.ui.form.ListItem(item.label, null,item.model);
             s.add(listItem);
         });
-        this.form.add(s,label, null, model)
+        this.form.add(s,label, null, model);
     }
     
     setData(data:any) {
@@ -104,7 +105,7 @@ class ConfigDialogPage extends qx.ui.tabview.Page {
      */ 
     getData() {
         var result = JSON.parse(qx.util.Serializer.toJson(this.model));
-        return result
+        return result;
     }
     
     finalStep() {
@@ -120,7 +121,10 @@ class ConfigDialogPage extends qx.ui.tabview.Page {
 // #########   Project Settings
 // #########################################################################
 
-
+/**
+ * This class represents the configuration windows for the project specific 
+ * settings.
+ */ 
 class ProjectConfigDialog extends ConfigDialog {
 
     private compilerSettings:ConfigDialogPage;
@@ -135,7 +139,7 @@ class ProjectConfigDialog extends ConfigDialog {
      }
      
      private loadValues() {
-         var config = this.project.config
+         var config = this.project.config;
          this.projectSettings.setData(config);
          this.compilerSettings.setData(config.compiler);
          this.codingStandards.setData(config.codingStandards);
@@ -190,8 +194,8 @@ class ProjectCompilerSettings extends ConfigDialogPage {
     ];
     
     private jsTarget = [
-        {label:"es5", model : 0},
-        {label:"es6", model : 1},
+        {label:"es3", model : 0},
+        {label:"es5", model : 1},
     ];
 
     constructor() {
@@ -207,6 +211,7 @@ class ProjectCompilerSettings extends ConfigDialogPage {
         this.addCheckBox("Generate declaration files", "generateDeclarationFiles");
         this.addCheckBox("Generate map source files", "mapSourceFiles");
         this.addCheckBox("Propagate enum constants", "propagateEnumConstants");
+        this.addCheckBox("allowAutomaticSemicolonInsertion","allowAutomaticSemicolonInsertion");
         this.addSelectBox("JavaScript target", "codeGenTarget", this.jsTarget);
         this.addSelectBox("Module generation", "moduleGenTarget", this.moduleGenTarget);
         this.addTextField("Output to directory", "outDirOption");
@@ -227,6 +232,7 @@ class ProjectGeneric extends ConfigDialogPage {
     createForm() {
         this.addTextField("Source Path", "src");
         this.addTextField("Startup HTML page", "main");
+        this.addCheckBox("Build on save","buildOnSave");
     }
 }
 
@@ -285,47 +291,58 @@ class CustomRunSettings extends CustomBuildSettings {
 // #########################################################################
 
 class IdeConfigDialog extends ConfigDialog {
-     constructor() {
+    
+    private ideGenericSettings:ConfigDialogPage;
+    private editorSettings:ConfigDialogPage;
+    
+     constructor(private config:Cats.IDEConfiguration) {
         super("CATS Settings");
+        this.loadValues();
+
+     }
+     
+     private loadValues() {
+         var config = this.config;
+         this.editorSettings.setData(config.editor);
+         this.ideGenericSettings.setData(config);
+     }
+     
+     saveValues() {
+         var config:Cats.IDEConfiguration = this.ideGenericSettings.getData();
+         config.editor = this.editorSettings.getData();
+         // IDE.config = config;
+         // IDE.updateConfig(config);
+         console.log(config);
      }
      
      
      addTabs() {
         var tab = new qx.ui.tabview.TabView();
-        tab.add(new EditorSettings());
-        tab.add(new IDEGenericSettings());
+        this.ideGenericSettings = new IDEGenericSettings;
+        this.editorSettings = new EditorSettings;
+        
+        tab.add(this.ideGenericSettings);
+        tab.add(this.editorSettings);
         this.add(tab); 
      }
 }
 
-class EditorSettings extends ConfigDialogPage {
-    private completionMode = [
-        {label:"strict", model : "strict"},
-        {label:"forgiven", model : "forgiven"}
-    ];
-
-
-    constructor() {
-        super("Editor");
-        this.createForm();
-        this.finalStep();
-    }
-
-    createForm() {
-        this.addSpinner("Font size", "fontSize", 6, 24);
-        this.addSpinner("Right Margin", "rightMargin", 40, 240);
-        this.addSelectBox("Code completion mode", "completionMode",this.completionMode);
-        
-    }
-} 
-
+/**
+ * This class contains the configuration page for the overal IDE
+ */ 
 class IDEGenericSettings extends ConfigDialogPage {
 
-    private theme = [
-        {label:"CATS", model : "Cats"},
-        {label:"Classic", model : "Classic"}
+    private themes = [
+        {label:"CATS", model : "cats"},
+        {label:"Classic", model : "classic"},
+        {label:"Modern", model : "modern"},
+        {label:"Indigo", model : "indigo"},
+        {label:"Simple", model : "simple"}
     ];
 
+    private locales = [
+        {label: "English", model : "en"}    
+    ]; 
 
     constructor() {
         super("Generic");
@@ -334,9 +351,45 @@ class IDEGenericSettings extends ConfigDialogPage {
     }
 
     createForm() {
-        this.addSelectBox("Theme", "theme", this.theme);
+        this.addSelectBox("Global Theme", "theme", this.themes);
+        this.addSelectBox("Locale", "locale", this.locales);
         this.addCheckBox("Remember open files","rememberOpenFiles");
-        this.addCheckBox("Build On save","buildOnSave");
+        this.addCheckBox("Remember layout","rememberLayout");
+    }
+} 
+
+/**
+ * This class contains the configuration page for the source editor
+ */ 
+class EditorSettings extends ConfigDialogPage {
+    private completionMode = [
+        {label:"strict", model : "strict"},
+        {label:"forgiven", model : "forgiven"}
+    ];
+    
+    private theme = [
+        { model: "chrome", label: "Chrome" },
+        { model: "clouds", label: "Clouds" },
+        { model: "crimson_editor", label: "Crimson Editor" },
+        { model: "dreamweaver", label: "Dreamweaver" },
+        { model: "eclipse", label: "Eclipse" },                    
+        { model: "github", label: "GitHub" },
+        { model: "textmate", label: "TextMate" },
+        { model: "xcode", label: "XCode" },        
+    ];
+
+    constructor() {
+        super("Source Editor");
+        this.createForm();
+        this.finalStep();
+    }
+
+    createForm() {
+        this.addSpinner("Font size", "fontSize", 6, 24);
+        this.addSpinner("Right Margin", "rightMargin", 40, 240);
+        this.addSelectBox("Editor Theme", "theme", this.theme);
+        this.addSelectBox("Code completion mode", "completionMode",this.completionMode);
+        
     }
 } 
 

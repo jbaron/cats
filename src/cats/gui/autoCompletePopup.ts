@@ -128,7 +128,7 @@
 					} 
 				}
                 return result;
-            }
+            };
             this.list.setDelegate(delegate);
 					
         }
@@ -154,17 +154,17 @@
          */ 
         private initHandler() {
             this.handler = new HashHandler();
-            this.handler.bindKey("Home", () => { this.moveCursor(-10000) });
-            this.handler.bindKey("End", () => { this.moveCursor(10000) });
-            this.handler.bindKey("Down", () => { this.moveCursor(1) });
-            this.handler.bindKey("PageDown", () => { this.moveCursor(10) });
-            this.handler.bindKey("Up", () => { this.moveCursor(-1) });
-            this.handler.bindKey("PageUp", () => { this.moveCursor(-10) });
-            this.handler.bindKey("Esc", () => { this.hidePopup() });
+            this.handler.bindKey("Home", () => { this.moveCursor(-10000); });
+            this.handler.bindKey("End", () => { this.moveCursor(10000); });
+            this.handler.bindKey("Down", () => { this.moveCursor(1); });
+            this.handler.bindKey("PageDown", () => { this.moveCursor(10); });
+            this.handler.bindKey("Up", () => { this.moveCursor(-1); });
+            this.handler.bindKey("PageUp", () => { this.moveCursor(-10); });
+            this.handler.bindKey("Esc", () => { this.hidePopup(); });
             this.handler.bindKey("Return|Tab", () => {
                 var current = this.list.getSelection().getItem(0);;
                 if (current) {
-                    var inputText = this.getInputText()
+                    var inputText = this.getInputText();
                     for (var i = 0; i < inputText.length; i++) {
                         this.editor.remove("left");
                     }
@@ -179,7 +179,7 @@
 
 
         private getIconForKind(name:string) {
-            var iconPath = "./resource/qx/icon/Oxygen/16/types/"
+            var iconPath = "./resource/qx/icon/Oxygen/16/types/";
             switch (name) {
                 case "function":
                 case "keyword":
@@ -207,7 +207,7 @@
              var rawData = [];
              completions.forEach((completion) => {
                   var extension="";
-                  if (completion.kind === "method") extension = "()"
+                  if (completion.kind === "method") extension = "()";
                   rawData.push({
                      label: completion.name + extension,
                      icon: completion.kind
@@ -256,7 +256,7 @@
                 || ch >= 48 && ch <= 57     //0-9
                 || ch === 95    //_
                 || ch === 36    //$
-                || ch > 127     //non-ASCII letter. Not accurate, but good enough for autocomplete
+                || ch > 127;     //non-ASCII letter. Not accurate, but good enough for autocomplete
         }
 
         /**
@@ -272,7 +272,7 @@
             }
             // hack to get the cursor updated before we render
             // TODO find out how to force update without a timer delay
-            setTimeout(() => { this.updateFilter() }, 0);
+            setTimeout(() => { this.updateFilter(); }, 0);
         }
 
      

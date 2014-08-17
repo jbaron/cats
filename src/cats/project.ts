@@ -25,6 +25,7 @@ module Cats {
         projectDir: string;
         name: string;
         
+        private tsfiles:Array<string> = [];
  
         // The singleton TSWorker handler instance
         iSense: TSWorkerProxy;
@@ -129,6 +130,17 @@ module Cats {
         }
 
 
+        document() {
+            var typedoc = require('typedoc');
+            var settings = new typedoc.Settings();
+            settings.name = this.name;
+            settings.compiler = this.config.compiler;
+            settings.compiler.codepage = null ;
+            var app = new typedoc.Application(settings);
+            var dest = path.join(this.projectDir, "api_doc");
+            app.generate(this.tsfiles, dest);
+        }
+
         /**
          *  Refresh the project and loads required artifacts
          *  again from the filesystem to be fully in sync
@@ -150,10 +162,10 @@ module Cats {
                 
             this.iSense.setCompilationSettings(this.config.compiler);
 
-            if (! (this.config.compiler.useDefaultLib === false)) {
+            if (! this.config.compiler.noLib) {
                 var fullName = PATH.join(IDE.catsHomeDir, "typings/lib.d.ts");
                 var libdts = OS.File.readTextFile(fullName);
-                this.iSense.addScript(fullName, libdts);
+                this.addScript(fullName, libdts);
             }
 
             var srcs = new Array<string>().concat(this.config.src);
@@ -222,6 +234,12 @@ module Cats {
             return "file://" + url;
         }
         
+        
+        addScript(fullName:string, content:string) {
+            this.iSense.addScript(fullName,content);
+            if (this.tsfiles.indexOf(fullName) < 0) this.tsfiles.push(fullName);
+        }
+        
         /**
          * Load the TypeScript source files that match the pattern into the tsworker
          * @param pattern The pattern to apply when searching for files
@@ -233,7 +251,7 @@ module Cats {
                 try {
                     var fullName = path.join(this.projectDir, file);
                     var content = OS.File.readTextFile(fullName);
-                    this.iSense.addScript(fullName,content);
+                    this.addScript(fullName,content);
                 } catch (err) {
                     console.error("Got error while handling file " + fullName);
                     console.error(err);

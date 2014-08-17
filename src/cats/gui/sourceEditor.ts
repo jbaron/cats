@@ -14,11 +14,6 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
     private pendingWorkerUpdate = false;
     private editSession: Ace.EditSession;
     
-    static CONFIG = qx.data.marshal.Json.createModel({
-        fontSize: "12px",
-        printMarginColumn: 100
-    }, true);
-
     constructor(private session:Cats.Session, pos?:Cats.Position) {
         super();
         this.setDecorator(null);
@@ -65,14 +60,8 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
             this.updateWorld();
         });
         
-        session.on("errors", (errors) => { this.showErrors(errors)});
+        session.on("errors", (errors) => { this.showErrors(errors);});
         this.addListener("resize", () => { this.resizeHandler(); });
-        
-        SourceEditor.CONFIG.addListener("changeFontSize", 
-                (ev) => { this.aceEditor.setFontSize(ev.getData())});
-        
-        SourceEditor.CONFIG.addListener("changePrintMarginColumn", 
-                (ev) => { this.aceEditor.setPrintMarginColumn(ev.getData())});
         
         IDE.infoBus.on("editor.fontSize", (size) => { this.aceEditor.setFontSize(size + "px"); });
         IDE.infoBus.on("editor.rightMargin", (margin) => { this.aceEditor.setPrintMarginColumn(margin);});
@@ -249,9 +238,9 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
 
     private mapSeverity(level: Cats.Severity) : string {
         switch (level) {
-            case Cats.Severity.Error: return "error"
-            case Cats.Severity.Warning: return "warning"
-            case Cats.Severity.Info: return "info"
+            case Cats.Severity.Error: return "error";
+            case Cats.Severity.Warning: return "warning";
+            case Cats.Severity.Info: return "info";
         }
         
     }
@@ -292,7 +281,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
                     win: "Ctrl-Space",
                     mac: "Ctrl-Space" 
                 },
-                exec: () => { this.autoComplete() }
+                exec: () => { this.autoComplete(); }
             },
 
            {
@@ -301,7 +290,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
                     win: "F12",
                     mac: "F12"
                 },
-                exec: () => { this.gotoDeclaration() }
+                exec: () => { this.gotoDeclaration(); }
             },
 
 
@@ -311,7 +300,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
                     win: "Ctrl-S",
                     mac: "Command-S"
                 },
-                exec: () =>  { this.session.persist() }
+                exec: () =>  { this.session.persist(); }
             }
             ]);
  
@@ -333,7 +322,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
             return editor;
     }
 
-  private gotoDeclaration() {        
+    private gotoDeclaration() {        
         var session = this.session;
       
         session.project.iSense.getDefinitionAtPosition( session.name, this.getPosition(), (err, data:Cats.FileRange) => {
@@ -376,7 +365,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
 
     private createContextMenuItem(name:string, fn:Function) {
         var button = new qx.ui.menu.Button(name);
-        button.addListener("execute", fn)
+        button.addListener("execute", fn);
         return button;
     }
     
@@ -396,7 +385,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
     }
     
     private createContextMenu() {
-        var CMDS = Cats.Commands.CMDS;
+       
         var menu = new qx.ui.menu.Menu();
         if (this.session.isTypeScript()) {
             menu.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration.bind(this)));
@@ -413,7 +402,6 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         this.setContextMenu(menu);
     }
   
-
     private onMouseMove(ev: MouseEvent) {
             if (this.getToolTip() && this.getToolTip().isSeeable()) this.getToolTip().exclude();
             clearTimeout(this.mouseMoveTimer);

@@ -30,7 +30,7 @@ class SessionPage extends qx.ui.tabview.Page {
         } else if (this.session.isImage()) {
             this.editor = new ImageEditor(this.session);
         } else {
-            this.editor = new SourceEditor(this.session,pos)
+            this.editor = new SourceEditor(this.session,pos);
         }
         this.add(this.editor, { edge: 0 });
     }

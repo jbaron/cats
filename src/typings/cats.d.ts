@@ -14,10 +14,12 @@
 //
 
 
+declare module cats {
+    var theme: any;
+}
+
 declare module Cats {
 
-    var theme:any
-    
     interface JSONRPCRequest {
         id?: number;
         method:string;
@@ -47,7 +49,7 @@ declare module Cats {
             rightMargin?: number;
             fontSize?: number;
             theme?: string;   
-        }
+        };
         iconDir?:string;
         remembeOpenFile?: boolean;
         locale?:string;
@@ -80,15 +82,17 @@ declare module Cats {
         buildOnSave?: boolean;
         customBuild?:RunExternal;
         customRun?:RunExternal;
-        compiler: {
-            useDefaultLib?: boolean;
-            outFileOption?: string;
-            emitComments?: boolean;
-            generateDeclarationFiles?: boolean;
-            mapSourceFiles?: boolean;
-            codeGenTarget?: number;
-            moduleGenTarget?: number;
-        };
+        compiler:  {
+            noLib?: boolean;  // undefined by default
+            outFileOption?: string; // undefined by default
+            outDirOption?: string; // undefined by default 
+            removeComments?: boolean; // undefined by default
+            generateDeclarationFiles?: boolean; // undefined by default
+            mapSourceFiles?: boolean; // undefined by default
+            codeGenTarget?: number; // undefined by default
+            moduleGenTarget?: number; // undefined by default
+            allowAutomaticSemicolonInsertion?: boolean; // undefined by default
+        }; 
         codingStandards: {
             newLineMode?: string; // unix, windows. auto
             useSoftTabs?: boolean; // true by default

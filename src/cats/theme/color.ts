@@ -13,14 +13,24 @@
 // limitations under the License.
 //
 
-qx.Theme.define("Cats.theme.Theme",
+qx.Theme.define("cats.theme.Color",
 {
-  meta :
+  extend : qx.theme.simple.Color,
+
+  colors :
   {
-    color : Cats.theme.Color,
-    decoration : Cats.theme.Decoration,
-    font : Cats.theme.Font,
-    icon : qx.theme.icon.Oxygen,
-    appearance : Cats.theme.Appearance
+      "light-background" : "#C0CCDF",
+      "button-box-bright" : "#B0BCCF"
+  }
+});
+
+qx.Theme.define("cats.theme.ColorGrey",
+{
+  extend : qx.theme.simple.Color,
+
+  colors :
+  {
+      "light-background" : "#C0C0D0",
+      "button-box-bright" : "#B0B0B0"
   }
 });

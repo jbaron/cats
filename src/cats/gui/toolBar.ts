@@ -26,7 +26,7 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
         Cats.Commands.CMDS.edit_indent,
         Cats.Commands.CMDS.edit_outdent
  //       Cats.Commands.CMDS.edit_toggleComment
-    ]
+    ];
 
 
     constructor() {

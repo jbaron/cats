@@ -1,6 +1,7 @@
 {
     "src": "src/**/*.ts",
     "main": "static/index.html",
+    "buildOnSave": false,
     "compiler": {
         "noLib": false,
         "removeComments": false,
@@ -8,6 +9,7 @@
         "generateDeclarationFiles": false,
         "mapSourceFiles": false,
         "propagateEnumConstants": false,
+        "allowAutomaticSemicolonInsertion": true,
         "codeGenTarget": 1,
         "moduleGenTarget": 0,
         "outDirOption": null,

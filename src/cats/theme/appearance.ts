@@ -21,7 +21,7 @@ function noDecorator() {
     };    
 }
 
-qx.Theme.define("Cats.theme.Appearance",
+qx.Theme.define("cats.theme.Appearance",
 {
   extend : qx.theme.simple.Appearance,
 

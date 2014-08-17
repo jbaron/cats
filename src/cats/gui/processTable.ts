@@ -28,7 +28,7 @@ class ProcessTable extends qx.ui.container.Composite  {
             // IDE.console.log("Selected row:" + selectedRow);
 
             // if (data) IDE.sessionTabView.navigateTo(this.session, data[2].start);
-        })
+        });
         this.table = table;
         this.add(this.createControls());
         this.add(table, {flex: 1});
@@ -59,19 +59,19 @@ class ProcessTable extends qx.ui.container.Composite  {
       bar.add(part);
 
       button = new qx.ui.toolbar.Button("Stop process", "icon/22/actions/edit-undo.png");
-      button.addListener("execute", (evt) => { this.sendSignal("SIGTERM") });
+      button.addListener("execute", (evt) => { this.sendSignal("SIGTERM"); });
       part.add(button);
 
       button = new qx.ui.toolbar.Button("Kill process", "icon/22/actions/edit-undo.png");
-      button.addListener("execute", (evt) => { this.sendSignal("SIGKILL") });
+      button.addListener("execute", (evt) => { this.sendSignal("SIGKILL"); });
       part.add(button);
 
       button = new qx.ui.toolbar.Button("Pause process", "icon/22/actions/edit-undo.png");
-      button.addListener("execute", (evt) => { this.sendSignal("SIGSTOP") });
+      button.addListener("execute", (evt) => { this.sendSignal("SIGSTOP"); });
       part.add(button);
 
       button = new qx.ui.toolbar.Button("Resume process", "icon/22/actions/edit-undo.png");
-      button.addListener("execute", (evt) => { this.sendSignal("SIGCONT") });
+      button.addListener("execute", (evt) => { this.sendSignal("SIGCONT") ;});
       part.add(button);
       
       bar.add(part);

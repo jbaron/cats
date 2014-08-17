@@ -44,7 +44,7 @@ module Cats.Commands {
                 row: item.endPosition.line,
                 column : item.endPosition.position.character
             }
-        }
+        };
         
     }
  
@@ -71,7 +71,7 @@ module Cats.Commands {
                               severity: Cats.Severity.Info,
                               range: convertPos(msg)
                         };
-                        r.push(item)
+                        r.push(item);
                 });
                 session.setErrors(r);
                 IDE.problemResult.setData(r);
@@ -190,7 +190,7 @@ module Cats.Commands {
        //             command:null
         //            shortcut: getShortcut(config.cmd),
                     command: editorCommand(config.cmd),
-                }
+                };
                 // if (config.icon) item.icon = config.icon;
                 registry(item);
             });

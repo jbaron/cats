@@ -4,7 +4,7 @@
 var Greeter = (function () {
     /**
     * Create a new Greeter
-    * @param message The welcome message to use for all
+    * @param message The welcome message to use for greeting
     */
     function Greeter(message) {
         this.greeting = message;

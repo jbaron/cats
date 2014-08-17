@@ -23,7 +23,7 @@ class ResourceLoader {
             document.head.appendChild(filenode);
             callback();
         } else {
-            console.log("Unknown file type to load.")
+            console.log("Unknown file type to load.");
         }
     }
 
@@ -32,7 +32,7 @@ class ResourceLoader {
         files.forEach((file) => {
             this.require(file, () =>{
                 counter++;
-                if (counter === files.length) { callback() } 
+                if (counter === files.length) { callback(); } 
             });
         });
     }

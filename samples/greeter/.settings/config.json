@@ -1,16 +1,37 @@
 {
-    "version": "1.0",
+    "src": null,
     "main": "greeter.html",
-    "buildOnSave": true,
     "compiler": {
-        "useDefaultLib": true,
-        "emitComments": false,
+        "noLib": false,
+        "removeComments": false,
+        "noImplicitAny": false,
         "generateDeclarationFiles": false,
         "mapSourceFiles": false,
-        "outputOption": "",
+        "propagateEnumConstants": false,
         "codeGenTarget": 1,
-        "moduleGenTarget": 0
+        "moduleGenTarget": 0,
+        "outDirOption": null,
+        "outFileOption": null
     },
-    "minify": false,
-    "rememberOpenFiles": false
+    "codingStandards": {
+        "newLineMode": "auto",
+        "useSoftTabs": false,
+        "tabSize": 1,
+        "useLint": false,
+        "lintFile": null
+    },
+    "customBuild": {
+        "name": null,
+        "command": null,
+        "directory": null,
+        "environment": null,
+        "ownConsole": false
+    },
+    "customRun": {
+        "name": null,
+        "command": null,
+        "directory": null,
+        "environment": null,
+        "ownConsole": false
+    }
 }

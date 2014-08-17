@@ -13,13 +13,11 @@
 // limitations under the License.
 //
 
-qx.Theme.define("Cats.theme.Color",
+qx.Theme.define("cats.theme.Font",
 {
-  extend : qx.theme.simple.Color,
+  extend : qx.theme.simple.Font,
 
-  colors :
+  fonts :
   {
-      "light-background" : "#C0CCDF",
-      "button-box-bright" : "#B0BCCF"
   }
 });

@@ -158,7 +158,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
                 label: "Loading",
                 fullPath: "asasasa/dss",
                 directory : false 
-            }
+            };
             value.getChildren().removeAll();
             value.getChildren().push(qx.data.marshal.Json.createModel(node, true));
         }, 0);

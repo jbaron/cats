@@ -35,24 +35,7 @@ module Cats.Commands {
         qx.theme.manager.Meta.getInstance().setTheme(theme);
     }
 
-    /**
-     * Set the theme
-     */ 
-    function setTheme(theme:string) {
-        IDE.setTheme(theme);
-    }
 
-    /**
-     * Set the font size
-     */ 
-    function setFontSize(size:number) {
-        SourceEditor.CONFIG["setFontSize"](size + "px");
-       //  IDE.infoBus.emit("editor.fontSize",size);
-    }
-
-    function setRightMargin(margin:number) {
-        IDE.infoBus.emit("editor.rightMargin",margin);
-    }
 
     function toggleView(component:qx.ui.core.Widget) {
        if (component.isVisible()) { 
@@ -63,7 +46,7 @@ module Cats.Commands {
     }
     
     function configureIde() {
-        var w = new IdeConfigDialog();
+        var w = new IdeConfigDialog(IDE.config);
         // w.setData(IDE.project.config.compiler);
         w.show();
     }
@@ -73,10 +56,7 @@ module Cats.Commands {
     export class IdeCommands {
         static init(registry:(cmd:Command)=>void) {
             registry({ name: CMDS.ide_quit, label: "Quit", command: quit });
-            registry({ name: CMDS.ide_theme, label: "Theme", command: setIdeTheme });
-            registry({ name: CMDS.ide_fontSize, label: "Font Size", command: setFontSize });
-            registry({ name: CMDS.ide_rightMargin, label : "Right Margin", command: setRightMargin });
-            registry({ name: CMDS.ide_toggleView, label : "Toggle View", command: toggleView });
+           registry({ name: CMDS.ide_toggleView, label : "Toggle View", command: toggleView });
             registry({ name: CMDS.ide_configure, label: "Settings", command: configureIde });
 
         }

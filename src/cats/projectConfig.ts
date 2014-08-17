@@ -79,15 +79,15 @@ module Cats {
          * Load the default configuration for a project
          */
         private loadDefault() : ProjectConfiguration {
-            return {
-                version: "1.0",
+            var result:ProjectConfiguration = {
+                version: "1.1",
                 main: "index.html",
                 src: null, //If not set, the whole project directory is searched for source files
                 buildOnSave: false,
                 compiler: {
                     "moduleGenTarget": 1,
-                    "useDefaultLib": true,
-                    "emitComments": false,
+                    "noLib": false,
+                    "removeComments": false,
                     "noImplicitAny" : false,
                     "generateDeclarationFiles": false,
                     "mapSourceFiles": false,
@@ -102,6 +102,8 @@ module Cats {
                 }
                 
             };
+            
+            return result;
         }
 
     }

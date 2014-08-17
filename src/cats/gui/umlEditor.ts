@@ -91,7 +91,7 @@ class UMLEditor extends qx.ui.embed.Html implements Editor {
  
     replace(range:Ace.Range,content:string) {}  
     
-    getContent():string { return null}
+    getContent():string { return null ;}
     
     setContent(content:string, keepPosition=true) {}
     
