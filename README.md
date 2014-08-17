@@ -13,7 +13,8 @@ Right now CATS already has built-in support for the following features:
 - Support for refactoring and smart navigation.
 - TypeScript compilation to JavaScript.
 - Validation of the source code while you are typing.
-- Lint support for TypeScript and JavaScript.
+- Linter support for TypeScript and JavaScript.
+- Generate API documentation based on the comments in the source code.
 - Editing features like folding and indentation.
 - Running your application from within IDE and using the WebKit debugger to debug.
 - Support for external build systems like Grunt, Jake and Makefiles.
@@ -117,6 +118,11 @@ And of course some of the main 3rd party components that we have used within CAT
 
 - [Node-webkit](https://github.com/rogerwang/node-webkit). This is a great initiative from Intel to allow Node libraries to be used within a web page. 
   CATS use this to read and write local files without the need for a server-side component.
+
+- [TSLint](https://github.com/palantir/tslint). A linter for the TypeScript language that help to improve yuor code base even further.
+
+- [TypeDoc](https://github.com/sebastian-lenz/typedoc). This is a documentation generator for TypeScript projects that supports
+  theming and a lot of other very impressive features. 
 
 - [jsUML2](http://www.jrromero.net/tools/jsUML2). This is library for creating UML diagrams done in pure JavaScript.
 

@@ -15,6 +15,7 @@
 // 
 module Cats {
     
+    var typedoc;
     /**
      * The project hold the informaiton related to a single project. This include 
      * a reference to a worker thread that does much of the TypeScript intelli sense.
@@ -129,16 +130,42 @@ module Cats {
             }
         }
 
-
+        /**
+         * Generate the documentation for this project
+         */ 
         document() {
-            var typedoc = require('typedoc');
-            var settings = new typedoc.Settings();
-            settings.name = this.name;
-            settings.compiler = this.config.compiler;
-            settings.compiler.codepage = null ;
-            var app = new typedoc.Application(settings);
-            var dest = path.join(this.projectDir, "api_doc");
-            app.generate(this.tsfiles, dest);
+            var outputDir = this.config.documentation.outputDirectory;
+            if (! outputDir) {
+                alert("Please configure a output directoty Project -> Settings");
+                return;
+            }
+            
+            var win = new BusyWindow("Generating Documentation");
+            win.show();
+            win.addListenerOnce("ready", () => {
+                try {
+                     
+                    if (! typedoc) typedoc = require('typedoc');
+                   
+                    var settings = new typedoc.Settings();
+                    settings.name = this.name;
+                    settings.compiler = JSON.parse(JSON.stringify(this.config.compiler));
+                    settings.compiler.codepage = null;
+                    settings.compiler.noLib = true;
+                    settings.compiler.noResolve = true;
+                    settings.compiler.mapRoot = "";
+                    settings.compiler.sourceRoot = "";
+                    settings.readme = this.config.documentation.readme || "none";
+                    settings.includeDeclarations = this.config.documentation.includeDeclarations;
+                    settings.verbose = false;
+                    settings.theme = this.config.documentation.theme || "default";
+                    var app = new typedoc.Application(settings);
+                    var dest = path.join(this.projectDir, outputDir);
+                    app.generate(this.tsfiles, dest);
+                } finally {
+                    win.hide();
+                }
+        });
         }
 
         /**

@@ -59,7 +59,7 @@ var catsOptions = [
     "src/cats/gui/fileContextMenu.ts",
     "src/cats/gui/configDialog.ts",
     "src/cats/gui/processTable.ts",
-    
+    "src/cats/gui/busyWindow.ts",
     
     
     "src/cats/util/mime.ts",

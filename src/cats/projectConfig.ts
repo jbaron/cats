@@ -99,6 +99,9 @@ module Cats {
                     tabSize: 4,
                     useLint: false,
                     lintFile: null
+                },
+                documentation: {
+                    
                 }
                 
             };

@@ -132,6 +132,7 @@ class ProjectConfigDialog extends ConfigDialog {
     private codingStandards:ConfigDialogPage;
     private customBuild: ConfigDialogPage;
     private customRun: ConfigDialogPage;
+    private documentationSettings: ConfigDialogPage;
 
      constructor(private project:Cats.Project) {
         super("Project Settings");
@@ -145,6 +146,7 @@ class ProjectConfigDialog extends ConfigDialog {
          this.codingStandards.setData(config.codingStandards);
          this.customBuild.setData(config.customBuild);
          this.customRun.setData(config.customRun);
+         this.documentationSettings.setData(config.documentation);
      }
      
      saveValues() {
@@ -153,6 +155,7 @@ class ProjectConfigDialog extends ConfigDialog {
          config.codingStandards = this.codingStandards.getData();
          config.customBuild = this.customBuild.getData();
          config.customRun = this.customRun.getData();
+         config.documentation = this.documentationSettings.getData();
          IDE.project.config = config;
          IDE.project.saveConfig();
          // console.log(config);
@@ -169,6 +172,9 @@ class ProjectConfigDialog extends ConfigDialog {
         
         this.codingStandards = new CodingStandardsSettings();
         tab.add(this.codingStandards);
+        
+        this.documentationSettings = new DocumentationSettings();
+        tab.add(this.documentationSettings);
         
         this.customBuild = new CustomBuildSettings();
         tab.add(this.customBuild);
@@ -259,6 +265,29 @@ class CodingStandardsSettings extends ConfigDialogPage {
         this.addTextField("TSLint configuration file", "lintFile");
     }
 }
+
+
+class DocumentationSettings extends ConfigDialogPage {
+
+    private themes = [
+        {label:"Default", model : "default"},
+    ];
+
+    constructor() {
+        super("Documentation Settings");
+        this.createForm();
+        this.finalStep();
+    }
+
+    createForm() {
+        this.addCheckBox("Include declarations","includeDeclarations");
+        this.addTextField("Output directory","outputDirectory");
+        this.addTextField("Readme file", "readme");
+        this.addSelectBox("Documentation theme", "theme", this.themes);
+
+    }
+}
+
 
 class CustomBuildSettings extends ConfigDialogPage {
 
@@ -351,7 +380,7 @@ class IDEGenericSettings extends ConfigDialogPage {
     }
 
     createForm() {
-        this.addSelectBox("Global Theme", "theme", this.themes);
+        this.addSelectBox("Global theme", "theme", this.themes);
         this.addSelectBox("Locale", "locale", this.locales);
         this.addCheckBox("Remember open files","rememberOpenFiles");
         this.addCheckBox("Remember layout","rememberLayout");

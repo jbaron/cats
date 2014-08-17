@@ -35,5 +35,11 @@
         "directory": null,
         "environment": null,
         "ownConsole": false
+    },
+    "documentation": {
+        "includeDeclarations": false,
+        "outputDirectory": "api_doc",
+        "readme": "none",
+        "theme": "default"
     }
 }

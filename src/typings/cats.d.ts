@@ -99,6 +99,12 @@ declare module Cats {
             tabSize?: number; // 4 by default
             useLint?: boolean; // false by default
             lintFile?: string; // <cats>/static/jslint.json by default 
+        };
+        documentation: {
+            theme?:string;
+            readme?:string;
+            outputDirectory?:string;
+            includeDeclarations?:boolean;
         }
        
     }
