@@ -39,7 +39,7 @@
     "documentation": {
         "includeDeclarations": false,
         "outputDirectory": "api_doc",
-        "readme": "none",
+        "readme": "README.md",
         "theme": "default"
     }
 }
