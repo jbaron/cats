@@ -14,7 +14,6 @@ class ConfigDialog extends qx.ui.window.Window {
         this.addTabs();
         this.addButtons();
         this.addListener("resize", this.center);
-
     }
     
     addTabs() {
@@ -225,8 +224,9 @@ class ProjectCompilerSettings extends ConfigDialogPage {
     }
 }
 
-
-
+/**
+ * The generic project settings
+ */ 
 class ProjectGeneric extends ConfigDialogPage {
 
     constructor() {
@@ -242,7 +242,10 @@ class ProjectGeneric extends ConfigDialogPage {
     }
 }
 
-
+/**
+ * The different settings so all developers checking the same code format and 
+ * standards.
+ */ 
 class CodingStandardsSettings extends ConfigDialogPage {
 
     private newLineMode = [
@@ -266,7 +269,9 @@ class CodingStandardsSettings extends ConfigDialogPage {
     }
 }
 
-
+/**
+ * The various settings for the documentation generation tool (TypeDoc).
+ */ 
 class DocumentationSettings extends ConfigDialogPage {
 
     private themes = [
@@ -319,6 +324,10 @@ class CustomRunSettings extends CustomBuildSettings {
 // #########   IDE Settings
 // #########################################################################
 
+/**
+ * The main class for the IDE configuration window. This window allows to configure 
+ * all kind of personal settings and preferences.
+ */ 
 class IdeConfigDialog extends ConfigDialog {
     
     private ideGenericSettings:ConfigDialogPage;
@@ -341,6 +350,7 @@ class IdeConfigDialog extends ConfigDialog {
          config.editor = this.editorSettings.getData();
          // IDE.config = config;
          // IDE.updateConfig(config);
+         // @TODO implement the saving of the settings
          console.log(config);
      }
      
