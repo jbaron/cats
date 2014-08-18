@@ -33,13 +33,15 @@ module Cats {
         
         // Stores the project configuration paramters
         config: ProjectConfiguration;
+        
         /**    
          * Set the project to a new directory and make sure 
          * we remove old artifacts.
          */ 
         constructor(projectDir: string) {
             IDE.project = this;
-            this.projectDir = PATH.resolve(projectDir);
+            var dir = PATH.resolve(projectDir);
+            this.projectDir = OS.File.switchToForwardSlashes(dir);
             this.refresh();
         }
 
@@ -198,7 +200,7 @@ module Cats {
             this.iSense.setCompilationSettings(this.config.compiler);
 
             if (! this.config.compiler.noLib) {
-                var fullName = PATH.join(IDE.catsHomeDir, "typings/lib.d.ts");
+                var fullName = OS.File.switchToForwardSlashes(PATH.join(IDE.catsHomeDir, "typings/lib.d.ts"));
                 var libdts = OS.File.readTextFile(fullName);
                 this.addScript(fullName, libdts);
             }
@@ -284,7 +286,7 @@ module Cats {
             OS.File.find(pattern,this.projectDir,  (err:Error,files:Array<string>) => {
             files.forEach((file) => {
                 try {
-                    var fullName = path.join(this.projectDir, file);
+                    var fullName = OS.File.switchToForwardSlashes(path.join(this.projectDir, file));
                     var content = OS.File.readTextFile(fullName);
                     this.addScript(fullName,content);
                 } catch (err) {

@@ -69,7 +69,12 @@ There are some option you can use. For example to open CATS with a specific proj
 nodewebkit --project </path/projectDirectory>
 ```
 
-Or to open CATS with the same project as last time use the --restore option:
+Although you can use a relative path for specifying the project directory, 
+please notice it is relative to the CATS installation directory and not the 
+directory you are currently in. So normally better to use a full path.
+
+
+To open CATS with the same project as last time use the --restore option:
 
 ```shell
 nodewebkit --restore

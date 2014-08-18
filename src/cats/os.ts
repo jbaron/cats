@@ -185,7 +185,7 @@ module OS.File {
             return null;
         }
         
-        function switchToForwardSlashes(path:string):string {
+        export function switchToForwardSlashes(path:string):string {
             return path.replace(/\\/g, "/");
         }
          
