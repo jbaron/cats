@@ -52,7 +52,7 @@
 
               // Creates the list and configures it
               var list:qx.ui.list.List = new qx.ui.list.List(null).set({
-                scrollbarX: "on",
+                scrollbarX: "off",
                 selectionMode : "single",
                 // height: 280,
                 width: 300,
