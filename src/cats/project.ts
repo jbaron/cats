@@ -34,6 +34,8 @@ module Cats {
         // Stores the project configuration paramters
         config: ProjectConfiguration;
         
+        private lintOptions;
+        
         /**    
          * Set the project to a new directory and make sure 
          * we remove old artifacts.
@@ -271,6 +273,28 @@ module Cats {
             return "file://" + url;
         }
         
+        getLintOptions() {
+            if (! this.lintOptions) {
+                var fileName;
+                
+                if (this.config.codingStandards.lintFile) {
+                    fileName = path.join(this.projectDir,this.config.codingStandards.lintFile);
+                } else {
+                    fileName = path.join(IDE.catsHomeDir, "static/tslint.json");
+                }
+                
+                var content = OS.File.readTextFile(fileName);
+                var config = JSON.parse(content);
+                var options = {
+                    formatter: "json",
+                    configuration: config,
+                    rulesDirectory: "customRules/",
+                    formattersDirectory: "customFormatters/"
+                };
+                this.lintOptions = options;
+            };
+            return this.lintOptions;
+        }
         
         addScript(fullName:string, content:string) {
             this.iSense.addScript(fullName,content);

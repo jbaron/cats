@@ -15,6 +15,8 @@
 
 module Cats {
     
+    var Linter = require("tslint");
+    
     export class Session extends qx.event.Emitter {
 
         private static MODES = {
@@ -163,9 +165,43 @@ module Cats {
         private updateDiagnostics() {
             if (this.isTypeScript()) {
                this.project.iSense.getErrors(this.name, (err:Error, result: Cats.FileRange[]) => {
+                   if (this.project.config.codingStandards.useLint) {
+                       result = result.concat(this.lint());
+                   }
                    this.setErrors(result);
                });
             }
+        }
+        
+        
+        private convertPos(item:any): Cats.Range {
+            return {
+                start : {
+                    row: item.startPosition.line,
+                    column : item.startPosition.character
+                },
+                end : {
+                    row: item.endPosition.line,
+                    column : item.endPosition.position.character
+                }
+            };
+        }
+        
+        private lint() {
+            
+            var ll = new Linter(this.name, this.content, this.project.getLintOptions());
+            var result:Array<any> = JSON.parse(ll.lint().output);
+            var r:Cats.FileRange[] = [];
+            result.forEach((msg) => {
+                var item:Cats.FileRange = {
+                      fileName : msg.name,
+                      message: msg.failure,
+                      severity: Cats.Severity.Info,
+                      range: this.convertPos(msg)
+                };
+                r.push(item);
+            });
+            return r;
         }
         
         /**

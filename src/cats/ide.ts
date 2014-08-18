@@ -278,6 +278,11 @@ module Cats {
             return defaultConfig;
         }
 
+        updateConfig(config) {
+            this.config = config;
+            // @TODO save it
+        }
+
         /**
          * Persist the current IDE configuration to a file
          */ 

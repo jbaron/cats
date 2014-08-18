@@ -77,12 +77,11 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         if (pos) this.moveToPosition(pos);
     }
 
-
     private configureEditor() {
         var config = IDE.config.editor;
         if (config.fontSize) this.aceEditor.setFontSize(config.fontSize + "px");
         if (config.rightMargin) this.aceEditor.setPrintMarginColumn(config.rightMargin);
-        if (config.theme) this.aceEditor.setTheme(config.theme);
+        if (config.theme) this.aceEditor.setTheme("ace/theme/" + config.theme);
     }
 
 

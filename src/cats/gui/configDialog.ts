@@ -349,7 +349,7 @@ class IdeConfigDialog extends ConfigDialog {
          var config:Cats.IDEConfiguration = this.ideGenericSettings.getData();
          config.editor = this.editorSettings.getData();
          // IDE.config = config;
-         // IDE.updateConfig(config);
+         IDE.updateConfig(config);
          // @TODO implement the saving of the settings
          console.log(config);
      }

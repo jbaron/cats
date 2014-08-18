@@ -111,21 +111,14 @@ module Cats.Menu {
             proj.append(getCmd(CMDS.project_build));
             proj.append(getCmd(CMDS.project_validate));
 
-            var buildOnSaveItem = new GUI.MenuItem({ label: 'Build on Save', checked: false, type: "checkbox" });
-            proj.append(buildOnSaveItem);
-            buildOnSaveItem.click = () => {
-                IDE.project.config.buildOnSave = buildOnSaveItem.checked;
-            };
             proj.append(getCmd(CMDS.project_refresh));
             proj.append(getCmd(CMDS.project_dependencies));
             proj.append(new GUI.MenuItem({ type: "separator" }));
             proj.append(getCmd(CMDS.project_configure)); 
             proj.append(getCmd(CMDS.project_document)); 
-
-            var run = new GUI.Menu();
-            run.append(getCmd(CMDS.project_run));
-            // run.append(getCmd(CMDS.project_debug));
-
+            proj.append(getCmd(CMDS.project_run));
+ 
+    
 
             var window = new GUI.Menu();
             window.append(new GUI.MenuItem({ label: 'Views', submenu: this.createViewMenu() }));
@@ -140,7 +133,6 @@ module Cats.Menu {
             menubar.append(new GUI.MenuItem({ label: 'Edit', submenu: edit }));
             menubar.append(new GUI.MenuItem({ label: 'Source', submenu: source }));
             menubar.append(new GUI.MenuItem({ label: 'Project', submenu: proj }));
-            menubar.append(new GUI.MenuItem({ label: 'Run', submenu: run }));
             menubar.append(new GUI.MenuItem({ label: 'Window', submenu: window }));
             menubar.append(new GUI.MenuItem({ label: 'Help', submenu: help }));
             
