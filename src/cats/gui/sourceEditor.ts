@@ -22,8 +22,9 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         this.editSession = new (<any>ace).EditSession(session.content,"ace/mode/" + session.mode);
         this.editSession.setNewLineMode("unix");
         this.editSession.setUndoManager(new UndoManager());
+        this.configureSession();
         this.editSession.on("change", this.onChangeHandler.bind(this));
-     
+       
 
         this.addListenerOnce("appear", () => {
             var container = this.getContentElement().getDomElement();
@@ -52,7 +53,9 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
              this.aceEditor.on("changeSelection", () => {
                  IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
              }); 
-               
+             
+             this.configureEditor();
+             
         }, this);
         
         this.addListener("appear", () => { 
@@ -72,6 +75,22 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         if (keepPosition) this.getPosition();
         this.aceEditor.getSession().setValue(content);
         if (pos) this.moveToPosition(pos);
+    }
+
+
+    private configureEditor() {
+        var config = IDE.config.editor;
+        if (config.fontSize) this.aceEditor.setFontSize(config.fontSize + "px");
+        if (config.rightMargin) this.aceEditor.setPrintMarginColumn(config.rightMargin);
+        if (config.theme) this.aceEditor.setTheme(config.theme);
+    }
+
+
+    private configureSession() {
+        var config = this.session.project.config.codingStandards;
+        var session = this.editSession;
+        if (config.tabSize) session.setTabSize(config.tabSize);
+        if (config.useSoftTabs != null) session.setUseSoftTabs(config.useSoftTabs);
     }
 
     updateWorld() {
