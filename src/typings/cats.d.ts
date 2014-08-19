@@ -50,8 +50,7 @@ declare module Cats {
             fontSize?: number;
             theme?: string;   
         };
-        iconDir?:string;
-        remembeOpenFile?: boolean;
+        rememberOpenFile?: boolean;
         locale?:string;
         projects: string[];
         sessions: {

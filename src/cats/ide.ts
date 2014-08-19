@@ -79,6 +79,18 @@ module Cats {
             this.initFileDropArea();
         }
 
+        /**
+         * Configure the IDE based on the settings
+         */ 
+        configure() {
+            var config = this.config;
+            if (config.theme) {
+                var theme = this.themes[config.theme];
+                if (theme)  qx.theme.manager.Meta.getInstance().setTheme(this.themes[theme]);
+            }
+        }
+
+
         private layout(rootDoc:qx.ui.container.Composite) {
             // container layout
 
@@ -230,20 +242,6 @@ module Cats {
             }
         }
 
-        /**
-         * Indicate whether the IDE is busy with some (background) task
-         * @param isBusy true if busy, false otherwise
-         */ 
-        public busy(isBusy:boolean) {
-            this.statusBar.setBusy(isBusy);
-        }
-
-        /**
-         * Get the directory where the icons for the IDE can be found
-         */ 
-        public getIconDir() {
-            return this.config.iconDir || "static/img/eclipse/";
-        }
 
         /**
          * Load the configuration for the IDE. If there is no configuration

@@ -18,10 +18,9 @@
 
 module Cats.Commands {
 
-
-
-
-
+    /**
+     * Close all open projects
+     */ 
     function closeAllProjects() {
         IDE.closeProject(IDE.project);
     }
@@ -40,6 +39,10 @@ module Cats.Commands {
         IDE.project.run();
     };
 
+
+    /**
+     * Show a class diagram of the project. 
+     */ 
     function showDiagram() {
         alert("Right now just showing some demo classes.");
         var session = new Session("Class Diagram");
@@ -74,7 +77,8 @@ module Cats.Commands {
     */
 
     /**
-     * Compile all the sources without saving them
+     * Compile all the sources without actually saving them
+     * to see if there are any issues popping up.
      */ 
     function validateProject() {
         var project = IDE.project;
@@ -88,20 +92,24 @@ module Cats.Commands {
         IDE.project.build();
     }
 
-   /**
-     * Build the project
+    /**
+     * Generate the API documentation for the project
      */ 
     function documentProject() {
         IDE.project.document();
     }
 
+    /**
+     * Provide the user with an UI to configure the project settings
+     */ 
     function configureProject() {
         var w = new ProjectConfigDialog(IDE.project);
         w.show();
     }
 
     /**
-     * Refresh the project so everything is in sync again.
+     * Refresh the project so everything is in sync again. This is needed when more complex
+     * filesystem changes are done (like renaming TS files etc).
      */ 
     function refreshProject() {
         IDE.project.refresh();
@@ -123,15 +131,6 @@ module Cats.Commands {
                 this.value = ""; // Make sure the change event goes off next tome
                 window.open('index.html?project=' + param, '_blank');
             }
-            /*
-            var gui = require('nw.gui'); 
-            gui.Window.open(
-                'index.html?project=' + param,
-                {"new-instance":true}
-            );
-            */
-            
-            
         };
         chooser.click();
     };
@@ -149,7 +148,6 @@ module Cats.Commands {
             registry({ name: CMDS.project_dependencies, label: "Class Diagram", command: showDiagram });
             registry({ name: CMDS.project_configure, label: "Settings", command: configureProject });
              registry({ name: CMDS.project_document, label: "Generate Documentation", command: documentProject });
-
         }
 
     }

@@ -68,10 +68,10 @@ module Cats {
     var win = GUI.Window.get();
     win.on("close", function() {
 	    try {
-        if (IDE.hasUnsavedSessions()) {
-            if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
-        }
-        IDE.saveConfig();
+            if (IDE.hasUnsavedSessions()) {
+                if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
+            }
+            IDE.saveConfig();
 	    } catch (err) { } // lets ignore this
         this.close(true);
     });
