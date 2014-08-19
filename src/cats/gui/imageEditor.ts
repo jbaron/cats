@@ -8,6 +8,10 @@ class ImageEditor extends qx.ui.embed.Canvas implements Editor {
 		 this.createContextMenu();
 	 }
 
+     executeCommand(name, ...args):boolean {
+         return false;
+     }    
+
 	 private loadImage(url) {
 			var image = new Image();
 			image.onload = () => { this.drawImage(image);}; 

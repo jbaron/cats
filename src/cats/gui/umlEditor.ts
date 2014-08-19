@@ -21,6 +21,9 @@ class UMLEditor extends qx.ui.embed.Html implements Editor {
 		  });
 	}
 
+   executeCommand(name, ...args):boolean {
+         return false;
+     }    
 
     static LoadResources() {
         if (this.LoadedResources) {

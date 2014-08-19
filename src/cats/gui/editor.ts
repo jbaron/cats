@@ -17,4 +17,6 @@ interface Editor extends qx.ui.core.Widget {
     
     moveToPosition(pos: Ace.Position);
     
+    executeCommand(commandName: string, ...args): boolean;
+    
 }

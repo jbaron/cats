@@ -70,6 +70,10 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         IDE.infoBus.on("editor.rightMargin", (margin) => { this.aceEditor.setPrintMarginColumn(margin);});
     }
 
+    executeCommand(name, ...args):boolean {
+         return false;
+    }    
+
     setContent(content, keepPosition=true) {
         var pos;
         if (keepPosition) this.getPosition();
