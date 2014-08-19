@@ -66,8 +66,8 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         session.on("errors", (errors) => { this.showErrors(errors);});
         this.addListener("resize", () => { this.resizeHandler(); });
         
-        IDE.infoBus.on("editor.fontSize", (size) => { this.aceEditor.setFontSize(size + "px"); });
-        IDE.infoBus.on("editor.rightMargin", (margin) => { this.aceEditor.setPrintMarginColumn(margin);});
+        IDE.infoBus.on("project.config", () => { this.configureSession(); });
+        IDE.infoBus.on("ide.config", () => { this.configureEditor(); });
     }
 
     executeCommand(name, ...args):boolean {
@@ -368,7 +368,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         var newName = prompt("Replace with");
         if (! newName) return;
         this.session.project.iSense.getInfoAtPosition("getReferencesAtPosition", this.session.name, this.getPosition(), (err, data:Cats.FileRange[]) => {
-            Cats.Commands.refactor(data,newName);
+            Cats.Refactor.rename(data,newName);
         });
     }
 

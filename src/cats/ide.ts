@@ -65,6 +65,7 @@ module Cats {
         constructor() {
             this.catsHomeDir = process.cwd();
             this.config = this.loadConfig();
+            this.configure();
         }
 
         /**
@@ -73,8 +74,8 @@ module Cats {
          */ 
         init(rootDoc:qx.ui.container.Composite) {
             Cats.Commands.init();
-            this.layout(rootDoc);
-            // this.toolBar.init();
+            var layouter = new Layout(rootDoc);
+            layouter.layout(this);
             this.mainMenu = new Cats.Menu.Menubar();
             this.initFileDropArea();
         }
@@ -85,79 +86,14 @@ module Cats {
         configure() {
             var config = this.config;
             if (config.theme) {
-                var theme = this.themes[config.theme];
-                if (theme)  qx.theme.manager.Meta.getInstance().setTheme(this.themes[theme]);
+                var theme = this.themes[config.theme] || this.themes.cats;
+                if (theme !== qx.theme.manager.Meta.getInstance().getTheme()) {
+                    qx.theme.manager.Meta.getInstance().setTheme(theme);
+                }
             }
         }
 
-
-        private layout(rootDoc:qx.ui.container.Composite) {
-            // container layout
-
-            qx.theme.manager.Meta.getInstance().setTheme(this.themes.cats);
-            
-            var layout = new qx.ui.layout.VBox();
-    
-            // main container
-            var mainContainer = new qx.ui.container.Composite(layout);
-            rootDoc.add(mainContainer, { edge: 0 });
-    
-            this.toolBar = new ToolBar();
-    
-            mainContainer.add(this.toolBar, { flex: 0 });
-    
-            // mainsplit, contains the editor splitpane and the info splitpane
-            var mainsplit = new qx.ui.splitpane.Pane("horizontal");
-            // mainsplit.set({ decorator: null });
-            
-            
-            // ********************* Navigator Pane ********************
-            this.navigatorPane = new TabView(["files", "bookmarks"]);
-            this.bookmarks = new ResultTable(["Bookmark"]);
-            this.navigatorPane.getPage("bookmarks").add(this.bookmarks, { edge: 0 });
-            
-            mainsplit.add(this.navigatorPane, 1); // navigator
-    
-            var editorSplit = new qx.ui.splitpane.Pane("vertical");
-            // editorSplit.setDecorator(null);
-    
-            var infoSplit = new qx.ui.splitpane.Pane("horizontal");
-            this.sessionTabView = new SessionTabView();
-            // infoSplit.set({ decorator: null });
-            infoSplit.add(this.sessionTabView, 4); // editor
-           
-            this.infoPane = new TabView(["outline", "properties"]);
-            this.outlineNavigator = new OutlineNavigator();
-            this.infoPane.getChildren()[0].add(this.outlineNavigator , { edge: 0 });
-            infoSplit.add(this.infoPane, 1); // todo
-        
-            editorSplit.add(infoSplit, 4);
-    
-            // **********************  Problem Pane ***************************
-            this.problemPane = new TabView(["problems", "search", "console", "process"]);
-            editorSplit.add(this.problemPane, 2); // Info
-    
-            this.console = new ConsoleLog();
-            this.problemResult = new ResultTable();
-            this.searchResult = new ResultTable();
-            this.processTable = new ProcessTable();
-            this.problemPane.getChildren()[0].add(this.problemResult, { edge: 0 });
-            this.problemPane.getChildren()[1].add(this.searchResult, { edge: 0 });
-            this.problemPane.getChildren()[2].add(this.console, { edge: 0 });
-            this.problemPane.getChildren()[3].add(this.processTable, { edge: 0 });
-    
-            this.problemPane.selectPage("console");
-            // this.problemPane.setSelection([this.problemPane.getChildren()[2]]);
-    
-            mainsplit.add(editorSplit, 4); // main area
-    
-            mainContainer.add(mainsplit, { flex: 1 });
-    
-            // ************************ Status Bar *****************************
-            this.statusBar = new StatusBar();
-            mainContainer.add(this.statusBar, { flex: 0 });
-        }
-
+ 
         /**
          * Attach the drag n' drop event listeners to the document
          *
@@ -278,7 +214,9 @@ module Cats {
 
         updateConfig(config) {
             this.config = config;
-            // @TODO save it
+            IDE.infoBus.emit("ide.config", config);
+            this.configure();
+            this.saveConfig();
         }
 
         /**
@@ -291,14 +229,12 @@ module Cats {
                 config.projects = [];
                 if (this.project) {
                     config.projects.push(this.project.projectDir);
-                    if  (this.sessions) {
-                          this.sessions.forEach((session)=>{               
-                            config.sessions.push({ 
-                                path: session.name
-                                // session.getPosition() //@TODO make session fully responsible
-                            });
-                          });
-                    }      
+                    this.sessions.forEach((session)=>{               
+                        config.sessions.push({ 
+                            path: session.name
+                            // session.getPosition() //@TODO make session fully responsible
+                        });
+                    });
                 };
                 
                 var configStr = JSON.stringify(config);

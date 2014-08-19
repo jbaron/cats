@@ -20,3 +20,4 @@ interface Editor extends qx.ui.core.Widget {
     executeCommand(commandName: string, ...args): boolean;
     
 }
+

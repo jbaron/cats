@@ -50,7 +50,9 @@ module Cats {
         /**
          * Save the project configuration
          */ 
-        saveConfig()  {
+        updateConfig(config)  {
+           this.config = config;
+           IDE.infoBus.emit("project.config", config);
            var pc = new ProjectConfig(this.projectDir);
            pc.store(this.config);
         }

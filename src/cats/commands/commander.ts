@@ -56,7 +56,7 @@ module Cats.Commands {
         source_openDeclaration,
         source_findRef,
         source_findDecl,
-        source_tslint,
+
         
         project_open,
         project_close,
@@ -70,7 +70,6 @@ module Cats.Commands {
         project_configure,
         project_document,
         
-        refactor_rename,
         
         ide_quit,
         ide_theme,
@@ -116,11 +115,6 @@ module Cats.Commands {
 	}
 
 
-
-
-
-  
-
     export function runCommand(name:CMDS):void  {
 		commands[name].command();
 	}
@@ -139,7 +133,6 @@ module Cats.Commands {
 		HelpCommands.init(register);
 	    ProjectCommands.init(register);
         IdeCommands.init(register);
-        RefactorCommands.init(register);
 	}
 
 

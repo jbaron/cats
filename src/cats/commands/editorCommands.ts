@@ -27,58 +27,6 @@ module Cats.Commands {
 */
 
 
-    function getLintConfig() {
-        var fileName = path.join(IDE.catsHomeDir, "static/tslint.json");
-        var content = OS.File.readTextFile(fileName);
-        return JSON.parse(content);
-    }
- 
- 
-    function convertPos(item:any): Cats.Range {
-        return {
-            start : {
-                row: item.startPosition.line,
-                column : item.startPosition.character
-            },
-            end : {
-                row: item.endPosition.line,
-                column : item.endPosition.position.character
-            }
-        };
-        
-    }
- 
-    function lint() {
-        var session = IDE.sessionTabView.getActiveSession();
-        var options = {
-            formatter: "json",
-            configuration: getLintConfig(),
-            rulesDirectory: "customRules/",
-            formattersDirectory: "customFormatters/"
-        };
-        
-        if (session && session.isTypeScript()) {
-                var Linter = require("tslint");
-                var ll = new Linter(session.name, session.content, options);
-                var result:Array<any> = JSON.parse(ll.lint().output);
-                // console.log(result);
-                // IDE.console.log(JSON.stringify(result,null,4));
-                var r:Cats.FileRange[] = [];
-                result.forEach((msg) => {
-                        var item:Cats.FileRange = {
-                              fileName : msg.name,
-                              message: msg.failure,
-                              severity: Cats.Severity.Info,
-                              range: convertPos(msg)
-                        };
-                        r.push(item);
-                });
-                session.setErrors(r);
-                IDE.problemResult.setData(r);
-                
-        }
-    }
-
 
       function formatText() {
           
@@ -94,48 +42,12 @@ module Cats.Commands {
             
         }
 
-    /*
-    function getShortcut(commandName: string) {
-        
-        var platform = IDE.getActiveEditor().commands.platform;
-        var command = IDE.getActiveEditor().commands.byName[commandName];
 
-        if (command && command.bindKey) {
-            var key = command.bindKey[platform];
-            return key;
-        }
-
-        return null;
-        
-    }
-
-
-    // TODO i18n
-    function addShortcut(label, commandName: string) {
-        var result = label;
-        var platform = IDE.getActiveEditor().commands.platform;
-        var command = IDE.getActiveEditor().commands.byName[commandName];
-
-        if (command && command.bindKey) {
-            var tabs = 5 - Math.floor((result.length / 4) - 0.01);
-            result = result + "\t\t\t\t\t\t".substring(0, tabs);
-            var key = command.bindKey[platform];
-            if (key) result += key;
-        }
-        return result;
-    }
-    
-    
-    */
-    
-    
     function toggleInvisibles() {
         //@TODO fix,don't access private var
         var aceSession = IDE.getActiveEditor()["aceEditor"];
         aceSession.setShowInvisibles(!aceSession.getShowInvisibles());
     }
-
-    
 
     
     function editorCommand(commandName:string) {
@@ -187,8 +99,6 @@ module Cats.Commands {
                     label: config.label,
                     icon: config.icon,
                     shortcut:null,
-       //             command:null
-        //            shortcut: getShortcut(config.cmd),
                     command: editorCommand(config.cmd),
                 };
                 // if (config.icon) item.icon = config.icon;
@@ -197,7 +107,6 @@ module Cats.Commands {
             
             registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
             registry({name:CMDS.source_format, label:"Format Code", command: formatText});
-            registry({name:CMDS.source_tslint, label:"Lint Code", command: lint});
         }
 
     }

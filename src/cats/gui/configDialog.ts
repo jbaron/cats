@@ -155,9 +155,7 @@ class ProjectConfigDialog extends ConfigDialog {
          config.customBuild = this.customBuild.getData();
          config.customRun = this.customRun.getData();
          config.documentation = this.documentationSettings.getData();
-         IDE.project.config = config;
-         IDE.project.saveConfig();
-         // console.log(config);
+         IDE.project.updateConfig(config);
      }
      
      addTabs() {
@@ -348,10 +346,7 @@ class IdeConfigDialog extends ConfigDialog {
      saveValues() {
          var config:Cats.IDEConfiguration = this.ideGenericSettings.getData();
          config.editor = this.editorSettings.getData();
-         // IDE.config = config;
          IDE.updateConfig(config);
-         // @TODO implement the saving of the settings
-         console.log(config);
      }
      
      
