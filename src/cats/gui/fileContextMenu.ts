@@ -29,11 +29,13 @@ class FileContextMenu extends qx.ui.menu.Menu {
 
 
     private openInApp() {
-        this.gui.Shell.openItem(this.getFullPath());
+        var osPath = PATH.join(this.getFullPath(),"");
+        if (osPath) this.gui.Shell.openItem(osPath);
     }
     
     private showInFolder() {
-        this.gui.Shell.showItemInFolder(this.getFullPath());
+        var osPath = PATH.join(this.getFullPath(),"");
+        if (osPath) this.gui.Shell.showItemInFolder(osPath);
     }
 
     
