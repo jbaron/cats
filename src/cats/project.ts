@@ -275,6 +275,9 @@ module Cats {
             return "file://" + url;
         }
         
+        /**
+         * Get the configured Lint options
+         */
         getLintOptions() {
             if (! this.lintOptions) {
                 var fileName;
