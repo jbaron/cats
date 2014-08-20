@@ -19,28 +19,20 @@
 
 module Cats.Commands {
 
-/*
-    // Just wrap the Ace command.
-    function editorCommand(commandName: string) {
-        return function() { IDE.getActiveEditor().execCommand(commandName); }
-    }
-*/
 
-
-
-      function formatText() {
-          
-            var session = IDE.sessionTabView.getActiveSession();
-            if (session && session.isTypeScript()) {
-                session.project.iSense.getFormattedTextForRange( session.name, 0, -1 , (err:Error, result:string) => {                    
-                    if (!err) {
-                        session.setContent(result);
-                    }
-                    
-                });
-            }
-            
+    function formatText() {
+      
+        var session = IDE.sessionTabView.getActiveSession();
+        if (session && session.isTypeScript()) {
+            session.project.iSense.getFormattedTextForRange( session.name, 0, -1 , (err:Error, result:string) => {                    
+                if (!err) {
+                    session.setContent(result);
+                }
+                
+            });
         }
+        
+    }
 
 
     function toggleInvisibles() {

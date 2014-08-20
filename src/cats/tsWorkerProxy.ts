@@ -80,6 +80,10 @@ export class TSWorkerProxy {
         this.perform("getDependencyGraph",cb);
     }
 
+   getObjectModel(cb) {
+        this.perform("getObjectModel",cb);
+    }
+
     setCompilationSettings(settings) {
          this.perform("setCompilationSettings", settings, null);
     }

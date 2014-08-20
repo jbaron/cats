@@ -23,20 +23,11 @@ module Cats.Commands {
      * Quit CATS
      */ 
     function quit() {
-         if (IDE.hasUnsavedSessions()) {
-            if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
-        }
-        IDE.saveConfig();
-        GUI.App.quit();
+        IDE.quit();
     }
 
 
-    function setIdeTheme(theme:string) {            
-        qx.theme.manager.Meta.getInstance().setTheme(theme);
-    }
-
-
-
+  
     function toggleView(component:qx.ui.core.Widget) {
        if (component.isVisible()) { 
             component.exclude();    

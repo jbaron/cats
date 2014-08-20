@@ -66,7 +66,7 @@ module Cats.Commands {
         project_debug,
         project_refresh,
         project_properties,
-        project_dependencies,
+        project_classDiagram,
         project_configure,
         project_document,
         

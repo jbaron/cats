@@ -117,7 +117,7 @@ class FileContextMenu extends qx.ui.menu.Menu {
  
         var name = prompt("Enter new file name in directory " + basedir);
         if (name == null) return;
-        var fullName = PATH.join(basedir, name);
+        var fullName = OS.File.join(basedir, name);
         OS.File.writeTextFile(fullName, "");
         this.refresh();
     }
@@ -127,7 +127,7 @@ class FileContextMenu extends qx.ui.menu.Menu {
 
         var name = prompt("Enter new folder name in directory " + basedir);
         if (name == null) return;
-        var fullName = PATH.join(basedir, name);
+        var fullName = OS.File.join(basedir, name);
         OS.File.mkdirRecursiveSync(fullName);
         this.refresh(); 
     }
@@ -141,7 +141,7 @@ class FileContextMenu extends qx.ui.menu.Menu {
         var c = confirm("Going to rename " + basename + " to " + name);
         if (c) {        
             try {
-                OS.File.rename(fullName, PATH.join(dirname, name));
+                OS.File.rename(fullName, OS.File.join(dirname, name));
             } catch (err) {
                 alert(err);
             }

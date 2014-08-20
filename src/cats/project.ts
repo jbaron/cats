@@ -164,7 +164,7 @@ module Cats {
                     
                     var readme = "none";
                     if (this.config.documentation.readme && (this.config.documentation.readme !== "none")) {
-                        readme = PATH.join(this.projectDir, this.config.documentation.readme);
+                        readme = OS.File.join(this.projectDir, this.config.documentation.readme);
                     }
                     console.log("Readme " + readme);
                     
@@ -174,7 +174,7 @@ module Cats {
                     settings.verbose = false;
                     // settings.theme = this.config.documentation.theme || "default";
                     var app = new typedoc.Application(settings);
-                    var dest = path.join(this.projectDir, outputDir);
+                    var dest = OS.File.join(this.projectDir, outputDir);
                     app.generate(this.tsfiles, dest);
                 } finally {
                     win.hide();
@@ -197,14 +197,14 @@ module Cats {
             this.iSense = new TSWorkerProxy(this);
             
             if (this.config.compiler.outFileOption) {
-                this.config.compiler.outFileOption = PATH.join(this.projectDir,this.config.compiler.outFileOption);
+                this.config.compiler.outFileOption = OS.File.join(this.projectDir,this.config.compiler.outFileOption);
                 console.info("Compiler output: " + this.config.compiler.outFileOption);
             }
                 
             this.iSense.setCompilationSettings(this.config.compiler);
 
             if (! this.config.compiler.noLib) {
-                var fullName = OS.File.switchToForwardSlashes(PATH.join(IDE.catsHomeDir, "typings/lib.d.ts"));
+                var fullName = OS.File.join(IDE.catsHomeDir, "typings/lib.d.ts");
                 var libdts = OS.File.readTextFile(fullName);
                 this.addScript(fullName, libdts);
             }
@@ -271,7 +271,7 @@ module Cats {
          * Get the URl for running the project
          */ 
         private getStartURL(): string {
-            var url = PATH.join(this.projectDir, this.config.main);
+            var url = OS.File.join(this.projectDir, this.config.main);
             return "file://" + url;
         }
         
@@ -280,9 +280,9 @@ module Cats {
                 var fileName;
                 
                 if (this.config.codingStandards.lintFile) {
-                    fileName = path.join(this.projectDir,this.config.codingStandards.lintFile);
+                    fileName = OS.File.join(this.projectDir,this.config.codingStandards.lintFile);
                 } else {
-                    fileName = path.join(IDE.catsHomeDir, "static/tslint.json");
+                    fileName = OS.File.join(IDE.catsHomeDir, "static/tslint.json");
                 }
                 
                 var content = OS.File.readTextFile(fileName);
@@ -312,7 +312,7 @@ module Cats {
             OS.File.find(pattern,this.projectDir,  (err:Error,files:Array<string>) => {
             files.forEach((file) => {
                 try {
-                    var fullName = OS.File.switchToForwardSlashes(path.join(this.projectDir, file));
+                    var fullName = OS.File.join(this.projectDir, file);
                     var content = OS.File.readTextFile(fullName);
                     this.addScript(fullName,content);
                 } catch (err) {

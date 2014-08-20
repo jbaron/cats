@@ -45,6 +45,13 @@ module Cats.Commands {
      */ 
     function showDiagram() {
         alert("Right now just showing some demo classes.");
+        
+        /*
+        IDE.project.iSense.getObjectModel((err,model)=>{
+            console.log(model);
+        });
+        */
+        
         var session = new Session("Class Diagram");
         session.uml = true;
         IDE.sessionTabView.addSession(session);
@@ -145,7 +152,7 @@ module Cats.Commands {
             registry({ name: CMDS.project_refresh, label: "Refresh Project", command: refreshProject, icon: "actions/view-refresh.png" });
             registry({ name: CMDS.project_run, label: "Run Project", command: runProject, icon: "actions/arrow-right.png" });
             // registry({ name: CMDS.project_debug, label: "Debug Project", command: null, icon: "debug.png" });
-            registry({ name: CMDS.project_dependencies, label: "Class Diagram", command: showDiagram });
+            registry({ name: CMDS.project_classDiagram, label: "Class Diagram", command: showDiagram });
             registry({ name: CMDS.project_configure, label: "Settings", command: configureProject });
              registry({ name: CMDS.project_document, label: "Generate Documentation", command: documentProject });
         }

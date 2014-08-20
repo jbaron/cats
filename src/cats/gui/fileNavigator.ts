@@ -1,22 +1,21 @@
-
-var path = require("path");
-
-var rootTop = {
-    label: "qx-cats",
-    fullPath: "/Users/peter/Development/qx-cats/",
-    directory: true,
-    children: [{
-        label: "Loading",
-        icon: "loading",
-        directory : false 
-    }],
-    loaded: false
-};
-
 /**
  * File navigator widget for CATS
  */
 class FileNavigator extends qx.ui.tree.VirtualTree {
+
+    private rootTop = {
+        label: "qx-cats",
+        fullPath: "",
+        directory: true,
+        children: [{
+            label: "Loading",
+            icon: "loading",
+            directory : false 
+        }],
+        loaded: false
+    };
+
+
 
     static COUNT = 0;
 
@@ -35,9 +34,9 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         });
         
         var directory= project.projectDir;
-        rootTop.fullPath = directory;
-        rootTop.label = path.basename(directory);
-        var root = qx.data.marshal.Json.createModel(rootTop, true);
+        this.rootTop.fullPath = directory;
+        this.rootTop.label = PATH.basename(directory);
+        var root = qx.data.marshal.Json.createModel(this.rootTop, true);
         this.setModel(root);
         // this.setItemHeight(18);
         // this.setLabelPath("label");
@@ -89,7 +88,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         var files = OS.File.readDir(iconFolder);
         files.forEach((file) => {
            if (file.isFile) {    
-               var mimetype =  path.basename(file.name, ".png");
+               var mimetype =  PATH.basename(file.name, ".png");
                this.iconsForMime[mimetype] = file.name;
            }
         });

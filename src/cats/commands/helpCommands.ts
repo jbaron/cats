@@ -22,29 +22,6 @@ module Cats.Commands {
      */ 
     function showShortcuts() {
          var w = window.open("keyboard_shortcuts.html", "_blank", "width=800; height=595");
-        /*
-        var isDark = document.getElementsByClassName("ace_dark").length > 0;
-        var elem = <HTMLElement>document.getElementsByClassName("ace_scroller")[0];
-        var bg = window.getComputedStyle(elem, null).backgroundColor;
-        elem = document.getElementById("editor");
-        var fg = window.getComputedStyle(elem, null).color;
-        var w = window.open("keyboard_shortcuts.html", "_blank", "width=800; height=595");
-        
-        
-        w.onload = () => {
-            
-            var body = w.document.body;
-            
-            $(body)
-                .css("background-color", bg)
-                .css("color", fg);
-            
-            if (isDark) {
-                $(body).addClass("dark");
-            }
-            
-        };
-        */
     }
 
     /**

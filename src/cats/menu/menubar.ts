@@ -111,7 +111,7 @@ module Cats.Menu {
             proj.append(getCmd(CMDS.project_validate));
 
             proj.append(getCmd(CMDS.project_refresh));
-            proj.append(getCmd(CMDS.project_dependencies));
+            proj.append(getCmd(CMDS.project_classDiagram));
             proj.append(new GUI.MenuItem({ type: "separator" }));
             proj.append(getCmd(CMDS.project_configure)); 
             proj.append(getCmd(CMDS.project_document)); 

@@ -9,7 +9,7 @@ class MimeTypeFinder {
      * Find the mimetype for a file name      
      */
     static lookup(filename, fallback?) {
-        return this.types[path.extname(filename)] || fallback || this.default_type;
+        return this.types[PATH.extname(filename)] || fallback || this.default_type;
     }
 
     private static default_type = 'application/octet-stream';

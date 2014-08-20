@@ -45,7 +45,7 @@ module Cats {
          * Get the name of the configuation file
          */
         private getFileName() : string {
-            return PATH.join(this.projectRoot, ".settings", "config.json");
+            return OS.File.join(this.projectRoot, ".settings/config.json");
         }
 
        

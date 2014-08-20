@@ -307,6 +307,14 @@ module Cats {
             this.project.close();
             this.project = null;
         }
+        
+        quit() {
+            if (this.hasUnsavedSessions()) {
+                if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
+            }
+            this.saveConfig();
+            GUI.App.quit();
+        }
  
     }
 

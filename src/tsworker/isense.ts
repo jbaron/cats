@@ -16,7 +16,33 @@
 importScripts("../static/js/typescriptServices.js");
 
 module Cats.TSWorker {
-    
+ 
+ 
+    class ObjectModel extends TypeScript.PositionTrackingWalker {
+        
+        classNames = {}
+        lastClass:Array<string>;
+        
+        constructor() {
+            super();
+        }
+        
+        public visitClassDeclaration(node: TypeScript.ClassDeclarationSyntax) {
+            var className = node.identifier.text();
+            if (! this.classNames[className]) this.classNames[className] = [];
+            this.lastClass = this.classNames[className];
+            super.visitClassDeclaration(node);
+        }
+        
+         public visitMemberFunctionDeclaration(node: TypeScript.MemberFunctionDeclarationSyntax) {
+            var methodName = node.propertyName.text();
+            this.lastClass.push(methodName);
+            super.visitMemberFunctionDeclaration(node);
+        }
+        
+    }
+ 
+
     /**
      * Simple function to stub console.log functionality since this is 
      * not available in a worker.
@@ -100,6 +126,14 @@ module Cats.TSWorker {
             }
         }
 
+        getObjectModel() {
+            var walker = new ObjectModel();
+            this.lsHost.getScriptFileNames().forEach((script) => {
+                this.ls.getSyntaxTree(script).sourceUnit().accept(walker);
+            });
+            var result = walker.classNames;
+            return result;
+        }
 
         /**
          * Convert Services to Cats NavigateToItems

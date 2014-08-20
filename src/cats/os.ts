@@ -137,6 +137,11 @@ module OS.File {
             return process.platform === "win32";
         }
 
+        export function join(a,b) : string{
+            var result = PATH.join(a,b);
+            return switchToForwardSlashes(result);
+            
+        }
 
         export function find(pattern:string, rootDir:string, cb:Function) {
             var files = glob.sync(pattern, {cwd:rootDir}) ;
@@ -186,6 +191,7 @@ module OS.File {
         }
         
         export function switchToForwardSlashes(path:string):string {
+            if (! path) return path;
             return path.replace(/\\/g, "/");
         }
          
@@ -211,11 +217,11 @@ module OS.File {
             var files:string[] = FS.readdirSync(directory);
             var result = [];
             files.forEach((file) => {
-                var fullName = PATH.join(directory, file);
+                var fullName = OS.File.join(directory, file);
                 var stats = FS.statSync(fullName);
                 result.push({
                    name:file,
-                   fullName: switchToForwardSlashes(fullName),
+                   fullName: fullName,
                    isFile: stats.isFile() ,
                    isDirectory: stats.isDirectory()
                 });
