@@ -3,7 +3,7 @@
 
 /**
  * Wrapper around the ACE editor. The rest of the code base should not use
- * ACE editor directly so it can be easily changed for another editor if required.
+ * ACE editor directly so it can be changed for another editor if required.
  */
 class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Html */{
 
@@ -252,7 +252,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
 
 
      private autoComplete() {
-            if (this.session.mode === "typescript") {
+            if (this.session.isTypeScript()) {
                 var cursor = this.aceEditor.getCursorPosition();
                 this.showAutoComplete(cursor);
             }                        
@@ -407,7 +407,6 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
     }
     
     private createContextMenu() {
-       
         var menu = new qx.ui.menu.Menu();
         if (this.session.isTypeScript()) {
             menu.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration.bind(this)));
@@ -419,8 +418,6 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
             menu.addSeparator();
         }
         menu.add(this.createContextMenuItem("Bookmark", this.bookmark.bind(this)));
-        // menu.add(this.createContextMenuItem("Undo", () => {this.aceEditor.execCommand("undo")}));
-        
         this.setContextMenu(menu);
     }
   

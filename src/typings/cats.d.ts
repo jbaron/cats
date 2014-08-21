@@ -48,7 +48,8 @@ declare module Cats {
         editor?: {
             rightMargin?: number;
             fontSize?: number;
-            theme?: string;   
+            theme?: string;
+            completionMode?:string;
         };
         rememberOpenFile?: boolean;
         locale?:string;

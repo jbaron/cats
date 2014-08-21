@@ -17,6 +17,7 @@ module Cats {
 
     export class Ide  {
 
+        // List of different themes that are available
         private themes = {                  
             cats : cats.theme.Default,
             classic: qx.theme.Classic,
@@ -25,8 +26,6 @@ module Cats {
             simple:qx.theme.Simple
         };
 
-
-        catsHomeDir: string;
         navigatorPane: TabView;
         problemPane: TabView;
         toolBar: ToolBar;
@@ -35,32 +34,19 @@ module Cats {
         sessionTabView: SessionTabView;
         console:ConsoleLog;
         processTable:ProcessTable;
-
-        // sessions: Session[] = [];
-        project: Project;
-        private static STORE_KEY = "cats.config";
-
-        infoBus= <InfoBus> new Events.EventEmitter();
-
-        outlineNavigator:OutlineNavigator; 
-
-        getActiveEditor() {
-            var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
-            if (! page) return null;
-            var editor:SourceEditor = <SourceEditor>page.getChildren()[0];
-            return editor;
-        }
-
-        get sessions() {
-            return this.sessionTabView.getSessions();
-        }
-
         searchResult:ResultTable;
         bookmarks:ResultTable;
         problemResult:ResultTable;
-  
-        mainMenu:Menu.Menubar = null;
+        menubar:Menu.Menubar;
+        outlineNavigator:OutlineNavigator; 
+
+
+        catsHomeDir: string;
+        project: Project;
         config:IDEConfiguration;
+        private static STORE_KEY = "cats.config";
+        infoBus= <InfoBus> new Events.EventEmitter();
+
 
         constructor() {
             this.catsHomeDir = process.cwd();
@@ -76,9 +62,24 @@ module Cats {
             Cats.Commands.init();
             var layouter = new Layout(rootDoc);
             layouter.layout(this);
-            this.mainMenu = new Cats.Menu.Menubar();
+            this.menubar = new Cats.Menu.Menubar();
             this.initFileDropArea();
         }
+
+
+        getActiveEditor() {
+            var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
+            if (! page) return null;
+            var editor:SourceEditor = <SourceEditor>page.getChildren()[0];
+            return editor;
+        }
+
+
+        get sessions() {
+            return this.sessionTabView.getSessions();
+        }
+
+      
 
         /**
          * Configure the IDE based on the settings
@@ -225,6 +226,7 @@ module Cats {
         saveConfig() {
             try {
                 var config = this.config;
+                config.version = "1.1";
                 config.sessions = [];
                 config.projects = [];
                 if (this.project) {

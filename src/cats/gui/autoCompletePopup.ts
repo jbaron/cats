@@ -22,10 +22,9 @@
      */
     class AutoCompletePopup extends qx.ui.popup.Popup {
 
-
         private listModel:any;
         private handler;
-        private changeListener;
+        private changeListener:Function;
         private list:qx.ui.list.List;
         private filtered:any[];
 
@@ -97,9 +96,16 @@
         }
 
 
-		private matchText(text:string, completion:string) {
+		private match_strict(text:string, completion:string) {
 			if (! text) return true;
 			if (completion.indexOf(text) === 0) return true;
+			return false;
+		}
+
+
+        private match_forgiven(text:string, completion:string) {
+			if (! text) return true;
+			if (completion.indexOf(text) > -1 ) return true;
 			return false;
 		}
 
@@ -108,15 +114,23 @@
          * so far.
          */ 
         private updateFilter() {
-            var text = this.getInputText(); // .toLowerCase();
+            var text = this.getInputText();
+            if (text) text = text.toLowerCase();
+            
+            var matchText = this.match_strict;
+            if (IDE.config.editor.completionMode) {
+                var methodName = "match_"  + IDE.config.editor.completionMode;
+                if (this[methodName]) matchText = this[methodName];
+            }
+
 			var lastItem = this.listModel.getItem(this.listModel.getLength() -1);
 			var counter = 0;
 
 			this.filtered = [];
             var delegate = {};
             delegate["filter"] = (data) => {
-                var label = data.getLabel();
-				var result = this.matchText(text, label);
+                var value = data.getValue();
+				var result = matchText(text, value);
 				if (result) this.filtered.push(data);
 				if (data === lastItem) {
 					// IDE.console.log("filtered items: " + this.filtered.length);
@@ -208,9 +222,11 @@
              completions.forEach((completion) => {
                   var extension="";
                   if (completion.kind === "method") extension = "()";
+            
                   rawData.push({
                      label: completion.name + extension,
-                     icon: completion.kind
+                     icon: completion.kind,
+                     value: completion.name.toLowerCase()
                   });
               });
           
