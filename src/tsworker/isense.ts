@@ -17,32 +17,6 @@ importScripts("../static/js/typescriptServices.js");
 
 module Cats.TSWorker {
  
- 
-    class ObjectModel extends TypeScript.PositionTrackingWalker {
-        
-        classNames = {}
-        lastClass:Array<string>;
-        
-        constructor() {
-            super();
-        }
-        
-        public visitClassDeclaration(node: TypeScript.ClassDeclarationSyntax) {
-            var className = node.identifier.text();
-            if (! this.classNames[className]) this.classNames[className] = [];
-            this.lastClass = this.classNames[className];
-            super.visitClassDeclaration(node);
-        }
-        
-         public visitMemberFunctionDeclaration(node: TypeScript.MemberFunctionDeclarationSyntax) {
-            var methodName = node.propertyName.text();
-            this.lastClass.push(methodName);
-            super.visitMemberFunctionDeclaration(node);
-        }
-        
-    }
- 
-
     /**
      * Simple function to stub console.log functionality since this is 
      * not available in a worker.
@@ -78,7 +52,6 @@ module Cats.TSWorker {
          */ 
         constructor() {
             this.lsHost = new LanguageServiceHost();
-            // this.ls = new TypeScript.Services.TypeScriptServicesFactory().createLanguageService(this.lsHost);
             this.ls = new TypeScript.Services.TypeScriptServicesFactory().createPullLanguageService(this.lsHost);
         }
 
@@ -127,7 +100,7 @@ module Cats.TSWorker {
         }
 
         getObjectModel() {
-            var walker = new ObjectModel();
+            var walker = new ObjectModelCreator();
             this.lsHost.getScriptFileNames().forEach((script) => {
                 this.ls.getSyntaxTree(script).sourceUnit().accept(walker);
             });
@@ -444,7 +417,7 @@ module Cats.TSWorker {
             return result;
         }
 
-        public autoComplete(cursor: Cats.Position, fileName: string): TypeScript.Services.CompletionInfo {
+        public getCompletions(fileName: string, cursor: Cats.Position): TypeScript.Services.CompletionInfo {
             var pos = this.getPositionFromCursor(fileName, cursor);
             var memberMode = false;
             var source = this.getScriptContent(fileName);

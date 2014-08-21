@@ -41,6 +41,7 @@ module Cats.Commands {
         // w.setData(IDE.project.config.compiler);
         w.show();
     }
+    
     /**
      * Register the IDE commands
      */ 

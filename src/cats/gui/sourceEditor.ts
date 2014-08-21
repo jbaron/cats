@@ -244,7 +244,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
             // Any pending changes that are not yet send to the worker?
             if (this.pendingWorkerUpdate) this.update();
 
-            IDE.project.iSense.autoComplete(cursor, this.session.name, 
+            IDE.project.iSense.getCompletions( this.session.name, cursor, 
             (err, completes:TypeScript.Services.CompletionInfo) => {
                 if (completes != null) this.autoCompletePopup.showCompletions(completes.entries);
             });
