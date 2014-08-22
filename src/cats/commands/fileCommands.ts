@@ -87,7 +87,7 @@ module Cats.Commands {
             registry({ name: CMDS.file_closeAll, label: "Close All Files", command: closeAllFiles,icon: "actions/project-development-close-all.png"  });
             registry({ name: CMDS.file_save, label: "Save File", command: saveFile, icon: "actions/document-save.png"  });
             registry({ name: CMDS.file_saveAll, label: "Save All", command: saveAll, icon: "actions/document-save-all.png" });
-            registry({ name: CMDS.file_saveAs, label: "Save As...", command: saveAs,  icon: "actions/document-save-as.png"});
+            registry({ name: CMDS.file_saveAs, label: "Save As....", command: saveAs,  icon: "actions/document-save-as.png"});
         }
 
     }

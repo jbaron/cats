@@ -14,10 +14,12 @@
 //
 
 
+declare module cats {
+    var theme: any;
+}
+
 declare module Cats {
 
-    var theme:any
-    
     interface JSONRPCRequest {
         id?: number;
         method:string;
@@ -38,19 +40,34 @@ declare module Cats {
 
  
     /**
-     * Used for storing IDE specific settings
+     * Interface for the possible IDE specific settings
      */
     interface IDEConfiguration {
         version: string;
-        theme: string;
-        fontSize: number;
-        rightMargin: number;
-        iconDir: string;
+        theme?: string;
+        editor?: {
+            rightMargin?: number;
+            fontSize?: number;
+            theme?: string;
+            completionMode?:string;
+        };
+        rememberOpenFile?: boolean;
+        locale?:string;
         projects: string[];
         sessions: {
             path: string;
             state?: any;
         }[];
+    }
+
+
+    interface RunExternal {
+        command: string;
+        useOwnConsole?: boolean;
+        options?: {
+            env?: string;
+            cwd?: string;
+        }
     }
 
     /**
@@ -63,22 +80,33 @@ declare module Cats {
         src?: string;
         destPath?: string;
         buildOnSave?: boolean;
-        customBuild?:any;
-        compiler: {
-            useDefaultLib?: boolean;
-            outFileOption?: string;
-            emitComments?: boolean;
-            generateDeclarationFiles?: boolean;
-            mapSourceFiles?: boolean;
-            codeGenTarget?: number;
-            moduleGenTarget?: number;
+        customBuild?:RunExternal;
+        customRun?:RunExternal;
+        compiler:  {
+            noLib?: boolean;  // undefined by default
+            outFileOption?: string; // undefined by default
+            outDirOption?: string; // undefined by default 
+            removeComments?: boolean; // undefined by default
+            generateDeclarationFiles?: boolean; // undefined by default
+            mapSourceFiles?: boolean; // undefined by default
+            codeGenTarget?: number; // undefined by default
+            moduleGenTarget?: number; // undefined by default
+            allowAutomaticSemicolonInsertion?: boolean; // undefined by default
+        }; 
+        codingStandards: {
+            newLineMode?: string; // unix, windows. auto
+            useSoftTabs?: boolean; // true by default
+            tabSize?: number; // 4 by default
+            useLint?: boolean; // false by default
+            lintFile?: string; // <cats>/static/jslint.json by default 
         };
-        editor: {
-            newLineMode: string; //unix, windows, auto
-            useSoftTabs: boolean;
-            tabSize: number;
-        };
-        completionMode?: string; // strict, loose
+        documentation: {
+            theme?:string;
+            readme?:string;
+            outputDirectory?:string;
+            includeDeclarations?:boolean;
+        }
+       
     }
 
     interface Position {
@@ -86,12 +114,10 @@ declare module Cats {
         column: number;
     }
 
-
     class TypeInfo extends TypeScript.Services.TypeInfo {
         description: string;
     }
 
- 
     interface CompileResults {
         source: { fileName: string; content: string; }[];
         errors: FileRange[];

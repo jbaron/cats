@@ -12,6 +12,7 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
     constructor() {
         super();
         this.init();
+        this.setPadding(0,0,0,0);
         this.setupListeners();
     }
 
@@ -25,7 +26,6 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
     }
 
     private init() {
-        
        this.positionInfo = this.createButton("-:-");
        this.add(this.positionInfo);
        
@@ -39,11 +39,11 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
 
        this.overwriteInfo = this.createButton("INSERT");
        this.add(this.overwriteInfo);
-       
-       
     }
 
-
+    /**
+     * Indicate if the worker is busy or not
+     */ 
     setBusy(busy:boolean) {
         if (busy) {
             this.busyInfo.setIcon("./resource/cats/loader_anim.gif");
@@ -51,15 +51,6 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
             this.busyInfo.setIcon("./resource/cats/loader.gif");
         }
     }
-
-    toggle() {
-        if (this.isVisible()) { 
-            this.exclude();    
-        } else {
-            this.show();
-        }
-    }
-
 
     private setupListeners() {
         IDE.infoBus.on("editor.overwrite", (value:boolean) => {
@@ -77,60 +68,5 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
         
     }
 
-        initStatusBar() {
-            var overwriteMode = document.getElementById("overwritemode");
-            
-            /*
-            infoBus.SESSION.on("overwrite",(mode: boolean) => {
-                overwriteMode.innerText = mode ? "overwrite" : "insert";
-            });
-            
-
-            overwriteMode.onclick = (e:MouseEvent)=>{
-              var s = <Cats.AceSession>IDE.activeSession;
-              if (s && s.editSession) s.editSession.setOverwrite(! s.editSession.getOverwrite());
-            };
-
-            var aceEditor = <any>IDE.mainEditor.aceEditor;
-            aceEditor.on("changeSelection", this.updateSelectionText);
-
-            var sessionMode = document.getElementById("sessionmode");
-            aceEditor.on("changeMode", () => {
-                var mode = aceEditor.getSession().getMode();
-                sessionMode.innerText = PATH.basename(mode.$id);
-            });
-
-            var recordingMode = document.getElementById("recordingmode");
-            aceEditor.on("changeStatus", () => {
-                setTimeout(() => {
-                    recordingMode.innerText = aceEditor.commands.recording ? "RECORDING" : "";
-                }, 100);
-            });
-            recordingMode.onclick = (e:MouseEvent) => {
-                aceEditor.commands.toggleRecording(aceEditor);
-            };
-            */    
-        }
-        
-        
-        private updateSelectionText() {
-        /*
-            var aceEditor = <any>IDE.mainEditor.aceEditor;
-            var lead = aceEditor.selection.lead;
-            var text: string;
-            
-            if (aceEditor.selection.isEmpty()) {
-                text = (lead.row + 1) + " : " + (lead.column + 1);
-            } else {
-                var copyText = aceEditor.getCopyText();
-                var length = copyText.replace("\n", "").length;
-                
-                text = copyText.split("\n").length + " × " + (lead.column + 1) + " [" + copyText.replace(/\r?\n/g, "").length + "]";
-            }
-            
-            document.getElementById("selection").innerText = text;
-        */
-        }
-        
         
 }

@@ -1,32 +1,44 @@
 {
-    "name": "cats",
-    "author": "JBaron",
-    "homepage": "https://github.com/jbaron/cats.git",
-    "licenses": [{
-        "type": "Apache License 2.0", 
-        "url": "https://github.com/jbaron/cats/blob/master/LICENSE.txt"
-    }],
-    "main": "static/index.html",
-    "scripts": {
-        "start": "nodewebkit --restore"
-    },
-    "description": "Code Assistant for TypeScript",
-    "keywords": [ "TypeScript", "JBaron",  "editor",  "IDE" ],
-    "bugs": { "url" : "https://github.com/JBaron/cats/issues" },
-    "version": "1.0.1",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/jbaron/cats.git"
-    },
-    "window": {
-        "icon": "static/logo.png",
-        "toolbar": false,
-        "position": "center",
-        "width": 1000,
-        "height": 800
-    },
-    "dependencies": {
-        "glob": "^4.0.5",
-        "tslint" : "^0.4.12"
+  "name": "cats",
+  "author": "JBaron",
+  "homepage": "https://github.com/jbaron/cats.git",
+  "licenses": [
+    {
+      "type": "Apache License 2.0",
+      "url": "https://github.com/jbaron/cats/blob/master/LICENSE.txt"
     }
+  ],
+  "main": "static/index.html",
+  "scripts": {
+    "start": "nodewebkit --restore"
+  },
+  "description": "Code Assistant for TypeScript",
+  "keywords": [
+    "TypeScript",
+    "JBaron",
+    "editor",
+    "IDE"
+  ],
+  "bugs": {
+    "url": "https://github.com/JBaron/cats/issues"
+  },
+  "version": "1.1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jbaron/cats.git"
+  },
+  "window": {
+    "icon": "static/logo.png",
+    "toolbar": false,
+    "position": "center",
+    "width": 1000,
+    "height": 800
+  },
+  "dependencies": {
+    "glob": "^4.0.5",
+    "tslint": "^0.4.12",
+    "typedoc": "^0.1.0"
+  },
+  "devDependencies": {
+  }
 }

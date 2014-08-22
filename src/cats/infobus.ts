@@ -16,7 +16,7 @@
 var Events = require('events');
 
 module Cats {
-
+    
     export interface InfoBus extends EventEmitter {
         on(event: string, fn: any): void;
         emit(event: string, ...args): void;

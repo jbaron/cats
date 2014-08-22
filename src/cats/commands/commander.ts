@@ -56,7 +56,7 @@ module Cats.Commands {
         source_openDeclaration,
         source_findRef,
         source_findDecl,
-        source_tslint,
+
         
         project_open,
         project_close,
@@ -66,10 +66,10 @@ module Cats.Commands {
         project_debug,
         project_refresh,
         project_properties,
-        project_dependencies,
+        project_classDiagram,
         project_configure,
+        project_document,
         
-        refactor_rename,
         
         ide_quit,
         ide_theme,
@@ -115,52 +115,6 @@ module Cats.Commands {
 	}
 
 
-
-    // TODO i18n
-    function addShortcut(label:string, shortCut: string) {
-        var result = label;
-        var tabs = 5 - Math.floor((result.length / 4));
-        // console.log("Label " + result + " has tabs: " + tabs);
-        result = result + "     " + "\t\t\t\t\t\t".substring(0, tabs) + shortCut;
-        // result += "\u0007" + shortCut;
-        // result += "      " + shortCut;
-        // result += shortCut;        
-        return result;
-    }
-
-
-    /**
-     * Create a menu item for a certain command.
-     */
-    export function getMenuCommand(name); 
-    export function getMenuCommand(name,label:string, ...params:Array<any>);     
-    export function getMenuCommand(name,label?:string, ...params:Array<any>) {
-        var cmd = commands[name];
-        if (! cmd) {
-            console.error("No implementation available for command " + name);
-            return new GUI.MenuItem({label:"Unknow command"});
-        }
-        var click;
-        if (params.length > 0) {
-            // lets generate a closure
-            click = function() { cmd.command.apply(this,params); }
-        } else {
-            click = cmd.command;
-        }
-        var item:any = {
-            label: label || cmd.label,
-            click: click
-        };
-        
-        
-        // if (cmd.shortcut) item.label += " [" + cmd.shortcut + "]";
-        if (cmd.shortcut) item.label = addShortcut(item.label, cmd.shortcut);        
-        
-        // if (cmd.icon) item.icon = "static/resource/qx/icon/Oxygen/22/" + cmd.icon;
-                
-        return new GUI.MenuItem(item);
-    }
-
     export function runCommand(name:CMDS):void  {
 		commands[name].command();
 	}
@@ -179,7 +133,6 @@ module Cats.Commands {
 		HelpCommands.init(register);
 	    ProjectCommands.init(register);
         IdeCommands.init(register);
-        RefactorCommands.init(register);
 	}
 
 

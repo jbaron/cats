@@ -80,6 +80,8 @@ declare module Ace {
         setNewLineMode(mode:string); // unix, windows or auto
         getNewLineMode():string;
         getMode():any;
+        setTabSize(size:number);
+        setUseSoftTabs(softTabs:boolean);
 		setUndoManager(manager:UndoManager);
 		on: (event:string, handler:Function) => void;
 		screenToDocumentPosition(x:number,y:number);

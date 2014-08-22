@@ -13,7 +13,13 @@
 // limitations under the License.
 //
 
+/**
+ * The context menu for the file navigator. This menu provides basic 
+ * file operations like, rename, delete and create.
+ */ 
 class FileContextMenu extends qx.ui.menu.Menu {
+
+    private gui = require('nw.gui');
 
 
     constructor(private fileNavigator:FileNavigator) {
@@ -21,6 +27,18 @@ class FileContextMenu extends qx.ui.menu.Menu {
         this.init();
     }
 
+
+    private openInApp() {
+        var osPath = PATH.join(this.getFullPath(),"");
+        if (osPath) this.gui.Shell.openItem(osPath);
+    }
+    
+    private showInFolder() {
+        var osPath = PATH.join(this.getFullPath(),"");
+        if (osPath) this.gui.Shell.showItemInFolder(osPath);
+    }
+
+    
 
     private getSelectedItem() {
         return this.fileNavigator.getSelection().getItem(0);
@@ -34,7 +52,7 @@ class FileContextMenu extends qx.ui.menu.Menu {
 
 
     private init() {
-         var refreshButton = new qx.ui.menu.Button("Refresh");
+         // var refreshButton = new qx.ui.menu.Button("Refresh");
         
         var renameButton = new qx.ui.menu.Button("Rename");
         renameButton.addListener("execute",this.rename, this);
@@ -47,12 +65,23 @@ class FileContextMenu extends qx.ui.menu.Menu {
         
         var newDirButton = new qx.ui.menu.Button("New Directory");
         newDirButton.addListener("execute", this.newFolder, this);
+
+        var openInAppButton = new qx.ui.menu.Button("Open in default App");
+        openInAppButton.addListener("execute", this.openInApp, this);
+
+        var showInFolderButton = new qx.ui.menu.Button("Show item in folder");
+        showInFolderButton.addListener("execute", this.showInFolder, this);
+
     
-        this.add(refreshButton);
+        // this.add(refreshButton);
         this.add(renameButton);
         this.add(deleteButton);
         this.add(newFileButton);
         this.add(newDirButton);
+        this.addSeparator();
+        this.add(openInAppButton);
+        this.add(showInFolderButton);
+        
     }
 
    
@@ -90,7 +119,7 @@ class FileContextMenu extends qx.ui.menu.Menu {
  
         var name = prompt("Enter new file name in directory " + basedir);
         if (name == null) return;
-        var fullName = PATH.join(basedir, name);
+        var fullName = OS.File.join(basedir, name);
         OS.File.writeTextFile(fullName, "");
         this.refresh();
     }
@@ -100,7 +129,7 @@ class FileContextMenu extends qx.ui.menu.Menu {
 
         var name = prompt("Enter new folder name in directory " + basedir);
         if (name == null) return;
-        var fullName = PATH.join(basedir, name);
+        var fullName = OS.File.join(basedir, name);
         OS.File.mkdirRecursiveSync(fullName);
         this.refresh(); 
     }
@@ -114,7 +143,7 @@ class FileContextMenu extends qx.ui.menu.Menu {
         var c = confirm("Going to rename " + basename + " to " + name);
         if (c) {        
             try {
-                OS.File.rename(fullName, PATH.join(dirname, name));
+                OS.File.rename(fullName, OS.File.join(dirname, name));
             } catch (err) {
                 alert(err);
             }

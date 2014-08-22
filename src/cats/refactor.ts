@@ -13,11 +13,18 @@
 // limitations under the License.
 //
 
-module Cats.Commands {
+/**
+ * This module holds all the refactoring logic for CATS
+ * 
+ */ 
+module Cats.Refactor {
 
     var Range: Ace.Range = ace.require("ace/range").Range;
 
-    function refactor(rows,name:string) {
+    /**
+     * Rename a class, interface, property or method throughout the project
+     */ 
+    export function rename(rows:Cats.FileRange[],name:string) {
     
         rows.forEach((data) => {
             var session = IDE.openSession(data.fileName);
@@ -27,28 +34,5 @@ module Cats.Commands {
             p.editor.replace(range,name);
         });        
     }
-
-
-    function rename() {
-        
-        var rows  = IDE.searchResult.getData();
-        if (rows.length === 0) {
-            alert("Need search results to refactor");
-            return;
-        }
-        var msg = "Using the search results. \n Going to rename " + rows.length + " instances.\nPlease enter new name";
-        var newName = prompt(msg);
-        if (!newName) return;
-        refactor(rows,newName);
-    }
-
-
-    export class RefactorCommands {
-        static init(registry: (cmd: Command) => void ) {
-            registry({ name: CMDS.refactor_rename, label: "Rename", command: rename });
-        }
-
-    }
-
 
 }

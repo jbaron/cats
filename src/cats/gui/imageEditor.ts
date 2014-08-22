@@ -8,19 +8,23 @@ class ImageEditor extends qx.ui.embed.Canvas implements Editor {
 		 this.createContextMenu();
 	 }
 
+     executeCommand(name, ...args):boolean {
+         return false;
+     }    
+
 	 private loadImage(url) {
 			var image = new Image();
-			image.onload = () => { this.drawImage(image);} 
+			image.onload = () => { this.drawImage(image);}; 
 			image.src = url;
 	 }
 
 	private resizeIfRequired(image:HTMLImageElement) {
 	    if (image.width > this.getCanvasWidth()) {
-	        this.setCanvasWidth(image.width)
+	        this.setCanvasWidth(image.width);
 	    }
 	    
 	    if (image.height > this.getCanvasHeight()) {
-	        this.setCanvasHeight(image.height)
+	        this.setCanvasHeight(image.height);
 	    }
 	}
 	 
@@ -47,7 +51,7 @@ class ImageEditor extends qx.ui.embed.Canvas implements Editor {
  
      replace(range:Ace.Range,content:string) {}  
     
-    getContent() { return null}
+    getContent() { return null;}
     
     setContent(content, keepPosition=true) {}
     

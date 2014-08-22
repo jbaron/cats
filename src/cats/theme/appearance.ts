@@ -21,13 +21,21 @@ function noDecorator() {
     };    
 }
 
-qx.Theme.define("Cats.theme.Appearance",
+qx.Theme.define("cats.theme.Appearance",
 {
   extend : qx.theme.simple.Appearance,
 
   appearances :
   {
-      
+    
+    "root" : {
+         base : true,    
+         style : function(states) {
+       return {
+           backgroundColor : "light-background"
+        };
+      }     
+    },  
       
     "tabview-page/button" : {
       base : true,    
@@ -48,6 +56,15 @@ qx.Theme.define("Cats.theme.Appearance",
     },
     
     
+    "toolbar" : {
+        base: true,
+        style : function(states) {
+           return {
+                backgroundColor : undefined,
+            };
+        }
+    },
+    
     "__virtual-tree" : noDecorator(),
     
     "__toolbar-button" : noDecorator(),
@@ -56,7 +73,7 @@ qx.Theme.define("Cats.theme.Appearance",
        base : true,    
        style : function(states) {
        return {
-          padding : [0, 0, 0, 0]
+          backgroundColor : undefined,
         };
       }     
     }

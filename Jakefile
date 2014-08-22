@@ -7,8 +7,9 @@ var workerOptions = [
    "src/typings/typescriptServices.d.ts",
    "src/typings/cats.d.ts",
    "src/cats/common.ts",
-   "src/tsworker/languageservicehost.ts",    
-   "src/tsworker/isense.ts"
+   "src/tsworker/languageservicehost.ts",
+   "src/tsworker/isense.ts",
+   "src/tsworker/objectModelCreator.ts"
 ];
 
 
@@ -37,11 +38,12 @@ var catsOptions = [
     "src/cats/commands/helpCommands.ts",
     "src/cats/commands/ideCommands.ts",
     "src/cats/commands/projectCommands.ts",
-    "src/cats/commands/refactorCommands.ts",
     "src/cats/projectConfig.ts",
     "src/cats/tsWorkerProxy.ts",
     "src/cats/menu/menubar.ts",
     "src/cats/project.ts",
+    "src/cats/refactor.ts",
+    
     
     "src/cats/gui/editor.ts",
     "src/cats/gui/console.ts",
@@ -58,6 +60,9 @@ var catsOptions = [
     "src/cats/gui/autoCompletePopup.ts",
     "src/cats/gui/fileContextMenu.ts",
     "src/cats/gui/configDialog.ts",
+    "src/cats/gui/processTable.ts",
+    "src/cats/gui/busyWindow.ts",
+    "src/cats/gui/layout.ts",
     
     
     "src/cats/util/mime.ts",

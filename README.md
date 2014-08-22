@@ -13,10 +13,12 @@ Right now CATS already has built-in support for the following features:
 - Support for refactoring and smart navigation.
 - TypeScript compilation to JavaScript.
 - Validation of the source code while you are typing.
-- Lint support for TypeScript and JavaScript.
+- Linter support for TypeScript and JavaScript.
+- Generate API documentation based on the comments in the source code.
 - Editing features like folding and indentation.
 - Running your application from within IDE and using the WebKit debugger to debug.
 - Support for external build systems like Grunt, Jake and Makefiles.
+
 
 ## Building
 
@@ -35,10 +37,11 @@ Change to the cats directory:
 cd cats
 ```
 
-Install Nodewebkit, Jake and the module dependencies:
+Install Nodewebkit, TypeScript, Jake and the module dependencies:
 
 ```
 npm install -g nodewebkit
+npm install -g typescript
 npm install -g jake
 npm install
 ```
@@ -66,7 +69,12 @@ There are some option you can use. For example to open CATS with a specific proj
 nodewebkit --project </path/projectDirectory>
 ```
 
-Or to open CATS with the same project as last time use the --restore option:
+Although you can use a relative path for specifying the project directory, 
+please notice it is relative to the CATS installation directory and not the 
+directory you are currently in. So normally better to use a full path.
+
+
+To open CATS with the same project as last time use the --restore option:
 
 ```shell
 nodewebkit --restore
@@ -109,12 +117,17 @@ And of course some of the main 3rd party components that we have used within CAT
 
 - [TypeScript](http://www.typescriptlang.org) (of course), developed by Microsoft.
 
-- [Qooxdoo](http://www.qooxdoo.org), excellent JavaScript library with many great UI widgets.  
+- [Qooxdoo](http://www.qooxdoo.org), an excellent JavaScript library with many great UI widgets.  
 
 - [ACE](http://ace.ajax.org), an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.
 
 - [Node-webkit](https://github.com/rogerwang/node-webkit). This is a great initiative from Intel to allow Node libraries to be used within a web page. 
   CATS use this to read and write local files without the need for a server-side component.
+
+- [TSLint](https://github.com/palantir/tslint). A linter for the TypeScript language that help to improve yuor code base even further.
+
+- [TypeDoc](https://github.com/sebastian-lenz/typedoc). This is a documentation generator for TypeScript projects that supports
+  theming and a lot of other very impressive features. 
 
 - [jsUML2](http://www.jrromero.net/tools/jsUML2). This is library for creating UML diagrams done in pure JavaScript.
 

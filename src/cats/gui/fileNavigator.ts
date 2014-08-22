@@ -1,22 +1,21 @@
-
-var path = require("path");
-
-var rootTop = {
-    label: "qx-cats",
-    fullPath: "/Users/peter/Development/qx-cats/",
-    directory: true,
-    children: [{
-        label: "Loading",
-        icon: "loading",
-        directory : false 
-    }],
-    loaded: false
-};
-
 /**
  * File navigator widget for CATS
  */
 class FileNavigator extends qx.ui.tree.VirtualTree {
+
+    private rootTop = {
+        label: "qx-cats",
+        fullPath: "",
+        directory: true,
+        children: [{
+            label: "Loading",
+            icon: "loading",
+            directory : false 
+        }],
+        loaded: false
+    };
+
+
 
     static COUNT = 0;
 
@@ -24,10 +23,21 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     private iconsForMime = {};
     private watcher:OS.File.Watcher;
     private parents = {};
+    private projectDir:string;
 
 
-    constructor(private project:Cats.Project) {
+    constructor() {
         super(null,"label", "children");
+        this.setDecorator(null);
+        this.setPadding(0,0,0,0);
+        this.loadAvailableIcons();
+        var contextMenu = new FileContextMenu(this);
+        this.setContextMenu(contextMenu);
+    }
+    
+    setProject(project:Cats.Project) {
+        this.projectDir = project.projectDir;
+            
         this.watcher = new OS.File.Watcher();
         this.watcher.on("change", (dir) => {
              var parent = this.parents[dir];
@@ -35,20 +45,13 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         });
         
         var directory= project.projectDir;
-        rootTop.fullPath = directory;
-        rootTop.label = path.basename(directory);
-        var root = qx.data.marshal.Json.createModel(rootTop, true);
+        this.rootTop.fullPath = directory;
+        this.rootTop.label = PATH.basename(directory);
+        var root = qx.data.marshal.Json.createModel(this.rootTop, true);
         this.setModel(root);
-        // this.setItemHeight(18);
-        // this.setLabelPath("label");
-        // this.setChildProperty("children");
-        this.setDecorator(null);
-        this.setPadding(0,0,0,0);
-
+  
         this.setupDelegate();
         
-        var contextMenu = new FileContextMenu(this);
-        this.setContextMenu(contextMenu);
         this.setup();
 
         console.info("Icon path:" + this.getIconPath());    
@@ -67,9 +70,15 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
             data.setLoaded(false);
         });
         */
-        this.loadAvailableIcons();
+        
 
     }
+
+    clear() {
+        // var root = qx.data.marshal.Json.createModel({}, true);
+        this.setModel(null);
+    }
+
 
     getSelectedFile() {
         var item = this.getSelection().getItem(0);
@@ -89,7 +98,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         var files = OS.File.readDir(iconFolder);
         files.forEach((file) => {
            if (file.isFile) {    
-               var mimetype =  path.basename(file.name, ".png");
+               var mimetype =  PATH.basename(file.name, ".png");
                this.iconsForMime[mimetype] = file.name;
            }
         });
@@ -158,7 +167,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
                 label: "Loading",
                 fullPath: "asasasa/dss",
                 directory : false 
-            }
+            };
             value.getChildren().removeAll();
             value.getChildren().push(qx.data.marshal.Json.createModel(node, true));
         }, 0);
@@ -173,7 +182,10 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
             this.watcher.addDir(directory);
             this.parents[directory] = parent;
             parent.getChildren().removeAll();
-            var entries = OS.File.readDir(directory, true);
+            var entries:Cats.FileEntry[] = [];
+            try {
+                entries = OS.File.readDir(directory, true);
+            } catch(err) {/* the directory has been delete */}
             entries.forEach((entry:Cats.FileEntry) => {
                 var node = {
                    label: entry.name,

@@ -22,10 +22,9 @@
      */
     class AutoCompletePopup extends qx.ui.popup.Popup {
 
-
         private listModel:any;
         private handler;
-        private changeListener;
+        private changeListener:Function;
         private list:qx.ui.list.List;
         private filtered:any[];
 
@@ -52,7 +51,7 @@
 
               // Creates the list and configures it
               var list:qx.ui.list.List = new qx.ui.list.List(null).set({
-                scrollbarX: "on",
+                scrollbarX: "off",
                 selectionMode : "single",
                 // height: 280,
                 width: 300,
@@ -97,9 +96,16 @@
         }
 
 
-		private matchText(text:string, completion:string) {
+		private match_strict(text:string, completion:string) {
 			if (! text) return true;
 			if (completion.indexOf(text) === 0) return true;
+			return false;
+		}
+
+
+        private match_forgiven(text:string, completion:string) {
+			if (! text) return true;
+			if (completion.indexOf(text) > -1 ) return true;
 			return false;
 		}
 
@@ -108,15 +114,23 @@
          * so far.
          */ 
         private updateFilter() {
-            var text = this.getInputText(); // .toLowerCase();
+            var text = this.getInputText();
+            if (text) text = text.toLowerCase();
+            
+            var matchText = this.match_strict;
+            if (IDE.config.editor.completionMode) {
+                var methodName = "match_"  + IDE.config.editor.completionMode;
+                if (this[methodName]) matchText = this[methodName];
+            }
+
 			var lastItem = this.listModel.getItem(this.listModel.getLength() -1);
 			var counter = 0;
 
 			this.filtered = [];
             var delegate = {};
             delegate["filter"] = (data) => {
-                var label = data.getLabel();
-				var result = this.matchText(text, label);
+                var value = data.getValue();
+				var result = matchText(text, value);
 				if (result) this.filtered.push(data);
 				if (data === lastItem) {
 					// IDE.console.log("filtered items: " + this.filtered.length);
@@ -128,7 +142,7 @@
 					} 
 				}
                 return result;
-            }
+            };
             this.list.setDelegate(delegate);
 					
         }
@@ -154,17 +168,17 @@
          */ 
         private initHandler() {
             this.handler = new HashHandler();
-            this.handler.bindKey("Home", () => { this.moveCursor(-10000) });
-            this.handler.bindKey("End", () => { this.moveCursor(10000) });
-            this.handler.bindKey("Down", () => { this.moveCursor(1) });
-            this.handler.bindKey("PageDown", () => { this.moveCursor(10) });
-            this.handler.bindKey("Up", () => { this.moveCursor(-1) });
-            this.handler.bindKey("PageUp", () => { this.moveCursor(-10) });
-            this.handler.bindKey("Esc", () => { this.hidePopup() });
+            this.handler.bindKey("Home", () => { this.moveCursor(-10000); });
+            this.handler.bindKey("End", () => { this.moveCursor(10000); });
+            this.handler.bindKey("Down", () => { this.moveCursor(1); });
+            this.handler.bindKey("PageDown", () => { this.moveCursor(10); });
+            this.handler.bindKey("Up", () => { this.moveCursor(-1); });
+            this.handler.bindKey("PageUp", () => { this.moveCursor(-10); });
+            this.handler.bindKey("Esc", () => { this.hidePopup(); });
             this.handler.bindKey("Return|Tab", () => {
                 var current = this.list.getSelection().getItem(0);;
                 if (current) {
-                    var inputText = this.getInputText()
+                    var inputText = this.getInputText();
                     for (var i = 0; i < inputText.length; i++) {
                         this.editor.remove("left");
                     }
@@ -179,7 +193,7 @@
 
 
         private getIconForKind(name:string) {
-            var iconPath = "./resource/qx/icon/Oxygen/16/types/"
+            var iconPath = "./resource/qx/icon/Oxygen/16/types/";
             switch (name) {
                 case "function":
                 case "keyword":
@@ -207,10 +221,12 @@
              var rawData = [];
              completions.forEach((completion) => {
                   var extension="";
-                  if (completion.kind === "method") extension = "()"
+                  if (completion.kind === "method") extension = "()";
+            
                   rawData.push({
                      label: completion.name + extension,
-                     icon: completion.kind
+                     icon: completion.kind,
+                     value: completion.name.toLowerCase()
                   });
               });
           
@@ -256,7 +272,7 @@
                 || ch >= 48 && ch <= 57     //0-9
                 || ch === 95    //_
                 || ch === 36    //$
-                || ch > 127     //non-ASCII letter. Not accurate, but good enough for autocomplete
+                || ch > 127;     //non-ASCII letter. Not accurate, but good enough for autocomplete
         }
 
         /**
@@ -264,14 +280,15 @@
          * the auto-complete task
          */ 
         private onChange(ev) {
-            var key = ev.data.text;
-            if (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0))) {
+            var key:string = ev.data.text;
+        
+            if ((key == null) || (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0)))) {
                 this.hidePopup();
                 return;
             }
             // hack to get the cursor updated before we render
             // TODO find out how to force update without a timer delay
-            setTimeout(() => { this.updateFilter() }, 0);
+            setTimeout(() => { this.updateFilter(); }, 0);
         }
 
      

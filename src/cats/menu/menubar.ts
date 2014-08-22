@@ -17,68 +17,127 @@ module Cats.Menu {
 
 
     /**
-     * This class creates the main menubar. 
+     * This class creates the main menubar. This is the only GUI component that 
+     * is not using Qooxdoo but an API exposed by nodewebkit. 
+     * This makes it possible to have the feeling of a native menubar.
      */
     export class Menubar {
 
-        private fontSizes = [8, 10, 12, 13, 14, 16, 18, 20, 24];
+        private menu:any;
 
-        private themes = [                   
-                    { theme: Cats.theme.Theme, label: "CATS" },
-                    { theme: qx.theme.Classic, label: "Classic" },
-                    { theme: qx.theme.Indigo, label: "Indigo" },
-                    { theme: qx.theme.Modern, label: "Modern" },
-                    { theme: qx.theme.Simple, label: "Simple" }
-        ];
-
-        private themes2 = [
-                    { theme: "cats", label: "CATS" },
-                    { theme: "chrome", label: "Chrome" },
-                    { theme: "clouds", label: "Clouds" },
-                    { theme: "crimson_editor", label: "Crimson Editor" },
-                    { theme: "dawn", label: "Dawn" },
-                    { theme: "dreamweaver", label: "Dreamweaver" },
-                    { theme: "eclipse", label: "Eclipse" },                    
-                    { theme: "github", label: "GitHub" },
-                    { theme: "solarized_light", label: "Solarized Light" },
-                    { theme: "textmate", label: "TextMate" },
-                    { theme: "tomorrow", label: "Tomorrow" },
-                    { theme: "xcode", label: "XCode" },
-
-                    { theme: null, label: "seperator dark themes" },
-                    { theme: "ambiance", label: "Ambiance" },
-                    { theme: "clouds_midnight", label: "Clouds Midnight" },
-                    { theme: "cobalt", label: "Cobalt" },
-                    { theme: "idle_fingers", label: "idleFingers" },
-                    { theme: "kr_theme", label: "krTheme" },
-                    { theme: "merbivore", label: "Merbivore" },
-                    { theme: "merbivore_soft", label: "Merbivore Soft" },
-                    { theme: "mono_industrial", label: "Mono Industrial" },
-                    { theme: "monokai", label: "Monokai" },
-                    { theme: "pastel_on_dark", label: "Pastel on dark" },
-                    { theme: "solarized_dark", label: "Solarized Dark" },
-                    { theme: "twilight", label: "Twilight" },
-                    { theme: "tomorrow_night", label: "Tomorrow Night" },
-                    { theme: "tomorrow_night_blue", label: "Tomorrow Night Blue" },
-                    { theme: "tomorrow_night_bright", label: "Tomorrow Night Bright" },
-                    { theme: "tomorrow_night_eighties", label: "Tomorrow Night 80s" },
-                    { theme: "vibrant_ink", label: "Vibrant Ink" },
-        ];
+       /**
+        * Create a menu item for a certain command.
+        */
+        private getMenuCommand(name,label?:string, ...params:Array<any>) {
+            var cmd = Cats.Commands.get(name);
+            if (! cmd) {
+                console.error("No implementation available for command " + name);
+                return new GUI.MenuItem({label:"Unknow command"});
+            }
+            var click;
+            if (params.length > 0) {
+                // lets generate a closure
+                click = function() { cmd.command.apply(this,params); };
+            } else {
+                click = cmd.command;
+            }
+            var item:any = {
+                label: label || cmd.label,
+                click: click
+            };
+  
+            return new GUI.MenuItem(item);
+        }
 
 
-        constructor() {
-            var menubar = new GUI.Menu({ type: 'menubar' });
+        private getOrCreateMenu(label:string) {
+            var items = this.menu.items;
             
-            // @TODO fix a bit nicer
-            if ((OS.File.platform() === OS.File.PlatForm.OSX) && menubar.createMacBuiltin) {
-                menubar.createMacBuiltin("CATS");
-                GUI.Window.get().menu = menubar;
+            for (var i = 0; i < items.length; ++i) {
+                var item = items[i];
+                if (item.label === label) return item.submenu;
             }
             
-            var getCmd = Cats.Commands.getMenuCommand;
+            var menu =  new GUI.Menu();
+            this.menu.append(new GUI.MenuItem({ label: label, submenu:  menu}));
+            return menu;
+        }
+
+        constructor() {
+            this.menu = new GUI.Menu({ type: 'menubar' });
+ 
+           
+            // @TODO fix a bit nicer
+            if (OS.File.isOSX() && this.menu.createMacBuiltin) {
+                this.menu.createMacBuiltin("CATS");
+                // GUI.Window.get().menu = menubar;
+            }
+            
+            this.createFileMenu();
+            this.createViewMenu();
+            this.createEditMenu();
+            this.createProjectMenu();
+            this.createSourceMenu();
+            this.createHelpMenu();
+            
+            var win = GUI.Window.get();
+            win.menu = this.menu;
+        }
+         
+        
+        private createSourceMenu() {
+           var getCmd = this.getMenuCommand;
+            var CMDS = Cats.Commands.CMDS;
+            var source = this.getOrCreateMenu("Source");
+            source.append(getCmd(CMDS.edit_toggleComment));
+            source.append(getCmd(CMDS.edit_toggleInvisibles));
+            source.append(getCmd(CMDS.edit_indent));
+            source.append(getCmd(CMDS.edit_outdent));
+            source.append(getCmd(CMDS.source_format));
+            source.append(getCmd(CMDS.edit_gotoLine));
+        }
+         
+        private createHelpMenu() {
+            var getCmd = this.getMenuCommand;
+            var CMDS = Cats.Commands.CMDS;
+            var help = this.getOrCreateMenu("Help");
+            help.append(getCmd(CMDS.help_shortcuts));
+            help.append(getCmd(CMDS.help_processInfo));
+            help.append(getCmd(CMDS.help_devTools));
+            help.append(getCmd(CMDS.help_about));
+        } 
+         
+        private createEditMenu() {
+            var getCmd = this.getMenuCommand;
+            var CMDS = Cats.Commands.CMDS;
+            var edit = this.getOrCreateMenu("Edit");
+          
+            // ALready done by native OSX menu
+            if (! OS.File.isOSX()) {
+                edit.append(getCmd(CMDS.edit_undo));
+                edit.append(getCmd(CMDS.edit_redo));
+                /*edit.append(new GUI.MenuItem({ type: "separator" }));
+                edit.append(getCmd(CMDS.edit_cut));
+                edit.append(getCmd(CMDS.edit_copy));
+                edit.append(getCmd(CMDS.edit_paste));*/
+            }
+            edit.append(new GUI.MenuItem({ type: "separator" }));
+            edit.append(getCmd(CMDS.edit_find));
+            edit.append(getCmd(CMDS.edit_findNext));
+            edit.append(getCmd(CMDS.edit_findPrev));
+            edit.append(getCmd(CMDS.edit_replace));
+            edit.append(getCmd(CMDS.edit_replaceAll));
+            
+            edit.append(new GUI.MenuItem({ type: "separator" }));
+            edit.append(getCmd(CMDS.edit_toggleRecording));
+            edit.append(getCmd(CMDS.edit_replayMacro));
+        } 
+         
+        private createFileMenu() {
+            var getCmd = this.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
 
-            var file = new GUI.Menu();
+            var file = this.getOrCreateMenu("File");
             file.append(getCmd(CMDS.file_new));
             file.append(new GUI.MenuItem({ type: "separator" }));
             file.append(getCmd(CMDS.file_save));
@@ -89,148 +148,51 @@ module Cats.Menu {
             file.append(getCmd(CMDS.file_closeAll));
             file.append(getCmd(CMDS.file_closeOther));
             file.append(new GUI.MenuItem({ type: "separator" }));
-            // @1.1 file.append(getCmd(CMDS.ide_configure));
-            file.append(getCmd(CMDS.ide_quit));
-
-            var edit = new GUI.Menu();
-            // edit.append(this.editorCommand("undo"));
-            edit.append(getCmd(CMDS.edit_undo));
-            edit.append(getCmd(CMDS.edit_redo));
-            /*edit.append(new GUI.MenuItem({ type: "separator" }));
-            edit.append(getCmd(CMDS.edit_cut));
-            edit.append(getCmd(CMDS.edit_copy));
-            edit.append(getCmd(CMDS.edit_paste));*/
-            edit.append(new GUI.MenuItem({ type: "separator" }));
-            edit.append(getCmd(CMDS.edit_find));
-            edit.append(getCmd(CMDS.edit_findNext));
-            edit.append(getCmd(CMDS.edit_findPrev));
-            edit.append(getCmd(CMDS.edit_replace));
-            edit.append(getCmd(CMDS.edit_replaceAll));
+            file.append(getCmd(CMDS.ide_configure));
             
-            edit.append(new GUI.MenuItem({ type: "separator" }));
-            // edit.append(getCmd(CMDS.edit_toggleInvisibles));
-            edit.append(getCmd(CMDS.edit_toggleRecording));
-            edit.append(getCmd(CMDS.edit_replayMacro));
-             edit.append(getCmd(CMDS.edit_gotoLine));
+            if (! OS.File.isOSX()) {
+                file.append(getCmd(CMDS.ide_quit));
+            }
+        } 
+         
+        private createProjectMenu() {
+           var getCmd = this.getMenuCommand;
+            var CMDS = Cats.Commands.CMDS;
 
-
-            var source = new GUI.Menu();
-            source.append(getCmd(CMDS.edit_toggleComment));
-            source.append(getCmd(CMDS.edit_indent));
-            source.append(getCmd(CMDS.edit_outdent));
-            source.append(getCmd(CMDS.source_format));
-            source.append(getCmd(CMDS.source_tslint));
-
-            var refactor = new GUI.Menu();
-            refactor.append(getCmd(CMDS.refactor_rename));
-
-            var proj = new GUI.Menu();
+            var proj = this.getOrCreateMenu("Project");
             proj.append(getCmd(CMDS.project_open));
             proj.append(getCmd(CMDS.project_close));
+            
             proj.append(new GUI.MenuItem({ type: "separator" }));
             proj.append(getCmd(CMDS.project_build));
+            proj.append(getCmd(CMDS.project_run));
             proj.append(getCmd(CMDS.project_validate));
-
-            var buildOnSaveItem = new GUI.MenuItem({ label: 'Build on Save', checked: false, type: "checkbox" });
-            proj.append(buildOnSaveItem);
-            buildOnSaveItem.click = () => {
-                IDE.project.config.buildOnSave = buildOnSaveItem.checked;
-            }
             proj.append(getCmd(CMDS.project_refresh));
-            proj.append(getCmd(CMDS.project_properties));
-            // @2.0 proj.append(getCmd(CMDS.project_dependencies));
-            // @1.1 proj.append(new GUI.MenuItem({ type: "separator" }));
-            // @1.1 proj.append(getCmd(CMDS.project_configure)); 
-
-            var run = new GUI.Menu();
-            run.append(getCmd(CMDS.project_run));
-            // run.append(getCmd(CMDS.project_debug));
-
-
-            var window = new GUI.Menu();
-            window.append(new GUI.MenuItem({ label: 'Theme', submenu: this.createThemeMenu() }));
-            window.append(new GUI.MenuItem({ label: 'Font Size', submenu: this.createFontSizeMenu() }));
-            window.append(new GUI.MenuItem({ label: 'Right Margin', submenu: this.createMarginMenu() }));
-            window.append(new GUI.MenuItem({ label: 'Views', submenu: this.createViewMenu() }));
-
-            var help = new GUI.Menu();
-            help.append(getCmd(CMDS.help_shortcuts));
-            help.append(getCmd(CMDS.help_processInfo));
-            help.append(getCmd(CMDS.help_devTools));
-            help.append(getCmd(CMDS.help_about));
             
-            menubar.append(new GUI.MenuItem({ label: 'File', submenu: file }));
-            menubar.append(new GUI.MenuItem({ label: 'Edit', submenu: edit }));
-            menubar.append(new GUI.MenuItem({ label: 'Source', submenu: source }));
-            menubar.append(new GUI.MenuItem({ label: 'Refactor', submenu: refactor }));
-            menubar.append(new GUI.MenuItem({ label: 'Project', submenu: proj }));
-            menubar.append(new GUI.MenuItem({ label: 'Run', submenu: run }));
-            menubar.append(new GUI.MenuItem({ label: 'Window', submenu: window }));
-            menubar.append(new GUI.MenuItem({ label: 'Help', submenu: help }));
+            proj.append(new GUI.MenuItem({ type: "separator" }));
+            proj.append(getCmd(CMDS.project_classDiagram));
+            proj.append(getCmd(CMDS.project_document)); 
             
-            var win = GUI.Window.get();
-            win.menu = menubar;
-        }
+            proj.append(new GUI.MenuItem({ type: "separator" }));
+            proj.append(getCmd(CMDS.project_configure)); 
+        } 
          
-  
-        private createFontSizeMenu() {
-            var getCmd = Cats.Commands.getMenuCommand;
-            var CMDS = Cats.Commands.CMDS;
-            var menu = new GUI.Menu();
-            this.fontSizes.forEach((size: number) => {
-                var item = getCmd(CMDS.ide_fontSize,size+"px",size);
-                menu.append(item);
-            });
-            return menu;
-        }
-
-        private createMarginMenu() {
-            var getCmd = Cats.Commands.getMenuCommand;
-            var CMDS = Cats.Commands.CMDS;
-            var menu = new GUI.Menu();
-            [80, 100, 120, 140, 160, 180, 200].forEach((margin) => {
-                var item = getCmd(CMDS.ide_rightMargin, margin.toString(), margin);
-                menu.append(item);
-            });
-            return menu;
-        }
-
         private createViewMenu() {
-            var getCmd = Cats.Commands.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
-            var menu = new GUI.Menu();
+            var menu = this.getOrCreateMenu("View");
+            
             var views = [
                 {id:IDE.toolBar,name:"Toggle Toolbar"},    
-                {id:IDE.statusBar,name:"Toggle Statusbar"}
+                {id:IDE.statusBar,name:"Toggle Statusbar"},
+                {id:IDE.infoPane,name:"Toggle Info"}
             ];
             views.forEach((view:any) => {
-                    var item = getCmd(CMDS.ide_toggleView,view.name,view.id);
+                    var item = this.getMenuCommand(CMDS.ide_toggleView,view.name,view.id);
                     menu.append(item);
             });
-            return menu;
+
         }
 
-        private createThemeMenu() {
-            var getCmd = Cats.Commands.getMenuCommand;
-            var CMDS = Cats.Commands.CMDS;
-            var menu = new GUI.Menu();
-            this.themes.forEach((theme) => {
-                if (theme.theme) {
-                    var item = getCmd(CMDS.ide_theme,theme.label,theme.theme);
-                    menu.append(item);
-                } else {
-                    menu.append(new GUI.MenuItem({
-                        type: "separator"
-                    }));
-                }
-            });
-            return menu;
-        }
-
-    }
-
-    export function createMenuBar() {
-        return new Menubar();
     }
 
 }

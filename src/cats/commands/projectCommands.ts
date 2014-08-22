@@ -18,10 +18,9 @@
 
 module Cats.Commands {
 
-
-
-
-
+    /**
+     * Close all open projects
+     */ 
     function closeAllProjects() {
         IDE.closeProject(IDE.project);
     }
@@ -40,8 +39,19 @@ module Cats.Commands {
         IDE.project.run();
     };
 
+
+    /**
+     * Show a class diagram of the project. 
+     */ 
     function showDiagram() {
         alert("Right now just showing some demo classes.");
+        
+        /*
+        IDE.project.iSense.getObjectModel((err,model)=>{
+            console.log(model);
+        });
+        */
+        
         var session = new Session("Class Diagram");
         session.uml = true;
         IDE.sessionTabView.addSession(session);
@@ -74,7 +84,8 @@ module Cats.Commands {
     */
 
     /**
-     * Compile all the sources without saving them
+     * Compile all the sources without actually saving them
+     * to see if there are any issues popping up.
      */ 
     function validateProject() {
         var project = IDE.project;
@@ -88,27 +99,29 @@ module Cats.Commands {
         IDE.project.build();
     }
 
+    /**
+     * Generate the API documentation for the project
+     */ 
+    function documentProject() {
+        IDE.project.document();
+    }
 
+    /**
+     * Provide the user with an UI to configure the project settings
+     */ 
     function configureProject() {
-        var w = new ProjectConfigDialog();
-        // w.setData(IDE.project.config.compiler);
+        var w = new ProjectConfigDialog(IDE.project);
         w.show();
     }
 
     /**
-     * Refresh the project so everything is in sync again.
+     * Refresh the project so everything is in sync again. This is needed when more complex
+     * filesystem changes are done (like renaming TS files etc).
      */ 
     function refreshProject() {
         IDE.project.refresh();
     }
 
-
-    /**
-     * Configure the properties of a project
-     */ 
-    function propertiesProject() {
-        IDE.project.editConfig();
-    }
 
     /**
      * Open a project. If current windows doesn't have a project yet, opene there.
@@ -121,19 +134,10 @@ module Cats.Commands {
             if (! IDE.project) {
                 IDE.addProject(new Project(projectPath));
             } else {
-                var param = encodeURIComponent(projectPath)
+                var param = encodeURIComponent(projectPath);
                 this.value = ""; // Make sure the change event goes off next tome
                 window.open('index.html?project=' + param, '_blank');
             }
-            /*
-            var gui = require('nw.gui'); 
-            gui.Window.open(
-                'index.html?project=' + param,
-                {"new-instance":true}
-            );
-            */
-            
-            
         };
         chooser.click();
     };
@@ -141,17 +145,16 @@ module Cats.Commands {
 
     export class ProjectCommands {
         static init(registry) {
-            registry({ name: CMDS.project_open, label: "Open Project...", command: openProject, icon: "actions/project-open.png" });
+            registry({ name: CMDS.project_open, label: "Open Project....", command: openProject, icon: "actions/project-open.png" });
             registry({ name: CMDS.project_close, label: "Close project", command: closeProject, icon:"actions/project-development-close.png" });
             registry({ name: CMDS.project_build, label: "Build Project", command: buildProject, icon: "categories/applications-development.png" });
             registry({ name: CMDS.project_validate, label: "Validate Project", command: validateProject });
             registry({ name: CMDS.project_refresh, label: "Refresh Project", command: refreshProject, icon: "actions/view-refresh.png" });
             registry({ name: CMDS.project_run, label: "Run Project", command: runProject, icon: "actions/arrow-right.png" });
             // registry({ name: CMDS.project_debug, label: "Debug Project", command: null, icon: "debug.png" });
-            registry({ name: CMDS.project_properties, label: "Properties", command: propertiesProject });
-            registry({ name: CMDS.project_dependencies, label: "Class Diagram", command: showDiagram });
-            registry({ name: CMDS.project_configure, label: "Settings", command: configureProject });
-
+            registry({ name: CMDS.project_classDiagram, label: "Class Diagram", command: showDiagram });
+            registry({ name: CMDS.project_configure, label: "Settings....", command: configureProject });
+             registry({ name: CMDS.project_document, label: "Generate Documentation", command: documentProject });
         }
 
     }

@@ -6,7 +6,7 @@ class Greeter {
 
     /**
      * Create a new Greeter
-     * @param message The welcome message to use for all
+     * @param message The welcome message to use for greeting
      */
     constructor(message: string) {
         this.greeting = message;

@@ -19,121 +19,31 @@
 
 module Cats.Commands {
 
-/*
-    // Just wrap the Ace command.
-    function editorCommand(commandName: string) {
-        return function() { IDE.getActiveEditor().execCommand(commandName); }
-    }
-*/
 
-
-    function getLintConfig() {
-        var fileName = path.join(IDE.catsHomeDir, "static/tslint.json");
-        var content = OS.File.readTextFile(fileName);
-        return JSON.parse(content);
-    }
- 
- 
-    function convertPos(item): Cats.Range {
-        return {
-            start : {
-                row: item.startPosition.line,
-                column : item.startPosition.character
-            },
-            end : {
-                row: item.endPosition.line,
-                column : item.endPosition.position.character
-            }
-        }
-        
-    }
- 
-    function lint() {
+    function formatText() {
+      
         var session = IDE.sessionTabView.getActiveSession();
-        var options = {
-            formatter: "json",
-            configuration: getLintConfig(),
-            rulesDirectory: "customRules/",
-            formattersDirectory: "customFormatters/"
-        };
-        
         if (session && session.isTypeScript()) {
-                var Linter = require("tslint");
-                var ll = new Linter(session.name, session.content, options);
-                var result:Array<any> = JSON.parse(ll.lint().output);
-                // console.log(result);
-                // IDE.console.log(JSON.stringify(result,null,4));
-                var r:Cats.FileRange[] = [];
-                result.forEach((msg) => {
-                        var item:Cats.FileRange = {
-                              fileName : msg.name,
-                              message: msg.failure,
-                              severity: Cats.Severity.Info,
-                              range: convertPos(msg)
-                        };
-                        r.push(item)
-                });
-                session.setErrors(r);
-                IDE.problemResult.setData(r);
+            session.project.iSense.getFormattedTextForRange( session.name, 0, -1 , (err:Error, result:string) => {                    
+                if (!err) {
+                    session.setContent(result);
+                }
                 
+            });
         }
-    }
-
-
-      function formatText() {
-          
-            var session = IDE.sessionTabView.getActiveSession();
-            if (session && session.isTypeScript()) {
-                session.project.iSense.getFormattedTextForRange( session.name, 0, -1 , (err, result) => {                    
-                    if (!err) {
-                        session.setContent(result);
-                    }
-                    
-                });
-            }
-            
-        }
-
-    /*
-    function getShortcut(commandName: string) {
-        
-        var platform = IDE.getActiveEditor().commands.platform;
-        var command = IDE.getActiveEditor().commands.byName[commandName];
-
-        if (command && command.bindKey) {
-            var key = command.bindKey[platform];
-            return key;
-        }
-
-        return null;
         
     }
 
 
-    // TODO i18n
-    function addShortcut(label, commandName: string) {
-        var result = label;
-        var platform = IDE.getActiveEditor().commands.platform;
-        var command = IDE.getActiveEditor().commands.byName[commandName];
-
-        if (command && command.bindKey) {
-            var tabs = 5 - Math.floor((result.length / 4) - 0.01);
-            result = result + "\t\t\t\t\t\t".substring(0, tabs);
-            var key = command.bindKey[platform];
-            if (key) result += key;
-        }
-        return result;
-    }
-    
     function toggleInvisibles() {
-        IDE.getActiveEditor().setShowInvisibles(!IDE.mainEditor.aceEditor.getShowInvisibles());
+        //@TODO fix,don't access private var
+        var aceSession = IDE.getActiveEditor()["aceEditor"];
+        aceSession.setShowInvisibles(!aceSession.getShowInvisibles());
     }
-
-    */
 
     
     function editorCommand(commandName:string) {
-        return function(...args) {
+        return function(...args:Array<any>) {
              //@TODO fix,don't access private var
               var aceEditor = IDE.getActiveEditor()["aceEditor"];
               // var command:Function = aceEditor.commands.byName[commandName];
@@ -181,17 +91,14 @@ module Cats.Commands {
                     label: config.label,
                     icon: config.icon,
                     shortcut:null,
-       //             command:null
-        //            shortcut: getShortcut(config.cmd),
                     command: editorCommand(config.cmd),
-                }
+                };
                 // if (config.icon) item.icon = config.icon;
                 registry(item);
             });
             
-           // registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
+            registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
             registry({name:CMDS.source_format, label:"Format Code", command: formatText});
-            registry({name:CMDS.source_tslint, label:"Lint Code", command: lint});
         }
 
     }

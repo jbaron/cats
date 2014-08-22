@@ -30,7 +30,7 @@ body.pc th:nth-child(3), body.pc td:nth-child(3) {
 	display: none;
 }
 
-body.mac th:nth-child(3), body.mac td:nth-child(3) {
+body.mac th:nth-child(2), body.mac td:nth-child(2) {
 	display: none;
 }
 

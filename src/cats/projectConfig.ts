@@ -38,8 +38,6 @@ module Cats {
      */
     export class ProjectConfig {
 
-        
-
         constructor(private projectRoot: string) {
         }
         
@@ -47,11 +45,10 @@ module Cats {
          * Get the name of the configuation file
          */
         private getFileName() : string {
-            return PATH.join(this.projectRoot, ".settings", "config.json");
+            return OS.File.join(this.projectRoot, ".settings/config.json");
         }
 
        
-
         /**
          * Load the configuration for this project
          */
@@ -59,40 +56,57 @@ module Cats {
             var fileName = this.getFileName();
             try {
                 var content = OS.File.readTextFile(fileName);
-                return JSON.parse(content);
+                var result:ProjectConfiguration = JSON.parse(content);
+                
+                // Do some basic sanitizing
+                if (! result.codingStandards) result.codingStandards = {};
+                if (! result.compiler) result.compiler = {};
+                return result;
             } catch (err) {
                 console.info("Couldn't find project configuration, loading defaults");
                 return this.loadDefault();
             }
         }
 
+
+        store(config:ProjectConfiguration) {
+            var name = this.getFileName();
+            var content = JSON.stringify(config, null, 4);
+            OS.File.writeTextFile(name,content);
+        }
+
         /**
          * Load the default configuration for a project
          */
-        private loadDefault() {
-            return {
-                version: "1.0",
+        private loadDefault() : ProjectConfiguration {
+            var result:ProjectConfiguration = {
+                version: "1.1",
                 main: "index.html",
                 src: null, //If not set, the whole project directory is searched for source files
                 buildOnSave: false,
                 compiler: {
                     "moduleGenTarget": 1,
-                    "useDefaultLib": true,
-                    "emitComments": false,
+                    "noLib": false,
+                    "removeComments": false,
                     "noImplicitAny" : false,
                     "generateDeclarationFiles": false,
                     "mapSourceFiles": false,
                     "codeGenTarget": 1,
                 },
-                minify: false,
-                rememberOpenFiles: false,
-                editor: {
+                codingStandards: {
                     newLineMode: "unix",
                     useSoftTabs: true,
-                    tabSize: 4
+                    tabSize: 4,
+                    useLint: false,
+                    lintFile: null
                 },
-                completionMode: "strict"
+                documentation: {
+                    
+                }
+                
             };
+            
+            return result;
         }
 
     }

@@ -3,7 +3,6 @@
  */
 class ToolBar extends qx.ui.toolbar.ToolBar {
 
-    private themes = ["Modern", "Indigo", "Simple", "Cats", "Classic"];
     private iconFolder = "resource/qx/icon/Oxygen/22/";
 
     private commands = [
@@ -20,12 +19,14 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
         Cats.Commands.CMDS.project_run,
         Cats.Commands.CMDS.project_refresh,
         null,
+        Cats.Commands.CMDS.edit_undo,
+        Cats.Commands.CMDS.edit_redo,
         Cats.Commands.CMDS.edit_find,
         Cats.Commands.CMDS.edit_replace,
         Cats.Commands.CMDS.edit_indent,
         Cats.Commands.CMDS.edit_outdent
  //       Cats.Commands.CMDS.edit_toggleComment
-    ]
+    ];
 
 
     constructor() {
@@ -55,44 +56,24 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
     }
 
     private init() {
+        // var part = new qx.ui.toolbar.Part();
         this.commands.forEach((cmdEnum) => {
             if (cmdEnum === null) {
+                // this.add(part);
+                // part = new qx.ui.toolbar.Part();
                 this.addSeparator();
             } else {
                 var cmd = Cats.Commands.get(cmdEnum);
                 if (cmd && cmd.icon) {
                   var button = this.createButton(cmd);
                   this.add(button);
+                  // part.add(button);
                 }
             }
         });
+        // this.add(part);
         return;
-        var cmds = Cats.Commands.getAllCommands();
-        cmds.forEach((cmd) => {
-            if (cmd.icon) {
-                    var button = this.createButton(cmd)
-                    this.add(button);
-            }
-        });
-        
-       // this.addThemeButtons();
     }
 
-    toggle() {
-        if (this.isVisible()) { 
-            this.exclude();    
-        } else {
-            this.show();
-        }
-    }
-
-
-    private addThemeButtons() {
-        this.themes.forEach((theme) => {
-            var themeButton = new qx.ui.toolbar.Button(theme);
-            themeButton.addListener("click", () => { qx.theme.manager.Meta.getInstance().setTheme(qx.theme[theme]); });
-            this.add(themeButton);
-        });
-    }
 
 }

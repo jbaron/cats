@@ -14,21 +14,25 @@
 //
 
 /**
- * This module abstracts out the native File IO. Right now it uses Nodejs, but this
- * could be easily changed to another implementation like a cloud storage API.
+ * This module abstracts out the native File IO and Process access. Right now it uses Nodejs, but this
+ * could be changed to another implementation like a cloud storage API.
  * 
- * @TODO make this an async api. 
+ * @TODO make this more an async api so it becomes easier to switch to other implementations
+ * Perhaps after TS has implement await type of functionality.
  */
 module OS.File {
 
         window["EventEmitter"] = require("events").EventEmitter;
+        var FS=require("fs");
+        var exec = require("child_process").exec;
+        var glob = require("glob");
 
         /**
          * Very lightweight watcher for files and directories
          */ 
         export class Watcher extends EventEmitter {
             
-            private watches = {}
+            private watches = {};
             
             constructor() {
                 super();
@@ -61,9 +65,7 @@ module OS.File {
         }
 
 
-        var FS=require("fs");
-        var exec = require('child_process').exec;
-        var glob = require("glob");
+        
  
         
         /**
@@ -85,15 +87,38 @@ module OS.File {
             return watcher;
         }
 
+       
         /**
-         * Used to integrate external build tools
+         * Run an external command like a build tool
+         * 
          */ 
-        export function executeProcess(cmd:string,options:{}, callback:Function) {
-            var child = exec(cmd,options, callback);
+        export function runCommand(cmd:string, options:any, logger=IDE.console) {
+        
+            if (! options.env) {
+                    options.env = process.env;
+            }
+            
+            var child = exec(cmd, options, () => {
+                /* ignore the buffers */
+            });
+            var id = child.pid;
+            IDE.processTable.addProcess(child, cmd);
+           
+            child.stdout.on("data", function (data) {
+              logger.log("" + data);
+            });
+            
+            child.stderr.on("data", function (data) {
+              logger.error("" + data);
+            });
+            
+            child.on("close", function (code) {
+              logger.log("Done");
+            });
         }
-
+       
         /**
-         * Remove a file or empty directory
+         * Remove a file or an empty directory
          * @param path the path of the file or directory
          */ 
         export function remove(path:string) {
@@ -104,9 +129,17 @@ module OS.File {
                 FS.rmdirSync(path);
         }
 
+        export function isOSX() {
+            return process.platform === "darwin";
+        }
 
-        export class PlatForm {
-            static OSX = "darwin";
+        export function isWindows() {
+            return process.platform === "win32";
+        }
+
+        export function join(a,b) : string{
+            var result = PATH.join(a,b);
+            return switchToForwardSlashes(result);
             
         }
 
@@ -115,15 +148,10 @@ module OS.File {
             cb(null,files);
         }
 
-       /**
-         * Get platform
-         */ 
-        export function platform():string {
-            return process.platform;
-        }
 
         /**
          * Rename a file or directory
+         * 
          * @param oldName the old name of the file or directory
          * @param newName the new name of the file or directory
          */ 
@@ -131,22 +159,47 @@ module OS.File {
              FS.renameSync(oldName, newName);
         }
 
+
+        /**
+         * Determine the newLineMode.
+         * 
+         * @return Return value is either dos or unix
+         */ 
+        function determineNewLIneMode(): string {
+            var mode = IDE.project.config.codingStandards.newLineMode;
+            if ((mode === "dos") || (mode ==="unix")) return mode;
+         
+            if (isWindows()) return "dos";
+            return "unix";
+        }
+
         /**
          * Write text content to a file. If a directory doesn't exist, create it
          * @param name The full name of the file
          * @param value The content of the file
          */ 
-         export function writeTextFile(name: string, value: string) {
+         export function writeTextFile(name: string, value: string, stat=false):any {
+            var newLineMode = determineNewLIneMode();
+            if (newLineMode === "dos") {
+                value = value.replace(/\n/g, "\r\n");
+            }
             mkdirRecursiveSync(PATH.dirname(name));
             FS.writeFileSync(name, value, "utf8");
+            
+            if (stat) return FS.statSync(name);
+            return null;
         }
         
         export function switchToForwardSlashes(path:string):string {
+            if (! path) return path;
             return path.replace(/\\/g, "/");
         }
          
-         
-         // Sort first on directory versus file and then on alphabet
+        /**
+         * Sort two directory directorie entries first on 
+         * directory versus file and then on alphabet.
+         * 
+         */ 
         function sort(a: Cats.FileEntry, b: Cats.FileEntry) {
             if ((!a.isDirectory) && b.isDirectory) return 1;
             if (a.isDirectory && (!b.isDirectory)) return -1;
@@ -164,11 +217,11 @@ module OS.File {
             var files:string[] = FS.readdirSync(directory);
             var result = [];
             files.forEach((file) => {
-                var fullName = PATH.join(directory, file);
+                var fullName = OS.File.join(directory, file);
                 var stats = FS.statSync(fullName);
                 result.push({
                    name:file,
-                   fullName: switchToForwardSlashes(fullName),
+                   fullName: fullName,
                    isFile: stats.isFile() ,
                    isDirectory: stats.isDirectory()
                 });
@@ -177,32 +230,13 @@ module OS.File {
             return result;
         }
         
-         /**
-         * Read the files from a directory
-         * @param directory The directory name that should be read
-         */ 
-        export function readDir2(directory:string,cb:(param:Cats.FileEntry[])=>any){
-            var files:string[] = FS.readdirSync(directory);
-            var result = [];
-            files.forEach((file) => {
-                var fullName = PATH.join(directory, file);
-                var stats = FS.statSync(fullName);
-                result.push({
-                   name:file,
-                   fullName: switchToForwardSlashes(fullName),
-                   isFile: stats.isFile() ,
-                   isDirectory: stats.isDirectory()
-                });
-            });
-            cb(result);
-        }
-        
-         /**
+      
+        /**
          * Read the content from a text file
          * @param name The full name/path of the file
          */ 
         export function readTextFile(name: string): string {
-            if (name === "Untitled") return "";
+            if (name == null ) return "";
 
             var data = FS.readFileSync(name, "utf8");
 
@@ -214,38 +248,6 @@ module OS.File {
             return data;
         } 
                    
-        /**
-         * Read the content from a text file
-         * @param name The full name/path of the file
-         */ 
-        export function readTextFile2(name: string, cb:(param:string)=>any) {
-            if (name === "Untitled") return "";
-
-            var data = FS.readFileSync(name, "utf8");
-
-            // Use single character line returns
-            data = data.replace(/\r\n?/g, "\n");
-
-            // Remove the BOM (only MS uses BOM for UTF8)
-            data = data.replace(/^\uFEFF/, '');
-            cb(data);
-        }
-
-        /**
-         * Return stats info about a path
-         * @param name The fulle name/path of the file
-         */
-        export function stat(path: string) {
-            return FS.statSync(path);
-        }
-        
-        /**
-         * Return a watcher object on a file
-         * @param name The fulle name/path of the file
-         */
-        export function watch(path: string) {
-            return FS.watch(path);
-        }
       
 }
 

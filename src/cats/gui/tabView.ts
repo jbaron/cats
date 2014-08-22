@@ -3,7 +3,7 @@
  * Used for all the tabs execpt the session tab
  */ 
 class TabView extends qx.ui.tabview.TabView {
-  private static IDNAME="___ID___" 
+  private static IDNAME="___ID___" ;
   private iconFolder = "./resource/qx/icon/Oxygen/16/";
     private iconMapping = {
         "search" : {
@@ -15,6 +15,9 @@ class TabView extends qx.ui.tabview.TabView {
             icon : "apps/utilities-terminal.png"
         },
         
+        "process" : {
+            icon: "actions/view-process-all.png"  
+        },
                 
          "files" : {
             label: "Project Explorer",
@@ -44,7 +47,7 @@ class TabView extends qx.ui.tabview.TabView {
         }
         
         
-    }  
+    } ; 
 
     constructor(tabNames: string[]) {
         super();

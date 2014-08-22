@@ -15,6 +15,8 @@
 
 module Cats {
     
+    var Linter = require("tslint");
+    
     export class Session extends qx.event.Emitter {
 
         private static MODES = {
@@ -63,6 +65,9 @@ module Cats {
             return IDE.project;
         }
 
+        /**
+         * Is this session a TypeScript session
+         */ 
         isTypeScript(): boolean {
             return this.mode === "typescript";
         }
@@ -71,21 +76,30 @@ module Cats {
             return this.mode === "binary";
         }
         
+        /**
+         * Is this session active right now in the main editor
+         */ 
         isActive() : boolean {
             return (IDE.sessionTabView.getActiveSession() === this); 
         }
 
+        /**
+         * What is the short name of this session to show on buttons etc
+         */ 
         get shortName():string {
             if (! this.name) return "Untitled";
             return PATH.basename(this.name);
         }
 
         // @TODO make this a real MVC pattern, not pushing
-        setContent(content) {
+        setContent(content:String) {
             var page = <SessionPage>IDE.sessionTabView.getPageBySession(this);
             return page.editor.setContent(content);
         }
         
+        /**
+         * Has this session be changed since last save
+         */ 
         getChanged() {
             return this.changed;
         }
@@ -102,7 +116,7 @@ module Cats {
         }
 
         /**
-         * Persist the edit session
+         * Persist this session to the file system
          */
         persist(shouldConfirm=false) {
             // Select proper folder separator according to platform used 
@@ -111,7 +125,7 @@ module Cats {
             var dirSlash = process.platform == "win32" ? "\\" : "/";
             
             if (this.name == null ) {
-                this.name = prompt("Please enter the file name", IDE.project.projectDir + dirSlash);
+                this.name = prompt("Please enter the file name", this.project.projectDir + dirSlash);
                 if (! this.name) return;
             }
 
@@ -121,7 +135,7 @@ module Cats {
             
             if (this.isTypeScript()) this.project.validate(false);
             
-            if (IDE.project.config.buildOnSave && (this.mode === "typescript") ) 
+            if (this.project.config.buildOnSave && (this.mode === "typescript") ) 
                     Commands.runCommand(Commands.CMDS.project_build);
                     
         }
@@ -132,33 +146,74 @@ module Cats {
             this.emit("errors", this.errors);
         }
         
-        setOutline(outline:NavigateToItem[]) {
+        private setOutline(outline:NavigateToItem[]) {
             this.outline = outline;
             if (this.isActive()) IDE.outlineNavigator.setData(this,this.outline);
             this.emit("outline", this.outline);
         }
 
-        updateContent(content) {
+        updateContent(content:string) {
             this.content = content;
-            IDE.project.iSense.updateScript(this.name, content);
-            this.getDiagnostics();
+            this.project.iSense.updateScript(this.name, content);
+            this.updateDiagnostics();
         }
 
-
-        getDiagnostics() {
+        /**
+         * Lets check the worker if something changed in the diagnostic.
+         * 
+         */ 
+        private updateDiagnostics() {
             if (this.isTypeScript()) {
-               IDE.project.iSense.getErrors(this.name, (err, result: Cats.FileRange[]) => {
+               this.project.iSense.getErrors(this.name, (err:Error, result: Cats.FileRange[]) => {
+                   if (this.project.config.codingStandards.useLint) {
+                       result = result.concat(this.lint());
+                   }
                    this.setErrors(result);
                });
             }
         }
         
-        getOutline(timeout=5000) {
+        
+        private convertPos(item:any): Cats.Range {
+            return {
+                start : {
+                    row: item.startPosition.line,
+                    column : item.startPosition.character
+                },
+                end : {
+                    row: item.endPosition.line,
+                    column : item.endPosition.position.character
+                }
+            };
+        }
+        
+        private lint() {
+            
+            var ll = new Linter(this.name, this.content, this.project.getLintOptions());
+            var result:Array<any> = JSON.parse(ll.lint().output);
+            var r:Cats.FileRange[] = [];
+            result.forEach((msg) => {
+                var item:Cats.FileRange = {
+                      fileName : msg.name,
+                      message: msg.failure,
+                      severity: Cats.Severity.Info,
+                      range: this.convertPos(msg)
+                };
+                r.push(item);
+            });
+            return r;
+        }
+        
+        /**
+         * Lets check the worker if something changed in the outline of the source.
+         * But lets not call this too often.
+         */ 
+        private updateOutline(timeout=5000) {
             if (this.isTypeScript()) {
                 // Clear any pending updates
                 clearTimeout(this.outlineTimer);
                 this.outlineTimer = setTimeout(() => {
-                    IDE.project.iSense.getScriptLexicalStructure(this.name, (err, data: NavigateToItem[]) => {
+                    this.project.iSense.getScriptLexicalStructure(this.name, (err:Error, data: NavigateToItem[]) => {
                         this.setOutline(data);
                     });
                 }, timeout);
@@ -167,9 +222,12 @@ module Cats {
             }
         }    
 
+        /**
+         * Lets make sure all the state of the session is up to date with the worker
+         */ 
         sync() {
-            this.getDiagnostics();
-            this.getOutline(10);
+            this.updateDiagnostics();
+            this.updateOutline(10);
         }
 
         /**

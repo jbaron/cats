@@ -41,7 +41,7 @@ class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.
     log(msg:string,severity:number=0) {
         IDE.problemPane.selectPage("console");
         if (this.container) {
-            var prefix = "" 
+            var prefix = "" ;
             if (this.printTime) {
                var dt = new Date();
                prefix = dt.toLocaleTimeString() + " ";
@@ -55,6 +55,11 @@ class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.
             this.container.scrollTop = this.container.scrollHeight;
         }
     } 
+    
+    error(msg:string) {
+        this.log(msg,2);
+    }
+    
     
     private createContextMenu() {
         var menu = new qx.ui.menu.Menu();

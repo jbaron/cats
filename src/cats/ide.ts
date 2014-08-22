@@ -17,23 +17,55 @@ module Cats {
 
     export class Ide  {
 
-        catsHomeDir: string;
-        navigatorPane: TabView;
+        // List of different themes that are available
+        private themes = {                  
+            cats : cats.theme.Default,
+            classic: qx.theme.Classic,
+            indigo: qx.theme.Indigo,
+            modern:qx.theme.Modern,
+            simple:qx.theme.Simple
+        };
+
         problemPane: TabView;
         toolBar: ToolBar;
         infoPane: TabView;
         statusBar: StatusBar;
         sessionTabView: SessionTabView;
         console:ConsoleLog;
+        processTable:ProcessTable;
+        searchResult:ResultTable;
+        bookmarks:ResultTable;
+        problemResult:ResultTable;
+        menubar:Menu.Menubar;
+        outlineNavigator:OutlineNavigator; 
+        fileNavigator:FileNavigator
 
-        // sessions: Session[] = [];
+
+        catsHomeDir: string;
         project: Project;
+        config:IDEConfiguration;
         private static STORE_KEY = "cats.config";
-
-
         infoBus= <InfoBus> new Events.EventEmitter();
 
-        outlineNavigator:OutlineNavigator; 
+
+        constructor() {
+            this.catsHomeDir = process.cwd();
+            this.config = this.loadConfig();
+            this.configure();
+        }
+
+        /**
+         * Initialize the different modules within the IDE.
+         * 
+         */ 
+        init(rootDoc:qx.ui.container.Composite) {
+            Cats.Commands.init();
+            var layouter = new Layout(rootDoc);
+            layouter.layout(this);
+            this.menubar = new Cats.Menu.Menubar();
+            this.initFileDropArea();
+        }
+
 
         getActiveEditor() {
             var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
@@ -42,97 +74,27 @@ module Cats {
             return editor;
         }
 
+
         get sessions() {
             return this.sessionTabView.getSessions();
         }
 
-        searchResult:ResultTable;
-        bookmarks:ResultTable;
-        problemResult:ResultTable;
-  
-        mainMenu:Menu.Menubar = null;
-        private config:IDEConfiguration;
+      
 
-        // mainEditor: TextEditor;
-
-        constructor() {
-            this.catsHomeDir = process.cwd();
-            this.config = this.loadConfig();
+        /**
+         * Configure the IDE based on the settings
+         */ 
+        configure() {
+            var config = this.config;
+            if (config.theme) {
+                var theme = this.themes[config.theme] || this.themes.cats;
+                if (theme !== qx.theme.manager.Meta.getInstance().getTheme()) {
+                    qx.theme.manager.Meta.getInstance().setTheme(theme);
+                }
+            }
         }
 
-        init(rootDoc:qx.ui.container.Composite) {
-            Cats.Commands.init();
-            this.layout(rootDoc);
-            // this.toolBar.init();
-            this.mainMenu = Cats.Menu.createMenuBar();
-            this.initFileDropArea();
-        }
-
-        private layout(rootDoc:qx.ui.container.Composite) {
-            // container layout
-
-            qx.theme.manager.Meta.getInstance().setTheme(Cats.theme.Theme);
-            
-            var layout = new qx.ui.layout.VBox();
-    
-            // main container
-            var mainContainer = new qx.ui.container.Composite(layout);
-            rootDoc.add(mainContainer, { edge: 0 });
-    
-            this.toolBar = new ToolBar();
-    
-            mainContainer.add(this.toolBar, { flex: 0 });
-    
-            // mainsplit, contains the editor splitpane and the info splitpane
-            var mainsplit = new qx.ui.splitpane.Pane("horizontal");
-            // mainsplit.set({ decorator: null });
-            
-            
-            // ********************* Navigator Pane ********************
-            this.navigatorPane = new TabView(["files", "bookmarks"]);
-            this.bookmarks = new ResultTable(["Bookmark"]);
-            this.navigatorPane.getPage("bookmarks").add(this.bookmarks, { edge: 0 });
-            
-            mainsplit.add(this.navigatorPane, 1); // navigator
-    
-            var editorSplit = new qx.ui.splitpane.Pane("vertical");
-            // editorSplit.setDecorator(null);
-    
-            var infoSplit = new qx.ui.splitpane.Pane("horizontal");
-            this.sessionTabView = new SessionTabView();
-            // infoSplit.set({ decorator: null });
-            infoSplit.add(this.sessionTabView, 4); // editor
-           
-            this.infoPane = new TabView(["outline", "properties"]);
-            this.outlineNavigator = new OutlineNavigator();
-            this.infoPane.getChildren()[0].add(this.outlineNavigator , { edge: 0 });
-            infoSplit.add(this.infoPane, 1); // todo
-        
-            editorSplit.add(infoSplit, 4);
-    
-            // **********************  Problem Pane ***************************
-            this.problemPane = new TabView(["problems", "search", "console"]);
-            editorSplit.add(this.problemPane, 2); // Info
-    
-            this.console = new ConsoleLog();
-            this.problemResult = new ResultTable();
-            this.searchResult = new ResultTable();
-            this.problemPane.getChildren()[0].add(this.problemResult, { edge: 0 });
-            this.problemPane.getChildren()[1].add(this.searchResult, { edge: 0 });
-            this.problemPane.getChildren()[2].add(this.console, { edge: 0 });
-    
-            this.problemPane.selectPage("console");
-            // this.problemPane.setSelection([this.problemPane.getChildren()[2]]);
-    
-            mainsplit.add(editorSplit, 4); // main area
-    
-            mainContainer.add(mainsplit, { flex: 1 });
-    
-            // ************************ Status Bar *****************************
-            this.statusBar = new StatusBar();
-            mainContainer.add(this.statusBar, { flex: 0 });
-        }
-
+ 
         /**
          * Attach the drag n' drop event listeners to the document
          *
@@ -189,7 +151,7 @@ module Cats {
                         }
                     });
                 }
-                this.project.refresh();
+                // this.project.refresh();
             }
         }
 
@@ -217,33 +179,24 @@ module Cats {
             }
         }
 
-        /**
-         * Indicate whether the IDE is busy with some (background) task
-         * @param isBusy true if busy, false otherwise
-         */ 
-        public busy(isBusy:boolean) {
-            this.statusBar.setBusy(isBusy);
-        }
 
         /**
-         * Get the directory where the icons for the IDE can be found
-         */ 
-        public getIconDir() {
-            return this.config.iconDir || "static/img/eclipse/";
-        }
-
-        /**
-         * Load the configuration for the IDE
+         * Load the configuration for the IDE. If there is no configuration
+         * found, create the default one to use.
          */ 
         private loadConfig() {
+            
             var defaultConfig:IDEConfiguration = {
-                version: "1",
+                version: "1.1",
                 theme: "cats",
-                fontSize: 13,
-                iconDir: "static/img/eclipse/",
-                rightMargin: 80,
+                editor : {
+                    fontSize: 13,
+                    rightMargin: 100
+                },
+                locale: "en",
+                rememberOpenFiles: false,
                 sessions: [],
-                projects:[PATH.join(process.cwd(), "samples", "greeter")]
+                projects:[]
             };
             
             var configStr = localStorage[Ide.STORE_KEY];
@@ -251,7 +204,7 @@ module Cats {
             if (configStr) {
                     try {
                         var config:IDEConfiguration = JSON.parse(configStr);
-                        if (config.version === "1") return config;
+                        if (config.version === "1.1") return config;
                     } catch (err) {
                         console.error("Error during parsing config " + err);
                     }
@@ -260,24 +213,30 @@ module Cats {
             return defaultConfig;
         }
 
+        updateConfig(config) {
+            this.config = config;
+            IDE.infoBus.emit("ide.config", config);
+            this.configure();
+            this.saveConfig();
+        }
+
         /**
          * Persist the current IDE configuration to a file
          */ 
         saveConfig() {
             try {
                 var config = this.config;
+                config.version = "1.1";
                 config.sessions = [];
                 config.projects = [];
                 if (this.project) {
                     config.projects.push(this.project.projectDir);
-                    if  (this.sessions) {
-                          this.sessions.forEach((session)=>{               
-                            config.sessions.push({ 
-                                path: session.name
-                                // session.getPosition() //@TODO make session fully responsible
-                            });
-                          });
-                    }      
+                    this.sessions.forEach((session)=>{               
+                        config.sessions.push({ 
+                            path: session.name
+                            // session.getPosition() //@TODO make session fully responsible
+                        });
+                    });
                 };
                 
                 var configStr = JSON.stringify(config);
@@ -287,8 +246,6 @@ module Cats {
             }
         }
 
-
-       
         /**
          * Open an existing session or if it doesn't exist yet create
          * a new one.
@@ -308,7 +265,7 @@ module Cats {
                 }
                 session = new Session(name, content);
                 if (session.isTypeScript()) {
-                    this.project.iSense.addScript(name,content);
+                    this.project.addScript(name,content);
                 }
                 var p = IDE.sessionTabView.addSession(session,pos);
             } else {
@@ -337,8 +294,9 @@ module Cats {
             this.project = project;
               
             if (this.project) {
-                var fileTree = new FileNavigator(this.project);
-                this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
+                this.fileNavigator.setProject(this.project);
+                // var fileTree = new FileNavigator(this.project);
+                // this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
             }
             
         }
@@ -352,7 +310,15 @@ module Cats {
             this.project.close();
             this.project = null;
         }
-
+        
+        quit() {
+            if (this.hasUnsavedSessions()) {
+                if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
+            }
+            this.saveConfig();
+            GUI.App.quit();
+        }
+ 
     }
 
 }

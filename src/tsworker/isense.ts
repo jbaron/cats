@@ -16,7 +16,7 @@
 importScripts("../static/js/typescriptServices.js");
 
 module Cats.TSWorker {
-    
+ 
     /**
      * Simple function to stub console.log functionality since this is 
      * not available in a worker.
@@ -25,7 +25,7 @@ module Cats.TSWorker {
         log: function(str:string) { postMessage({method: "console",  data: str}, null); },
         error: function(str:string) { postMessage({method: "console" , data: str}, null); },
         info: function(str:string) { postMessage({method: "console" , data: str}, null); }
-    }
+    };
 
     /**
      * Case insensitive sorting algoritme
@@ -52,7 +52,6 @@ module Cats.TSWorker {
          */ 
         constructor() {
             this.lsHost = new LanguageServiceHost();
-            // this.ls = new TypeScript.Services.TypeScriptServicesFactory().createLanguageService(this.lsHost);
             this.ls = new TypeScript.Services.TypeScriptServicesFactory().createPullLanguageService(this.lsHost);
         }
 
@@ -100,6 +99,14 @@ module Cats.TSWorker {
             }
         }
 
+        getObjectModel() {
+            var walker = new ObjectModelCreator();
+            this.lsHost.getScriptFileNames().forEach((script) => {
+                this.ls.getSyntaxTree(script).sourceUnit().accept(walker);
+            });
+            var result = walker.classNames;
+            return result;
+        }
 
         /**
          * Convert Services to Cats NavigateToItems
@@ -361,7 +368,7 @@ module Cats.TSWorker {
             var result = {
                 pos: newPos,
                 memberMode: memberMode
-            }
+            };
 
             // console.log("Autocompletion determine: " + JSON.stringify(result));
             return result;
@@ -385,7 +392,7 @@ module Cats.TSWorker {
 
         public getScriptLexicalStructure(fileName: string):NavigateToItem[] {
             var results = this.ls.getScriptLexicalStructure(fileName);
-            var finalResults = results.filter((entry)=>{return entry.fileName === fileName});
+            var finalResults = results.filter((entry)=>{return entry.fileName === fileName ;});
             return this.convertNavigateTo(finalResults);
         }
 
@@ -410,7 +417,7 @@ module Cats.TSWorker {
             return result;
         }
 
-        public autoComplete(cursor: Cats.Position, fileName: string): TypeScript.Services.CompletionInfo {
+        public getCompletions(fileName: string, cursor: Cats.Position): TypeScript.Services.CompletionInfo {
             var pos = this.getPositionFromCursor(fileName, cursor);
             var memberMode = false;
             var source = this.getScriptContent(fileName);
@@ -462,7 +469,7 @@ module Cats.TSWorker {
             var error = {
                 description: err.description,
                 stack: err.stack
-            }
+            };
             console.error("Error during processing message " + method);
             postMessage({ id: id, error: error }, null);
         } finally {

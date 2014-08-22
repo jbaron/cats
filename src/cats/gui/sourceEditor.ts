@@ -3,7 +3,7 @@
 
 /**
  * Wrapper around the ACE editor. The rest of the code base should not use
- * ACE editor directly so it can be easily changed for another editor if required.
+ * ACE editor directly so it can be changed for another editor if required.
  */
 class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Html */{
 
@@ -14,20 +14,17 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
     private pendingWorkerUpdate = false;
     private editSession: Ace.EditSession;
     
-    static CONFIG = qx.data.marshal.Json.createModel({
-        fontSize: "12px",
-        printMarginColumn: 100
-    }, true);
-
     constructor(private session:Cats.Session, pos?:Cats.Position) {
         super();
         this.setDecorator(null);
         this.setFont(null);
         this.setAppearance(null);
         this.editSession = new (<any>ace).EditSession(session.content,"ace/mode/" + session.mode);
+        this.editSession.setNewLineMode("unix");
         this.editSession.setUndoManager(new UndoManager());
+        this.configureSession();
         this.editSession.on("change", this.onChangeHandler.bind(this));
-     
+       
 
         this.addListenerOnce("appear", () => {
             var container = this.getContentElement().getDomElement();
@@ -56,7 +53,9 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
              this.aceEditor.on("changeSelection", () => {
                  IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
              }); 
-               
+             
+             this.configureEditor();
+             
         }, this);
         
         this.addListener("appear", () => { 
@@ -64,23 +63,37 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
             this.updateWorld();
         });
         
-        session.on("errors", (errors) => { this.showErrors(errors)});
+        session.on("errors", (errors) => { this.showErrors(errors);});
         this.addListener("resize", () => { this.resizeHandler(); });
         
-        SourceEditor.CONFIG.addListener("changeFontSize", 
-                (ev) => { this.aceEditor.setFontSize(ev.getData())});
-        
-        SourceEditor.CONFIG.addListener("changePrintMarginColumn", 
-                (ev) => { this.aceEditor.setPrintMarginColumn(ev.getData())});
-        
-        IDE.infoBus.on("editor.fontSize", (size) => { this.aceEditor.setFontSize(size + "px"); });
-        IDE.infoBus.on("editor.rightMargin", (margin) => { this.aceEditor.setPrintMarginColumn(margin);});
+        IDE.infoBus.on("project.config", () => { this.configureSession(); });
+        IDE.infoBus.on("ide.config", () => { this.configureEditor(); });
     }
 
+    executeCommand(name, ...args):boolean {
+         return false;
+    }    
+
     setContent(content, keepPosition=true) {
-        var pos = this.getPosition();
+        var pos;
+        if (keepPosition) this.getPosition();
         this.aceEditor.getSession().setValue(content);
-        if (pos && keepPosition) this.moveToPosition(pos);
+        if (pos) this.moveToPosition(pos);
+    }
+
+    private configureEditor() {
+        var config = IDE.config.editor;
+        if (config.fontSize) this.aceEditor.setFontSize(config.fontSize + "px");
+        if (config.rightMargin) this.aceEditor.setPrintMarginColumn(config.rightMargin);
+        if (config.theme) this.aceEditor.setTheme("ace/theme/" + config.theme);
+    }
+
+
+    private configureSession() {
+        var config = this.session.project.config.codingStandards;
+        var session = this.editSession;
+        if (config.tabSize) session.setTabSize(config.tabSize);
+        if (config.useSoftTabs != null) session.setUseSoftTabs(config.useSoftTabs);
     }
 
     updateWorld() {
@@ -231,7 +244,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
             // Any pending changes that are not yet send to the worker?
             if (this.pendingWorkerUpdate) this.update();
 
-            IDE.project.iSense.autoComplete(cursor, this.session.name, 
+            IDE.project.iSense.getCompletions( this.session.name, cursor, 
             (err, completes:TypeScript.Services.CompletionInfo) => {
                 if (completes != null) this.autoCompletePopup.showCompletions(completes.entries);
             });
@@ -239,7 +252,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
 
 
      private autoComplete() {
-            if (this.session.mode === "typescript") {
+            if (this.session.isTypeScript()) {
                 var cursor = this.aceEditor.getCursorPosition();
                 this.showAutoComplete(cursor);
             }                        
@@ -247,9 +260,9 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
 
     private mapSeverity(level: Cats.Severity) : string {
         switch (level) {
-            case Cats.Severity.Error: return "error"
-            case Cats.Severity.Warning: return "warning"
-            case Cats.Severity.Info: return "info"
+            case Cats.Severity.Error: return "error";
+            case Cats.Severity.Warning: return "warning";
+            case Cats.Severity.Info: return "info";
         }
         
     }
@@ -290,7 +303,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
                     win: "Ctrl-Space",
                     mac: "Ctrl-Space" 
                 },
-                exec: () => { this.autoComplete() }
+                exec: () => { this.autoComplete(); }
             },
 
            {
@@ -299,7 +312,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
                     win: "F12",
                     mac: "F12"
                 },
-                exec: () => { this.gotoDeclaration() }
+                exec: () => { this.gotoDeclaration(); }
             },
 
 
@@ -309,7 +322,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
                     win: "Ctrl-S",
                     mac: "Command-S"
                 },
-                exec: () =>  { this.session.persist() }
+                exec: () =>  { this.session.persist(); }
             }
             ]);
  
@@ -331,7 +344,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
             return editor;
     }
 
-  private gotoDeclaration() {        
+    private gotoDeclaration() {        
         var session = this.session;
       
         session.project.iSense.getDefinitionAtPosition( session.name, this.getPosition(), (err, data:Cats.FileRange) => {
@@ -344,10 +357,18 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         
         IDE.problemPane.selectPage("search");
     
- 
         this.session.project.iSense.getInfoAtPosition(type, this.session.name, this.getPosition(), (err, data:Cats.FileRange[]) => {
             console.debug("Called getInfoAt for with results #" + data.length);
             IDE.searchResult.setData(data);
+        });
+    }
+
+
+    private refactor() {
+        var newName = prompt("Replace with");
+        if (! newName) return;
+        this.session.project.iSense.getInfoAtPosition("getReferencesAtPosition", this.session.name, this.getPosition(), (err, data:Cats.FileRange[]) => {
+            Cats.Refactor.rename(data,newName);
         });
     }
 
@@ -366,7 +387,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
 
     private createContextMenuItem(name:string, fn:Function) {
         var button = new qx.ui.menu.Button(name);
-        button.addListener("execute", fn)
+        button.addListener("execute", fn);
         return button;
     }
     
@@ -386,7 +407,6 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
     }
     
     private createContextMenu() {
-        var CMDS = Cats.Commands.CMDS;
         var menu = new qx.ui.menu.Menu();
         if (this.session.isTypeScript()) {
             menu.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration.bind(this)));
@@ -394,14 +414,13 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
             menu.add(this.createContextMenuItem("Find Occurences", this.findOccurences.bind(this)));
             menu.add(this.createContextMenuItem("FInd Implementations", this.findImplementors.bind(this)));
             menu.addSeparator();
+            menu.add(this.createContextMenuItem("Rename", this.refactor.bind(this)));
+            menu.addSeparator();
         }
         menu.add(this.createContextMenuItem("Bookmark", this.bookmark.bind(this)));
-        // menu.add(this.createContextMenuItem("Undo", () => {this.aceEditor.execCommand("undo")}));
-        
         this.setContextMenu(menu);
     }
   
-
     private onMouseMove(ev: MouseEvent) {
             if (this.getToolTip() && this.getToolTip().isSeeable()) this.getToolTip().exclude();
             clearTimeout(this.mouseMoveTimer);

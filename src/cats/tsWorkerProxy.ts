@@ -40,6 +40,10 @@ export class TSWorkerProxy {
         this.perform("getErrors",fileName, cb);
     }
 
+    getNavigateToItems(search:string, cb:(err,result:NavigateToItem[])=> void ) {
+        this.perform("getNavigateToItems", search, cb);
+    }
+
     getAllDiagnostics(cb:(err, result: FileRange[]) => void) {
         this.perform("getAllDiagnostics", cb);
     }
@@ -68,12 +72,12 @@ export class TSWorkerProxy {
         this.perform("getTypeAtPosition", name, docPos, cb);
     }
 
-    getCompletions(fileName:string,cursor,cb) {
-        this.perform("getCompletions", fileName, cursor,cb);
-    }
-
     getDependencyGraph(cb) {
         this.perform("getDependencyGraph",cb);
+    }
+
+   getObjectModel(cb) {
+        this.perform("getObjectModel",cb);
     }
 
     setCompilationSettings(settings) {
@@ -88,8 +92,8 @@ export class TSWorkerProxy {
         this.perform("updateScript",fileName, content, null);
     }
 
-    autoComplete(cursor:Ace.Position, name:string, cb:(err, completes:TypeScript.Services.CompletionInfo) => void) {
-        this.perform("autoComplete", cursor, name, cb); 
+    getCompletions(fileName:string, cursor:Ace.Position, cb:(err, completes:TypeScript.Services.CompletionInfo) => void) {
+        this.perform("getCompletions", fileName, cursor, cb); 
     }
 
     initialize() {

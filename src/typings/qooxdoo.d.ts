@@ -1,5 +1,5 @@
 interface IMap { [key:string] : any; } 
-declare class ErrorImpl implements Error {name: string; message:string } 
+declare class ErrorImpl implements Error {name: string; message:string; } 
 declare module qx {
 class Bootstrap {
  static base(args:any,varargs:any):any;
@@ -10812,7 +10812,7 @@ constructor (label:any,icon?:any,command?:any);
 }
 declare module qx.ui.toolbar {
 class CheckBox extends qx.ui.form.ToggleButton {
-constructor (label:any,icon:any);
+constructor (label?:any,icon?:any);
 }
 }
 declare module qx.ui.toolbar {
