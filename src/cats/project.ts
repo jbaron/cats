@@ -77,7 +77,7 @@ module Cats {
                 if (! c) return;
             }
             IDE.sessionTabView.closeAll();
-            IDE.navigatorPane.getPage("files").removeAll();
+            IDE.fileNavigator.clear();
             IDE.outlineNavigator.clear();
             IDE.problemResult.clear();
             IDE.searchResult.clear();

@@ -28,11 +28,13 @@ class Layout {
             
             
             // ********************* Navigator Pane ********************
-            ide.navigatorPane = new TabView(["files", "bookmarks"]);
+            var navigatorPane = new TabView(["files", "bookmarks"]);
             ide.bookmarks = new ResultTable(["Bookmark"]);
-            ide.navigatorPane.getPage("bookmarks").add(ide.bookmarks, { edge: 0 });
+            ide.fileNavigator = new FileNavigator();
+            navigatorPane.getPage("files").add(ide.fileNavigator, { edge: 0 });
+            navigatorPane.getPage("bookmarks").add(ide.bookmarks, { edge: 0 });
             
-            mainsplit.add(ide.navigatorPane, 1); // navigator
+            mainsplit.add(navigatorPane, 1); // navigator
     
             var editorSplit = new qx.ui.splitpane.Pane("vertical");
             // editorSplit.setDecorator(null);

@@ -23,10 +23,21 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     private iconsForMime = {};
     private watcher:OS.File.Watcher;
     private parents = {};
+    private projectDir:string;
 
 
-    constructor(private project:Cats.Project) {
+    constructor() {
         super(null,"label", "children");
+        this.setDecorator(null);
+        this.setPadding(0,0,0,0);
+        this.loadAvailableIcons();
+        var contextMenu = new FileContextMenu(this);
+        this.setContextMenu(contextMenu);
+    }
+    
+    setProject(project:Cats.Project) {
+        this.projectDir = project.projectDir;
+            
         this.watcher = new OS.File.Watcher();
         this.watcher.on("change", (dir) => {
              var parent = this.parents[dir];
@@ -38,16 +49,9 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         this.rootTop.label = PATH.basename(directory);
         var root = qx.data.marshal.Json.createModel(this.rootTop, true);
         this.setModel(root);
-        // this.setItemHeight(18);
-        // this.setLabelPath("label");
-        // this.setChildProperty("children");
-        this.setDecorator(null);
-        this.setPadding(0,0,0,0);
-
+  
         this.setupDelegate();
         
-        var contextMenu = new FileContextMenu(this);
-        this.setContextMenu(contextMenu);
         this.setup();
 
         console.info("Icon path:" + this.getIconPath());    
@@ -66,9 +70,15 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
             data.setLoaded(false);
         });
         */
-        this.loadAvailableIcons();
+        
 
     }
+
+    clear() {
+        // var root = qx.data.marshal.Json.createModel({}, true);
+        this.setModel(null);
+    }
+
 
     getSelectedFile() {
         var item = this.getSelection().getItem(0);

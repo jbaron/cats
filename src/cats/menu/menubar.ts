@@ -52,73 +52,36 @@ module Cats.Menu {
 
         private getOrCreateMenu(label:string) {
             var items = this.menu.items;
+            
             for (var i = 0; i < items.length; ++i) {
-                if (items[i].label === label) return items[i];
+                var item = items[i];
+                if (item.label === label) return item.submenu;
             }
+            
             var menu =  new GUI.Menu();
             this.menu.append(new GUI.MenuItem({ label: label, submenu:  menu}));
             return menu;
         }
 
         constructor() {
-            var menubar = new GUI.Menu({ type: 'menubar' });
-            this.menu = menubar;
+            this.menu = new GUI.Menu({ type: 'menubar' });
+ 
            
-            
             // @TODO fix a bit nicer
-            if (OS.File.isOSX() && menubar.createMacBuiltin) {
-                menubar.createMacBuiltin("CATS");
+            if (OS.File.isOSX() && this.menu.createMacBuiltin) {
+                this.menu.createMacBuiltin("CATS");
                 // GUI.Window.get().menu = menubar;
             }
-             this.createFileMenu();
-       
             
-            var getCmd = this.getMenuCommand;
-            var CMDS = Cats.Commands.CMDS;
-
-          
-            var edit = new GUI.Menu();
-            // edit.append(this.editorCommand("undo"));
-            edit.append(getCmd(CMDS.edit_undo));
-            edit.append(getCmd(CMDS.edit_redo));
-            /*edit.append(new GUI.MenuItem({ type: "separator" }));
-            edit.append(getCmd(CMDS.edit_cut));
-            edit.append(getCmd(CMDS.edit_copy));
-            edit.append(getCmd(CMDS.edit_paste));*/
-            edit.append(new GUI.MenuItem({ type: "separator" }));
-            edit.append(getCmd(CMDS.edit_find));
-            edit.append(getCmd(CMDS.edit_findNext));
-            edit.append(getCmd(CMDS.edit_findPrev));
-            edit.append(getCmd(CMDS.edit_replace));
-            edit.append(getCmd(CMDS.edit_replaceAll));
-            
-            edit.append(new GUI.MenuItem({ type: "separator" }));
-            // edit.append(getCmd(CMDS.edit_toggleInvisibles));
-            edit.append(getCmd(CMDS.edit_toggleRecording));
-            edit.append(getCmd(CMDS.edit_replayMacro));
-             edit.append(getCmd(CMDS.edit_gotoLine));
-
-
-            var source = new GUI.Menu();
-            source.append(getCmd(CMDS.edit_toggleComment));
-            source.append(getCmd(CMDS.edit_toggleInvisibles));
-            source.append(getCmd(CMDS.edit_indent));
-            source.append(getCmd(CMDS.edit_outdent));
-            source.append(getCmd(CMDS.source_format));
-
-  
-
+            this.createFileMenu();
+            this.createViewMenu();
+            this.createEditMenu();
             this.createProjectMenu();
-            // this.createWindowMenu();
             this.createSourceMenu();
-            menubar.append(new GUI.MenuItem({ label: 'Edit', submenu: edit }));
-            
-
-
-           this.createHelpMenu();
+            this.createHelpMenu();
             
             var win = GUI.Window.get();
-            win.menu = menubar;
+            win.menu = this.menu;
         }
          
         
@@ -130,7 +93,8 @@ module Cats.Menu {
             source.append(getCmd(CMDS.edit_toggleInvisibles));
             source.append(getCmd(CMDS.edit_indent));
             source.append(getCmd(CMDS.edit_outdent));
-            source.append(getCmd(CMDS.source_format)); 
+            source.append(getCmd(CMDS.source_format));
+            source.append(getCmd(CMDS.edit_gotoLine));
         }
          
         private createHelpMenu() {
@@ -148,13 +112,15 @@ module Cats.Menu {
             var CMDS = Cats.Commands.CMDS;
             var edit = this.getOrCreateMenu("Edit");
           
-            // edit.append(this.editorCommand("undo"));
-            edit.append(getCmd(CMDS.edit_undo));
-            edit.append(getCmd(CMDS.edit_redo));
-            /*edit.append(new GUI.MenuItem({ type: "separator" }));
-            edit.append(getCmd(CMDS.edit_cut));
-            edit.append(getCmd(CMDS.edit_copy));
-            edit.append(getCmd(CMDS.edit_paste));*/
+            // ALready done by native OSX menu
+            if (! OS.File.isOSX()) {
+                edit.append(getCmd(CMDS.edit_undo));
+                edit.append(getCmd(CMDS.edit_redo));
+                /*edit.append(new GUI.MenuItem({ type: "separator" }));
+                edit.append(getCmd(CMDS.edit_cut));
+                edit.append(getCmd(CMDS.edit_copy));
+                edit.append(getCmd(CMDS.edit_paste));*/
+            }
             edit.append(new GUI.MenuItem({ type: "separator" }));
             edit.append(getCmd(CMDS.edit_find));
             edit.append(getCmd(CMDS.edit_findNext));
@@ -163,10 +129,8 @@ module Cats.Menu {
             edit.append(getCmd(CMDS.edit_replaceAll));
             
             edit.append(new GUI.MenuItem({ type: "separator" }));
-            // edit.append(getCmd(CMDS.edit_toggleInvisibles));
             edit.append(getCmd(CMDS.edit_toggleRecording));
             edit.append(getCmd(CMDS.edit_replayMacro));
-             edit.append(getCmd(CMDS.edit_gotoLine));
         } 
          
         private createFileMenu() {
@@ -185,7 +149,10 @@ module Cats.Menu {
             file.append(getCmd(CMDS.file_closeOther));
             file.append(new GUI.MenuItem({ type: "separator" }));
             file.append(getCmd(CMDS.ide_configure));
-            file.append(getCmd(CMDS.ide_quit));
+            
+            if (! OS.File.isOSX()) {
+                file.append(getCmd(CMDS.ide_quit));
+            }
         } 
          
         private createProjectMenu() {
@@ -195,16 +162,19 @@ module Cats.Menu {
             var proj = this.getOrCreateMenu("Project");
             proj.append(getCmd(CMDS.project_open));
             proj.append(getCmd(CMDS.project_close));
+            
             proj.append(new GUI.MenuItem({ type: "separator" }));
             proj.append(getCmd(CMDS.project_build));
+            proj.append(getCmd(CMDS.project_run));
             proj.append(getCmd(CMDS.project_validate));
-
             proj.append(getCmd(CMDS.project_refresh));
+            
+            proj.append(new GUI.MenuItem({ type: "separator" }));
             proj.append(getCmd(CMDS.project_classDiagram));
+            proj.append(getCmd(CMDS.project_document)); 
+            
             proj.append(new GUI.MenuItem({ type: "separator" }));
             proj.append(getCmd(CMDS.project_configure)); 
-            proj.append(getCmd(CMDS.project_document)); 
-            proj.append(getCmd(CMDS.project_run));
         } 
          
         private createViewMenu() {
@@ -223,9 +193,7 @@ module Cats.Menu {
 
         }
 
-
     }
 
-  
 }
 

@@ -26,7 +26,6 @@ module Cats {
             simple:qx.theme.Simple
         };
 
-        navigatorPane: TabView;
         problemPane: TabView;
         toolBar: ToolBar;
         infoPane: TabView;
@@ -39,6 +38,7 @@ module Cats {
         problemResult:ResultTable;
         menubar:Menu.Menubar;
         outlineNavigator:OutlineNavigator; 
+        fileNavigator:FileNavigator
 
 
         catsHomeDir: string;
@@ -294,8 +294,9 @@ module Cats {
             this.project = project;
               
             if (this.project) {
-                var fileTree = new FileNavigator(this.project);
-                this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
+                this.fileNavigator.setProject(this.project);
+                // var fileTree = new FileNavigator(this.project);
+                // this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
             }
             
         }

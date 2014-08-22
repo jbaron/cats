@@ -28,7 +28,10 @@ module Cats.Commands {
      * Show the version of CATS
      */ 
     function showAbout() {
-        alert("Code Assisitant for TypeScript, version 1.0.1\nCreated by JBaron\n");
+        var packageFile = OS.File.join(IDE.catsHomeDir, "package.json");
+        var package = JSON.parse(OS.File.readTextFile(packageFile));
+        var version = package.version; 
+        alert("Code Assisitant for TypeScript, version " + version + "\nCreated by JBaron\n");
     }
 
     /**

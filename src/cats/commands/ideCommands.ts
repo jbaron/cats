@@ -49,7 +49,7 @@ module Cats.Commands {
         static init(registry:(cmd:Command)=>void) {
             registry({ name: CMDS.ide_quit, label: "Quit", command: quit });
            registry({ name: CMDS.ide_toggleView, label : "Toggle View", command: toggleView });
-            registry({ name: CMDS.ide_configure, label: "Settings", command: configureIde });
+            registry({ name: CMDS.ide_configure, label: "Preferences....", command: configureIde });
 
         }
     }
