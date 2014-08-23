@@ -43,7 +43,7 @@ var catsOptions = [
     "src/cats/menu/menubar.ts",
     "src/cats/project.ts",
     "src/cats/refactor.ts",
-    
+    "src/cats/history.ts",    
     
     "src/cats/gui/editor.ts",
     "src/cats/gui/console.ts",
@@ -63,6 +63,7 @@ var catsOptions = [
     "src/cats/gui/processTable.ts",
     "src/cats/gui/busyWindow.ts",
     "src/cats/gui/layout.ts",
+    "src/cats/gui/searchDialog.ts",
     
     
     "src/cats/util/mime.ts",

@@ -20,11 +20,12 @@
 class FileContextMenu extends qx.ui.menu.Menu {
 
     private gui = require('nw.gui');
-
+    private searchDialog = new SearchDialog();
 
     constructor(private fileNavigator:FileNavigator) {
         super();
         this.init();
+        
     }
 
 
@@ -38,7 +39,9 @@ class FileContextMenu extends qx.ui.menu.Menu {
         if (osPath) this.gui.Shell.showItemInFolder(osPath);
     }
 
-    
+    private search() {
+        this.searchDialog.search(this.getFullPath());
+    }
 
     private getSelectedItem() {
         return this.fileNavigator.getSelection().getItem(0);
@@ -65,6 +68,9 @@ class FileContextMenu extends qx.ui.menu.Menu {
         
         var newDirButton = new qx.ui.menu.Button("New Directory");
         newDirButton.addListener("execute", this.newFolder, this);
+        
+        var searchButton = new qx.ui.menu.Button("Search");
+        searchButton.addListener("execute", this.search, this);
 
         var openInAppButton = new qx.ui.menu.Button("Open in default App");
         openInAppButton.addListener("execute", this.openInApp, this);
@@ -78,6 +84,8 @@ class FileContextMenu extends qx.ui.menu.Menu {
         this.add(deleteButton);
         this.add(newFileButton);
         this.add(newDirButton);
+        this.addSeparator();
+        this.add(searchButton);
         this.addSeparator();
         this.add(openInAppButton);
         this.add(showInFolderButton);

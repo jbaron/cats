@@ -13,14 +13,15 @@ class SessionPage extends qx.ui.tabview.Page {
         this.setPadding(0, 0, 0, 0);
         this.setMargin(0, 0, 0, 0);
         this.createEditor(pos);
-        // this.editor = new SourceEditor(session,pos);
-        // this.add(this.editor, { edge: 0 });
         this.createContextMenu();
         this.createToolTip();
         this.getButton().setShow("both");
         
         this.session.on("setChanged", this.setChanged.bind(this));
         this.session.on("errors", this.setHasErrors.bind(this));
+        this.addListener("appear", () => {
+            IDE.history.add(this);
+        })
     }  
     
     

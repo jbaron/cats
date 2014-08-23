@@ -24,7 +24,52 @@ module Cats.Menu {
     export class Menubar {
 
         private menu:any;
+        
 
+  
+        constructor() {
+            this.createMenuBar();
+            
+            this.createFileMenu();
+            this.createEditMenu();
+            this.createViewMenu();
+            this.createProjectMenu();
+            this.createSourceMenu();
+            this.createHelpMenu();
+            
+            var win = GUI.Window.get();
+            win.menu = this.menu;
+        }
+      
+      
+        createMenuBar() {
+            this.menu = new GUI.Menu({ type: 'menubar' });
+ 
+            if (OS.File.isOSX() && this.menu.createMacBuiltin) {
+                this.menu.createMacBuiltin("CATS");
+                // 0 is builtin CATS menu
+                this.menu.insert(new GUI.MenuItem({ label: "File", submenu: new GUI.Menu()}),1);
+                // 2 is builtin Edit
+                this.menu.insert(new GUI.MenuItem({ label: "View", submenu: new GUI.Menu()}),3);
+                this.menu.insert(new GUI.MenuItem({ label: "Project", submenu: new GUI.Menu()}),4);
+                this.menu.insert(new GUI.MenuItem({ label: "Source", submenu: new GUI.Menu()}),5);
+                // 6 is builtin Windows
+                this.menu.append(new GUI.MenuItem({ label: "Help", submenu: new GUI.Menu()}));
+               
+            } else {
+                this.menu.append(new GUI.MenuItem({ label: "File", submenu: new GUI.Menu()}));
+                this.menu.append(new GUI.MenuItem({ label: "Edit", submenu: new GUI.Menu()}));
+                this.menu.append(new GUI.MenuItem({ label: "View", submenu: new GUI.Menu()}));
+                this.menu.append(new GUI.MenuItem({ label: "Project", submenu: new GUI.Menu()}));
+                this.menu.append(new GUI.MenuItem({ label: "Source", submenu: new GUI.Menu()}));
+                this.menu.append(new GUI.MenuItem({ label: "Help", submenu: new GUI.Menu()}));
+
+            }
+        }
+      
+      
+      
+         
        /**
         * Create a menu item for a certain command.
         */
@@ -50,45 +95,21 @@ module Cats.Menu {
         }
 
 
-        private getOrCreateMenu(label:string) {
+        private getMenuItem(label:string) {
             var items = this.menu.items;
             
             for (var i = 0; i < items.length; ++i) {
                 var item = items[i];
                 if (item.label === label) return item.submenu;
             }
-            
-            var menu =  new GUI.Menu();
-            this.menu.append(new GUI.MenuItem({ label: label, submenu:  menu}));
-            return menu;
+            return null;
         }
 
-        constructor() {
-            this.menu = new GUI.Menu({ type: 'menubar' });
- 
-           
-            // @TODO fix a bit nicer
-            if (OS.File.isOSX() && this.menu.createMacBuiltin) {
-                this.menu.createMacBuiltin("CATS");
-                // GUI.Window.get().menu = menubar;
-            }
-            
-            this.createFileMenu();
-            this.createViewMenu();
-            this.createEditMenu();
-            this.createProjectMenu();
-            this.createSourceMenu();
-            this.createHelpMenu();
-            
-            var win = GUI.Window.get();
-            win.menu = this.menu;
-        }
-         
-        
+       
         private createSourceMenu() {
            var getCmd = this.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
-            var source = this.getOrCreateMenu("Source");
+            var source = this.getMenuItem("Source");
             source.append(getCmd(CMDS.edit_toggleComment));
             source.append(getCmd(CMDS.edit_toggleInvisibles));
             source.append(getCmd(CMDS.edit_indent));
@@ -100,7 +121,7 @@ module Cats.Menu {
         private createHelpMenu() {
             var getCmd = this.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
-            var help = this.getOrCreateMenu("Help");
+            var help = this.getMenuItem("Help");
             help.append(getCmd(CMDS.help_shortcuts));
             help.append(getCmd(CMDS.help_processInfo));
             help.append(getCmd(CMDS.help_devTools));
@@ -110,7 +131,7 @@ module Cats.Menu {
         private createEditMenu() {
             var getCmd = this.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
-            var edit = this.getOrCreateMenu("Edit");
+            var edit = this.getMenuItem("Edit");
           
             // ALready done by native OSX menu
             if (! OS.File.isOSX()) {
@@ -137,7 +158,7 @@ module Cats.Menu {
             var getCmd = this.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
 
-            var file = this.getOrCreateMenu("File");
+            var file = this.getMenuItem("File");
             file.append(getCmd(CMDS.file_new));
             file.append(new GUI.MenuItem({ type: "separator" }));
             file.append(getCmd(CMDS.file_save));
@@ -159,7 +180,7 @@ module Cats.Menu {
            var getCmd = this.getMenuCommand;
             var CMDS = Cats.Commands.CMDS;
 
-            var proj = this.getOrCreateMenu("Project");
+            var proj = this.getMenuItem("Project");
             proj.append(getCmd(CMDS.project_open));
             proj.append(getCmd(CMDS.project_close));
             
@@ -179,7 +200,7 @@ module Cats.Menu {
          
         private createViewMenu() {
             var CMDS = Cats.Commands.CMDS;
-            var menu = this.getOrCreateMenu("View");
+            var menu = this.getMenuItem("View");
             
             var views = [
                 {id:IDE.toolBar,name:"Toggle Toolbar"},    

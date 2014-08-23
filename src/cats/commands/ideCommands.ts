@@ -47,7 +47,7 @@ module Cats.Commands {
      */ 
     export class IdeCommands {
         static init(registry:(cmd:Command)=>void) {
-            registry({ name: CMDS.ide_quit, label: "Quit", command: quit });
+            registry({ name: CMDS.ide_quit, label: "Quit CATS", command: quit });
            registry({ name: CMDS.ide_toggleView, label : "Toggle View", command: toggleView });
             registry({ name: CMDS.ide_configure, label: "Preferences....", command: configureIde });
 

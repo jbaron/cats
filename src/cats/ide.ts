@@ -46,7 +46,7 @@ module Cats {
         config:IDEConfiguration;
         private static STORE_KEY = "cats.config";
         infoBus= <InfoBus> new Events.EventEmitter();
-
+        history = new SessionHistory();
 
         constructor() {
             this.catsHomeDir = process.cwd();
@@ -65,7 +65,6 @@ module Cats {
             this.menubar = new Cats.Menu.Menubar();
             this.initFileDropArea();
         }
-
 
         getActiveEditor() {
             var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
