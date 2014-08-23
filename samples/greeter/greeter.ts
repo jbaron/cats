@@ -2,6 +2,7 @@
  * Greets you with a warm welcome.
  */
 class Greeter {
+    
     greeting: string;
 
     /**
