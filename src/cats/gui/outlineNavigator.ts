@@ -89,11 +89,16 @@ class OutlineNavigator extends qx.ui.tree.VirtualTree  {
        return false;
    }
    
-   /**
+    /**
      * Set the data for this outline.
      */ 
     setData(session: Cats.Session, data: Cats.NavigateToItem[]) {
         this.session = session;
+        if ((! data) || (! data.length)) {
+            this.clear();
+            return;
+        }
+        
         var parents = {};
         var root = {};
       
