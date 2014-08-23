@@ -75,7 +75,6 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     }
 
     clear() {
-        // var root = qx.data.marshal.Json.createModel({}, true);
         this.setModel(null);
     }
 
@@ -158,20 +157,6 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         this.setDelegate(delegate);
     }
 
-
-    refreshDir(dir) {
-        var value; // value = this.directoryNodes[dir];
-        setTimeout(function() {
-            // alert("refreshing tree");
-            var node = {
-                label: "Loading",
-                fullPath: "asasasa/dss",
-                directory : false 
-            };
-            value.getChildren().removeAll();
-            value.getChildren().push(qx.data.marshal.Json.createModel(node, true));
-        }, 0);
-    }
 
     /**
      * Read the files from a directory

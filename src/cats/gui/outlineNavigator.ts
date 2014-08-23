@@ -1,71 +1,124 @@
 /**      
  * Create a simple Tree to mimic outline functionality      
  */
-class OutlineNavigator extends qx.ui.table.Table /* qx.ui.tree.VirtualTree */ {
+class OutlineNavigator extends qx.ui.tree.VirtualTree  {
 
     private session: Cats.Session;
-    private static HEADERS = ["Name", "Position"];
-
-
+ 
     constructor() {
-        var tableModel = new qx.ui.table.model.Simple();
-
-        tableModel.setColumns(OutlineNavigator.HEADERS);
-        tableModel.setData([]);
-
-        var custom: any = {
-            tableColumnModel: function(obj) {
-                return new qx.ui.table.columnmodel.Resize(obj);
-            }
-        };
-
-        super(tableModel, custom);
+        super(null,"label", "children");
+        this.setDecorator(null);
+        this.setPadding(0,0,0,0);
+        this.setHideRoot(true);
 
         this.setDecorator(null);
-        this.getSelectionModel().addListener("changeSelection", (data) => {
-            var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
-            var data = this.getTableModel().getRowData(selectedRow);
-             if (data) IDE.sessionTabView.navigateTo(this.session, data[2].start);
-        });
+        this.addListener("click", (data) => {
+            var item = <any>this.getSelectedItem();
+            if (item) {
+                var position = this.modelToPosition(item.getRange().getStart());
+                IDE.getActiveEditor().moveToPosition(position);
+            }
+         });
+        this.setIconPath("");
+        this.setIconOptions({
+            converter : (value, model) => {
+               return this.getIconForKind(value.getKind());
+            }
+      });
 
     }
+
+    private modelToPosition(start) :Ace.Position {
+        var result = {
+            row: start.getRow(),
+            column: start.getColumn()
+        }
+        return result;
+        
+    } 
+
+
+    private getSelectedItem() {
+        var item = this.getSelection().getItem(0);
+        return item;
+    }
+
+
+    private getIconForKind(name:string) {
+        var iconPath = "./resource/qx/icon/Oxygen/16/types/";
+        switch (name) {
+            case "function":
+            case "keyword":
+            case "method": return iconPath + "method.png";
+            case "constructor": return iconPath + "constructor.png";
+            case "module": return iconPath + "module.png";
+            case "interface":return iconPath + "interface.png";
+            case "enum": return iconPath + "enum.png"; 
+            case "class":return iconPath + "class.png";
+            case "property":
+            case "var":return iconPath + "variable.png";
+            default: return iconPath + "method.png";
+        }            
+    }
+
+
 
     clear() {
-        this.setData(null, []);
+        this.setModel(null);
     }
 
-    private rangeToPosition(range: Cats.Range): string {
-        return (range.start.row + 1) + ":" + (range.start.column + 1);
-    }
 
-    /**
+    expandAll() {
+        var top = this.getModel().getChildren();
+        for (var i=0;i<top.length;i++) {
+            var root = top.getItem(i);
+            this.openNode(root);
+            if (root.getChildren) {
+                var children = root.getChildren();
+                for (var j=0;j<children.length;j++) {
+                    var child = children.getItem(j);
+                    this.openNode(child);
+                }
+            }
+        }
+    }
+   
+   
+   isExecutable(kind) {
+       if (kind === "method" || kind === "function" || kind === "constructor") return true;
+       return false;
+   }
+   
+   /**
      * Set the data for this outline.
      */ 
     setData(session: Cats.Session, data: Cats.NavigateToItem[]) {
         this.session = session;
-        var indentation = ["", " -- ", " ---- ", " ------ ", " -------- "];
-
-        var tableModel = new qx.ui.table.model.Simple();
-        var rows:any[] = [];
+        var parents = {};
+        var root = {};
+      
         data.forEach((item) => {
-            var prefix = "";
-            var nrSpaces = item.containerName.split(".").length;
-            if (item.containerName && (nrSpaces > 0)) prefix = indentation[nrSpaces];
+            var parentName = item.containerName;
+            var parent = parentName ? parents[parentName] : root;
+            if (! parent) console.info("No Parent for " + parentName);
+            if (! parent.children) parent.children = [];
+             
+            var extension = this.isExecutable(item.kind) ? "()" : "";
+            
+            var entry ={
+                label: item.name + extension,
+                range: item.range,
+                kind: item.kind
+            }
 
-            rows.push([
-                prefix + item.name,
-                this.rangeToPosition(item.range),
-                // fullName : fullName,
-                item.range,
-                item.kind
-            ]);
+            var childName = parentName ? parentName + "." + item.name : item.name;
+            parents[childName] = entry
+            parent.children.push(entry);
         });
-
-        this.getTableModel().setData(rows);
-        this.getSelectionModel().resetSelection(); 
+        this.setModel(qx.data.marshal.Json.createModel(root, false));
+        this.expandAll();
+  
     }
 
-
-  
 
 }
