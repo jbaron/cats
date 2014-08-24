@@ -64,10 +64,6 @@ module Cats.Commands {
                { id: Cats.Commands.CMDS.edit_indent, label: "Indent", icon: "actions/format-indent-more.png" },
                { id: Cats.Commands.CMDS.edit_outdent, label: "Outdent", icon: "actions/format-indent-less.png" },
         
-               /*{ id: Cats.Commands.CMDS.edit_cut, label: "Cut" },
-               { id: Cats.Commands.CMDS.edit_copy, label: "Copy" },
-               { id: Cats.Commands.CMDS.edit_paste, label: "Paste" },*/
-        
                { id: Cats.Commands.CMDS.edit_find, label: "Find", cmd: "find", icon: "actions/edit-find.png" },
                { id: Cats.Commands.CMDS.edit_findNext, label: "Find Next", cmd: "findnext" },
                { id: Cats.Commands.CMDS.edit_findPrev, label: "Find Previous", cmd: "findprevious" },
@@ -99,6 +95,11 @@ module Cats.Commands {
             
             registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
             registry({name:CMDS.source_format, label:"Format Code", command: formatText});
+            registry({name:CMDS.edit_cut, label:"Cut", command: () => {document.execCommand("cut");}});
+            registry({name:CMDS.edit_copy, label:"Copy", command: () => {document.execCommand("copy");}});
+            registry({name:CMDS.edit_paste, label:"Paste", command: () => {document.execCommand("paste");}});
+            
+            
         }
 
     }

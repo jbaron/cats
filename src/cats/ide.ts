@@ -266,7 +266,12 @@ module Cats {
                 if (session.isTypeScript()) {
                     this.project.addScript(name,content);
                 }
-                var p = IDE.sessionTabView.addSession(session,pos);
+                var p = IDE.sessionTabView.addSession(session);
+                if (pos) {
+                    p.editor.addListenerOnce("ready", (editor:Editor) => {
+                        p.editor.moveToPosition(pos);
+                    });
+                }
             } else {
                  this.sessionTabView.navigateTo(session,pos);
             }

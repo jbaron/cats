@@ -14,7 +14,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
     private pendingWorkerUpdate = false;
     private editSession: Ace.EditSession;
     
-    constructor(private session:Cats.Session, pos?:Cats.Position) {
+    constructor(private session:Cats.Session) {
         super();
         this.setDecorator(null);
         this.setFont(null);
@@ -47,14 +47,15 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
                  this.autoCompletePopup.show();
                  this.autoCompletePopup.hide();
              }
-                 
-             if (pos) setTimeout(() => { this.moveToPosition(pos); }, 100);
               
              this.aceEditor.on("changeSelection", () => {
                  IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
              }); 
              
              this.configureEditor();
+             
+             setTimeout(() => { this.fireDataEvent("ready", this);  }, 10);
+ 
              
         }, this);
         
@@ -76,7 +77,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
 
     setContent(content, keepPosition=true) {
         var pos;
-        if (keepPosition) this.getPosition();
+        if (keepPosition) pos = this.getPosition();
         this.aceEditor.getSession().setValue(content);
         if (pos) this.moveToPosition(pos);
     }

@@ -18,19 +18,19 @@ var GUI = require('nw.gui');
 
 
 // GLOBAL variable used for accessing the singleton IDE instance
-var IDE:Cats.Ide;
+var IDE: Cats.Ide;
 
- 
+
 /**
  * Main module of the CATS IDE
- */  
+ */
 module Cats {
 
     /**
      * Get a parameter from the URL. This is used when a new project is opened from within
      * the IDE.
-     */ 
-    function getParameterByName(name:string):string {
+     */
+    function getParameterByName(name: string): string {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
         var regexS = "[\\?&]" + name + "=([^&#]*)";
         var regex = new RegExp(regexS);
@@ -45,53 +45,53 @@ module Cats {
     /**
      * Determine which project(s) we should load during 
      * startup. This is used when the IDE is started from the command line
-     */ 
-    function determineProject():string {
+     */
+    function determineProject(): string {
         var projectName = getParameterByName("project");
         if (!projectName) {
             var args = GUI.App.argv;
             var i = args.indexOf("--project");
-            if (i > -1) projectName = args[i+1];
+            if (i > -1) projectName = args[i + 1];
         }
         return projectName;
     }
-   
+
     // Catch unhandled expections so they don't showup in the IDE.
-    process.on("uncaughtException", function (err:any) {
+    process.on("uncaughtException", function(err: any) {
         console.error("Uncaught exception occured: " + err);
         console.error(err.stack);
         alert(err); // @TODO remove in production mode
     });
-   
-   
+
+
     // Catch the close of the windows in order to save any unsaved changes
     var win = GUI.Window.get();
     win.on("close", function() {
-	    try {
+        try {
             if (IDE.hasUnsavedSessions()) {
-                if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
+                if (!confirm("There are unsaved files!\nDo you really want to quit?")) return;
             }
             IDE.saveConfig();
-	    } catch (err) { } // lets ignore this
+        } catch (err) { } // lets ignore this
         this.close(true);
     });
 
     /**
      * This is the functions that start kicks it all of. When Qooxdoo is loaded it will 
      * call this main to start the application 
-     */ 
-    function main(app:qx.application.Standalone) {
+     */
+    function main(app: qx.application.Standalone) {
 
         var args = GUI.App.argv;
-        if (args.indexOf("--debug") === -1 ) {
-                console.info = function() { /* NOP */};
-                console.debug = function() { /* NOP */};
+        if (args.indexOf("--debug") === -1) {
+            console.info = function() { /* NOP */};
+            console.debug = function() { /* NOP */};
         }
 
         IDE = new Cats.Ide();
 
-		IDE.init(<qx.ui.container.Composite>app.getRoot());		
-        
+        IDE.init(<qx.ui.container.Composite>app.getRoot());
+
         var prjName = determineProject();
         if (prjName) {
             IDE.addProject(new Project(prjName));
@@ -99,7 +99,7 @@ module Cats {
             if (args.indexOf("--restore") > -1) IDE.restorePreviousProjects();
         }
     }
-    
+
     qx.registry.registerMainMethod(main);
 
 }

@@ -76,7 +76,9 @@ module Cats.Commands {
         ide_fontSize,
         ide_rightMargin,
         ide_toggleView,
-        ide_configure
+        ide_configure,
+        ide_history_next,
+        ide_history_prev
         
     }
 

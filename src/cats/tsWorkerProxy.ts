@@ -80,8 +80,8 @@ export class TSWorkerProxy {
         this.perform("getObjectModel",cb);
     }
 
-    setCompilationSettings(settings) {
-         this.perform("setCompilationSettings", settings, null);
+    setSettings(compilerSettings, editorSettings) {
+         this.perform("setSettings", compilerSettings, editorSettings, null);
     }
 
     addScript(fileName:string,content:string) {
@@ -146,9 +146,9 @@ export class TSWorkerProxy {
                 }
             } else {
                 if (msg.method && (msg.method === "setBusy")) {
-                    IDE.statusBar.setBusy(msg.data);
+                    IDE.statusBar.setBusy(msg.params[0]);
                 } else {
-                    console.info(msg.data);
+                    console.info(msg.params[0]);
                 }
             }
         };

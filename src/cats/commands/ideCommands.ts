@@ -21,36 +21,46 @@ module Cats.Commands {
 
     /**
      * Quit CATS
-     */ 
+     */
     function quit() {
         IDE.quit();
     }
 
 
-  
-    function toggleView(component:qx.ui.core.Widget) {
-       if (component.isVisible()) { 
-            component.exclude();    
+
+    function toggleView(component: qx.ui.core.Widget) {
+        if (component.isVisible()) {
+            component.exclude();
         } else {
             component.show();
         }
     }
-    
+
+
+    function next() {
+        IDE.history.next();
+    }
+
+    function prev() {
+        IDE.history.back();
+    }
+
     function configureIde() {
         var w = new IdeConfigDialog(IDE.config);
         // w.setData(IDE.project.config.compiler);
         w.show();
     }
-    
+
     /**
      * Register the IDE commands
-     */ 
+     */
     export class IdeCommands {
-        static init(registry:(cmd:Command)=>void) {
+        static init(registry: (cmd: Command) => void) {
             registry({ name: CMDS.ide_quit, label: "Quit CATS", command: quit });
-           registry({ name: CMDS.ide_toggleView, label : "Toggle View", command: toggleView });
+            registry({ name: CMDS.ide_toggleView, label: "Toggle View", command: toggleView });
             registry({ name: CMDS.ide_configure, label: "Preferences....", command: configureIde });
-
+            registry({ name: CMDS.ide_history_next, label: "Next", command: next,icon: "actions/go-next.png" });
+            registry({ name: CMDS.ide_history_prev, label: "Previous", command: prev,icon: "actions/go-previous.png" });
         }
     }
 

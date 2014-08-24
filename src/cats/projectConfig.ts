@@ -15,18 +15,10 @@
 
 /*
 var formatting_options = {
-        public IndentSize: number;
-        public TabSize: number;
-        public NewLineCharacter: string;
-        public ConvertTabsToSpaces: bool;
-        public InsertSpaceAfterCommaDelimiter: bool;
-        public InsertSpaceAfterSemicolonInForStatements: bool;
-        public InsertSpaceBeforeAndAfterBinaryOperators: bool;
-        public InsertSpaceAfterKeywordsInControlFlowStatements: bool;
-        public InsertSpaceAfterFunctionKeywordForAnonymousFunctions: bool;
-        public InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: bool;
-        public PlaceOpenBraceOnNewLineForFunctions: bool;
-        public PlaceOpenBraceOnNewLineForControlBlocks: bool;
+    public useTabs: boolean;
+    public spacesPerTab: number;
+    public indentSpaces: number;
+    public newLineCharacter: string;
 }
 */
 

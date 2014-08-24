@@ -6,32 +6,28 @@ class SessionPage extends qx.ui.tabview.Page {
  
     editor:Editor;
 
-    constructor(public session:Cats.Session, pos?:Cats.Position) {
+    constructor(public session:Cats.Session) {
         super(session.shortName);
         this.setShowCloseButton(true);
         this.setLayout(new qx.ui.layout.Canvas());
         this.setPadding(0, 0, 0, 0);
         this.setMargin(0, 0, 0, 0);
-        this.createEditor(pos);
+        this.createEditor();
         this.createContextMenu();
         this.createToolTip();
         this.getButton().setShow("both");
         
         this.session.on("setChanged", this.setChanged.bind(this));
         this.session.on("errors", this.setHasErrors.bind(this));
-        this.addListener("appear", () => {
-            IDE.history.add(this);
-        })
     }  
     
-    
-    private createEditor(pos?:Cats.Position) {
+    private createEditor() {
         if (this.session.uml) {
             this.editor = new UMLEditor(this.session);
         } else if (this.session.isImage()) {
             this.editor = new ImageEditor(this.session);
         } else {
-            this.editor = new SourceEditor(this.session,pos);
+            this.editor = new SourceEditor(this.session);
         }
         this.add(this.editor, { edge: 0 });
     }
@@ -94,12 +90,13 @@ class SessionTabView extends qx.ui.tabview.TabView {
         this.setContentPadding(0, 0, 0, 0);
     }
 
-    addSession(session, pos?:Cats.Position) {
-          var page = new SessionPage(session, pos);
+    addSession(session) {
+          var page = new SessionPage(session);
           // page.exclude();
           this.add(page);
           page.fadeIn(500);
           this.setSelection([page]);
+          return page;
     }
 
     /**
@@ -155,6 +152,11 @@ class SessionTabView extends qx.ui.tabview.TabView {
             this.setSelection([page]);
             if (pos) page.editor.moveToPosition(pos);
         }
+    }
+
+    navigateToPage(page:SessionPage, pos?:any) {
+        this.setSelection([page]);
+        if (pos) page.editor.moveToPosition(pos);
     }
 
     /**
