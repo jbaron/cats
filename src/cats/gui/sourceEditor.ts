@@ -22,15 +22,13 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         this.editSession = new (<any>ace).EditSession(session.content,"ace/mode/" + session.mode);
         this.editSession.setNewLineMode("unix");
         this.editSession.setUndoManager(new UndoManager());
-        this.configureSession();
+        this.configureAceSession();
         this.editSession.on("change", this.onChangeHandler.bind(this));
        
 
         this.addListenerOnce("appear", () => {
             var container = this.getContentElement().getDomElement();
             container.style.lineHeight="normal";
-             // this.configEditor(this.project.config.editor);
-
             this.aceEditor = this.createAceEditor(container);
             this.aceEditor.setSession(this.editSession);
           
@@ -67,7 +65,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         session.on("errors", (errors) => { this.showErrors(errors);});
         this.addListener("resize", () => { this.resizeHandler(); });
         
-        IDE.infoBus.on("project.config", () => { this.configureSession(); });
+        IDE.infoBus.on("project.config", () => { this.configureAceSession(); });
         IDE.infoBus.on("ide.config", () => { this.configureEditor(); });
     }
 
@@ -76,7 +74,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
     }    
 
     setContent(content, keepPosition=true) {
-        var pos;
+        var pos:Ace.Position;
         if (keepPosition) pos = this.getPosition();
         this.aceEditor.getSession().setValue(content);
         if (pos) this.moveToPosition(pos);
@@ -90,7 +88,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
     }
 
 
-    private configureSession() {
+    private configureAceSession() {
         var config = this.session.project.config.codingStandards;
         var session = this.editSession;
         if (config.tabSize) session.setTabSize(config.tabSize);

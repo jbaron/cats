@@ -274,6 +274,7 @@ class DocumentationSettings extends ConfigDialogPage {
 
     private themes = [
         {label:"Default", model : "default"},
+       //  {label:"Minimal", model : "minimal"} causes loop @TODO
     ];
 
     constructor() {

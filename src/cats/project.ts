@@ -167,13 +167,11 @@ module Cats {
                     if (this.config.documentation.readme && (this.config.documentation.readme !== "none")) {
                         readme = OS.File.join(this.projectDir, this.config.documentation.readme);
                     }
-                    console.log("Readme " + readme);
-
-                    // @BUG readme gives error
-                    settings.readme = "none"; // readme;
+                   
+                    settings.readme = readme;
                     settings.includeDeclarations = this.config.documentation.includeDeclarations || false;
                     settings.verbose = false;
-                    // settings.theme = this.config.documentation.theme || "default";
+                    settings.theme = this.config.documentation.theme || "default";
                     var app = new typedoc.Application(settings);
                     var dest = OS.File.join(this.projectDir, outputDir);
                     app.generate(this.tsfiles, dest);
