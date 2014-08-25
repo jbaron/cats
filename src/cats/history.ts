@@ -67,14 +67,14 @@ class SessionHistory {
      * Check if the page still is part of the sessions
      */
     private exists(entry) {
-        var hash = entry.hash
+        var hash = entry.hash;
         var page = <SessionPage>qx.core.ObjectRegistry.fromHashCode(hash);
         if (! page) return false;
         return IDE.sessionTabView.getChildren().indexOf(page) > -1;
     }
 
     private goto(entry) {
-        var hash = entry.hash
+        var hash = entry.hash;
         var page = <SessionPage>qx.core.ObjectRegistry.fromHashCode(hash);
         IDE.sessionTabView.navigateToPage(page, entry.pos);
     }

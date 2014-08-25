@@ -145,7 +145,7 @@ module OS.File {
 
         export function find(pattern:string, rootDir:string, cb:Function) {
             var files:Array<string> = glob.sync(pattern, {cwd:rootDir, mark:true}) ;
-            files = files.filter((name) => {return name.slice(-1) !== "/" });
+            files = files.filter((name) => {return name.slice(-1) !== "/"; });
             cb(null,files);
         }
 

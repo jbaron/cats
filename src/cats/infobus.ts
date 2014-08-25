@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-var Events = require('events');
+
 
 module Cats {
     

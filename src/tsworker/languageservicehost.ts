@@ -181,7 +181,7 @@ export class ScriptInfo {
         public getDiagnosticsObject() {
             return {
                 log : function (content: string) {}
-            }
+            };
         }
 
         //////////////////////////////////////////////////////////////////////

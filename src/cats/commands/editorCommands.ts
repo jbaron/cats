@@ -26,7 +26,7 @@ module Cats.Commands {
         return {
             start : range.start,
             end: range.end
-        }    
+        };    
     }
 
     function formatText() {

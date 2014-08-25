@@ -13,14 +13,6 @@
 // limitations under the License.
 //
 
-/*
-var formatting_options = {
-    public useTabs: boolean;
-    public spacesPerTab: number;
-    public indentSpaces: number;
-    public newLineCharacter: string;
-}
-*/
 
 module Cats {
    

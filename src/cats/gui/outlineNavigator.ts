@@ -46,7 +46,7 @@ class OutlineNavigator extends qx.ui.tree.VirtualTree  {
         var result = {
             row: start.getRow(),
             column: start.getColumn()
-        }
+        };
         return result;
         
     } 
@@ -124,14 +124,14 @@ class OutlineNavigator extends qx.ui.tree.VirtualTree  {
              
             var extension = this.isExecutable(item.kind) ? "()" : "";
             
-            var entry ={
+            var entry = {
                 label: item.name + extension,
                 range: item.range,
                 kind: item.kind
-            }
+            };
 
             var childName = parentName ? parentName + "." + item.name : item.name;
-            parents[childName] = entry
+            parents[childName] = entry;
             parent.children.push(entry);
         });
         this.setModel(qx.data.marshal.Json.createModel(root, false));

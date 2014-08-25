@@ -40,7 +40,6 @@ var catsOptions = [
     "src/cats/commands/projectCommands.ts",
     "src/cats/projectConfig.ts",
     "src/cats/tsWorkerProxy.ts",
-    "src/cats/menu/menubar.ts",
     "src/cats/project.ts",
     "src/cats/refactor.ts",
     "src/cats/history.ts",    
@@ -64,6 +63,7 @@ var catsOptions = [
     "src/cats/gui/busyWindow.ts",
     "src/cats/gui/layout.ts",
     "src/cats/gui/searchDialog.ts",
+    "src/cats/gui/menubar.ts",
     
     
     "src/cats/util/mime.ts",

@@ -33,7 +33,7 @@ class BusyWindow extends qx.ui.window.Window {
               this.fireDataEvent("ready",{});
           },100);  
             
-        })
+        });
     }
     
     

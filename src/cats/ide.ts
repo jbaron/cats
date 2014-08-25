@@ -14,6 +14,8 @@
 //
 
 module Cats {
+    
+    var Events = require('events');
 
     export class Ide  {
 
@@ -38,7 +40,7 @@ module Cats {
         problemResult:ResultTable;
         menubar:Menu.Menubar;
         outlineNavigator:OutlineNavigator; 
-        fileNavigator:FileNavigator
+        fileNavigator:FileNavigator;
 
 
         catsHomeDir: string;
