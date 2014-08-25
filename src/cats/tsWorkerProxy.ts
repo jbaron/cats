@@ -48,8 +48,8 @@ export class TSWorkerProxy {
         this.perform("getAllDiagnostics", cb);
     }
 
-    getFormattedTextForRange(sessionName:string, start:number, end:number, cb:Function) {
-        this.perform("getFormattedTextForRange", sessionName, start, end, cb);
+    getFormattedTextForRange(sessionName:string,range:Range, cb:Function) {
+        this.perform("getFormattedTextForRange", sessionName, range, cb);
     }                    
                 
     getDefinitionAtPosition(sessionName:string, cursor:Cats.Position, cb:(err:any, data:FileRange) => void) {

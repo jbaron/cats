@@ -354,9 +354,17 @@ module Cats.TSWorker {
         }
 
 
-        public getFormattedTextForRange(fileName: string, start: number, end: number): string {
+        public getFormattedTextForRange(fileName: string, range?:Cats.Range): string {
+            var start, end;
             var content = this.getScriptContent(fileName);
-            if (end === -1) end = content.length;
+            if (range == null) {
+                start = 0;
+                end = content.length;
+            } else {
+                start = this.getPositionFromCursor(fileName, range.start);
+                end = this.getPositionFromCursor(fileName, range.end);
+            }
+            
             var edits = this.ls.getFormattingEditsForRange(fileName, start, end, this.formatOptions);
             var result = this.applyEdits(content, edits);
             return result;

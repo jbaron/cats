@@ -19,12 +19,22 @@
 
 module Cats.Commands {
 
+    function getRange():Cats.Range {
+        var activeEditor:any = IDE.getActiveEditor();
+        var range:Ace.Range = activeEditor.aceEditor.selection.getRange();
+        if (range.isEmpty()) return null; 
+        return {
+            start : range.start,
+            end: range.end
+        }    
+    }
 
     function formatText() {
       
         var session = IDE.sessionTabView.getActiveSession();
         if (session && session.isTypeScript()) {
-            session.project.iSense.getFormattedTextForRange( session.name, 0, -1 , (err:Error, result:string) => {                    
+            var range = getRange();
+            session.project.iSense.getFormattedTextForRange( session.name, range , (err:Error, result:string) => {                    
                 if (!err) {
                     session.setContent(result);
                 }
