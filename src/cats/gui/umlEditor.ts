@@ -12,6 +12,8 @@
 // limitations under the License.
 //
 
+var dagre ;
+
 class UMLEditor extends qx.ui.embed.Html implements Editor {
 	 
 	 private backgroundColors = ["white", "black" , "grey"];
@@ -20,6 +22,7 @@ class UMLEditor extends qx.ui.embed.Html implements Editor {
 	 
 	 constructor(private session:Cats.Session) {
 		 super(null);
+		 if (! dagre) dagre = require("dagre");
 		 // UMLEditor.LoadResources();
 		 // this.createContextMenu();
 		 this.setOverflow("auto", "auto");
@@ -50,47 +53,46 @@ class UMLEditor extends qx.ui.embed.Html implements Editor {
     }
 
     private render(container:HTMLElement) {
-            var classDiagram = new UMLClassDiagram({id: container, width: 2000, height: 2000 });
-
-            // Adding classes...
-            var vehicleClass = new UMLClass({ x:100, y:50 });
-            var carClass = new UMLClass({ x:30, y:170 });
-            var boatClass = new UMLClass({ x:150, y:170 });
-            classDiagram.addElement(vehicleClass);
-            classDiagram.addElement(carClass);
-            classDiagram.addElement(boatClass);
-        
-            // Adding generalizations...
-            var generalization1 = new UMLGeneralization({ b:vehicleClass, a:carClass });
-            var generalization2 = new UMLGeneralization({ b:vehicleClass, a:boatClass });
-            classDiagram.addElement(generalization1);       
-            classDiagram.addElement(generalization2);       
-
-
-            //Defining vehicleClass
-            vehicleClass.setName("Vehicle");
-            vehicleClass.addAttribute( 'owner' );
-            vehicleClass.addAttribute( 'capacity' );
-            vehicleClass.addOperation( 'getOwner()' );
-            vehicleClass.addOperation( 'getCapacity()' );
+            var classes = {};
+            var g = new dagre.Digraph();
             
-            //Defining carClass
-            carClass.setName("Car");
-            carClass.addAttribute( 'num_doors' );
-            carClass.addOperation( 'getNumDoors()' );
+            IDE.project.iSense.getObjectModel((err,model:Object) => {
+                var counter = 0;
+                Object.keys(model).forEach((className)=>{
+                   counter++;
+                   if (counter > 100) return; 
+                   var c = new UMLClass();
+                   c.setName(className);
+                   var m:Array<string> = model[className];
+                   m.forEach((methodName)=>{
+                       c.addOperation(methodName + "()");
+                   });
+                   
+                   g.addNode(className, {width: c.getWidth(), height: c.getHeight()})
+                   classes[className] = c;
+                });
+                
+                var layout = dagre.layout().run(g);
+                var graph = layout.graph();
+                var classDiagram = new UMLClassDiagram({id: container, width: graph.width + 100, height: graph.height + 100});
+ 
+                layout.eachNode((className, value) => {
+                    var c = classes[className];
+                    c._x = value.x - (c.getWidth() / 2);
+                    c._y = value.y - (c.getHeight() / 2);
+                    classDiagram.addElement(c);
+                });
+                
+                 //Draw the diagram
+                classDiagram.draw();
 
-            //Defining boatClass
-            boatClass.setName("Boat");
-            boatClass.addAttribute( 'mast' );
-            boatClass.addOperation( 'getMast()' );
-
-            //Draw the diagram
-            classDiagram.draw();
-
-            //Interaction is possible (editable)
-            classDiagram.interaction(true);
-            this.diagram = classDiagram;
+                //Interaction is possible (editable)
+                classDiagram.interaction(true);
+                this.diagram = classDiagram;
+                
+            });
             
+            return;
     }
 
      private createContextMenu() {

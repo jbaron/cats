@@ -104,6 +104,7 @@ module Cats.TSWorker {
         public getObjectModel() {
             var walker = new ObjectModelCreator();
             this.lsHost.getScriptFileNames().forEach((script) => {
+                if (script.indexOf(".d.ts") > 0) return;
                 this.ls.getSyntaxTree(script).sourceUnit().accept(walker);
             });
             var result = walker.classNames;

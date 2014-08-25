@@ -44,45 +44,12 @@ module Cats.Commands {
      * Show a class diagram of the project. 
      */ 
     function showDiagram() {
-        alert("Right now just showing some demo classes.");
-        
-        /*
-        IDE.project.iSense.getObjectModel((err,model)=>{
-            console.log(model);
-        });
-        */
-        
         var session = new Session("Class Diagram");
         session.uml = true;
         IDE.sessionTabView.addSession(session);
     }
 
-    /**
-     * Run the project
-     
-    function showDependency() {
-        IDE.project.iSense.getDependencyGraph((err,data:any[])=>{
-            
-            data.forEach((entry) =>{
-               var refs:any[] = entry.ref;
-               var d = PATH.dirname(entry.src);
-               for (var i=0;i<refs.length;i++) {                   
-                   refs[i] = OS.File.switchToForwardSlashes(PATH.join(d,refs[i]));
-               };               
-            });
-            
-            
-            window["dependencies"] = data;
-            var startPage = "uml.html";
-            console.info("Opening file: " + startPage);
-            var win2 = window.open(startPage,"dependencies","status=1,resizable=1,menubar=1,location=1,toolbar=1,titlebar=1,scrollbars=1");
-            win2["dependencies"] = data;
-        })
-        // win2.reloadIgnoringCache()
-    };
-    
-    */
-
+ 
     /**
      * Compile all the sources without actually saving them
      * to see if there are any issues popping up.
