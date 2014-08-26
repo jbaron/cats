@@ -50,7 +50,6 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
     constructor() {
         super();
         this.init();
-        // this.setPadding(0,0,0,0);
     }
  
     private createButton(cmd:Cats.Commands.Command) {
@@ -65,8 +64,6 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
         var tooltip = new qx.ui.tooltip.ToolTip(cmd.label, null);
         button.setToolTip(tooltip);
         button.setBlockToolTip(false);
-        // button.setDecorator(null);
-        // button.setPadding(0,0,0,0);
         button.addListener("click", () => {
             cmd.command();
         });

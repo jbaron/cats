@@ -383,6 +383,7 @@ class IDEGenericSettings extends ConfigDialogPage {
 
     private themes = [
         {label:"CATS", model : "cats"},
+        {label:"Gray", model : "gray"},
         {label:"Classic", model : "classic"},
         {label:"Modern", model : "modern"},
         {label:"Indigo", model : "indigo"},

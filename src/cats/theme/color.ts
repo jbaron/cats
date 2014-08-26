@@ -30,7 +30,7 @@ qx.Theme.define("cats.theme.ColorGrey",
 
   colors :
   {
-      "light-background" : "#C0C0D0",
-      "button-box-bright" : "#B0B0B0"
+      "light-background" : "#B0B0B0",
+      "button-box-bright" : "#A0A0A0"
   }
 });

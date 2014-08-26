@@ -22,6 +22,7 @@ module Cats {
         // List of different themes that are available
         private themes = {                  
             cats : cats.theme.Default,
+            gray: cats.theme.Grey,
             classic: qx.theme.Classic,
             indigo: qx.theme.Indigo,
             modern:qx.theme.Modern,
