@@ -107,7 +107,7 @@ module Cats.TSWorker {
                 if (script.indexOf(".d.ts") > 0) return;
                 this.ls.getSyntaxTree(script).sourceUnit().accept(walker);
             });
-            var result = walker.classNames;
+            var result = walker.getModel();
             return result;
         }
 

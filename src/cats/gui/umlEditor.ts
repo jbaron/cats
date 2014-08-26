@@ -53,34 +53,42 @@ class UMLEditor extends qx.ui.embed.Html implements Editor {
     }
 
     private render(container:HTMLElement) {
-            var classes = {};
+            var nodes = {};
             var g = new dagre.Digraph();
             
-            IDE.project.iSense.getObjectModel((err,model:Object) => {
+            IDE.project.iSense.getObjectModel((err, model:Array<Cats.ModelEntry>) => {
                 var counter = 0;
-                Object.keys(model).forEach((className)=>{
+                model.forEach((entry)=>{
                    counter++;
-                   if (counter > 100) return; 
-                   var c = new UMLClass();
-                   c.setName(className);
-                   var m:Array<string> = model[className];
-                   m.forEach((methodName)=>{
-                       c.addOperation(methodName + "()");
+                   if (counter > 100) return;
+                   var name = entry.name;
+                   var c;
+                   if (entry.type === "class") c = new UMLClass();
+                   if (entry.type === "interface") c = new UMLInterfaceExtended();
+                   c.setName(name);
+                   
+                   entry.operations.forEach((mName)=>{
+                       c.addOperation(mName + "()");
                    });
                    
-                   g.addNode(className, {width: c.getWidth(), height: c.getHeight()})
-                   classes[className] = c;
+                   entry.attributes.forEach((aName) => {
+                       c.addAttribute(aName);
+                   });
+                   
+                   
+                   g.addNode(name, {width: c.getWidth(), height: c.getHeight()})
+                   nodes[name] = c;
                 });
                 
                 var layout = dagre.layout().run(g);
                 var graph = layout.graph();
                 var classDiagram = new UMLClassDiagram({id: container, width: graph.width + 100, height: graph.height + 100});
  
-                layout.eachNode((className, value) => {
-                    var c = classes[className];
-                    c._x = value.x - (c.getWidth() / 2);
-                    c._y = value.y - (c.getHeight() / 2);
-                    classDiagram.addElement(c);
+                layout.eachNode((name, value) => {
+                    var n = nodes[name];
+                    n._x = value.x - (n.getWidth() / 2);
+                    n._y = value.y - (n.getHeight() / 2);
+                    classDiagram.addElement(n);
                 });
                 
                  //Draw the diagram

@@ -15,32 +15,76 @@
 
 module Cats.TSWorker {
 
-
+ 
     /**
      * This class implements a AST walker that in the process creates 
      * a object model.
      * 
      */ 
-    export class ObjectModelCreator extends TypeScript.PositionTrackingWalker {
+    export class ObjectModelCreator extends TypeScript.SyntaxWalker /* TypeScript.PositionTrackingWalker */ {
     
-        classNames = {};
-        private lastClass: Array<string>;
+        private model = {};
+        private last: ModelEntry;
     
         constructor() {
             super();
         }
+ 
+        getModel(): Array<ModelEntry> {
+            var result = [];
+            Object.keys(this.model).forEach((key) => {
+               result.push(this.model[key]); 
+            });
+            return result;
+        }
+ 
+        private createEntry(type:string, name:string): ModelEntry {
+            return {
+              type:type,
+              name:name,
+              operations: [],
+              attributes: []
+            };
+            
+        }
+ 
+        public visitInterfaceDeclaration(node: TypeScript.InterfaceDeclarationSyntax) {
+            var name = node.identifier.text();
+            console.log("interface visit start " + name);
+            if (!this.model[name]) this.model[name] = this.createEntry("interface", name);
+            this.last = this.model[name];
+            super.visitInterfaceDeclaration(node);
+            console.log("interface visit end " + name);
+        }
+ 
     
         public visitClassDeclaration(node: TypeScript.ClassDeclarationSyntax) {
-            var className = node.identifier.text();
-            if (!this.classNames[className]) this.classNames[className] = [];
-            this.lastClass = this.classNames[className];
+            var name = node.identifier.text();
+            console.log("class visit start " + name);
+            if (!this.model[name]) this.model[name] = this.createEntry("class", name);;
+            this.last = this.model[name];
             super.visitClassDeclaration(node);
+            console.log("class visit end " + name);
         }
     
         public visitMemberFunctionDeclaration(node: TypeScript.MemberFunctionDeclarationSyntax) {
-            var methodName = node.propertyName.text();
-            this.lastClass.push(methodName);
+            var name = node.propertyName.text();
+            console.log("member function visit start " + name);
+            this.last.operations.push(name);
             super.visitMemberFunctionDeclaration(node);
+            console.log("member function visit start " + name);
+        }
+    
+        public visitMemberVariableDeclaration(node: TypeScript.MemberVariableDeclarationSyntax) {
+            var name = node.variableDeclarator.propertyName.text();
+            this.last.attributes.push(name);
+            super.visitMemberVariableDeclaration(node);
+        }
+    
+        public visitMethodSignature(node: TypeScript.MethodSignatureSyntax) {
+            var name = node.propertyName.text();
+            this.last.operations.push(name);
+            super.visitMethodSignature(node);
         }
     
     }
