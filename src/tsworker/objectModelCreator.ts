@@ -81,10 +81,23 @@ module Cats.TSWorker {
             super.visitMemberVariableDeclaration(node);
         }
     
+        public visitPropertySignature(node: TypeScript.PropertySignatureSyntax) {
+            var name = node.propertyName.text();
+            this.last.attributes.push(name);
+            super.visitPropertySignature(node);
+        }
+    
         public visitMethodSignature(node: TypeScript.MethodSignatureSyntax) {
             var name = node.propertyName.text();
             this.last.operations.push(name);
             super.visitMethodSignature(node);
+        }
+        
+        
+        public visitHeritageClause(node: TypeScript.HeritageClauseSyntax) {
+            var name = node.fullText();
+            this.last.extends = name;
+            super.visitHeritageClause(node);
         }
     
     }
