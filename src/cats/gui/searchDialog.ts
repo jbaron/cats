@@ -19,14 +19,19 @@
 class SearchDialog extends qx.ui.window.Window {
 
     private form = new qx.ui.form.Form();
+   //  private resultTable = new ResultTable();
+    
     private rootDir:string;
 
     constructor() {
         super("Search");
 
-        var layout = new qx.ui.layout.Canvas();
+        var layout = new qx.ui.layout.VBox();
         this.setLayout(layout);
-        this.createForm();
+        this.add(this.createForm());
+        // this.add(this.resultTable);
+        // this.resultTable.exclude();
+        
         this.setModal(true);
         this.addListener("resize", this.center);
         
@@ -37,19 +42,48 @@ class SearchDialog extends qx.ui.window.Window {
         this.show();
     }
     
+    
+    
+    private getResults(content:string,pattern:RegExp, fileName, result:Cats.FileRange[]) {
+        var lines = content.split("\n");
+        for (var x=0;x<lines.length;x++) {
+            var line = lines[x];
+            if (line.match(pattern)) {
+                var item:Cats.FileRange = {
+                    range:{
+                        start : {row:x, column:0},
+                        end: {row:x, column:0}
+                    },
+                    fileName: fileName,
+                    message: line
+                };
+                result.push(item);
+            }
+        }
+        
+    }
+    
     private run(search:string, filePattern) {
+        // this.resultTable.show();
+        var result:Cats.FileRange[] = [];
+        var searchPattern = new RegExp(search,"g");
         if (! filePattern) filePattern = "**/*";
          OS.File.find(filePattern,this.rootDir,  (err:Error,files:Array<string>) => {
             files.forEach((file) => {
                 try {
                     var fullName = OS.File.join(this.rootDir, file);
                     var content = OS.File.readTextFile(fullName);
-                    // console.log("Scanned " + fullName);
+                    if (content.match(searchPattern)) {
+                        this.getResults(content,searchPattern,fullName,result);
+                    }
+                    
                 } catch (err) {
                     console.error("Got error while handling file " + fullName);
                     console.error(err);
                 }
             });
+            IDE.searchResult.setData(result);
+            this.close();
          });    
     }
     
@@ -60,7 +94,7 @@ class SearchDialog extends qx.ui.window.Window {
         return t;
     }
     
-    createForm() {
+    private createForm() {
         var s = this.addTextField("Search for", "search");
         s.setRequired(true);
         
@@ -75,7 +109,12 @@ class SearchDialog extends qx.ui.window.Window {
         }, this);
         this.form.addButton(cancelButton);
         var renderer = new qx.ui.form.renderer.Single(this.form);
-        this.add(renderer);
+        return renderer;
+    }
+    
+    private createResultTable() {
+        var r = new ResultTable();
+        return r;
     }
     
 }

@@ -52,7 +52,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     setProject(project:Cats.Project) {
         this.projectDir = project.projectDir;
             
-        this.watcher = new OS.File.Watcher();
+        this.watcher = OS.File.getWatcher();
         this.watcher.on("change", (dir) => {
              var parent = this.parents[dir];
              if (parent) this.readDir(parent);
