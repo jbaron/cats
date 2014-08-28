@@ -67,6 +67,7 @@ var catsOptions = [
     
     
     "src/cats/util/mime.ts",
+    "src/cats/util/resourceLoader.ts",
     
     "src/cats/main.ts"
 ];

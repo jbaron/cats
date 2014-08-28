@@ -12,9 +12,13 @@
 // limitations under the License.
 //
 
+/**
+ * Dynamically load resources like CSS and Javascript files.
+ * 
+ */ 
 class ResourceLoader {
     
-    private require(file, callback) {
+    require(file, callback) {
         callback = callback ||
         function () {};
         var filenode;

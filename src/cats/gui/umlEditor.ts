@@ -18,23 +18,31 @@ class UMLEditor extends qx.ui.embed.Html implements Editor {
 	 
 	 private backgroundColors = ["white", "black" , "grey"];
 	 private diagram:any;
-	 private static LoadedResources = false;
+	 private static Resources1 = [
+	    "js/uml/css/UDStyle.css",
+        "js/uml/UDCore.js"
+	  ];
+	 
+	 private static Resources2 = [
+        "js/uml/UDModules.js" 
+	  ];
+	  
+	 private static ResourcesLoaded = false;
 	 
 	 constructor(private session:Cats.Session) {
 		 super(null);
 		 if (! dagre) dagre = require("dagre");
-		 // UMLEditor.LoadResources();
-		 // this.createContextMenu();
 		 this.setOverflow("auto", "auto");
-		 
 		  this.addListenerOnce("appear", () => {
 		     var container:HTMLElement = this.getContentElement().getDomElement();
 		     var div = document.createElement("div");
 		     div.style.height = "100%";
 		     div.style.width = "100%";
 		     container.appendChild(div);
-		     this.render(div);
-		     this.focus();
+		     UMLEditor.LoadResources(() => {
+    		        this.render(div);
+    		        this.focus();
+		      }); 
 		  });
 	}
 
@@ -42,15 +50,21 @@ class UMLEditor extends qx.ui.embed.Html implements Editor {
          return false;
      }    
 
-    static LoadResources() {
-        if (this.LoadedResources) {
-            return;
-        }
-        // IDE.loadCSSFile("js/uml/css/UDStyle.css");
-        // IDE.loadJSFile("js/uml/UDCore.js");
-        // IDE.loadJSFile("js/uml/UDModules.js");
-        this.LoadedResources = true;
+
+    static LoadResources(cb:Function) {
+        if (UMLEditor.ResourcesLoaded) {
+            cb();
+        } else {
+            var resourceLoader = new ResourceLoader();
+		     resourceLoader.loadResources(UMLEditor.Resources1, () => {
+		         resourceLoader.loadResources(UMLEditor.Resources2, () => {
+		           UMLEditor.ResourcesLoaded = true;  
+    		       cb();
+		         }); 
+		     });
+        }    
     }
+
 
     private render(container:HTMLElement) {
             var nodes = {};

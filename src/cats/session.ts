@@ -15,7 +15,7 @@
 
 module Cats {
     
-    var Linter = require("tslint");
+    var Linter;
     
     export class Session extends qx.event.Emitter {
 
@@ -188,7 +188,7 @@ module Cats {
         }
         
         private lint() {
-            
+            if (! Linter) Linter = require("tslint"); 
             var ll = new Linter(this.name, this.content, this.project.getLintOptions());
             var result:Array<any> = JSON.parse(ll.lint().output);
             var r:Cats.FileRange[] = [];
