@@ -64,6 +64,16 @@ qx.Theme.define("cats.theme.Appearance",
             };
         }
     },
+ 
+    "toolbar-button" : {
+        base: true,
+        style : function(states) {
+           return {
+                padding : [3,3],
+                margin  : [5,5]
+            };
+        }
+    },
     
     "__virtual-tree" : noDecorator(),
     

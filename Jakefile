@@ -40,10 +40,9 @@ var catsOptions = [
     "src/cats/commands/projectCommands.ts",
     "src/cats/projectConfig.ts",
     "src/cats/tsWorkerProxy.ts",
-    "src/cats/menu/menubar.ts",
     "src/cats/project.ts",
     "src/cats/refactor.ts",
-    
+    "src/cats/history.ts",    
     
     "src/cats/gui/editor.ts",
     "src/cats/gui/console.ts",
@@ -63,9 +62,12 @@ var catsOptions = [
     "src/cats/gui/processTable.ts",
     "src/cats/gui/busyWindow.ts",
     "src/cats/gui/layout.ts",
+    "src/cats/gui/searchDialog.ts",
+    "src/cats/gui/menubar.ts",
     
     
     "src/cats/util/mime.ts",
+    "src/cats/util/resourceLoader.ts",
     
     "src/cats/main.ts"
 ];

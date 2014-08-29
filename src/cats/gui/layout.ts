@@ -1,3 +1,17 @@
+// Copyright (c) JBaron.  All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
 /**
  * Layout the different parts of the IDE.
  */ 
@@ -52,17 +66,17 @@ class Layout {
             editorSplit.add(infoSplit, 4);
     
             // **********************  Problem Pane ***************************
-            ide.problemPane = new TabView(["problems", "search", "console", "process"]);
+            ide.problemPane = new TabView();
             editorSplit.add(ide.problemPane, 2); // Info
     
             ide.console = new ConsoleLog();
             ide.problemResult = new ResultTable();
             ide.searchResult = new ResultTable();
             ide.processTable = new ProcessTable();
-            ide.problemPane.getChildren()[0].add(ide.problemResult, { edge: 0 });
-            ide.problemPane.getChildren()[1].add(ide.searchResult, { edge: 0 });
-            ide.problemPane.getChildren()[2].add(ide.console, { edge: 0 });
-            ide.problemPane.getChildren()[3].add(ide.processTable, { edge: 0 });
+            ide.problemPane.addPage("problems",null,ide.problemResult);
+            ide.problemPane.addPage("search",null,ide.searchResult);
+            ide.problemPane.addPage("console",null,ide.console);
+            ide.problemPane.addPage("process",null,ide.processTable);
     
             ide.problemPane.selectPage("console");
             // this.problemPane.setSelection([this.problemPane.getChildren()[2]]);

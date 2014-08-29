@@ -19,6 +19,16 @@
  */
 module Cats {
 
+   export interface ModelEntry {
+        type: string;
+        name: string;
+        operations?: Array<string>;
+        attributes?: Array<string>;
+        extends?: string;
+        implements?: Array<string>;
+    }    
+
+
     export interface Range {
         start: Position;
         end: Position;

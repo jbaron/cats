@@ -1,3 +1,17 @@
+// Copyright (c) JBaron.  All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
 /**
  * The toolbar for CATS
  */
@@ -24,15 +38,18 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
         Cats.Commands.CMDS.edit_find,
         Cats.Commands.CMDS.edit_replace,
         Cats.Commands.CMDS.edit_indent,
-        Cats.Commands.CMDS.edit_outdent
+        Cats.Commands.CMDS.edit_outdent,
  //       Cats.Commands.CMDS.edit_toggleComment
+        null,
+        Cats.Commands.CMDS.ide_history_prev,
+        Cats.Commands.CMDS.ide_history_next
+        
     ];
 
 
     constructor() {
         super();
         this.init();
-        // this.setPadding(0,0,0,0);
     }
  
     private createButton(cmd:Cats.Commands.Command) {
@@ -47,8 +64,6 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
         var tooltip = new qx.ui.tooltip.ToolTip(cmd.label, null);
         button.setToolTip(tooltip);
         button.setBlockToolTip(false);
-        // button.setDecorator(null);
-        // button.setPadding(0,0,0,0);
         button.addListener("click", () => {
             cmd.command();
         });

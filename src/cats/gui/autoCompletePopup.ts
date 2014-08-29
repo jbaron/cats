@@ -189,9 +189,6 @@
             });
         }
 
-
-
-
         private getIconForKind(name:string) {
             var iconPath = "./resource/qx/icon/Oxygen/16/types/";
             switch (name) {
@@ -203,6 +200,7 @@
                 case "interface":return iconPath + "interface.png";
                 case "enum": return iconPath + "enum.png"; 
                 case "class":return iconPath + "class.png";
+                case "property":
                 case "var":return iconPath + "variable.png";
                 default: return iconPath + "method.png";
             }            

@@ -1,3 +1,17 @@
+// Copyright (c) JBaron.  All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
 /**
  * File navigator widget for CATS
  */
@@ -38,7 +52,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     setProject(project:Cats.Project) {
         this.projectDir = project.projectDir;
             
-        this.watcher = new OS.File.Watcher();
+        this.watcher = OS.File.getWatcher();
         this.watcher.on("change", (dir) => {
              var parent = this.parents[dir];
              if (parent) this.readDir(parent);
@@ -75,7 +89,6 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     }
 
     clear() {
-        // var root = qx.data.marshal.Json.createModel({}, true);
         this.setModel(null);
     }
 
@@ -158,20 +171,6 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
         this.setDelegate(delegate);
     }
 
-
-    refreshDir(dir) {
-        var value; // value = this.directoryNodes[dir];
-        setTimeout(function() {
-            // alert("refreshing tree");
-            var node = {
-                label: "Loading",
-                fullPath: "asasasa/dss",
-                directory : false 
-            };
-            value.getChildren().removeAll();
-            value.getChildren().push(qx.data.marshal.Json.createModel(node, true));
-        }, 0);
-    }
 
     /**
      * Read the files from a directory

@@ -1,23 +1,48 @@
+// Copyright (c) JBaron.  All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+var dagre ;
+
 class UMLEditor extends qx.ui.embed.Html implements Editor {
 	 
 	 private backgroundColors = ["white", "black" , "grey"];
 	 private diagram:any;
-	 private static LoadedResources = false;
+	 private static Resources1 = [
+	    "js/uml/css/UDStyle.css",
+        "js/uml/UDCore.js"
+	  ];
+	 
+	 private static Resources2 = [
+        "js/uml/UDModules.js" 
+	  ];
+	  
+	 private static ResourcesLoaded = false;
 	 
 	 constructor(private session:Cats.Session) {
 		 super(null);
-		 // UMLEditor.LoadResources();
-		 // this.createContextMenu();
+		 if (! dagre) dagre = require("dagre");
 		 this.setOverflow("auto", "auto");
-		 
 		  this.addListenerOnce("appear", () => {
 		     var container:HTMLElement = this.getContentElement().getDomElement();
 		     var div = document.createElement("div");
 		     div.style.height = "100%";
 		     div.style.width = "100%";
 		     container.appendChild(div);
-		     this.render(div);
-		     this.focus();
+		     UMLEditor.LoadResources(() => {
+    		        this.render(div);
+    		        this.focus();
+		      }); 
 		  });
 	}
 
@@ -25,58 +50,71 @@ class UMLEditor extends qx.ui.embed.Html implements Editor {
          return false;
      }    
 
-    static LoadResources() {
-        if (this.LoadedResources) {
-            return;
-        }
-        // IDE.loadCSSFile("js/uml/css/UDStyle.css");
-        // IDE.loadJSFile("js/uml/UDCore.js");
-        // IDE.loadJSFile("js/uml/UDModules.js");
-        this.LoadedResources = true;
+
+    static LoadResources(cb:Function) {
+        if (UMLEditor.ResourcesLoaded) {
+            cb();
+        } else {
+            var resourceLoader = new ResourceLoader();
+		     resourceLoader.loadResources(UMLEditor.Resources1, () => {
+		         resourceLoader.loadResources(UMLEditor.Resources2, () => {
+		           UMLEditor.ResourcesLoaded = true;  
+    		       cb();
+		         }); 
+		     });
+        }    
     }
 
+
     private render(container:HTMLElement) {
-            var classDiagram = new UMLClassDiagram({id: container, width: 2000, height: 2000 });
-
-            // Adding classes...
-            var vehicleClass = new UMLClass({ x:100, y:50 });
-            var carClass = new UMLClass({ x:30, y:170 });
-            var boatClass = new UMLClass({ x:150, y:170 });
-            classDiagram.addElement(vehicleClass);
-            classDiagram.addElement(carClass);
-            classDiagram.addElement(boatClass);
-        
-            // Adding generalizations...
-            var generalization1 = new UMLGeneralization({ b:vehicleClass, a:carClass });
-            var generalization2 = new UMLGeneralization({ b:vehicleClass, a:boatClass });
-            classDiagram.addElement(generalization1);       
-            classDiagram.addElement(generalization2);       
-
-
-            //Defining vehicleClass
-            vehicleClass.setName("Vehicle");
-            vehicleClass.addAttribute( 'owner' );
-            vehicleClass.addAttribute( 'capacity' );
-            vehicleClass.addOperation( 'getOwner()' );
-            vehicleClass.addOperation( 'getCapacity()' );
+            var nodes = {};
+            var g = new dagre.Digraph();
             
-            //Defining carClass
-            carClass.setName("Car");
-            carClass.addAttribute( 'num_doors' );
-            carClass.addOperation( 'getNumDoors()' );
+            IDE.project.iSense.getObjectModel((err, model:Array<Cats.ModelEntry>) => {
+                var counter = 0;
+                model.forEach((entry)=>{
+                   counter++;
+                   if (counter > 100) return;
+                   var name = entry.name;
+                   var c;
+                   if (entry.type === "class") c = new UMLClass();
+                   if (entry.type === "interface") c = new UMLInterfaceExtended();
+                   c.setName(name);
+                   
+                   entry.operations.forEach((mName)=>{
+                       c.addOperation(mName + "()");
+                   });
+                   
+                   entry.attributes.forEach((aName) => {
+                       c.addAttribute(aName);
+                   });
+                   
+                   
+                   g.addNode(name, {width: c.getWidth(), height: c.getHeight()})
+                   nodes[name] = c;
+                });
+                
+                var layout = dagre.layout().run(g);
+                var graph = layout.graph();
+                var classDiagram = new UMLClassDiagram({id: container, width: graph.width + 100, height: graph.height + 100});
+ 
+                layout.eachNode((name, value) => {
+                    var n = nodes[name];
+                    n._x = value.x - (n.getWidth() / 2);
+                    n._y = value.y - (n.getHeight() / 2);
+                    classDiagram.addElement(n);
+                });
+                
+                 //Draw the diagram
+                classDiagram.draw();
 
-            //Defining boatClass
-            boatClass.setName("Boat");
-            boatClass.addAttribute( 'mast' );
-            boatClass.addOperation( 'getMast()' );
-
-            //Draw the diagram
-            classDiagram.draw();
-
-            //Interaction is possible (editable)
-            classDiagram.interaction(true);
-            this.diagram = classDiagram;
+                //Interaction is possible (editable)
+                classDiagram.interaction(true);
+                this.diagram = classDiagram;
+                
+            });
             
+            return;
     }
 
      private createContextMenu() {

@@ -14,12 +14,15 @@
 //
 
 module Cats {
+    
+    var Events = require('events');
 
     export class Ide  {
 
         // List of different themes that are available
         private themes = {                  
             cats : cats.theme.Default,
+            gray: cats.theme.Grey,
             classic: qx.theme.Classic,
             indigo: qx.theme.Indigo,
             modern:qx.theme.Modern,
@@ -38,7 +41,7 @@ module Cats {
         problemResult:ResultTable;
         menubar:Menu.Menubar;
         outlineNavigator:OutlineNavigator; 
-        fileNavigator:FileNavigator
+        fileNavigator:FileNavigator;
 
 
         catsHomeDir: string;
@@ -46,7 +49,7 @@ module Cats {
         config:IDEConfiguration;
         private static STORE_KEY = "cats.config";
         infoBus= <InfoBus> new Events.EventEmitter();
-
+        history = new SessionHistory();
 
         constructor() {
             this.catsHomeDir = process.cwd();
@@ -65,7 +68,6 @@ module Cats {
             this.menubar = new Cats.Menu.Menubar();
             this.initFileDropArea();
         }
-
 
         getActiveEditor() {
             var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
@@ -267,7 +269,7 @@ module Cats {
                 if (session.isTypeScript()) {
                     this.project.addScript(name,content);
                 }
-                var p = IDE.sessionTabView.addSession(session,pos);
+                IDE.sessionTabView.addSession(session,pos);
             } else {
                  this.sessionTabView.navigateTo(session,pos);
             }

@@ -47,11 +47,10 @@ declare module Ace {
 	}
 
 	interface Range {
-		new(startRow,startColumn,endRow,endColumn);
-		startRow:number;
-		startColumn:number;
-		endRow:number;
-		endColumn:number;
+		new(startRow:number,startColumn:number,endRow:number,endColumn:number);
+		isEmpty() : boolean;
+		start: any;
+		end: any;
 	}
 
 	interface UndoManager {

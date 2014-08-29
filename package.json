@@ -37,7 +37,8 @@
   "dependencies": {
     "glob": "^4.0.5",
     "tslint": "^0.4.12",
-    "typedoc": "^0.1.0"
+    "typedoc": "^0.1.1",
+    "dagre" : "^0.4.6"
   },
   "devDependencies": {
   }
