@@ -81,7 +81,6 @@ module Cats {
             IDE.fileNavigator.clear();
             IDE.outlineNavigator.clear();
             IDE.problemResult.clear();
-            IDE.searchResult.clear();
             if (this.iSense) this.iSense.stop();
         }
 

@@ -229,7 +229,6 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
                         tooltip.moveTo(ev.x, ev.y+10);
                         tooltip.show();
                     }
-                    // IDE.mainEditor.toolTip.show(ev.x, ev.y, tip);
                 });
         }
 
@@ -264,12 +263,13 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
         }
 
 
-     private autoComplete() {
-            if (this.session.isTypeScript()) {
-                var cursor = this.aceEditor.getCursorPosition();
-                this.showAutoComplete(cursor);
-            }                        
-        }
+    private autoComplete() {
+        if (this.session.isTypeScript()) {
+            var cursor = this.aceEditor.getCursorPosition();
+            this.showAutoComplete(cursor);
+        }                        
+    }
+
 
     private mapSeverity(level: Cats.Severity) : string {
         switch (level) {
@@ -277,13 +277,12 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
             case Cats.Severity.Warning: return "warning";
             case Cats.Severity.Info: return "info";
         }
-        
     }
         
 
-       /**
-         * Check if there are any errors for this session and show them.    
-         */
+    /**
+     * Check if there are any errors for this session and show them.    
+     */
      private showErrors(result: Cats.FileRange[]) {
             var annotations:Ace.Annotation[] = [];
             result.forEach((error: Cats.FileRange) => {
@@ -368,11 +367,13 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
 
     private getInfoAt(type: string) {        
         
-        IDE.problemPane.selectPage("search");
-    
         this.session.project.iSense.getInfoAtPosition(type, this.session.name, this.getPosition(), (err, data:Cats.FileRange[]) => {
             console.debug("Called getInfoAt for with results #" + data.length);
-            IDE.searchResult.setData(data);
+            var resultTable = new ResultTable();
+            var page = IDE.problemPane.addPage("info",null,resultTable);
+            page.setShowCloseButton(true);
+            resultTable.setData(data);
+            IDE.problemPane.setSelection([page]);
         });
     }
 

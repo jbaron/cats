@@ -19,8 +19,6 @@
 class SearchDialog extends qx.ui.window.Window {
 
     private form = new qx.ui.form.Form();
-   //  private resultTable = new ResultTable();
-    
     private rootDir:string;
 
     constructor() {
@@ -29,9 +27,6 @@ class SearchDialog extends qx.ui.window.Window {
         var layout = new qx.ui.layout.VBox();
         this.setLayout(layout);
         this.add(this.createForm());
-        // this.add(this.resultTable);
-        // this.resultTable.exclude();
-        
         this.setModal(true);
         this.addListener("resize", this.center);
         
@@ -63,13 +58,14 @@ class SearchDialog extends qx.ui.window.Window {
         
     }
     
-    private run(search:string, filePattern) {
-        // this.resultTable.show();
+    private run(param) {
         var result:Cats.FileRange[] = [];
-        var searchPattern = new RegExp(search,"g");
-        if (! filePattern) filePattern = "**/*";
-         OS.File.find(filePattern,this.rootDir,  (err:Error,files:Array<string>) => {
+        var mod = param.caseInsensitive ? "i" : "";
+        var searchPattern = new RegExp(param.search,"g" + mod);
+        if (! param.glob) param.glob = "**/*";
+         OS.File.find(param.glob,this.rootDir,  (err:Error,files:Array<string>) => {
             files.forEach((file) => {
+                if (result.length > param.maxHits) return;
                 try {
                     var fullName = OS.File.join(this.rootDir, file);
                     var content = OS.File.readTextFile(fullName);
@@ -83,8 +79,9 @@ class SearchDialog extends qx.ui.window.Window {
                 }
             });
             var resultTable = new ResultTable();
-            var toolTipText = "Search results for " + searchPattern + " in " + this.rootDir + "/" + filePattern;
+            var toolTipText = "Search results for " + searchPattern + " in " + this.rootDir + "/" + param.glob;
             var page = IDE.problemPane.addPage("search", toolTipText, resultTable);
+            page.setShowCloseButton(true);
             resultTable.setData(result);
             IDE.problemPane.setSelection([page]);
             this.close();
@@ -98,14 +95,14 @@ class SearchDialog extends qx.ui.window.Window {
         return t;
     }
     
-    addSpinner(label:string, model:string) {
+    private addSpinner(label:string, model:string) {
         var s = new qx.ui.form.Spinner();
         s.set({ minimum: 0, maximum: 1000});
         this.form.add(s, label, null, model);
         return s;
     }
     
-    addCheckBox(label:string, model?:string) {
+    private addCheckBox(label:string, model?:string) {
         var cb = new qx.ui.form.CheckBox();
         this.form.add(cb, label, null, model);
         return cb;
@@ -123,18 +120,26 @@ class SearchDialog extends qx.ui.window.Window {
         
         var m = this.addSpinner("Maximum hits", "maxHits");
         m.setValue(100);
-        // m.set("maxHits", 500);
-        
+
         var searchButton = new qx.ui.form.Button("Search");
         var cancelButton = new qx.ui.form.Button("Cancel");
         
         this.form.addButton(searchButton);
         searchButton.addListener("execute", () => {
             if (this.form.validate()) {
-                this.run(s.getValue(), p.getValue());
+                var param = {
+                    search: s.getValue(),
+                    glob: p.getValue(),
+                    caseInsensitive: c.getValue(),
+                    maxHits: m.getValue()
+                };
+                this.run(param);
             };
         }, this);
         this.form.addButton(cancelButton);
+        cancelButton.addListener("execute", () => {
+            this.close();
+        }, this);
         var renderer = new qx.ui.form.renderer.Single(this.form);
         return renderer;
     }

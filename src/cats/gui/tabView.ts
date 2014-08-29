@@ -57,9 +57,12 @@ class TabView extends qx.ui.tabview.TabView {
         
         "problems" : {
             icon: "status/task-attention.png"  
+        },
+        
+        "info" : {
+            icon: "status/dialog-information.png"  
         }
-        
-        
+       
     } ; 
 
     constructor(tabNames: string[]=[]) {
@@ -69,8 +72,6 @@ class TabView extends qx.ui.tabview.TabView {
         tabNames.forEach((name) => {
             this.addPage(name);
         });           
-        
-  
     }
 
     private getLabel(name:string) {
@@ -92,7 +93,7 @@ class TabView extends qx.ui.tabview.TabView {
         tab.setLayout(new qx.ui.layout.Canvas());
 
         var button = (<any>tab).getButton();
-        button.setContextMenu(this.createContextMenu(tab));
+        // button.setContextMenu(this.createContextMenu(tab));
 
         if (tooltipText) {
             var tooltip = new qx.ui.tooltip.ToolTip(tooltipText);

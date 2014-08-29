@@ -36,7 +36,6 @@ module Cats {
         sessionTabView: SessionTabView;
         console:ConsoleLog;
         processTable:ProcessTable;
-        searchResult:ResultTable;
         bookmarks:ResultTable;
         problemResult:ResultTable;
         menubar:Menu.Menubar;
@@ -278,15 +277,6 @@ module Cats {
             return session;
         }
 
- 
-        /**
-         * Set the theme of the IDE
-         * @param theme The name of the new theme
-         */
-        setTheme(theme: string) {
-            this.config.theme = theme;
-            // IDE.mainEditor.setTheme(theme);
-        }
 
         /**
          * Add a new project to the IDE
@@ -297,10 +287,7 @@ module Cats {
               
             if (this.project) {
                 this.fileNavigator.setProject(this.project);
-                // var fileTree = new FileNavigator(this.project);
-                // this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
             }
-            
         }
         
         /**

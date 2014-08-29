@@ -71,10 +71,8 @@ class Layout {
     
             ide.console = new ConsoleLog();
             ide.problemResult = new ResultTable();
-            ide.searchResult = new ResultTable();
             ide.processTable = new ProcessTable();
             ide.problemPane.addPage("problems",null,ide.problemResult);
-            ide.problemPane.addPage("search",null,ide.searchResult);
             ide.problemPane.addPage("console",null,ide.console);
             ide.problemPane.addPage("process",null,ide.processTable);
     
