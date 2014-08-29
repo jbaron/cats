@@ -62,7 +62,7 @@ class TabView extends qx.ui.tabview.TabView {
         
     } ; 
 
-    constructor(tabNames: string[]) {
+    constructor(tabNames: string[]=[]) {
         super();
         this.setPadding(0, 0, 0, 0);
         this.setContentPadding(0, 0, 0, 0);
@@ -86,7 +86,7 @@ class TabView extends qx.ui.tabview.TabView {
         if (entry) return this.iconFolder + entry.icon;
     }
 
-    addPage(id:string, tooltipText?:string): qx.ui.tabview.Page {
+    addPage(id:string, tooltipText?:string, widget?:qx.ui.core.LayoutItem): qx.ui.tabview.Page {
         var tab = new qx.ui.tabview.Page(this.getLabel(id), this.getIconName(id));
         tab[TabView.IDNAME] = id;
         tab.setLayout(new qx.ui.layout.Canvas());
@@ -99,6 +99,11 @@ class TabView extends qx.ui.tabview.TabView {
             button.setToolTip(tooltip);
             button.setBlockToolTip(false);
         }
+        
+        if (widget) {
+            tab.add(widget, { edge: 0 });
+        }
+        
         this.add(tab);
         return tab;
     }

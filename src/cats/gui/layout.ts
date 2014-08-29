@@ -66,17 +66,17 @@ class Layout {
             editorSplit.add(infoSplit, 4);
     
             // **********************  Problem Pane ***************************
-            ide.problemPane = new TabView(["problems", "search", "console", "process"]);
+            ide.problemPane = new TabView();
             editorSplit.add(ide.problemPane, 2); // Info
     
             ide.console = new ConsoleLog();
             ide.problemResult = new ResultTable();
             ide.searchResult = new ResultTable();
             ide.processTable = new ProcessTable();
-            ide.problemPane.getChildren()[0].add(ide.problemResult, { edge: 0 });
-            ide.problemPane.getChildren()[1].add(ide.searchResult, { edge: 0 });
-            ide.problemPane.getChildren()[2].add(ide.console, { edge: 0 });
-            ide.problemPane.getChildren()[3].add(ide.processTable, { edge: 0 });
+            ide.problemPane.addPage("problems",null,ide.problemResult);
+            ide.problemPane.addPage("search",null,ide.searchResult);
+            ide.problemPane.addPage("console",null,ide.console);
+            ide.problemPane.addPage("process",null,ide.processTable);
     
             ide.problemPane.selectPage("console");
             // this.problemPane.setSelection([this.problemPane.getChildren()[2]]);

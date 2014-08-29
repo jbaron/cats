@@ -82,7 +82,11 @@ class SearchDialog extends qx.ui.window.Window {
                     console.error(err);
                 }
             });
-            IDE.searchResult.setData(result);
+            var resultTable = new ResultTable();
+            var toolTipText = "Search results for " + searchPattern + " in " + this.rootDir + "/" + filePattern;
+            var page = IDE.problemPane.addPage("search", toolTipText, resultTable);
+            resultTable.setData(result);
+            IDE.problemPane.setSelection([page]);
             this.close();
          });    
     }
@@ -94,13 +98,36 @@ class SearchDialog extends qx.ui.window.Window {
         return t;
     }
     
+    addSpinner(label:string, model:string) {
+        var s = new qx.ui.form.Spinner();
+        s.set({ minimum: 0, maximum: 1000});
+        this.form.add(s, label, null, model);
+        return s;
+    }
+    
+    addCheckBox(label:string, model?:string) {
+        var cb = new qx.ui.form.CheckBox();
+        this.form.add(cb, label, null, model);
+        return cb;
+    }
+    
     private createForm() {
         var s = this.addTextField("Search for", "search");
         s.setRequired(true);
         
         var p = this.addTextField("File Pattern", "glob");
+        p.setValue("**/*");
+        
+        var c = this.addCheckBox("Case insensitive", "caseInsensitive");
+        c.setValue(false);
+        
+        var m = this.addSpinner("Maximum hits", "maxHits");
+        m.setValue(100);
+        // m.set("maxHits", 500);
+        
         var searchButton = new qx.ui.form.Button("Search");
         var cancelButton = new qx.ui.form.Button("Cancel");
+        
         this.form.addButton(searchButton);
         searchButton.addListener("execute", () => {
             if (this.form.validate()) {
