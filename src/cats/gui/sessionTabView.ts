@@ -12,11 +12,12 @@
 // limitations under the License.
 //
 
+module Cats.Gui {
 /**
  * This class represents a page holding a session. Typically that means a 
  * editor
  */
-class SessionPage extends qx.ui.tabview.Page {
+export class SessionPage extends qx.ui.tabview.Page {
 
     editor: Editor;
 
@@ -96,7 +97,7 @@ class SessionPage extends qx.ui.tabview.Page {
 
 }
 
-class SessionTabView extends qx.ui.tabview.TabView {
+export class SessionTabView extends qx.ui.tabview.TabView {
 
     constructor() {
         super();
@@ -199,4 +200,5 @@ class SessionTabView extends qx.ui.tabview.TabView {
         if (page) this.setSelection([page]);
     }
 
+}
 }

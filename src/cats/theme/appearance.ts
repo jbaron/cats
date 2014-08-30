@@ -13,6 +13,7 @@
 // limitations under the License.
 //
 
+module Cats.Theme {
 
 function noDecorator() {
     return {
@@ -90,3 +91,5 @@ qx.Theme.define("cats.theme.Appearance",
       
   }
 });
+
+}

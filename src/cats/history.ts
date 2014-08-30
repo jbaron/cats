@@ -11,13 +11,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-
+module Cats {
 /**
  * This class implements the history functionality 
  * that makes it possible to go back were you where 
  * before.
  */ 
-class SessionHistory {
+export class SessionHistory {
     
     private maxEntries = 1000;
     private entries = [];
@@ -27,15 +27,15 @@ class SessionHistory {
         pos: any;
     };
 
-    add(entry: SessionPage) {
-           
+
+    add(entry: Gui.SessionPage) {
         this.entries.push({
             hash: entry.toHashCode(),
             pos: undefined
         });
-        
         this.pos = this.entries.length -1;
     }
+
 
     back() {
         var found = false;
@@ -49,6 +49,7 @@ class SessionHistory {
             
         }
     }
+
 
     next() {
         var found = false;
@@ -68,17 +69,20 @@ class SessionHistory {
      */
     private exists(entry) {
         var hash = entry.hash;
-        var page = <SessionPage>qx.core.ObjectRegistry.fromHashCode(hash);
+        var page = <Gui.SessionPage>qx.core.ObjectRegistry.fromHashCode(hash);
         if (! page) return false;
         return IDE.sessionTabView.getChildren().indexOf(page) > -1;
     }
-
+    
+    
     private goto(entry) {
         var hash = entry.hash;
-        var page = <SessionPage>qx.core.ObjectRegistry.fromHashCode(hash);
+        var page = <Gui.SessionPage>qx.core.ObjectRegistry.fromHashCode(hash);
         IDE.sessionTabView.navigateToPage(page, entry.pos);
     }
 
     
  
+}
+
 }

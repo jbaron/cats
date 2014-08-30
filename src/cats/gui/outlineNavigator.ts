@@ -12,10 +12,12 @@
 // limitations under the License.
 //
 
+module Cats.Gui {
+
 /**      
- * Create a simple Tree to mimic outline functionality      
+ * Provide an outline view of the source code.      
  */
-class OutlineNavigator extends qx.ui.tree.VirtualTree  {
+export class OutlineNavigator extends qx.ui.tree.VirtualTree  {
 
     private session: Cats.Session;
  
@@ -76,13 +78,12 @@ class OutlineNavigator extends qx.ui.tree.VirtualTree  {
     }
 
 
-
     clear() {
         this.setModel(null);
     }
 
 
-    expandAll() {
+    private expandAll() {
         var top = this.getModel().getChildren();
         for (var i=0;i<top.length;i++) {
             var root = top.getItem(i);
@@ -98,7 +99,7 @@ class OutlineNavigator extends qx.ui.tree.VirtualTree  {
     }
    
    
-   isExecutable(kind) {
+   private isExecutable(kind) {
        if (kind === "method" || kind === "function" || kind === "constructor") return true;
        return false;
    }
@@ -139,5 +140,5 @@ class OutlineNavigator extends qx.ui.tree.VirtualTree  {
   
     }
 
-
+}
 }

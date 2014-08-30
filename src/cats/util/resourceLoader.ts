@@ -12,11 +12,13 @@
 // limitations under the License.
 //
 
+module Cats.Util {
+
 /**
  * Dynamically load resources like CSS and Javascript files.
  * 
  */ 
-class ResourceLoader {
+export class ResourceLoader {
     
     require(file, callback) {
         callback = callback ||
@@ -55,5 +57,5 @@ class ResourceLoader {
         });
     }
 
-    
+}    
 }

@@ -64,18 +64,6 @@ module Cats {
     });
 
 
-    // Catch the close of the windows in order to save any unsaved changes
-    var win = GUI.Window.get();
-    win.on("close", function() {
-        try {
-            if (IDE.hasUnsavedSessions()) {
-                if (!confirm("There are unsaved files!\nDo you really want to quit?")) return;
-            }
-            IDE.saveConfig();
-        } catch (err) { } // lets ignore this
-        this.close(true);
-    });
-
     /**
      * This is the functions that start kicks it all of. When Qooxdoo is loaded it will 
      * call this main to start the application 
@@ -100,6 +88,7 @@ module Cats {
         }
     }
 
+    // Register the main method that once Qooxdoo is loaded is called
     qx.registry.registerMainMethod(main);
 
 }

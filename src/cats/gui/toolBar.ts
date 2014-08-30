@@ -12,10 +12,12 @@
 // limitations under the License.
 //
 
+module Cats.Gui {
+
 /**
  * The toolbar for CATS
  */
-class ToolBar extends qx.ui.toolbar.ToolBar {
+export class ToolBar extends qx.ui.toolbar.ToolBar {
 
     private iconFolder = "resource/qx/icon/Oxygen/22/";
 
@@ -90,5 +92,5 @@ class ToolBar extends qx.ui.toolbar.ToolBar {
         return;
     }
 
-
+}
 }

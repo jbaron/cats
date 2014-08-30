@@ -93,7 +93,7 @@ module Cats {
 
         // @TODO make this a real MVC pattern, not pushing
         setContent(content:String) {
-            var page = <SessionPage>IDE.sessionTabView.getPageBySession(this);
+            var page = <Gui.SessionPage>IDE.sessionTabView.getPageBySession(this);
             return page.editor.setContent(content);
         }
         
@@ -111,7 +111,7 @@ module Cats {
         
         // @TODO make this a real MVC pattern, not pulling
         getContent() {
-            var page = <SessionPage>IDE.sessionTabView.getPageBySession(this);
+            var page = <Gui.SessionPage>IDE.sessionTabView.getPageBySession(this);
             return page.editor.getContent();
         }
 

@@ -12,14 +12,17 @@
 // limitations under the License.
 //
 
-var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
+module Cats.Gui {
+
+// var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
 var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
 
 /**
  * Wrapper around the ACE editor. The rest of the code base should not use
  * ACE editor directly so it can be changed for another editor if required.
  */
-class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Html */{
+export class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Html */{
+    
 
     private aceEditor:Ace.Editor;
     private autoCompletePopup:AutoCompletePopup;
@@ -444,5 +447,7 @@ class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Ht
                 this.showToolTipAt(ev);
             }, 800);
         }
+
+}
 
 }

@@ -29,18 +29,18 @@ module Cats {
             simple:qx.theme.Simple
         };
 
-        problemPane: TabView;
-        toolBar: ToolBar;
-        infoPane: TabView;
-        statusBar: StatusBar;
-        sessionTabView: SessionTabView;
-        console:ConsoleLog;
-        processTable:ProcessTable;
-        bookmarks:ResultTable;
-        problemResult:ResultTable;
-        menubar:Menu.Menubar;
-        outlineNavigator:OutlineNavigator; 
-        fileNavigator:FileNavigator;
+        problemPane: Gui.TabView;
+        toolBar: Gui.ToolBar;
+        infoPane: Gui.TabView;
+        statusBar: Gui.StatusBar;
+        sessionTabView: Gui.SessionTabView;
+        console: Gui.ConsoleLog;
+        processTable: Gui.ProcessTable;
+        bookmarks:Gui.ResultTable;
+        problemResult:Gui.ResultTable;
+        menubar:Gui.Menubar;
+        outlineNavigator:Gui.OutlineNavigator; 
+        fileNavigator:Gui.FileNavigator;
 
 
         catsHomeDir: string;
@@ -62,16 +62,17 @@ module Cats {
          */ 
         init(rootDoc:qx.ui.container.Composite) {
             Cats.Commands.init();
-            var layouter = new Layout(rootDoc);
+            var layouter = new Gui.Layout(rootDoc);
             layouter.layout(this);
-            this.menubar = new Cats.Menu.Menubar();
+            this.menubar = new Gui.Menubar();
             this.initFileDropArea();
+            this.handleCloseWindow();
         }
 
         getActiveEditor() {
             var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
             if (! page) return null;
-            var editor:SourceEditor = <SourceEditor>page.getChildren()[0];
+            var editor:Gui.SourceEditor = <Gui.SourceEditor>page.getChildren()[0];
             return editor;
         }
 
@@ -289,6 +290,24 @@ module Cats {
                 this.fileNavigator.setProject(this.project);
             }
         }
+        
+        
+        private handleCloseWindow() {
+            // Catch the close of the windows in order to save any unsaved changes
+            var win = GUI.Window.get();
+            win.on("close", function() {
+                try {
+                    if (IDE.hasUnsavedSessions()) {
+                        if (!confirm("There are unsaved files!\nDo you really want to quit?")) return;
+                    }
+                    IDE.saveConfig();
+                } catch (err) { } // lets ignore this
+                this.close(true);
+            });
+        }
+        
+        
+        
         
         /**
          * Close an open project

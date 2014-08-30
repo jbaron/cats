@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+module Cats.Gui {
 
 var dagre ;
 
-class UMLEditor extends qx.ui.embed.Html implements Editor {
+export class UMLEditor extends qx.ui.embed.Html implements Editor {
 	 
 	 private backgroundColors = ["white", "black" , "grey"];
 	 private diagram:any;
@@ -55,7 +56,7 @@ class UMLEditor extends qx.ui.embed.Html implements Editor {
         if (UMLEditor.ResourcesLoaded) {
             cb();
         } else {
-            var resourceLoader = new ResourceLoader();
+            var resourceLoader = new Util.ResourceLoader();
 		     resourceLoader.loadResources(UMLEditor.Resources1, () => {
 		         resourceLoader.loadResources(UMLEditor.Resources2, () => {
 		           UMLEditor.ResourcesLoaded = true;  
@@ -141,4 +142,5 @@ class UMLEditor extends qx.ui.embed.Html implements Editor {
     moveToPosition(pos: Ace.Position) {}
  
  
+}
 }

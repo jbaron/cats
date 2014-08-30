@@ -146,7 +146,7 @@ module Cats {
                 return;
             }
 
-            var win = new BusyWindow("Generating Documentation");
+            var win = new Gui.BusyWindow("Generating Documentation");
             win.show();
             win.addListenerOnce("ready", () => {
                 try {

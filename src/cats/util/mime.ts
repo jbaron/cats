@@ -12,11 +12,14 @@
 // limitations under the License.
 //
 
+module Cats.Util {
+
+
 /**
  * Some help to find based on the file name extension either the computer language (for the editor) 
  * or the mimetype (for the icons in the file navigator)
  */
-class MimeTypeFinder {
+export class MimeTypeFinder {
     
     /**      
      * Find the mimetype for a file name      
@@ -381,5 +384,7 @@ class MimeTypeFinder {
         ".yml": "text/yaml",
         ".zip": "application/zip"
     };
+
+}
 
 }

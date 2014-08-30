@@ -12,10 +12,13 @@
 // limitations under the License.
 //
 
+module Cats.Gui {
+
 /**
- * File navigator widget for CATS
+ * File navigator for CATS that displays a directories and its subdirectories
+ * and files as a tree.
  */
-class FileNavigator extends qx.ui.tree.VirtualTree {
+export class FileNavigator extends qx.ui.tree.VirtualTree {
 
     private rootTop = {
         label: "qx-cats",
@@ -84,8 +87,6 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
             data.setLoaded(false);
         });
         */
-        
-
     }
 
     clear() {
@@ -93,7 +94,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     }
 
 
-    getSelectedFile() {
+    private getSelectedFile() {
         var item = this.getSelection().getItem(0);
         if (! item) return null;
         if (! item.getDirectory) return null;
@@ -106,7 +107,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     /**
      * Get all available icons for mime-types
      */ 
-    loadAvailableIcons() {
+    private loadAvailableIcons() {
         var iconFolder = "./static/resource/qx/icon/Oxygen/16/mimetypes";
         var files = OS.File.readDir(iconFolder);
         files.forEach((file) => {
@@ -122,7 +123,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
      * Get an icon for a file based on its mimetype
      */ 
     private getIconForFile(fileName:string) {
-        var mimetype:string = MimeTypeFinder.lookup(fileName).replace("/","-");
+        var mimetype:string = Util.MimeTypeFinder.lookup(fileName).replace("/","-");
         
         var icon = this.iconsForMime[mimetype];
         if (! icon) icon = this.iconsForMime["text-plain"]; 
@@ -132,7 +133,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
     }
 
 
-    setup() {
+    private setup() {
         this.setIconPath("");
         this.setIconOptions({
             converter : (value, model) => {
@@ -145,7 +146,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
 
     }
 
-    setupDelegate() {
+    private setupDelegate() {
         var self = this;
         var delegate = {
             bindItem: function(controller, item, index) {
@@ -176,7 +177,7 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
      * Read the files from a directory
      * @param directory The directory name that should be read
      */ 
-    readDir(parent){
+    private readDir(parent){
             var directory = parent.getFullPath();
             this.watcher.addDir(directory);
             this.parents[directory] = parent;
@@ -203,3 +204,4 @@ class FileNavigator extends qx.ui.tree.VirtualTree {
 
 }
 
+}

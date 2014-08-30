@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+module Cats.Theme {
+
 
 qx.Theme.define("cats.theme.Decoration",
 {
@@ -32,3 +34,4 @@ qx.Theme.define("cats.theme.Decoration",
       
   }
 });
+}

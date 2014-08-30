@@ -12,10 +12,11 @@
 // limitations under the License.
 //
 
+module Cats.Gui {
 /**
  * Layout the different parts of the IDE.
  */ 
-class Layout {
+export class Layout {
     
         constructor(private rootDoc:qx.ui.container.Composite) {
         }
@@ -88,5 +89,5 @@ class Layout {
             mainContainer.add(ide.statusBar, { flex: 0 });
         }
 
-    
+}   
 }

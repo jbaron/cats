@@ -46,7 +46,7 @@ module Cats.Commands {
     }
 
     function configureIde() {
-        var w = new IdeConfigDialog(IDE.config);
+        var w = new Gui.IdeConfigDialog(IDE.config);
         // w.setData(IDE.project.config.compiler);
         w.show();
     }

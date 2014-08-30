@@ -12,11 +12,13 @@
 // limitations under the License.
 //
 
+module Cats.Gui {
+
 /**
  * Base class for all the configuration dialogs forms in
  * CATS.
  */ 
-class SearchDialog extends qx.ui.window.Window {
+export class SearchDialog extends qx.ui.window.Window {
 
     private form = new qx.ui.form.Form();
     private rootDir:string;
@@ -149,4 +151,5 @@ class SearchDialog extends qx.ui.window.Window {
         return r;
     }
     
+}
 }

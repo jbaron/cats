@@ -20,7 +20,7 @@
  * @TODO make this more an async api so it becomes easier to switch to other implementations
  * Perhaps after TS has implement await type of functionality.
  */
-module OS.File {
+module Cats.OS.File {
 
         window["EventEmitter"] = require("events").EventEmitter;
         var FS=require("fs");

@@ -25,7 +25,7 @@ module Cats.Refactor {
      * Rename a class, interface, property or method throughout the project
      */ 
     export function rename(rows:Cats.FileRange[],name:string) {
-    
+        
         rows.forEach((data) => {
             var session = IDE.openSession(data.fileName);
             var p = IDE.sessionTabView.getPageBySession(session);

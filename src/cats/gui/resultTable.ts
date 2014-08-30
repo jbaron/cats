@@ -12,10 +12,12 @@
 // limitations under the License.
 //
 
+module Cats.Gui {
+
 /**
  * This table displays problems and search result
  */
-class ResultTable extends qx.ui.table.Table {
+export class ResultTable extends qx.ui.table.Table {
 
     private data:Cats.FileRange[];
 
@@ -97,5 +99,5 @@ class ResultTable extends qx.ui.table.Table {
         return menu;
     }
 
-
+}
 }

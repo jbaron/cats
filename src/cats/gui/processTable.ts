@@ -12,13 +12,16 @@
 // limitations under the License.
 //
 
+
+module Cats.Gui {
+
 /**      
  * Overview of started processes. With the controls the processes can be paused,
  * stopped or killed.
  * 
  * @TODO provide visualization of the status of a process
  */
-class ProcessTable extends qx.ui.container.Composite  {
+export class ProcessTable extends qx.ui.container.Composite  {
 
     private static HEADERS = ["PID", "Command"];
     private table:qx.ui.table.Table;
@@ -29,6 +32,7 @@ class ProcessTable extends qx.ui.container.Composite  {
         this.add(this.createControls());
         this.add(this.createTable(), {flex: 1});
     }
+
 
     /**
      * Add a new process to the table
@@ -41,6 +45,7 @@ class ProcessTable extends qx.ui.container.Composite  {
         this.table.getSelectionModel().resetSelection(); 
     }
 
+
     private sendSignal(signal?:string) {
         var table = this.table;
         var selectedRow = table.getSelectionModel().getLeadSelectionIndex();
@@ -49,6 +54,7 @@ class ProcessTable extends qx.ui.container.Composite  {
         var child = data[2];
         child.kill(signal);
     }
+
     
     private addButton(bar:qx.ui.toolbar.ToolBar, label:string, signal:string) {
         var button = new qx.ui.toolbar.Button(label);
@@ -77,6 +83,7 @@ class ProcessTable extends qx.ui.container.Composite  {
         this.table = table;
         return table;
     }
+
     
     private createControls() {
         var bar = new qx.ui.toolbar.ToolBar();
@@ -89,7 +96,7 @@ class ProcessTable extends qx.ui.container.Composite  {
 
     
 }
-
+}
   
   
 

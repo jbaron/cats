@@ -13,6 +13,9 @@
 // limitations under the License.
 //
 
+module Cats.Theme {
+
+
 qx.Theme.define("cats.theme.Color",
 {
   extend : qx.theme.simple.Color,
@@ -34,3 +37,5 @@ qx.Theme.define("cats.theme.ColorGrey",
       "button-box-bright" : "#A0A0A0"
   }
 });
+
+}

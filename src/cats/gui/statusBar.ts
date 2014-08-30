@@ -12,10 +12,12 @@
 // limitations under the License.
 //
 
+module Cats.Gui {
+
 /**
  * The toolbar for CATS
  */
-class StatusBar extends qx.ui.toolbar.ToolBar {
+export class StatusBar extends qx.ui.toolbar.ToolBar {
 
     private modeInfo:qx.ui.toolbar.Button;
     private overwriteInfo:qx.ui.toolbar.Button;
@@ -30,6 +32,7 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
         this.setupListeners();
     }
 
+
     private createButton(label?:string, icon?:string) {
         var button = new qx.ui.toolbar.Button(label,icon);
         // button.setPadding(1,1,1,1);
@@ -38,6 +41,7 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
         button.setDecorator(null);
         return button;
     }
+
 
     private init() {
        this.positionInfo = this.createButton("-:-");
@@ -66,6 +70,7 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
         }
     }
 
+
     private setupListeners() {
         IDE.infoBus.on("editor.overwrite", (value:boolean) => {
             this.overwriteInfo.setLabel(value ? "OVERWRITE" : "INSERT");
@@ -79,8 +84,7 @@ class StatusBar extends qx.ui.toolbar.ToolBar {
              var label = (value.row +1) + ":" + (value.column+1);
              this.positionInfo.setLabel(label);
         });
-        
     }
 
-        
+}        
 }

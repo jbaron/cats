@@ -12,10 +12,12 @@
 // limitations under the License.
 //
 
+module Cats.Gui {
+
 /**
  * Used for all the tabs execpt the session tab
  */ 
-class TabView extends qx.ui.tabview.TabView {
+export class TabView extends qx.ui.tabview.TabView {
   private static IDNAME="___ID___" ;
   private iconFolder = "./resource/qx/icon/Oxygen/16/";
     private iconMapping = {
@@ -140,4 +142,5 @@ class TabView extends qx.ui.tabview.TabView {
         if (page) this.setSelection([page]);
     }
 
+}
 }

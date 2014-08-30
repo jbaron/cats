@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-module Cats.Menu {
+module Cats.Gui {
 
 
     /**
@@ -115,8 +115,10 @@ module Cats.Menu {
             var source = this.menus.source;
             source.append(getCmd(CMDS.edit_toggleComment));
             source.append(getCmd(CMDS.edit_toggleInvisibles));
+            source.append(new GUI.MenuItem({ type: "separator" }));
             source.append(getCmd(CMDS.edit_indent));
             source.append(getCmd(CMDS.edit_outdent));
+            source.append(new GUI.MenuItem({ type: "separator" }));
             source.append(getCmd(CMDS.source_format));
             source.append(getCmd(CMDS.edit_gotoLine));
         }
