@@ -15,23 +15,23 @@
 module Cats.Theme {
 
 
-qx.Theme.define("cats.theme.Decoration",
-{
-  extend : qx.theme.simple.Decoration,
+    qx.Theme.define("cats.theme.Decoration",
+        {
+            extend: qx.theme.simple.Decoration,
 
-  decorations :
-  {
-    "button-box" : {
-      style :
-      {
-        radius : 3,
-        width : 1,
-        color : "button-border",
-        backgroundColor : "button-box-bright"
-      }
-    }
-      
-      
-  }
-});
+            decorations:
+            {
+                "button-box": {
+                    style:
+                    {
+                        radius: 3,
+                        width: 1,
+                        color: "button-border",
+                        backgroundColor: "button-box-bright"
+                    }
+                }
+
+
+            }
+        });
 }

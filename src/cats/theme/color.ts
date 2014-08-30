@@ -16,26 +16,26 @@
 module Cats.Theme {
 
 
-qx.Theme.define("cats.theme.Color",
-{
-  extend : qx.theme.simple.Color,
+    qx.Theme.define("cats.theme.Color",
+        {
+            extend: qx.theme.simple.Color,
 
-  colors :
-  {
-      "light-background" : "#C0CCDF",
-      "button-box-bright" : "#B0BCCF"
-  }
-});
+            colors:
+            {
+                "light-background": "#C0CCDF",
+                "button-box-bright": "#B0BCCF"
+            }
+        });
 
-qx.Theme.define("cats.theme.ColorGrey",
-{
-  extend : qx.theme.simple.Color,
+    qx.Theme.define("cats.theme.ColorGrey",
+        {
+            extend: qx.theme.simple.Color,
 
-  colors :
-  {
-      "light-background" : "#B0B0B0",
-      "button-box-bright" : "#A0A0A0"
-  }
-});
+            colors:
+            {
+                "light-background": "#B0B0B0",
+                "button-box-bright": "#A0A0A0"
+            }
+        });
 
 }

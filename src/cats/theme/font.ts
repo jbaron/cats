@@ -14,13 +14,13 @@
 //
 module Cats.Theme {
 
-qx.Theme.define("cats.theme.Font",
-{
-  extend : qx.theme.simple.Font,
+    qx.Theme.define("cats.theme.Font",
+        {
+            extend: qx.theme.simple.Font,
 
-  fonts :
-  {
-  }
-});
+            fonts:
+            {
+            }
+        });
 
 }

@@ -14,142 +14,142 @@
 
 module Cats.Gui {
 
-/**
- * Base class for all the configuration dialogs forms in
- * CATS.
- */ 
-export class SearchDialog extends qx.ui.window.Window {
+    /**
+     * Base class for all the configuration dialogs forms in
+     * CATS.
+     */
+    export class SearchDialog extends qx.ui.window.Window {
 
-    private form = new qx.ui.form.Form();
-    private rootDir:string;
+        private form = new qx.ui.form.Form();
+        private rootDir: string;
 
-    constructor() {
-        super("Search");
+        constructor() {
+            super("Search");
 
-        var layout = new qx.ui.layout.VBox();
-        this.setLayout(layout);
-        this.add(this.createForm());
-        this.setModal(true);
-        this.addListener("resize", this.center);
-        
-    }
-    
-    search(rootDir) {
-        this.rootDir = rootDir;    
-        this.show();
-    }
-    
-    
-    
-    private getResults(content:string,pattern:RegExp, fileName, result:Cats.FileRange[]) {
-        var lines = content.split("\n");
-        for (var x=0;x<lines.length;x++) {
-            var line = lines[x];
-            if (line.match(pattern)) {
-                var item:Cats.FileRange = {
-                    range:{
-                        start : {row:x, column:0},
-                        end: {row:x, column:0}
-                    },
-                    fileName: fileName,
-                    message: line
-                };
-                result.push(item);
-            }
+            var layout = new qx.ui.layout.VBox();
+            this.setLayout(layout);
+            this.add(this.createForm());
+            this.setModal(true);
+            this.addListener("resize", this.center);
+
         }
-        
-    }
-    
-    private run(param) {
-        var result:Cats.FileRange[] = [];
-        var mod = param.caseInsensitive ? "i" : "";
-        var searchPattern = new RegExp(param.search,"g" + mod);
-        if (! param.glob) param.glob = "**/*";
-         OS.File.find(param.glob,this.rootDir,  (err:Error,files:Array<string>) => {
-            files.forEach((file) => {
-                if (result.length > param.maxHits) return;
-                try {
-                    var fullName = OS.File.join(this.rootDir, file);
-                    var content = OS.File.readTextFile(fullName);
-                    if (content.match(searchPattern)) {
-                        this.getResults(content,searchPattern,fullName,result);
-                    }
-                    
-                } catch (err) {
-                    console.error("Got error while handling file " + fullName);
-                    console.error(err);
-                }
-            });
-            var resultTable = new ResultTable();
-            var toolTipText = "Search results for " + searchPattern + " in " + this.rootDir + "/" + param.glob;
-            var page = IDE.problemPane.addPage("search", toolTipText, resultTable);
-            page.setShowCloseButton(true);
-            resultTable.setData(result);
-            IDE.problemPane.setSelection([page]);
-            this.close();
-         });    
-    }
-    
-    private addTextField(label:string, model:string) {
-        var t = new qx.ui.form.TextField();
-        t.setWidth(200);
-        this.form.add(t, label, null, model); 
-        return t;
-    }
-    
-    private addSpinner(label:string, model:string) {
-        var s = new qx.ui.form.Spinner();
-        s.set({ minimum: 0, maximum: 1000});
-        this.form.add(s, label, null, model);
-        return s;
-    }
-    
-    private addCheckBox(label:string, model?:string) {
-        var cb = new qx.ui.form.CheckBox();
-        this.form.add(cb, label, null, model);
-        return cb;
-    }
-    
-    private createForm() {
-        var s = this.addTextField("Search for", "search");
-        s.setRequired(true);
-        
-        var p = this.addTextField("File Pattern", "glob");
-        p.setValue("**/*");
-        
-        var c = this.addCheckBox("Case insensitive", "caseInsensitive");
-        c.setValue(false);
-        
-        var m = this.addSpinner("Maximum hits", "maxHits");
-        m.setValue(100);
 
-        var searchButton = new qx.ui.form.Button("Search");
-        var cancelButton = new qx.ui.form.Button("Cancel");
-        
-        this.form.addButton(searchButton);
-        searchButton.addListener("execute", () => {
-            if (this.form.validate()) {
-                var param = {
-                    search: s.getValue(),
-                    glob: p.getValue(),
-                    caseInsensitive: c.getValue(),
-                    maxHits: m.getValue()
+        search(rootDir) {
+            this.rootDir = rootDir;
+            this.show();
+        }
+
+
+
+        private getResults(content: string, pattern: RegExp, fileName, result: Cats.FileRange[]) {
+            var lines = content.split("\n");
+            for (var x = 0; x < lines.length; x++) {
+                var line = lines[x];
+                if (line.match(pattern)) {
+                    var item: Cats.FileRange = {
+                        range: {
+                            start: { row: x, column: 0 },
+                            end: { row: x, column: 0 }
+                        },
+                        fileName: fileName,
+                        message: line
+                    };
+                    result.push(item);
+                }
+            }
+
+        }
+
+        private run(param) {
+            var result: Cats.FileRange[] = [];
+            var mod = param.caseInsensitive ? "i" : "";
+            var searchPattern = new RegExp(param.search, "g" + mod);
+            if (!param.glob) param.glob = "**/*";
+            OS.File.find(param.glob, this.rootDir, (err: Error, files: Array<string>) => {
+                files.forEach((file) => {
+                    if (result.length > param.maxHits) return;
+                    try {
+                        var fullName = OS.File.join(this.rootDir, file);
+                        var content = OS.File.readTextFile(fullName);
+                        if (content.match(searchPattern)) {
+                            this.getResults(content, searchPattern, fullName, result);
+                        }
+
+                    } catch (err) {
+                        console.error("Got error while handling file " + fullName);
+                        console.error(err);
+                    }
+                });
+                var resultTable = new ResultTable();
+                var toolTipText = "Search results for " + searchPattern + " in " + this.rootDir + "/" + param.glob;
+                var page = IDE.problemPane.addPage("search", toolTipText, resultTable);
+                page.setShowCloseButton(true);
+                resultTable.setData(result);
+                IDE.problemPane.setSelection([page]);
+                this.close();
+            });
+        }
+
+        private addTextField(label: string, model: string) {
+            var t = new qx.ui.form.TextField();
+            t.setWidth(200);
+            this.form.add(t, label, null, model);
+            return t;
+        }
+
+        private addSpinner(label: string, model: string) {
+            var s = new qx.ui.form.Spinner();
+            s.set({ minimum: 0, maximum: 1000 });
+            this.form.add(s, label, null, model);
+            return s;
+        }
+
+        private addCheckBox(label: string, model?: string) {
+            var cb = new qx.ui.form.CheckBox();
+            this.form.add(cb, label, null, model);
+            return cb;
+        }
+
+        private createForm() {
+            var s = this.addTextField("Search for", "search");
+            s.setRequired(true);
+
+            var p = this.addTextField("File Pattern", "glob");
+            p.setValue("**/*");
+
+            var c = this.addCheckBox("Case insensitive", "caseInsensitive");
+            c.setValue(false);
+
+            var m = this.addSpinner("Maximum hits", "maxHits");
+            m.setValue(100);
+
+            var searchButton = new qx.ui.form.Button("Search");
+            var cancelButton = new qx.ui.form.Button("Cancel");
+
+            this.form.addButton(searchButton);
+            searchButton.addListener("execute", () => {
+                if (this.form.validate()) {
+                    var param = {
+                        search: s.getValue(),
+                        glob: p.getValue(),
+                        caseInsensitive: c.getValue(),
+                        maxHits: m.getValue()
+                    };
+                    this.run(param);
                 };
-                this.run(param);
-            };
-        }, this);
-        this.form.addButton(cancelButton);
-        cancelButton.addListener("execute", () => {
-            this.close();
-        }, this);
-        var renderer = new qx.ui.form.renderer.Single(this.form);
-        return renderer;
+            }, this);
+            this.form.addButton(cancelButton);
+            cancelButton.addListener("execute", () => {
+                this.close();
+            }, this);
+            var renderer = new qx.ui.form.renderer.Single(this.form);
+            return renderer;
+        }
+
+        private createResultTable() {
+            var r = new ResultTable();
+            return r;
+        }
+
     }
-    
-    private createResultTable() {
-        var r = new ResultTable();
-        return r;
-    }
-    
-}
 }
