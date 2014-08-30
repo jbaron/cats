@@ -382,11 +382,8 @@ module Cats.Gui {
 
 
         private refactor() {
-            var newName = prompt("Replace with");
-            if (!newName) return;
-            this.session.project.iSense.getInfoAtPosition("getReferencesAtPosition", this.session.name, this.getPosition(), (err, data: Cats.FileRange[]) => {
-                Cats.Refactor.rename(data, newName);
-            });
+            var pos = this.getPosition();
+            Refactor.rename(this.session, pos);
         }
 
         private findReferences() {
