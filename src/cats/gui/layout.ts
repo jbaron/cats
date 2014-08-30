@@ -44,11 +44,11 @@ module Cats.Gui {
 
 
             // ********************* Navigator Pane ********************
-            var navigatorPane = new TabView(["files", "bookmarks"]);
+            var navigatorPane = new TabView();
             ide.bookmarks = new ResultTable(["Bookmark"]);
             ide.fileNavigator = new FileNavigator();
-            navigatorPane.getPage("files").add(ide.fileNavigator, { edge: 0 });
-            navigatorPane.getPage("bookmarks").add(ide.bookmarks, { edge: 0 });
+            navigatorPane.addPage("files", null,ide.fileNavigator);
+            navigatorPane.addPage("bookmarks", null,ide.bookmarks);
 
             mainsplit.add(navigatorPane, 1); // navigator
 
@@ -60,9 +60,13 @@ module Cats.Gui {
             // infoSplit.set({ decorator: null });
             infoSplit.add(ide.sessionTabView, 4); // editor
 
-            ide.infoPane = new TabView(["outline", "properties"]);
+            ide.infoPane = new TabView();
             ide.outlineNavigator = new OutlineNavigator();
-            ide.infoPane.getChildren()[0].add(ide.outlineNavigator, { edge: 0 });
+            ide.propertyTable = new PropertyTable();
+            ide.infoPane.addPage("outline",null,ide.outlineNavigator);
+            ide.infoPane.addPage("properties",null,ide.propertyTable);
+            
+            
             infoSplit.add(ide.infoPane, 1); // todo
 
             editorSplit.add(infoSplit, 4);

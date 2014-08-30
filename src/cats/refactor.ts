@@ -38,10 +38,10 @@ module Cats.Refactor {
     export function rename(session:Session, pos:Position) {
         session.project.iSense.getTypeAtPosition(session.name, pos, (err,data) => {
             var newName = prompt("Rename " + data.fullSymbolName +  " into:");
-            if (!newName) return;
-            this.session.project.iSense.getInfoAtPosition("getReferencesAtPosition", session.name, pos, (err, data: Cats.FileRange[]) => {
-                renameFile(data, newName);
-            });
+                if (!newName) return;
+                session.project.iSense.getInfoAtPosition("getReferencesAtPosition", session.name, pos, (err, data: Cats.FileRange[]) => {
+                    renameFile(data, newName);
+                });
         });
     }
     

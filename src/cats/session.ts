@@ -45,6 +45,7 @@ module Cats {
         private changed = false;
         private errors: Cats.FileRange[] = [];
         private outline:NavigateToItem[];
+        private properties = [];
         private outlineTimer:number;
         uml = false;
         
@@ -152,6 +153,12 @@ module Cats {
             this.emit("outline", this.outline);
         }
 
+
+        private updateProperties() {
+            this.properties = OS.File.getProperties(this.name);
+            if (this.isActive()) IDE.propertyTable.setData(this.properties);
+        }
+
         updateContent(content:string) {
             this.content = content;
             this.project.iSense.updateScript(this.name, content);
@@ -228,6 +235,7 @@ module Cats {
         sync() {
             this.updateDiagnostics();
             this.updateOutline(10);
+            this.updateProperties();
         }
 
         /**

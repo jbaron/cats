@@ -39,6 +39,7 @@ module Cats {
         bookmarks:Gui.ResultTable;
         problemResult:Gui.ResultTable;
         menubar:Gui.Menubar;
+        propertyTable:Gui.PropertyTable;
         outlineNavigator:Gui.OutlineNavigator; 
         fileNavigator:Gui.FileNavigator;
 
