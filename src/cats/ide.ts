@@ -253,7 +253,7 @@ module Cats {
          * Open an existing session or if it doesn't exist yet create
          * a new one.
          */ 
-        openSession(name?: string, pos?:Ace.Position):Session {
+        openSession(name?: string, pos:Ace.Position = {row:0, column:0}):Session {
             var session:Session;
             if (name) session = this.getSession(name);
             if (! session) {

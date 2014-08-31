@@ -29,10 +29,10 @@ module Cats {
         };
 
 
-        add(entry: Gui.SessionPage) {
+        add(entry: Gui.SessionPage, pos?) {
             this.entries.push({
                 hash: entry.toHashCode(),
-                pos: undefined
+                pos: pos
             });
             this.pos = this.entries.length - 1;
         }
@@ -79,7 +79,7 @@ module Cats {
         private goto(entry) {
             var hash = entry.hash;
             var page = <Gui.SessionPage>qx.core.ObjectRegistry.fromHashCode(hash);
-            IDE.sessionTabView.navigateToPage(page, entry.pos);
+            IDE.sessionTabView.navigateToPage(page, entry.pos, false);
         }
 
 

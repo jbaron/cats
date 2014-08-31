@@ -107,14 +107,12 @@ module Cats.Gui {
 
         addSession(session: Cats.Session, pos?: any) {
             var page = new SessionPage(session);
-            if (pos) {
-                page.editor.addListenerOnce("ready", (editor: Editor) => {
-                    page.editor.moveToPosition(pos);
-                });
-            }
             this.add(page);
-            page.fadeIn(500);
             this.setSelection([page]);
+            page.editor.addListenerOnce("ready", (editor: Editor) => {
+                this.navigateToPage(page,pos);
+            });
+            page.fadeIn(500);
             return page;
         }
 
@@ -168,14 +166,14 @@ module Cats.Gui {
         navigateTo(session: Cats.Session, pos?: Ace.Position) {
             var page = this.getPageBySession(session);
             if (page) {
-                this.setSelection([page]);
-                if (pos) page.editor.moveToPosition(pos);
+                this.navigateToPage(page, pos);
             }
         }
 
-        navigateToPage(page: SessionPage, pos?: any) {
+        navigateToPage(page: SessionPage, pos?: any, storeHistory = true) {
             this.setSelection([page]);
             if (pos) page.editor.moveToPosition(pos);
+            if (storeHistory) IDE.history.add(page, pos);
         }
 
         /**

@@ -34,7 +34,11 @@ module Cats.Theme {
             colors:
             {
                 "light-background": "#B0B0B0",
-                "button-box-bright": "#A0A0A0"
+                "button-box-bright": "#A0A0A0",
+                "background-selected" : "#666666",
+                "border-main" : "#666666",
+                "background-selected-dark" : "#555555",
+                "link" : "#EEEEEE"
             }
         });
 
