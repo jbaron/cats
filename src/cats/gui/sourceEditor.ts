@@ -75,13 +75,14 @@ module Cats.Gui {
             }, this);
 
             this.addListener("appear", () => {
-                this.session.sync();
+                this.session.activate();
                 this.updateWorld();
             });
 
-            session.on("errors", (errors) => { this.showErrors(errors); });
+            session.on("errors", this.showErrors, this);
             this.addListener("resize", () => { this.resizeHandler(); });
 
+            
             IDE.infoBus.on("project.config", () => { this.configureAceSession(); });
             IDE.infoBus.on("ide.config", () => { this.configureEditor(); });
         }

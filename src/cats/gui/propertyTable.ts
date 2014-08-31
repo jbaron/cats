@@ -20,6 +20,7 @@ module Cats.Gui {
     export class PropertyTable extends qx.ui.table.Table {
 
         private data: Array<any>;
+        private session:Session;
 
         constructor(headers = ["Name", "Value"]) {
             var tableModel = new qx.ui.table.model.Simple();
@@ -34,12 +35,36 @@ module Cats.Gui {
             super(tableModel, custom);
             this.setDecorator(null);
             this.setPadding(0, 0, 0, 0);
+            
+ 
+            IDE.sessionTabView.addListener("changeSelection", (ev) => {
+                var page:SessionPage = ev.getData()[0];
+                if (page) {
+                    this.register(page.session);
+                } else {
+                    this.register(null);
+                }
+            });
+            
         }
 
         clear() {
             this.setData([]);
         }
 
+        private register(session) {
+            if (this.session) {
+                this.session.off("properties", this.setData, this);
+            }
+            this.session = session;
+            
+            if (session) {
+                session.on("properties", this.setData,this);
+                this.setData(session.properties);
+            } else {
+                this.clear();
+            }
+        }
 
         getData(){
             return this.data;
@@ -47,7 +72,6 @@ module Cats.Gui {
 
         setData(data) {
             this.data = data;
-            var tableModel = new qx.ui.table.model.Simple();
             var rows: any[] = [];
             if (data) {
                 data.forEach((row) => {

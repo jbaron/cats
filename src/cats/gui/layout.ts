@@ -78,8 +78,11 @@ module Cats.Gui {
             ide.console = new ConsoleLog();
             ide.problemResult = new ResultTable();
             ide.processTable = new ProcessTable();
-            ide.problemPane.addPage("problems", null, ide.problemResult);
-            ide.problemPane.addPage("console", null, ide.console);
+            var problemPage = ide.problemPane.addPage("problems", null, ide.problemResult);
+            problemPage.autoSelect = true;
+            
+            var consolePage = ide.problemPane.addPage("console", null, ide.console);
+            consolePage.autoSelect = true;
             ide.problemPane.addPage("process", null, ide.processTable);
 
             ide.problemPane.selectPage("console");

@@ -44,7 +44,17 @@ module Cats.Gui {
             return this.data;
         }
 
+        private areEmpty(...args) {
+            for (var i=0; i< args.length; i++ ) {
+                var arr = args[i];
+                if (arr && (arr.length > 0)) return false
+            }
+            return true;
+        }
+
         setData(data: Cats.FileRange[]) {
+            if (this.areEmpty(this.data, data)) return;
+            this.fireDataEvent("contentChange", null);
             this.data = data;
             var tableModel = new qx.ui.table.model.Simple();
             var rows: any[] = [];
@@ -53,9 +63,6 @@ module Cats.Gui {
                     rows.push(this.convert(row));
                 });
             }
-            // tableModel.setColumns(ResultTable.HEADERS);
-            // tableModel.setData(rows);
-            // this.setTableModel(tableModel);
             this.getTableModel().setData(rows);
             this.getSelectionModel().resetSelection();
         }

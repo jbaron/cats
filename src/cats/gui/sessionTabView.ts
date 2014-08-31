@@ -33,8 +33,9 @@ module Cats.Gui {
             this.createToolTip();
             this.getButton().setShow("both");
 
-            this.session.on("setChanged", this.setChanged.bind(this));
-            this.session.on("errors", this.setHasErrors.bind(this));
+            this.session.on("changed", this.setChanged, this);
+            this.session.on("errors", this.setHasErrors, this);
+          
         }
 
         private createEditor() {
@@ -79,10 +80,8 @@ module Cats.Gui {
         setHasErrors(errors: any[]) {
             if (errors.length > 0) {
                 this.setIcon("./resource/qx/icon/Oxygen/16/status/task-attention.png");
-                // this.getButton().setShow("both");
             } else {
                 this.resetIcon();
-                // this.getButton().setShow("label");
             }
         }
 
@@ -161,7 +160,7 @@ module Cats.Gui {
          * Get the currently active session
          */
         getActiveSession() {
-            var page = <SessionPage>this.getSelection()[0];
+            var page = this.getActivePage();
             if (!page) return null;
             return page.session;
         }

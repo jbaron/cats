@@ -43,7 +43,6 @@ module Cats {
         outlineNavigator:Gui.OutlineNavigator; 
         fileNavigator:Gui.FileNavigator;
 
-
         catsHomeDir: string;
         project: Project;
         config:IDEConfiguration;
@@ -114,6 +113,7 @@ module Cats {
                 event.dataTransfer.dropEffect = "copy"; // Explicitly show this is a copy.
             }, false);
         }
+
 
         /**
          * Process the file and open it inside a new ACE session

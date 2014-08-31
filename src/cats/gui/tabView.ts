@@ -14,13 +14,7 @@
 
 module Cats.Gui {
 
-    /**
-     * Used for all the tabs execpt the session tab
-     */
-    export class TabView extends qx.ui.tabview.TabView {
-        private static IDNAME = "___ID___";
-        private iconFolder = "./resource/qx/icon/Oxygen/16/";
-        private iconMapping = {
+      var iconMapping = {
             "search": {
                 label: "Search",
                 icon: "actions/edit-find.png"
@@ -67,70 +61,73 @@ module Cats.Gui {
 
         };
 
-        constructor(tabNames: string[]= []) {
-            super();
-            this.setPadding(0, 0, 0, 0);
-            this.setContentPadding(0, 0, 0, 0);
-            tabNames.forEach((name) => {
-                this.addPage(name);
-            });
-        }
-
-        private getLabel(name: string) {
+    function getLabel(name: string) {
             var label: string;
-            var entry = this.iconMapping[name];
+            var entry = iconMapping[name];
             if (entry) label = entry.label;
             if (!label) label = qx.Bootstrap.firstUp(name);
             return label;
-        }
+    }
 
-        private getIconName(name: string) {
-            var entry = this.iconMapping[name];
-            if (entry) return this.iconFolder + entry.icon;
-        }
+    function getIconName(name: string) {
+            var entry = iconMapping[name];
+            if (entry) return "./resource/qx/icon/Oxygen/16/" + entry.icon;
+    }
 
-        addPage(id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem): qx.ui.tabview.Page {
-            var tab = new qx.ui.tabview.Page(this.getLabel(id), this.getIconName(id));
-            tab[TabView.IDNAME] = id;
-            tab.setLayout(new qx.ui.layout.Canvas());
 
-            var button = (<any>tab).getButton();
-            // button.setContextMenu(this.createContextMenu(tab));
+    export class TabViewPage extends qx.ui.tabview.Page {
+        
+        autoSelect = false;
+        
+        constructor(public id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem) {
+            super(getLabel(id), getIconName(id));
+            this.setLayout(new qx.ui.layout.Canvas());
 
             if (tooltipText) {
+                var button = this.getButton();
                 var tooltip = new qx.ui.tooltip.ToolTip(tooltipText);
                 button.setToolTip(tooltip);
                 button.setBlockToolTip(false);
             }
 
             if (widget) {
-                tab.add(widget, { edge: 0 });
+                this.add(widget, { edge: 0 });
+                widget.addListener("contentChange",() => {
+                    if (this.autoSelect) this.select(); 
+                });
             }
 
+        }
+        
+        select() {
+            var tabView = this.getLayoutParent().getLayoutParent();
+            tabView.setSelection([this]); 
+        }
+        
+    }
+
+    /**
+     * Used for all the tabs execpt the session tab
+     */
+    export class TabView extends qx.ui.tabview.TabView {
+
+        constructor() {
+            super();
+            this.setPadding(0, 0, 0, 0);
+            this.setContentPadding(0, 0, 0, 0);
+        }
+
+       addPage(id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem): TabViewPage {
+            var tab = new TabViewPage(id, tooltipText, widget);
             this.add(tab);
             return tab;
         }
 
-        private createContextMenu(tab: qx.ui.tabview.Page) {
-            var menu = new qx.ui.menu.Menu();
-            var item1 = new qx.ui.menu.Button("Close");
-            item1.addListener("execute", () => {
-                this.remove(tab);
-            });
-
-            var item2 = new qx.ui.menu.Button("Close other");
-            var item3 = new qx.ui.menu.Button("Close all");
-            menu.add(item1);
-            menu.add(item2);
-            menu.add(item3);
-            return menu;
-        }
-
         getPage(id: string): qx.ui.tabview.Page {
-            var pages = this.getChildren();
+            var pages = <TabViewPage[]>this.getChildren();
             for (var i = 0; i < pages.length; i++) {
                 var page = pages[i];
-                if (page[TabView.IDNAME] === id) {
+                if (page.id === id) {
                     return page;
                 }
             }

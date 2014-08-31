@@ -203,9 +203,6 @@ export class ScriptInfo {
             return script.version;
         }
 
-       
-
     }
-
 
 }

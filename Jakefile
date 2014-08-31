@@ -1,8 +1,5 @@
 // This file contains the build logic for CATS
 
-var fs = require("fs");
-var path = require("path");
-
 var workerOptions = [
    "src/typings/typescriptServices.d.ts",
    "src/typings/cats.d.ts",
@@ -28,21 +25,22 @@ var catsOptions = [
     "src/cats/theme/theme.ts",
     
     "src/cats/common.ts",
-    "src/cats/infobus.ts",
     "src/cats/os.ts",
     "src/cats/ide.ts",
     "src/cats/session.ts",
+    "src/cats/infoBus.ts",
+    "src/cats/projectConfig.ts",
+    "src/cats/tsWorkerProxy.ts",
+    "src/cats/project.ts",
+    "src/cats/refactor.ts",
+    "src/cats/history.ts",
+    
     "src/cats/commands/commander.ts",
     "src/cats/commands/editorCommands.ts",
     "src/cats/commands/fileCommands.ts",
     "src/cats/commands/helpCommands.ts",
     "src/cats/commands/ideCommands.ts",
     "src/cats/commands/projectCommands.ts",
-    "src/cats/projectConfig.ts",
-    "src/cats/tsWorkerProxy.ts",
-    "src/cats/project.ts",
-    "src/cats/refactor.ts",
-    "src/cats/history.ts",    
     
     "src/cats/gui/editor.ts",
     "src/cats/gui/console.ts",
@@ -65,9 +63,7 @@ var catsOptions = [
     "src/cats/gui/layout.ts",
     "src/cats/gui/searchDialog.ts",
     "src/cats/gui/menubar.ts",
-    
-    
-    
+
     "src/cats/util/mime.ts",
     "src/cats/util/resourceLoader.ts",
     
@@ -96,7 +92,6 @@ task('compile', {async:true}, function(outFile, options) {
 			complete();
 		});
 		ex.addListener("error", function() {
-			// fs.unlinkSync(outFile);
 			console.error("Compilation of " + outFile + " had some errors");
 		});
 		ex.run();	

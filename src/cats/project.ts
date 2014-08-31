@@ -95,11 +95,8 @@ module Cats {
                     if (data.length === 0) {
                         if (verbose) {
                             IDE.console.log("Project has no errors");
-                            IDE.problemPane.selectPage("console");
                         }
-                    } else {
-                        IDE.problemPane.selectPage("problems");
-                    }
+                    } 
                 }
 
             });
@@ -230,7 +227,7 @@ module Cats {
                 return;
             }
 
-            IDE.problemResult.setData([]);
+            IDE.problemResult.clear();
             IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).");
         }
 

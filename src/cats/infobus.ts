@@ -1,4 +1,3 @@
-//
 // Copyright (c) JBaron.  All rights reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,11 +12,9 @@
 // limitations under the License.
 //
 
-
-
 module Cats {
-    
-    export interface InfoBus extends EventEmitter {
+   
+    export interface InfoBus  {
         on(event: string, fn: any): void;
         emit(event: string, ...args): void;
 
@@ -25,13 +22,11 @@ module Cats {
         on(ev: "editor.overwrite", fn: (value: boolean) => void): void;
         on(ev: "editor.mode", fn: (value: string) => void): void;
         on(ev: "editor.position", fn: (value: Position) => void): void;
-
         emit(event: "editor.overwrite", value: boolean): void;
         emit(event: "editor.mode", value: string): void;
         emit(event: "editor.position", value: Position): void;
-
+        
         on(ev: "worker.busy", fn: (value: boolean) => void): void;
         emit(event: "worker.busy", value: boolean): void;
     }
-
 }

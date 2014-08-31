@@ -19,17 +19,15 @@ module Cats.Gui {
      * logging information that are of interest to the user.
      * 
      */
-    export class ConsoleLog extends qx.ui.embed.Html /* qx.ui.container.Scroll  qx.ui.core.Widget */ {
+    export class ConsoleLog extends qx.ui.embed.Html {
 
         private container: HTMLElement;
         private printTime = true;
-
+  
         constructor() {
             super(null);
             this.setPadding(2, 2, 2, 2);
             this.setDecorator(null);
-            //var w = new qx.ui.core.Widget();
-            // this.add(w);
             this.setOverflow("auto", "auto");
             this.addListenerOnce("appear", () => {
                 this.container = this.getContentElement().getDomElement();
@@ -47,6 +45,7 @@ module Cats.Gui {
             this.container.appendChild(document.createElement('BR'));
         }
 
+    
         /**
          * Log a message to the console widget. This should only be used for 
          * logging mesages that are useful to the enduser (= developer) and not for
@@ -55,7 +54,8 @@ module Cats.Gui {
          * @TODO implement a better performing solution using addChild
          */
         log(msg: string, severity: number= 0) {
-            IDE.problemPane.selectPage("console");
+            this.container.scrollTop = this.container.scrollHeight;
+            this.fireDataEvent("contentChange", null);
             if (this.container) {
                 var prefix = "";
                 if (this.printTime) {

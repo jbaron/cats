@@ -41,6 +41,15 @@ module Cats.Gui {
                     return this.getIconForKind(value.getKind());
                 }
             });
+            
+            IDE.sessionTabView.addListener("changeSelection", (ev) => {
+                var page:SessionPage = ev.getData()[0];
+                if (page) {
+                    this.register(page.session);
+                } else {
+                    this.register(null);
+                }
+            });
 
         }
 
@@ -53,6 +62,20 @@ module Cats.Gui {
 
         }
 
+
+        private register(session) {
+            if (this.session) {
+                this.session.off("outline", this.setData, this);
+            }
+            this.session = session;
+            
+            if (session) {
+                session.on("outline", this.setData,this);
+                this.setData(session.outline);
+            } else {
+                this.clear();
+            }
+        }
 
         private getSelectedItem() {
             var item = this.getSelection().getItem(0);
@@ -85,14 +108,21 @@ module Cats.Gui {
 
         private expandAll() {
             var top = this.getModel().getChildren();
+            var size = top.length;
             for (var i = 0; i < top.length; i++) {
+                if (size>200) return;
                 var root = top.getItem(i);
-                this.openNode(root);
                 if (root.getChildren) {
+                    this.openNode(root);
                     var children = root.getChildren();
+                    size += children.length;
                     for (var j = 0; j < children.length; j++) {
                         var child = children.getItem(j);
-                        this.openNode(child);
+                        if (child.getChildren) {
+                            this.openNode(child);
+                            size += child.getChildren().length;
+                            if (size > 200) return;
+                        }
                     }
                 }
             }
@@ -107,8 +137,7 @@ module Cats.Gui {
         /**
          * Set the data for this outline.
          */
-        setData(session: Cats.Session, data: Cats.NavigateToItem[]) {
-            this.session = session;
+        setData(data: Cats.NavigateToItem[]) {
             if ((!data) || (!data.length)) {
                 this.clear();
                 return;

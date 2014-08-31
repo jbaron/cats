@@ -17,7 +17,7 @@ module Cats {
     
     var Linter;
     
-    export class Session extends qx.event.Emitter {
+    export class Session extends qx.event.Emitter  {
 
         private static MODES = {
             ".js": "javascript",
@@ -44,8 +44,8 @@ module Cats {
         public mode:string;
         private changed = false;
         private errors: Cats.FileRange[] = [];
-        private outline:NavigateToItem[];
-        private properties = [];
+        outline:NavigateToItem[];
+        properties = [];
         private outlineTimer:number;
         uml = false;
         
@@ -59,6 +59,8 @@ module Cats {
         constructor(public name?: string, public content?: string) {
             super();
             this.mode = Session.determineMode(name);
+            this.updateProperties();
+            this.updateOutline(10);
         }
 
       
@@ -107,7 +109,7 @@ module Cats {
         
         setChanged(value:boolean) {
             this.changed = value;
-            this.emit("setChanged", this.changed);
+            this.emit("changed", this.changed);
         }
         
         // @TODO make this a real MVC pattern, not pulling
@@ -120,19 +122,18 @@ module Cats {
          * Persist this session to the file system
          */
         persist(shouldConfirm=false) {
-            // Select proper folder separator according to platform used 
-            
-            
-            var dirSlash = process.platform == "win32" ? "\\" : "/";
-            
+           
             if (this.name == null ) {
-                this.name = prompt("Please enter the file name", this.project.projectDir + dirSlash);
+                var dir = PATH.join(this.project.projectDir, "/");
+                this.name = prompt("Please enter the file name", dir);
                 if (! this.name) return;
+                this.name = OS.File.switchToForwardSlashes(this.name);
             }
 
  
             OS.File.writeTextFile(this.name, this.getContent());
             this.setChanged(false);
+            this.updateProperties();
             
             if (this.isTypeScript()) this.project.validate(false);
             
@@ -149,14 +150,17 @@ module Cats {
         
         private setOutline(outline:NavigateToItem[]) {
             this.outline = outline;
-            if (this.isActive()) IDE.outlineNavigator.setData(this,this.outline);
             this.emit("outline", this.outline);
         }
 
 
         private updateProperties() {
-            this.properties = OS.File.getProperties(this.name);
-            if (this.isActive()) IDE.propertyTable.setData(this.properties);
+            if (this.name) {
+                try {
+                    this.properties = OS.File.getProperties(this.name);
+                    this.emit("properties", this.properties);
+                } catch(err) { /* NOP */ }
+            }
         }
 
         updateContent(content:string) {
@@ -232,11 +236,9 @@ module Cats {
         /**
          * Lets make sure all the state of the session is up to date with the worker
          */ 
-        sync() {
+        activate() {
             this.updateDiagnostics();
-            this.updateOutline(10);
-            this.updateProperties();
-        }
+       }
 
         /**
          * Determine the edit mode based on the file name
