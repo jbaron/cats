@@ -20,6 +20,7 @@ module Cats.Gui {
     export class OutlineNavigator extends qx.ui.tree.VirtualTree {
 
         private session: Cats.Session;
+        private static MAX = 200;
 
         constructor() {
             super(null, "label", "children");
@@ -106,26 +107,19 @@ module Cats.Gui {
         }
 
 
-        private expandAll() {
-            var top = this.getModel().getChildren();
-            var size = top.length;
-            for (var i = 0; i < top.length; i++) {
-                if (size>200) return;
-                var root = top.getItem(i);
-                if (root.getChildren) {
-                    this.openNode(root);
-                    var children = root.getChildren();
-                    size += children.length;
-                    for (var j = 0; j < children.length; j++) {
-                        var child = children.getItem(j);
-                        if (child.getChildren) {
-                            this.openNode(child);
-                            size += child.getChildren().length;
-                            if (size > 200) return;
-                        }
-                    }
+        private expandAll(root,count=0) {
+            if (root && root.getChildren) {
+                this.openNode(root);
+                var children = root.getChildren();
+                count += children.length;
+                if (count > OutlineNavigator.MAX) return count;
+                for (var i=0;i<children.length;i++) {
+                    var child = children.getItem(i);
+                    count = this.expandAll(child, count);
+                    if (count > OutlineNavigator.MAX) return count;
                 }
             }
+            return count;
         }
 
 
@@ -165,7 +159,7 @@ module Cats.Gui {
                 parent.children.push(entry);
             });
             this.setModel(qx.data.marshal.Json.createModel(root, false));
-            this.expandAll();
+            this.expandAll(this.getModel());
 
         }
 
