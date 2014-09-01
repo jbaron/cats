@@ -109,6 +109,7 @@ declare module Ace {
 		renderer;
         resize(force:boolean);
 		keyBinding;
+		setOptions(options:any);
 		clearSelection();
         centerSelection();
         onTextInput:Function;

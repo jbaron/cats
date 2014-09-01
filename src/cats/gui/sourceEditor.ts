@@ -39,6 +39,7 @@ module Cats.Gui {
             this.editSession = new (<any>ace).EditSession(session.content, "ace/mode/" + session.mode);
             this.editSession.setNewLineMode("unix");
             this.editSession.setUndoManager(new UndoManager());
+            this.editSession["__fileName__"] = session.name;
             this.configureAceSession();
             this.editSession.on("change", this.onChangeHandler.bind(this));
 
@@ -47,6 +48,13 @@ module Cats.Gui {
                 var container = this.getContentElement().getDomElement();
                 container.style.lineHeight = "normal";
                 this.aceEditor = this.createAceEditor(container);
+                
+                if (IDE.debug) {
+                    this.aceEditor.setOptions({
+                        enableBasicAutocompletion: true,
+                        enableSnippets: true
+                    });
+                }
                 this.aceEditor.setSession(this.editSession);
 
                 if (session.mode === "binary") {

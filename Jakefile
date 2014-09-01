@@ -41,7 +41,8 @@ var catsOptions = [
     "src/cats/commands/helpCommands.ts",
     "src/cats/commands/ideCommands.ts",
     "src/cats/commands/projectCommands.ts",
-    
+  
+    "src/cats/gui/autoCompletion.ts",    
     "src/cats/gui/editor.ts",
     "src/cats/gui/console.ts",
     "src/cats/gui/fileNavigator.ts",

@@ -74,9 +74,12 @@ module Cats {
         if (args.indexOf("--debug") === -1) {
             console.info = function() { /* NOP */};
             console.debug = function() { /* NOP */};
-        }
-
+        } 
+        
         IDE = new Cats.Ide();
+        if (args.indexOf("--debug") > -1) {
+            IDE.debug = true;
+        }
 
         IDE.init(<qx.ui.container.Composite>app.getRoot());
 

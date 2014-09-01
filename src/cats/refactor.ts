@@ -18,7 +18,7 @@
  * 
  */ 
 module Cats.Refactor {
-
+    
     var Range: Ace.Range = ace.require("ace/range").Range;
 
     function renameFile(edits:Cats.FileRange[],name:string) {

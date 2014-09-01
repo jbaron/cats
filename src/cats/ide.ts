@@ -14,7 +14,7 @@
 //
 
 module Cats {
-    
+   
     var Events = require('events');
 
     export class Ide  {
@@ -42,6 +42,7 @@ module Cats {
         propertyTable:Gui.PropertyTable;
         outlineNavigator:Gui.OutlineNavigator; 
         fileNavigator:Gui.FileNavigator;
+        debug:boolean= false;
 
         catsHomeDir: string;
         project: Project;
