@@ -47,6 +47,7 @@ module Cats {
         outline: NavigateToItem[];
         properties = [];
         private outlineTimer: number;
+        private diagnosticTimer : number;
         uml = false;
 
         /**
@@ -173,15 +174,18 @@ module Cats {
          * Lets check the worker if something changed in the diagnostic.
          * 
          */
-        private updateDiagnostics() {
-            if (this.isTypeScript()) {
-                this.project.iSense.getErrors(this.name, (err: Error, result: Cats.FileRange[]) => {
-                    if (this.project.config.codingStandards.useLint) {
-                        result = result.concat(this.lint());
-                    }
-                    this.setErrors(result);
-                });
-            }
+        updateDiagnostics(timeout=1000) {
+            clearTimeout(this.diagnosticTimer);
+            this.diagnosticTimer = setTimeout(() => {
+                if (this.isTypeScript()) {
+                    this.project.iSense.getErrors(this.name, (err: Error, result: Cats.FileRange[]) => {
+                        if (this.project.config.codingStandards.useLint) {
+                            result = result.concat(this.lint());
+                        }
+                        this.setErrors(result);
+                    });
+                }
+            }, timeout);    
         }
 
 

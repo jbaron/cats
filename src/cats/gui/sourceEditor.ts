@@ -141,11 +141,13 @@ module Cats.Gui {
 
             clearTimeout(this.updateSourceTimer);
 
-            // Don't send too many updates to the worker, wait for people to 
-            // finsih typing at least 1 second.
+            // Don't send too many updates to the session, wait for people to 
+            // finsih typing.
             this.updateSourceTimer = setTimeout(() => {
-                if (this.pendingWorkerUpdate) this.update();
-            }, 1000);
+                if (this.pendingWorkerUpdate) {
+                    this.update();
+                }
+            }, 500);
         }
 
         private createToolTip() {
@@ -238,16 +240,14 @@ module Cats.Gui {
 
 
         /**
-          * Update the worker with the latest version of the content of this 
-          * session.
+          * Update the session with the latest version of the content of this 
+          * editor.
           */
         private update() {
-            if (this.session.isTypeScript()) {
                 var source = this.aceEditor.getSession().getValue();
                 this.session.updateContent(source);
                 clearTimeout(this.updateSourceTimer);
                 this.pendingWorkerUpdate = false;
-            };
         }
 
         /**

@@ -64,7 +64,6 @@ module Cats {
             }
         }
 
-
         /**
          * Check if the page still is part of the sessions
          */

@@ -147,9 +147,11 @@ module Cats {
                 } else {
                     if (msg.method && (msg.method === "setBusy")) {
                         IDE.statusBar.setBusy(msg.params[0]);
-                    } else {
-                        console.info(msg.params[0]);
-                    }
+                    } 
+                    
+                    if (msg.method && (msg.method === "console")) {
+                        IDE.console.log(msg.params[0]);
+                    } 
                 }
             };
         }

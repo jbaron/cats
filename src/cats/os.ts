@@ -61,14 +61,10 @@ module Cats.OS.File {
                 if (w) w.close();
             }
             
-            
         }
 
 
-        
- 
-        
-        /**
+       /**
          * Create recursively directories if they don't exist yet
          * @param path The directory path to create
          */ 

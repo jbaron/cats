@@ -17,6 +17,20 @@ module Cats.Gui {
     
     var HashHandler = ace.require('ace/keyboard/hash_handler').HashHandler;
 
+
+   /**
+     * Case insensitive sorting algoritme
+     */
+    function caseInsensitiveSort(a: { name: string; }, b: { name: string; }) {
+        if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
+        if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
+        // the lower-case strings are equal, so now put them in local order..
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+    }
+    
+
     /** 
      * This class takes care of the autocomplete popup and deals with 
      * the key events and filtering of the results while you are typing
@@ -120,7 +134,7 @@ module Cats.Gui {
             var text = this.getInputText();
             if (text) text = text.toLowerCase();
 
-            var matchText = this.match_strict;
+            var matchText = this.match_forgiven;
             if (IDE.config.editor.completionMode) {
                 var methodName = "match_" + IDE.config.editor.completionMode;
                 if (this[methodName]) matchText = this[methodName];
@@ -133,7 +147,7 @@ module Cats.Gui {
             var delegate = {};
             delegate["filter"] = (data) => {
                 var value = data.getValue();
-                var result = matchText(text, value);
+                var result = this.match_forgiven(text, value); // TODO hwo to deal with this
                 if (result) this.filtered.push(data);
                 if (data === lastItem) {
                     // IDE.console.log("filtered items: " + this.filtered.length);
@@ -208,9 +222,15 @@ module Cats.Gui {
                 case "enum": return iconPath + "enum.png";
                 case "class": return iconPath + "class.png";
                 case "property":
-                case "var": return iconPath + "variable.png";
+                case "var": return iconPath + "property.png";
+                case "snippet" : return iconPath + "snippet.png";
                 default: return iconPath + "method.png";
             }
+        }
+
+        private isExecutable(kind) {
+            if (kind === "method" || kind === "function" || kind === "constructor") return true;
+            return false;
         }
 
 
@@ -226,6 +246,11 @@ module Cats.Gui {
             var rawData = [];
             completions.forEach((completion) => {
                 var extension = "";
+              
+                if (this.isExecutable(completion.meta)) {
+                    completion.name += "()";
+                    if (completion.value) completion.value += "()"
+                } 
               
                 rawData.push({
                     name: completion.name || completion.caption || completion.value,

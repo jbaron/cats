@@ -515,7 +515,7 @@ module Cats.TSWorker {
 
     addEventListener('message', function(e) {
         if (!tsh) tsh = new ISense();
-
+        // var startTime = Date.now();
         setBusy(true);
         var msg: Cats.JSONRPCRequest = e["data"];
 
@@ -531,6 +531,7 @@ module Cats.TSWorker {
             postMessage({ id: msg.id, error: error }, null);
         } finally {
             setBusy(false);
+            // console.log("Method " + msg.method + " took " + (Date.now() - startTime) + "ms");
         }
     }, false);
 
