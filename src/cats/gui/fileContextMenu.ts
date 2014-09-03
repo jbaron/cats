@@ -93,8 +93,6 @@ export class FileContextMenu extends qx.ui.menu.Menu {
         
     }
 
-   
-
     private refresh() {
         var item = this.getSelectedItem();
         // IDE.project.getTreeView().refresh();

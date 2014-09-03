@@ -21,8 +21,7 @@ module Cats.Gui {
      * Wrapper around the ACE editor. The rest of the code base should not use
      * ACE editor directly so it can be changed for another editor if required.
      */
-    export class SourceEditor extends qx.ui.core.Widget implements Editor /* qx.ui.embed.Html */ {
-
+    export class SourceEditor extends qx.ui.core.Widget implements Editor {
 
         private aceEditor: Ace.Editor;
         private autoCompletePopup: AutoCompletePopup;
@@ -49,12 +48,7 @@ module Cats.Gui {
                 container.style.lineHeight = "normal";
                 this.aceEditor = this.createAceEditor(container);
                 
-                if (IDE.debug) {
-                    this.aceEditor.setOptions({
-                        enableBasicAutocompletion: true,
-                        enableSnippets: true
-                    });
-                }
+
                 this.aceEditor.setSession(this.editSession);
 
                 if (session.mode === "binary") {
@@ -65,12 +59,10 @@ module Cats.Gui {
 
                 this.createContextMenu();
 
-                if (session.isTypeScript()) {
-                    this.autoCompletePopup = new AutoCompletePopup(this.aceEditor);
-                    this.autoCompletePopup.show();
-                    this.autoCompletePopup.hide();
-                }
-
+                this.autoCompletePopup = new AutoCompletePopup(this.aceEditor);
+                this.autoCompletePopup.show();
+                this.autoCompletePopup.hide();
+            
                 this.aceEditor.on("changeSelection", () => {
                     IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
                 });
@@ -261,25 +253,32 @@ module Cats.Gui {
         /**
          * Perform code autocompletion. Right now support for TS.
          */
-        private showAutoComplete(cursor: Ace.Position) {
-
-            if (!this.session.isTypeScript()) return;
-
+        private showAutoComplete() {
+            var editor = this.aceEditor;
+           
             // Any pending changes that are not yet send to the worker?
             if (this.pendingWorkerUpdate) this.update();
+            
+            var session = editor.getSession();
+            var pos = editor.getCursorPosition();
 
-            IDE.project.iSense.getCompletions(this.session.name, cursor,
-                (err, completes: TypeScript.Services.CompletionInfo) => {
-                    if (completes != null) this.autoCompletePopup.showCompletions(completes.entries);
+            var line = session.getLine(pos.row);
+            var prefix = retrievePrecedingIdentifier(line, pos.column);
+
+            // this.base = session.doc.createAnchor(pos.row, pos.column - prefix.length);
+
+            var matches = [];
+            var total = editor.completers.length;
+            editor.completers.forEach((completer, i) => {
+                completer.getCompletions(editor, session, pos, prefix, (err, results) => {
+                    total--;
+                    if (!err) matches = matches.concat(results);
+                    if (total === 0) {
+                        this.autoCompletePopup.showCompletions(matches);
+                    }
                 });
-        }
-
-
-        private autoComplete() {
-            if (this.session.isTypeScript()) {
-                var cursor = this.aceEditor.getCursorPosition();
-                this.showAutoComplete(cursor);
-            }
+            });
+            
         }
 
 
@@ -319,17 +318,42 @@ module Cats.Gui {
         // Initialize the editor
         private createAceEditor(rootElement: HTMLElement): Ace.Editor {
             var editor: Ace.Editor = ace.edit(rootElement);
+            if (this.session.isTypeScript()) {
+                editor.completers =  [new TSCompleter(), snippetCompleter];
+            } else {
+                editor.completers =  [keyWordCompleter, snippetCompleter];
+            }
+            editor.setOptions({
+                enableSnippets: true
+            });
+            
+           /*
+            if (this.session.isTypeScript()) {
+                    editor.setOptions({
+                        enableBasicAutocompletion: [new Completer(), snippetCompleter],
+                        enableSnippets: [new Completer(),snippetCompleter],
+                        enableLiveAutocompletion: true
+                    });
+            } else {
+                   editor.setOptions({
+                        enableBasicAutocompletion: true,
+                        enableSnippets: true,
+                        enableLiveAutocompletion: true
+                    }); 
+            }
+            */
 
             editor.commands.addCommands([
+                
                 {
                     name: "autoComplete",
                     bindKey: {
                         win: "Ctrl-Space",
                         mac: "Ctrl-Space"
                     },
-                    exec: () => { this.autoComplete(); }
+                    exec: () => { this.showAutoComplete(); }
                 },
-
+                
                 {
                     name: "gotoDeclaration",
                     bindKey: {
@@ -349,23 +373,25 @@ module Cats.Gui {
                     exec: () => { this.session.persist(); }
                 }
             ]);
-
-
-            var originalTextInput = editor.onTextInput;
-            editor.onTextInput = (text: string) => {
-                originalTextInput.call(editor, text);
-                if (text === ".") this.autoComplete();
-            };
-
-
-            var elem = rootElement; // TODo find scroller child
-            elem.onmousemove = this.onMouseMove.bind(this);
-            elem.onmouseout = () => {
-                if (this.getToolTip() && this.getToolTip().isSeeable()) this.getToolTip().exclude();
-                clearTimeout(this.mouseMoveTimer);
-            };
-
+            
+            if (this.session.isTypeScript()) {
+                editor.commands.on('afterExec', (e) => { this.liveAutoComplete(e);});
+      
+                var elem = rootElement; // TODo find scroller child
+                elem.onmousemove = this.onMouseMove.bind(this);
+                elem.onmouseout = () => {
+                    if (this.getToolTip() && this.getToolTip().isSeeable()) this.getToolTip().exclude();
+                    clearTimeout(this.mouseMoveTimer);
+                };
+            }
             return editor;
+        }
+
+        private liveAutoComplete(e) {
+            var text = e.args || "";
+            if ((e.command.name === "insertstring") && (text === ".")) {
+                this.showAutoComplete();
+            }
         }
 
         private gotoDeclaration() {
@@ -385,7 +411,7 @@ module Cats.Gui {
                 var page = IDE.problemPane.addPage("info", null, resultTable);
                 page.setShowCloseButton(true);
                 resultTable.setData(data);
-                IDE.problemPane.setSelection([page]);
+                page.select();
             });
         }
 

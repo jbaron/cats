@@ -18,15 +18,34 @@ module Cats.Gui {
     
     var langTools = ace.require("ace/ext/language_tools");
 
-    class Completer {
+    export var snippetCompleter = langTools.snippetCompleter;
+    export var keyWordCompleter = langTools.keyWordCompleter;
+    
+    var ID_REGEX = /[a-zA-Z_0-9\$\-\u00A2-\uFFFF]/;
+
+    export function retrievePrecedingIdentifier(text, pos, regex?) {
+        regex = regex || ID_REGEX;
+        var buf = [];
+        for (var i = pos-1; i >= 0; i--) {
+            if (regex.test(text[i]))
+                buf.push(text[i]);
+            else
+                break;
+        }
+        return buf.reverse().join("");
+    };
+
+    export class TSCompleter {
 
         getCompletions(editor:Ace.Editor, session:Ace.EditSession, pos:Ace.Position, prefix:string, cb:Function) {
-            // if (prefix.length === 0) { cb(null, []); return }
+            
             var fileName = session["__fileName__"];
-            IDE.project.iSense.getCompletions(fileName, pos, (err, completes: TypeScript.Services.CompletionInfo) => {
+            if (! fileName) return [];
+            
+            IDE.project.iSense.getCompletions(fileName, pos, (err, completes: TypeScript.Services.CompletionEntry[]) => {
                     var result = [];
                     if (! completes) return result;
-                    completes.entries.forEach((entry) => {
+                    completes.forEach((entry) => {
                         result.push({name: entry.name, value: entry.name, meta: entry.kind});
                     });
                     cb(null, result);
@@ -35,19 +54,7 @@ module Cats.Gui {
     
     }
     export function installCompleter() {
-        langTools.addCompleter(new Completer());
-        /*
-        var rhymeCompleter = {
-        getCompletions: function(editor, session, pos, prefix, callback) {
-            if (prefix.length === 0) { callback(null, []); return }
-            $.getJSON(jsonUrl, function(wordList) {
-                callback(null, wordList.map(function(ea)  {           
-                    return {name: ea.word, value: ea.word, meta: "optional text"}
-                }));
-            })
-        }
-        */
+        langTools.addCompleter(new TSCompleter());
     }
 
-    installCompleter();
 }

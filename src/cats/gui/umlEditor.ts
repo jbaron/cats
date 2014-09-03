@@ -14,6 +14,14 @@
 module Cats.Gui {
 
     var dagre;
+    
+    declare var UMLDependency:any;
+    declare var UMLClassDiagram:any;
+    declare var UMLPackage:any;
+    declare var UMLClass:any;
+    declare var UMLInterface:any;
+    declare var UMLInterfaceExtended;
+    declare var UMLGeneralization:any;
 
     export class UMLEditor extends qx.ui.embed.Html implements Editor {
 
@@ -50,7 +58,7 @@ module Cats.Gui {
         executeCommand(name, ...args): boolean {
             return false;
         }
-
+        
 
         static LoadResources(cb: Function) {
             if (UMLEditor.ResourcesLoaded) {

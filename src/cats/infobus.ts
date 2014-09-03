@@ -13,7 +13,7 @@
 //
  
 module Cats {
-     
+    
     export interface InfoBus  {
         on(event: string, fn: any): void;
         emit(event: string, ...args): void;

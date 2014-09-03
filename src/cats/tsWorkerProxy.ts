@@ -92,7 +92,7 @@ module Cats {
             this.perform("updateScript", fileName, content, null);
         }
 
-        getCompletions(fileName: string, cursor: Ace.Position, cb: (err, completes: TypeScript.Services.CompletionInfo) => void) {
+        getCompletions(fileName: string, cursor: Ace.Position, cb: (err, completes: TypeScript.Services.CompletionEntry[]) => void) {
             this.perform("getCompletions", fileName, cursor, cb);
         }
 

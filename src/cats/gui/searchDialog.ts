@@ -13,7 +13,7 @@
 //
 
 module Cats.Gui {
-
+    
     /**
      * Base class for all the configuration dialogs forms in
      * CATS.

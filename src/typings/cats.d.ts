@@ -30,6 +30,13 @@ declare module Cats {
         [index:string]:T;
     }
 
+    interface CompletionEntry {
+        name: string;
+        value: string
+        meta?: string;
+        caption?: string;
+        snippet?: string;
+    }
 
     interface FileEntry {
         name: string; // Just the file/directory name without path

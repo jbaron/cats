@@ -56,8 +56,8 @@ module Cats.Gui {
                 selectionMode: "single",
                 // height: 280,
                 width: 300,
-                labelPath: "label",
-                iconPath: "icon",
+                labelPath: "name",
+                iconPath: "meta",
                 iconOptions: {
                     converter: (data) => {
                         return this.getIconForKind(data);
@@ -101,14 +101,14 @@ module Cats.Gui {
 
         private match_strict(text: string, completion: string) {
             if (!text) return true;
-            if (completion.indexOf(text) === 0) return true;
+            if (completion.toLowerCase().indexOf(text) === 0) return true;
             return false;
         }
 
 
         private match_forgiven(text: string, completion: string) {
             if (!text) return true;
-            if (completion.indexOf(text) > -1) return true;
+            if (completion.toLowerCase().indexOf(text) > -1) return true;
             return false;
         }
 
@@ -185,8 +185,12 @@ module Cats.Gui {
                     for (var i = 0; i < inputText.length; i++) {
                         this.editor.remove("left");
                     }
-                    var label = current.getLabel();
-                    this.editor.insert(label);
+                    var value = current.getValue();
+                    if (current.getMeta() === "snippet") {
+                        this.editor.insertSnippet(value);
+                    } else {
+                        this.editor.insert(value);
+                    }
                 }
                 this.hidePopup();
             });
@@ -214,7 +218,7 @@ module Cats.Gui {
          * Show the popup and make sure the keybinding is in place
          * 
          */
-        private showPopup(coords, completions: TypeScript.Services.CompletionEntry[]) {
+        private showPopup(coords, completions: Cats.CompletionEntry[]) {
             this.editor.keyBinding.addKeyboardHandler(this.handler);
             this.moveTo(coords.pageX, coords.pageY + 20);
 
@@ -222,12 +226,11 @@ module Cats.Gui {
             var rawData = [];
             completions.forEach((completion) => {
                 var extension = "";
-                if (completion.kind === "method") extension = "()";
-
+              
                 rawData.push({
-                    label: completion.name + extension,
-                    icon: completion.kind,
-                    value: completion.name.toLowerCase()
+                    name: completion.name || completion.caption || completion.value,
+                    meta: completion.meta,
+                    value: completion.value || completion.snippet || completion.name
                 });
             });
 
@@ -293,7 +296,7 @@ module Cats.Gui {
         }
 
 
-        showCompletions(completions: TypeScript.Services.CompletionEntry[]) {
+        showCompletions(completions) {
             if (this.list.isSeeable() || (completions.length === 0)) return;
             console.debug("Received completions: " + completions.length);
             var cursor = this.editor.getCursorPosition();

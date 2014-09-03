@@ -50,7 +50,7 @@ module Cats {
                 return this.loadDefault();
             }
         }
-
+        
 
         store(config:ProjectConfiguration) {
             var name = this.getFileName();

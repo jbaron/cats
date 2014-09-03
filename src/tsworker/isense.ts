@@ -483,7 +483,8 @@ module Cats.TSWorker {
         /**
          * Determine the possible completions available at a certain position in a file.
          */
-        public getCompletions(fileName: string, cursor: Position): TypeScript.Services.CompletionInfo {
+        public getCompletions(fileName: string, cursor: Position): TypeScript.Services.CompletionEntry[] {
+            if (! this.getScript(fileName)) return [];
             var pos = this.getPositionFromCursor(fileName, cursor);
             var memberMode = false;
             var type = this.determineAutoCompleteType(fileName, pos);
@@ -492,7 +493,7 @@ module Cats.TSWorker {
             var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode) || <TypeScript.Services.CompletionInfo>{};
             if (!completions.entries) completions.entries = []; // @Bug in TS
             completions.entries.sort(caseInsensitiveSort); // Sort case insensitive
-            return completions;
+            return completions.entries;
         }
     }
 

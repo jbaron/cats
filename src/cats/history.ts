@@ -12,7 +12,7 @@
 // limitations under the License.
 //
 module Cats {
-  
+ 
     /**
      * This class implements the history functionality 
      * that makes it possible to go back were you where 
