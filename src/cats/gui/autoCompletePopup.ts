@@ -80,7 +80,6 @@ module Cats.Gui {
             });
 
             list.setDecorator(null);
-            list.setItemHeight(18);
             this.add(list);
             this.list = list;
 

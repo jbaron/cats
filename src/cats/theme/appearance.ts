@@ -22,107 +22,60 @@ module Cats.Theme {
         };
     }
 
-    qx.Theme.define("cats.theme.Appearance",
+    qx.Theme.define("cats.theme.Appearance", {
+        extend: qx.theme.simple.Appearance,
+
+        appearances:
         {
-            extend: qx.theme.simple.Appearance,
 
-            appearances:
-            {
-
-                "root": {
-                    base: true,
-                    style: function(states) {
-                        return {
-                            backgroundColor: "light-background"
-                        };
-                    }
-                },
-
-                "tabview-page/button": {
-                    base: true,
-                    style: function(states) {
-                        return {
-                            padding: [6, 6, 6, 6]
-                        };
-                    }
-                },
-
-                "splitpane": {
-                    style: function(states) {
-                        return {
-                            backgroundColor: "light-background",
-                            decorator: undefined
-                        };
-                    }
-                },
-
-
-                "toolbar": {
-                    base: true,
-                    style: function(states) {
-                        return {
-                            backgroundColor: undefined,
-                        };
-                    }
-                },
-
-                "toolbar-button": {
-                    base: true,
-                    style: function(states) {
-                        return {
-                            padding: [3, 3],
-                            margin: [5, 5]
-                        };
-                    }
-                },
-
-         "listitem" :
-            {
-              alias : "atom",
-        
-              style : function(states)
-              {
-                var padding = [1, 5, 1, 5];
-                if (states.lead) {
-                  padding = [ 1, 4 , 1, 4];
+            "root": {
+                base: true,
+                style: function(states) {
+                    return {
+                        backgroundColor: "light-background"
+                    };
                 }
-                if (states.dragover) {
-                  padding[2] -= 2;
+            },
+
+            "tabview-page/button": {
+                base: true,
+                style: function(states) {
+                    return {
+                        padding: [6, 6, 6, 6]
+                    };
                 }
-        
-                var backgroundColor;
-                if (states.selected) {
-                  backgroundColor = "background-selected"
-                  if (states.disabled) {
-                    backgroundColor += "-disabled";
-                  }
+            },
+
+            "splitpane": {
+                style: function(states) {
+                    return {
+                        backgroundColor: "light-background",
+                        decorator: undefined
+                    };
                 }
-                return {
-                  gap : 2,
-                  padding : padding,
-                  backgroundColor : backgroundColor,
-                  textColor : states.selected ? "text-selected" : undefined,
-                  decorator : states.lead ? "lead-item" : states.dragover ? "dragover" : undefined,
-                  opacity : states.drag ? 0.5 : undefined
-                };
-              }
             },
 
 
-                "__virtual-tree": noDecorator(),
-
-                "__toolbar-button": noDecorator(),
-
-                "__tabview/pane": {
-                    base: true,
-                    style: function(states) {
-                        return {
-                            backgroundColor: undefined,
-                        };
-                    }
+            "toolbar": {
+                base: true,
+                style: function(states) {
+                    return {
+                        backgroundColor: undefined,
+                    };
                 }
+            },
 
+            "toolbar-button": {
+                base: true,
+                style: function(states) {
+                    return {
+                        padding: [3, 3],
+                        margin: [5, 5]
+                    };
+                }
             }
-        });
+
+        }
+    });
 
 }
