@@ -37,16 +37,16 @@ module Cats.Gui {
 
     export class TSCompleter {
 
-        getCompletions(editor:Ace.Editor, session:Ace.EditSession, pos:Ace.Position, prefix:string, cb:Function) {
+        getCompletions(editor:Ace.Editor, session:Ace.EditSession, pos:Ace.Position, prefix:string, cb:(any,completions: Cats.CompletionEntry[])=>void) {
             
             var fileName = session["__fileName__"];
             if (! fileName) return [];
             
             IDE.project.iSense.getCompletions(fileName, pos, (err, completes: TypeScript.Services.CompletionEntry[]) => {
-                    var result = [];
+                    var result:Array<Cats.CompletionEntry> = [];
                     if (! completes) return result;
                     completes.forEach((entry) => {
-                        result.push({name: entry.name, value: entry.name, meta: entry.kind});
+                        result.push({caption: entry.name, value: entry.name, meta: entry.kind});
                     });
                     cb(null, result);
             });

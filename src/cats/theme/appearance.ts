@@ -76,6 +76,39 @@ module Cats.Theme {
                     }
                 },
 
+         "listitem" :
+            {
+              alias : "atom",
+        
+              style : function(states)
+              {
+                var padding = [1, 5, 1, 5];
+                if (states.lead) {
+                  padding = [ 1, 4 , 1, 4];
+                }
+                if (states.dragover) {
+                  padding[2] -= 2;
+                }
+        
+                var backgroundColor;
+                if (states.selected) {
+                  backgroundColor = "background-selected"
+                  if (states.disabled) {
+                    backgroundColor += "-disabled";
+                  }
+                }
+                return {
+                  gap : 2,
+                  padding : padding,
+                  backgroundColor : backgroundColor,
+                  textColor : states.selected ? "text-selected" : undefined,
+                  decorator : states.lead ? "lead-item" : states.dragover ? "dragover" : undefined,
+                  opacity : states.drag ? 0.5 : undefined
+                };
+              }
+            },
+
+
                 "__virtual-tree": noDecorator(),
 
                 "__toolbar-button": noDecorator(),

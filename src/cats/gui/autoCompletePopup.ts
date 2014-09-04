@@ -70,7 +70,7 @@ module Cats.Gui {
                 selectionMode: "single",
                 // height: 280,
                 width: 300,
-                labelPath: "name",
+                labelPath: "caption",
                 iconPath: "meta",
                 iconOptions: {
                     converter: (data) => {
@@ -80,7 +80,7 @@ module Cats.Gui {
             });
 
             list.setDecorator(null);
-
+            list.setItemHeight(18);
             this.add(list);
             this.list = list;
 
@@ -122,7 +122,7 @@ module Cats.Gui {
 
         private match_forgiven(text: string, completion: string) {
             if (!text) return true;
-            if (completion.toLowerCase().indexOf(text) > -1) return true;
+            if (completion.indexOf(text) > -1) return true;
             return false;
         }
 
@@ -146,7 +146,7 @@ module Cats.Gui {
             this.filtered = [];
             var delegate = {};
             delegate["filter"] = (data) => {
-                var value = data.getValue();
+                var value = data.getCaption().toLowerCase();
                 var result = this.match_forgiven(text, value); // TODO hwo to deal with this
                 if (result) this.filtered.push(data);
                 if (data === lastItem) {
@@ -199,11 +199,10 @@ module Cats.Gui {
                     for (var i = 0; i < inputText.length; i++) {
                         this.editor.remove("left");
                     }
-                    var value = current.getValue();
                     if (current.getMeta() === "snippet") {
-                        this.editor.insertSnippet(value);
+                        this.editor.insertSnippet(current.getSnippet());
                     } else {
-                        this.editor.insert(value);
+                        this.editor.insert(current.getValue());
                     }
                 }
                 this.hidePopup();
@@ -248,14 +247,20 @@ module Cats.Gui {
                 var extension = "";
               
                 if (this.isExecutable(completion.meta)) {
-                    completion.name += "()";
+                    completion.caption += "()";
                     if (completion.value) completion.value += "()"
                 } 
               
+                if ((! completion.caption) && (! completion.name)) {
+                    console.log(completion);
+                    return;
+                }
+                
                 rawData.push({
-                    name: completion.name || completion.caption || completion.value,
+                    caption: completion.caption || completion.name ,
                     meta: completion.meta,
-                    value: completion.value || completion.snippet || completion.name
+                    snippet: completion.snippet || "",
+                    value: completion.value || ""
                 });
             });
 
@@ -321,7 +326,7 @@ module Cats.Gui {
         }
 
 
-        showCompletions(completions) {
+        showCompletions(completions: Cats.CompletionEntry[]) {
             if (this.list.isSeeable() || (completions.length === 0)) return;
             console.debug("Received completions: " + completions.length);
             var cursor = this.editor.getCursorPosition();

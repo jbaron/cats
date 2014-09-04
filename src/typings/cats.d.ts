@@ -31,10 +31,10 @@ declare module Cats {
     }
 
     interface CompletionEntry {
-        name: string;
-        value: string
-        meta?: string;
+        value?: string
+        meta: string;
         caption?: string;
+        name?: string;
         snippet?: string;
     }
 
