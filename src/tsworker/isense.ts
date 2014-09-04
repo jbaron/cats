@@ -26,7 +26,7 @@ module Cats.TSWorker {
         error: function(str: string) { postMessage({ method: "console", params: [str] }, null); },
         info: function(str: string) { postMessage({ method: "console", params: [str] }, null); }
     };
-
+    
     /**
      * Case insensitive sorting algoritme
      */
