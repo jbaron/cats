@@ -300,7 +300,7 @@ module Cats {
             win.on("close", function() {
                 try {
                     if (IDE.hasUnsavedSessions()) {
-                        if (!confirm("There are unsaved files!\nDo you really want to quit?")) return;
+                        if (!confirm("There are unsaved changes!\nDo you really want to continue?")) return;
                     }
                     IDE.saveConfig();
                 } catch (err) { } // lets ignore this

@@ -28,7 +28,6 @@ module Cats {
         implements?: Array<string>;
     }    
 
-
     export interface Range {
         start: Position;
         end: Position;

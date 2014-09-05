@@ -35,7 +35,18 @@ module Cats.Gui {
 
             this.session.on("changed", this.setChanged, this);
             this.session.on("errors", this.setHasErrors, this);
-          
+        }
+
+        continueWhenNeedSaving() {
+             if (this.session.getChanged()) {
+                var con = confirm("There are unsaved changes!\nDo you really want to continue?");
+                return con;
+            }
+            return true;
+        }
+
+        _onButtonClose() {
+            if (this.continueWhenNeedSaving()) super._onButtonClose();
         }
 
         private createEditor() {
@@ -108,10 +119,7 @@ module Cats.Gui {
         addSession(session: Cats.Session, pos?: any) {
             var page = new SessionPage(session);
             this.add(page);
-            this.setSelection([page]);
-            page.editor.addListenerOnce("ready", (editor: Editor) => {
-                this.navigateToPage(page,pos);
-            });
+            this.navigateToPage(page,pos);
             page.fadeIn(500);
             return page;
         }
@@ -121,26 +129,44 @@ module Cats.Gui {
          */
         closeAll() {
             var pages = <SessionPage[]>this.getChildren().concat();
-            pages.forEach((page) => {
-                this.remove(page);
-            });
+            if (this.continueIfUnsavedSessions(pages)) {
+                pages.forEach((page) => {
+                    this.remove(page);
+                });
+            }
         }
 
         /**
          * close one page
          */
         close(page= this.getActivePage()) {
-            this.remove(page);
+            if (page.continueWhenNeedSaving()) this.remove(page);
         }
 
         /**
          * Close the other pages
          */
         closeOther(closePage= this.getActivePage()) {
-            var pages = <SessionPage[]>this.getChildren().concat();
-            pages.forEach((page) => {
-                if (page !== closePage) this.remove(page);
+            var pages = <SessionPage[]>this.getChildren().concat().filter(
+                (page)=>{ return page !== closePage;}
+            );
+            
+            if (this.continueIfUnsavedSessions(pages)) {
+                pages.forEach((page) => {
+                    this.remove(page);
+                });
+            }
+        }
+
+        private  continueIfUnsavedSessions(pages:SessionPage[]) {
+            var hasUnsaved = false 
+            pages.forEach((page) => { 
+                if (page.session.getChanged()) hasUnsaved = true;
             });
+            if (hasUnsaved) {
+                if (!confirm("There are unsaved changes!\nDo you really want to continue?")) return false;
+            }
+            return true;
         }
 
         /**

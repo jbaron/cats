@@ -29,6 +29,7 @@ module Cats.Gui {
         private updateSourceTimer: number;
         private pendingWorkerUpdate = false;
         private editSession: Ace.EditSession;
+        private pendingPosition:Ace.Position;
 
         constructor(private session: Cats.Session) {
             super();
@@ -69,7 +70,7 @@ module Cats.Gui {
 
                 this.configureEditor();
 
-                setTimeout(() => { this.fireDataEvent("ready", this); }, 10);
+                if (this.pendingPosition) this.moveToPosition(this.pendingPosition);
 
 
             }, this);
@@ -181,9 +182,13 @@ module Cats.Gui {
         }
 
         moveToPosition(pos: Ace.Position) {
-            this.aceEditor.clearSelection();
-            this.aceEditor.moveCursorToPosition(pos);
-            this.aceEditor.centerSelection();
+            if (! this.aceEditor) {
+                this.pendingPosition = pos;
+            } else {
+                this.aceEditor.clearSelection();
+                this.aceEditor.moveCursorToPosition(pos);
+                this.aceEditor.centerSelection();
+            }
         }
 
         private getPosition() {
@@ -327,22 +332,6 @@ module Cats.Gui {
                 enableSnippets: true
             });
             
-           /*
-            if (this.session.isTypeScript()) {
-                    editor.setOptions({
-                        enableBasicAutocompletion: [new Completer(), snippetCompleter],
-                        enableSnippets: [new Completer(),snippetCompleter],
-                        enableLiveAutocompletion: true
-                    });
-            } else {
-                   editor.setOptions({
-                        enableBasicAutocompletion: true,
-                        enableSnippets: true,
-                        enableLiveAutocompletion: true
-                    }); 
-            }
-            */
-
             editor.commands.addCommands([
                 
                 {
