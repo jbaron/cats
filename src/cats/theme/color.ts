@@ -15,7 +15,6 @@
 
 module Cats.Theme {
 
-
     qx.Theme.define("cats.theme.Color",
         {
             extend: qx.theme.simple.Color,
@@ -26,6 +25,7 @@ module Cats.Theme {
                 "button-box-bright": "#B0BCCF"
             }
         });
+
 
     qx.Theme.define("cats.theme.ColorGrey",
         {

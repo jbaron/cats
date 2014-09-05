@@ -187,7 +187,7 @@ module Cats.Gui {
             } else {
                 this.aceEditor.clearSelection();
                 this.aceEditor.moveCursorToPosition(pos);
-                this.aceEditor.centerSelection();
+                setTimeout(()=>{this.aceEditor.centerSelection()},10);
             }
         }
 
