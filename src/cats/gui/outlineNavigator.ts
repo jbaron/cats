@@ -33,7 +33,7 @@ module Cats.Gui {
                 var item = <any>this.getSelectedItem();
                 if (item) {
                     var position = this.modelToPosition(item.getRange().getStart());
-                    IDE.getActiveEditor().moveToPosition(position);
+                    IDE.sessionTabView.navigateTo(this.session,position);
                 }
             });
             this.setIconPath("");
