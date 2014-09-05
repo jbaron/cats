@@ -1,13 +1,3 @@
-
- 
-declare var UMLDependency:any;
-declare var UMLClassDiagram:any;
-declare var UMLPackage:any;
-declare var UMLClass:any;
-declare var UMLInterface:any;
-declare var UMLInterfaceExtended;
-declare var UMLGeneralization:any;
-
 declare module JSUML2 {
     
     var UMLClass:any;

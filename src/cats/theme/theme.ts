@@ -12,28 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+module Cats.Theme {
 
-qx.Theme.define("cats.theme.Default",
-{
-  meta :
-  {
-    color : cats.theme.Color,
-    decoration : cats.theme.Decoration,
-    font : cats.theme.Font,
-    icon : qx.theme.icon.Oxygen,
-    appearance : cats.theme.Appearance
-  }
-});
 
-qx.Theme.define("cats.theme.Grey",
-{
-  meta :
-  {
-    color : cats.theme.ColorGrey,
-    decoration : cats.theme.Decoration,
-    font : cats.theme.Font,
-    icon : qx.theme.icon.Oxygen,
-    appearance : cats.theme.Appearance
-  }
-});
+    qx.Theme.define("cats.theme.Default",
+        {
+            meta:
+            {
+                color: cats.theme.Color,
+                decoration: cats.theme.Decoration,
+                font: cats.theme.Font,
+                icon: qx.theme.icon.Oxygen,
+                appearance: cats.theme.Appearance
+            }
+        });
 
+    qx.Theme.define("cats.theme.Grey",
+        {
+            meta:
+            {
+                color: cats.theme.ColorGrey,
+                decoration: cats.theme.Decoration,
+                font: cats.theme.Font,
+                icon: qx.theme.icon.Oxygen,
+                appearance: cats.theme.Appearance
+            }
+        });
+
+}

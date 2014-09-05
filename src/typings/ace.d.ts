@@ -29,6 +29,7 @@ declare module Ace {
 	interface CommandManager {
 		byName;
 		commands;
+		on: any;
 		addCommands(commands:EditorCommand[]);
 		addCommand(command:EditorCommand);
 		platform: string; // win or mac
@@ -43,6 +44,7 @@ declare module Ace {
 
 	interface Document {
 		getAllLines(): string[];
+		createAnchor:any;
 		getLines(firstRow:number, lastRow:number) : string[];
 	}
 
@@ -74,6 +76,7 @@ declare module Ace {
         getOverwrite():boolean;
         setValue(value:string);
 		getDocument():Document;
+		doc: Document;
 		setMode(mode:string);
         getSelection():any;
         setNewLineMode(mode:string); // unix, windows or auto
@@ -101,6 +104,8 @@ declare module Ace {
 		find(value:string,options,something);
 		focus();
 		resize();
+		completers:any;
+		insertSnippet:any;
 		on(event:string,callback);
         setReadOnly(readOnly:boolean);
         getReadOnly():boolean;
@@ -109,6 +114,7 @@ declare module Ace {
 		renderer;
         resize(force:boolean);
 		keyBinding;
+		setOptions(options:any);
 		clearSelection();
         centerSelection();
         onTextInput:Function;

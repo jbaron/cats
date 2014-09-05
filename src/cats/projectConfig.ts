@@ -13,7 +13,6 @@
 // limitations under the License.
 //
 
-
 module Cats {
    
     /**
@@ -51,7 +50,7 @@ module Cats {
                 return this.loadDefault();
             }
         }
-
+        
 
         store(config:ProjectConfiguration) {
             var name = this.getFileName();

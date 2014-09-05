@@ -26,7 +26,7 @@ module Cats.TSWorker {
         error: function(str: string) { postMessage({ method: "console", params: [str] }, null); },
         info: function(str: string) { postMessage({ method: "console", params: [str] }, null); }
     };
-
+    
     /**
      * Case insensitive sorting algoritme
      */
@@ -78,7 +78,7 @@ module Cats.TSWorker {
         /**
          * Convert a TS offset position to a Cats Position
          */
-        private positionToLineCol(script: Cats.TSWorker.ScriptInfo, position: number): Position {
+        private positionToLineCol(script: ScriptInfo, position: number): Position {
             var result = script.getLineMap().getLineAndCharacterFromPosition(position);
             return {
                 row: result.line(),
@@ -87,7 +87,7 @@ module Cats.TSWorker {
         }
 
 
-        getDefinitionAtPosition(fileName: string, pos: Cats.Position): Cats.FileRange {
+        getDefinitionAtPosition(fileName: string, pos: Position): Cats.FileRange {
             var chars = this.getPositionFromCursor(fileName, pos);
             var infos = this.ls.getDefinitionAtPosition(fileName, chars);
             if (infos) {
@@ -399,7 +399,7 @@ module Cats.TSWorker {
         }
 
         // Get the chars offset based on the Ace position
-        private getPositionFromCursor(fileName: string, cursor: Cats.Position): number {
+        private getPositionFromCursor(fileName: string, cursor: Position): number {
             var script = this.getScript(fileName);
             if (script) {
                 var pos = script.getLineMap().getPosition(cursor.row, cursor.column);
@@ -465,7 +465,7 @@ module Cats.TSWorker {
         }
 
         // generic wrapper for info at a certain position 
-        public getInfoAtPosition(method: string, fileName: string, cursor: Cats.Position): Cats.FileRange[] {
+        public getInfoAtPosition(method: string, fileName: string, cursor: Position): Cats.FileRange[] {
             var pos = this.getPositionFromCursor(fileName, cursor);
             var result: Cats.FileRange[] = [];
             var entries: TypeScript.Services.ReferenceEntry[] = this.ls[method](fileName, pos);
@@ -483,7 +483,8 @@ module Cats.TSWorker {
         /**
          * Determine the possible completions available at a certain position in a file.
          */
-        public getCompletions(fileName: string, cursor: Cats.Position): TypeScript.Services.CompletionInfo {
+        public getCompletions(fileName: string, cursor: Position): TypeScript.Services.CompletionEntry[] {
+            if (! this.getScript(fileName)) return [];
             var pos = this.getPositionFromCursor(fileName, cursor);
             var memberMode = false;
             var type = this.determineAutoCompleteType(fileName, pos);
@@ -492,7 +493,7 @@ module Cats.TSWorker {
             var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode) || <TypeScript.Services.CompletionInfo>{};
             if (!completions.entries) completions.entries = []; // @Bug in TS
             completions.entries.sort(caseInsensitiveSort); // Sort case insensitive
-            return completions;
+            return completions.entries;
         }
     }
 
@@ -514,7 +515,7 @@ module Cats.TSWorker {
 
     addEventListener('message', function(e) {
         if (!tsh) tsh = new ISense();
-
+        // var startTime = Date.now();
         setBusy(true);
         var msg: Cats.JSONRPCRequest = e["data"];
 
@@ -530,6 +531,7 @@ module Cats.TSWorker {
             postMessage({ id: msg.id, error: error }, null);
         } finally {
             setBusy(false);
+            // console.log("Method " + msg.method + " took " + (Date.now() - startTime) + "ms");
         }
     }, false);
 

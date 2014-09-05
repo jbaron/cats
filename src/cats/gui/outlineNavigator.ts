@@ -12,132 +12,156 @@
 // limitations under the License.
 //
 
-/**      
- * Create a simple Tree to mimic outline functionality      
- */
-class OutlineNavigator extends qx.ui.tree.VirtualTree  {
+module Cats.Gui {
 
-    private session: Cats.Session;
- 
-    constructor() {
-        super(null,"label", "children");
-        this.setDecorator(null);
-        this.setPadding(0,0,0,0);
-        this.setHideRoot(true);
+    /**      
+     * Provide an outline view of the source code.      
+     */
+    export class OutlineNavigator extends qx.ui.tree.VirtualTree {
 
-        this.setDecorator(null);
-        this.addListener("click", (data) => {
-            var item = <any>this.getSelectedItem();
-            if (item) {
-                var position = this.modelToPosition(item.getRange().getStart());
-                IDE.getActiveEditor().moveToPosition(position);
+        private session: Cats.Session;
+        private static MAX = 200;
+
+        constructor() {
+            super(null, "label", "children");
+            this.setDecorator(null);
+            this.setPadding(0, 0, 0, 0);
+            this.setHideRoot(true);
+
+            this.setDecorator(null);
+            this.addListener("click", (data) => {
+                var item = <any>this.getSelectedItem();
+                if (item) {
+                    var position = this.modelToPosition(item.getRange().getStart());
+                    IDE.sessionTabView.navigateTo(this.session,position);
+                }
+            });
+            this.setIconPath("");
+            this.setIconOptions({
+                converter: (value, model) => {
+                    return this.getIconForKind(value.getKind());
+                }
+            });
+            
+            IDE.sessionTabView.addListener("changeSelection", (ev) => {
+                var page:SessionPage = ev.getData()[0];
+                if (page) {
+                    this.register(page.session);
+                } else {
+                    this.register(null);
+                }
+            });
+
+        }
+
+        private modelToPosition(start): Ace.Position {
+            var result = {
+                row: start.getRow(),
+                column: start.getColumn()
+            };
+            return result;
+
+        }
+
+
+        private register(session) {
+            if (this.session) {
+                this.session.off("outline", this.setData, this);
             }
-         });
-        this.setIconPath("");
-        this.setIconOptions({
-            converter : (value, model) => {
-               return this.getIconForKind(value.getKind());
+            this.session = session;
+            
+            if (session) {
+                session.on("outline", this.setData,this);
+                this.setData(session.outline);
+            } else {
+                this.clear();
             }
-      });
+        }
 
-    }
-
-    private modelToPosition(start) :Ace.Position {
-        var result = {
-            row: start.getRow(),
-            column: start.getColumn()
-        };
-        return result;
-        
-    } 
+        private getSelectedItem() {
+            var item = this.getSelection().getItem(0);
+            return item;
+        }
 
 
-    private getSelectedItem() {
-        var item = this.getSelection().getItem(0);
-        return item;
-    }
+        private getIconForKind(name: string) {
+            var iconPath = "./resource/qx/icon/Oxygen/16/types/";
+            switch (name) {
+                case "function":
+                case "keyword":
+                case "method": return iconPath + "method.png";
+                case "constructor": return iconPath + "constructor.png";
+                case "module": return iconPath + "module.png";
+                case "interface": return iconPath + "interface.png";
+                case "enum": return iconPath + "enum.png";
+                case "class": return iconPath + "class.png";
+                case "property":
+                case "var": return iconPath + "variable.png";
+                default: return iconPath + "method.png";
+            }
+        }
 
 
-    private getIconForKind(name:string) {
-        var iconPath = "./resource/qx/icon/Oxygen/16/types/";
-        switch (name) {
-            case "function":
-            case "keyword":
-            case "method": return iconPath + "method.png";
-            case "constructor": return iconPath + "constructor.png";
-            case "module": return iconPath + "module.png";
-            case "interface":return iconPath + "interface.png";
-            case "enum": return iconPath + "enum.png"; 
-            case "class":return iconPath + "class.png";
-            case "property":
-            case "var":return iconPath + "variable.png";
-            default: return iconPath + "method.png";
-        }            
-    }
+        clear() {
+            this.setModel(null);
+        }
 
 
-
-    clear() {
-        this.setModel(null);
-    }
-
-
-    expandAll() {
-        var top = this.getModel().getChildren();
-        for (var i=0;i<top.length;i++) {
-            var root = top.getItem(i);
-            this.openNode(root);
-            if (root.getChildren) {
+        private expandAll(root,count=0) {
+            if (root && root.getChildren) {
+                this.openNode(root);
                 var children = root.getChildren();
-                for (var j=0;j<children.length;j++) {
-                    var child = children.getItem(j);
-                    this.openNode(child);
+                count += children.length;
+                if (count > OutlineNavigator.MAX) return count;
+                for (var i=0;i<children.length;i++) {
+                    var child = children.getItem(i);
+                    count = this.expandAll(child, count);
+                    if (count > OutlineNavigator.MAX) return count;
                 }
             }
+            return count;
         }
-    }
-   
-   
-   isExecutable(kind) {
-       if (kind === "method" || kind === "function" || kind === "constructor") return true;
-       return false;
-   }
-   
-    /**
-     * Set the data for this outline.
-     */ 
-    setData(session: Cats.Session, data: Cats.NavigateToItem[]) {
-        this.session = session;
-        if ((! data) || (! data.length)) {
-            this.clear();
-            return;
+
+
+        private isExecutable(kind) {
+            if (kind === "method" || kind === "function" || kind === "constructor") return true;
+            return false;
         }
-        
-        var parents = {};
-        var root = {};
-      
-        data.forEach((item) => {
-            var parentName = item.containerName;
-            var parent = parentName ? parents[parentName] : root;
-            if (! parent) console.info("No Parent for " + parentName);
-            if (! parent.children) parent.children = [];
-             
-            var extension = this.isExecutable(item.kind) ? "()" : "";
-            
-            var entry = {
-                label: item.name + extension,
-                range: item.range,
-                kind: item.kind
-            };
 
-            var childName = parentName ? parentName + "." + item.name : item.name;
-            parents[childName] = entry;
-            parent.children.push(entry);
-        });
-        this.setModel(qx.data.marshal.Json.createModel(root, false));
-        this.expandAll();
-  
+        /**
+         * Set the data for this outline.
+         */
+        setData(data: Cats.NavigateToItem[]) {
+            if ((!data) || (!data.length)) {
+                this.clear();
+                return;
+            }
+
+            var parents = {};
+            var root = {};
+
+            data.forEach((item) => {
+                var parentName = item.containerName;
+                var parent = parentName ? parents[parentName] : root;
+                if (!parent) console.info("No Parent for " + parentName);
+                if (!parent.children) parent.children = [];
+
+                var extension = this.isExecutable(item.kind) ? "()" : "";
+
+                var entry = {
+                    label: item.name + extension,
+                    range: item.range,
+                    kind: item.kind
+                };
+
+                var childName = parentName ? parentName + "." + item.name : item.name;
+                parents[childName] = entry;
+                parent.children.push(entry);
+            });
+            this.setModel(qx.data.marshal.Json.createModel(root, false));
+            this.expandAll(this.getModel());
+
+        }
+
     }
-
-
 }

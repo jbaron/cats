@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+module Cats.Gui {
 
 /**
  * The context menu for the file navigator. This menu provides basic 
  * file operations like, rename, delete and create.
  */ 
-class FileContextMenu extends qx.ui.menu.Menu {
+export class FileContextMenu extends qx.ui.menu.Menu {
 
     private gui = require('nw.gui');
     private searchDialog = new SearchDialog();
@@ -92,8 +93,6 @@ class FileContextMenu extends qx.ui.menu.Menu {
         
     }
 
-   
-
     private refresh() {
         var item = this.getSelectedItem();
         // IDE.project.getTreeView().refresh();
@@ -160,4 +159,4 @@ class FileContextMenu extends qx.ui.menu.Menu {
 
     
 }  
-
+}

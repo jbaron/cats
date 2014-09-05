@@ -13,80 +13,69 @@
 // limitations under the License.
 //
 
+module Cats.Theme {
 
-function noDecorator() {
-    return {
-        base: true,
-        style : function(states:any) { return { decorator : undefined }; } 
-    };    
-}
-
-qx.Theme.define("cats.theme.Appearance",
-{
-  extend : qx.theme.simple.Appearance,
-
-  appearances :
-  {
-    
-    "root" : {
-         base : true,    
-         style : function(states) {
-       return {
-           backgroundColor : "light-background"
-        };
-      }     
-    },  
-      
-    "tabview-page/button" : {
-      base : true,    
-      style : function(states) {
+    function noDecorator() {
         return {
-          padding : [6, 6, 6, 6]
+            base: true,
+            style: function(states: any) { return { decorator: undefined }; }
         };
-      }
-    },
-    
-     "splitpane" : {
-       style : function(states) {
-       return {
-           backgroundColor : "light-background",
-           decorator: undefined
-        };
-      }     
-    },
-    
-    
-    "toolbar" : {
-        base: true,
-        style : function(states) {
-           return {
-                backgroundColor : undefined,
-            };
-        }
-    },
- 
-    "toolbar-button" : {
-        base: true,
-        style : function(states) {
-           return {
-                padding : [3,3],
-                margin  : [5,5]
-            };
-        }
-    },
-    
-    "__virtual-tree" : noDecorator(),
-    
-    "__toolbar-button" : noDecorator(),
-
-    "__tabview/pane" : {
-       base : true,    
-       style : function(states) {
-       return {
-          backgroundColor : undefined,
-        };
-      }     
     }
-      
-  }
-});
+
+    qx.Theme.define("cats.theme.Appearance", {
+        extend: qx.theme.simple.Appearance,
+
+        appearances:
+        {
+
+            "root": {
+                base: true,
+                style: function(states) {
+                    return {
+                        backgroundColor: "light-background"
+                    };
+                }
+            },
+
+            "tabview-page/button": {
+                base: true,
+                style: function(states) {
+                    return {
+                        padding: [6, 6, 6, 6]
+                    };
+                }
+            },
+
+            "splitpane": {
+                style: function(states) {
+                    return {
+                        backgroundColor: "light-background",
+                        decorator: undefined
+                    };
+                }
+            },
+
+
+            "toolbar": {
+                base: true,
+                style: function(states) {
+                    return {
+                        backgroundColor: undefined,
+                    };
+                }
+            },
+
+            "toolbar-button": {
+                base: true,
+                style: function(states) {
+                    return {
+                        padding: [3, 3],
+                        margin: [5, 5]
+                    };
+                }
+            }
+
+        }
+    });
+
+}

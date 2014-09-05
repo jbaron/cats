@@ -15,7 +15,7 @@
 // 
 
 module Cats {
-
+    
     var typedoc;
     /**
      * The project hold the informaiton related to a single project. This include 
@@ -81,7 +81,6 @@ module Cats {
             IDE.fileNavigator.clear();
             IDE.outlineNavigator.clear();
             IDE.problemResult.clear();
-            IDE.searchResult.clear();
             if (this.iSense) this.iSense.stop();
         }
 
@@ -96,11 +95,8 @@ module Cats {
                     if (data.length === 0) {
                         if (verbose) {
                             IDE.console.log("Project has no errors");
-                            IDE.problemPane.selectPage("console");
                         }
-                    } else {
-                        IDE.problemPane.selectPage("problems");
-                    }
+                    } 
                 }
 
             });
@@ -147,7 +143,7 @@ module Cats {
                 return;
             }
 
-            var win = new BusyWindow("Generating Documentation");
+            var win = new Gui.BusyWindow("Generating Documentation");
             win.show();
             win.addListenerOnce("ready", () => {
                 try {
@@ -231,7 +227,7 @@ module Cats {
                 return;
             }
 
-            IDE.problemResult.setData([]);
+            IDE.problemResult.clear();
             IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).");
         }
 

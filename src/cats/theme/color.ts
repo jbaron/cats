@@ -13,24 +13,33 @@
 // limitations under the License.
 //
 
-qx.Theme.define("cats.theme.Color",
-{
-  extend : qx.theme.simple.Color,
+module Cats.Theme {
 
-  colors :
-  {
-      "light-background" : "#C0CCDF",
-      "button-box-bright" : "#B0BCCF"
-  }
-});
+    qx.Theme.define("cats.theme.Color",
+        {
+            extend: qx.theme.simple.Color,
 
-qx.Theme.define("cats.theme.ColorGrey",
-{
-  extend : qx.theme.simple.Color,
+            colors:
+            {
+                "light-background": "#C0CCDF",
+                "button-box-bright": "#B0BCCF"
+            }
+        });
 
-  colors :
-  {
-      "light-background" : "#B0B0B0",
-      "button-box-bright" : "#A0A0A0"
-  }
-});
+
+    qx.Theme.define("cats.theme.ColorGrey",
+        {
+            extend: qx.theme.simple.Color,
+
+            colors:
+            {
+                "light-background": "#B0B0B0",
+                "button-box-bright": "#A0A0A0",
+                "background-selected" : "#666666",
+                "border-main" : "#666666",
+                "background-selected-dark" : "#555555",
+                "link" : "#EEEEEE"
+            }
+        });
+
+}

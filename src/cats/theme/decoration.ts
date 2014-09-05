@@ -12,23 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+module Cats.Theme {
 
-qx.Theme.define("cats.theme.Decoration",
-{
-  extend : qx.theme.simple.Decoration,
 
-  decorations :
-  {
-    "button-box" : {
-      style :
-      {
-        radius : 3,
-        width : 1,
-        color : "button-border",
-        backgroundColor : "button-box-bright"
-      }
-    }
-      
-      
-  }
-});
+    qx.Theme.define("cats.theme.Decoration",
+        {
+            extend: qx.theme.simple.Decoration,
+
+            decorations:
+            {
+                "button-box": {
+                    style:
+                    {
+                        radius: 3,
+                        width: 1,
+                        color: "button-border",
+                        backgroundColor: "button-box-bright"
+                    }
+                }
+
+
+            }
+        });
+}

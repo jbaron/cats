@@ -20,10 +20,10 @@
  * @TODO make this more an async api so it becomes easier to switch to other implementations
  * Perhaps after TS has implement await type of functionality.
  */
-module OS.File {
+module Cats.OS.File {
 
         window["EventEmitter"] = require("events").EventEmitter;
-        var FS=require("fs");
+        var fs=require("fs");
         var exec = require("child_process").exec;
         var glob = require("glob");
 
@@ -40,7 +40,7 @@ module OS.File {
             
             add(name:string) {
                 if (this.watches[name]) return;
-                var w = FS.watch(name, (event,filename) => {
+                var w = fs.watch(name, (event,filename) => {
                     console.info("Node changed " + name + " event " + event + " fileName " + filename);
                     this.emit("change", name, event, filename);
                 });
@@ -49,7 +49,7 @@ module OS.File {
             
             addDir(name:string) {
                 if (this.watches[name]) return;
-                var w = FS.watch(name, (event,filename) => {
+                var w = fs.watch(name, (event,filename) => {
                     console.info("Node changed " + name + " event " + event + " fileName " + filename);
                     if (event === "rename") this.emit("change", name, event, filename);
                 });
@@ -61,21 +61,17 @@ module OS.File {
                 if (w) w.close();
             }
             
-            
         }
 
 
-        
- 
-        
-        /**
+       /**
          * Create recursively directories if they don't exist yet
          * @param path The directory path to create
          */ 
         export function mkdirRecursiveSync(path: string) {
-            if (!FS.existsSync(path)) {
+            if (!fs.existsSync(path)) {
                 mkdirRecursiveSync(PATH.dirname(path));
-                FS.mkdirSync(path,509); //, 0775);
+                fs.mkdirSync(path,509); //, 0775);
             }
         }
 
@@ -87,6 +83,24 @@ module OS.File {
             return watcher;
         }
 
+       
+       export function getProperties(fileName:string) {
+           if (! fileName) return [];
+           var stat:Object = fs.statSync(fileName);
+           var result = [
+               { key: "fileName", value: fileName}
+           ];
+           for (var key in stat) {
+               if (stat.hasOwnProperty(key)) {
+                   result.push({
+                       key: key,
+                       value : stat[key]
+                   });
+               }
+           }
+           return result;
+           
+       }
        
         /**
          * Run an external command like a build tool
@@ -122,11 +136,11 @@ module OS.File {
          * @param path the path of the file or directory
          */ 
         export function remove(path:string) {
-            var isFile = FS.statSync(path).isFile();
+            var isFile = fs.statSync(path).isFile();
             if (isFile) 
-                FS.unlinkSync(path);
+                fs.unlinkSync(path);
             else 
-                FS.rmdirSync(path);
+                fs.rmdirSync(path);
         }
 
         export function isOSX() {
@@ -157,7 +171,7 @@ module OS.File {
          * @param newName the new name of the file or directory
          */ 
         export function rename(oldName:string,newName: string) {
-             FS.renameSync(oldName, newName);
+             fs.renameSync(oldName, newName);
         }
 
 
@@ -185,9 +199,9 @@ module OS.File {
                 value = value.replace(/\n/g, "\r\n");
             }
             mkdirRecursiveSync(PATH.dirname(name));
-            FS.writeFileSync(name, value, "utf8");
+            fs.writeFileSync(name, value, "utf8");
             
-            if (stat) return FS.statSync(name);
+            if (stat) return fs.statSync(name);
             return null;
         }
         
@@ -215,11 +229,11 @@ module OS.File {
          * @param directory The directory name that should be read
          */ 
         export function readDir(directory:string, sorted=false): Cats.FileEntry[] {
-            var files:string[] = FS.readdirSync(directory);
+            var files:string[] = fs.readdirSync(directory);
             var result = [];
             files.forEach((file) => {
                 var fullName = OS.File.join(directory, file);
-                var stats = FS.statSync(fullName);
+                var stats = fs.statSync(fullName);
                 result.push({
                    name:file,
                    fullName: fullName,
@@ -239,7 +253,7 @@ module OS.File {
         export function readTextFile(name: string): string {
             if (name == null ) return "";
 
-            var data = FS.readFileSync(name, "utf8");
+            var data = fs.readFileSync(name, "utf8");
 
             // Use single character line returns
             data = data.replace(/\r\n?/g, "\n");

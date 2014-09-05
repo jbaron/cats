@@ -77,7 +77,7 @@ module Cats.Commands {
      * Provide the user with an UI to configure the project settings
      */ 
     function configureProject() {
-        var w = new ProjectConfigDialog(IDE.project);
+        var w = new Gui.ProjectConfigDialog(IDE.project);
         w.show();
     }
 

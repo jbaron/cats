@@ -16,10 +16,8 @@
 var PATH = require("path");
 var GUI = require('nw.gui');
 
-
 // GLOBAL variable used for accessing the singleton IDE instance
 var IDE: Cats.Ide;
-
 
 /**
  * Main module of the CATS IDE
@@ -64,18 +62,6 @@ module Cats {
     });
 
 
-    // Catch the close of the windows in order to save any unsaved changes
-    var win = GUI.Window.get();
-    win.on("close", function() {
-        try {
-            if (IDE.hasUnsavedSessions()) {
-                if (!confirm("There are unsaved files!\nDo you really want to quit?")) return;
-            }
-            IDE.saveConfig();
-        } catch (err) { } // lets ignore this
-        this.close(true);
-    });
-
     /**
      * This is the functions that start kicks it all of. When Qooxdoo is loaded it will 
      * call this main to start the application 
@@ -86,9 +72,12 @@ module Cats {
         if (args.indexOf("--debug") === -1) {
             console.info = function() { /* NOP */};
             console.debug = function() { /* NOP */};
-        }
-
+        } 
+        
         IDE = new Cats.Ide();
+        if (args.indexOf("--debug") > -1) {
+            IDE.debug = true;
+        }
 
         IDE.init(<qx.ui.container.Composite>app.getRoot());
 
@@ -100,6 +89,7 @@ module Cats {
         }
     }
 
+    // Register the main method that once Qooxdoo is loaded is called
     qx.registry.registerMainMethod(main);
 
 }

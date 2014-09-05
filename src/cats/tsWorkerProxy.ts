@@ -15,145 +15,147 @@
 
 module Cats {
 
-/** 
- * Load the TSWorker and handles the communication with the web worker
- * This implementation uses internally a JSON-RPC style message format 
- * for the communication.
- */
-export class TSWorkerProxy {
+    /** 
+     * Load the TSWorker and handles the communication with the web worker
+     * This implementation uses internally a JSON-RPC style message format 
+     * for the communication.
+     */
+    export class TSWorkerProxy {
 
-    private worker:Worker;
-    private messageId = 0;
-    private registry = {};
+        private worker: Worker;
+        private messageId = 0;
+        private registry = {};
 
-    constructor(private project:Project) {
-        // Create a new webworker
-        this.worker = new Worker("../lib/tsworker.js");
-        this.initWorker();
-    }
+        constructor(private project: Project) {
+            // Create a new webworker
+            this.worker = new Worker("../lib/tsworker.js");
+            this.initWorker();
+        }
 
-    stop() {
-        this.worker.terminate();
-    }
+        stop() {
+            this.worker.terminate();
+        }
 
-    getErrors(fileName:string,cb:(err, result: FileRange[]) => void) {
-        this.perform("getErrors",fileName, cb);
-    }
+        getErrors(fileName: string, cb: (err, result: FileRange[]) => void) {
+            this.perform("getErrors", fileName, cb);
+        }
 
-    getNavigateToItems(search:string, cb:(err,result:NavigateToItem[])=> void ) {
-        this.perform("getNavigateToItems", search, cb);
-    }
+        getNavigateToItems(search: string, cb: (err, result: NavigateToItem[]) => void) {
+            this.perform("getNavigateToItems", search, cb);
+        }
 
-    getAllDiagnostics(cb:(err, result: FileRange[]) => void) {
-        this.perform("getAllDiagnostics", cb);
-    }
+        getAllDiagnostics(cb: (err, result: FileRange[]) => void) {
+            this.perform("getAllDiagnostics", cb);
+        }
 
-    getFormattedTextForRange(sessionName:string,range:Range, cb:Function) {
-        this.perform("getFormattedTextForRange", sessionName, range, cb);
-    }                    
-                
-    getDefinitionAtPosition(sessionName:string, cursor:Cats.Position, cb:(err:any, data:FileRange) => void) {
-        this.perform("getDefinitionAtPosition", sessionName, cursor, cb);
-    }
-             
-    getInfoAtPosition(type:string, sessionName:string, cursor:Cats.Position, cb:(err:any, data:Cats.FileRange[]) => void) {
-        this.perform("getInfoAtPosition", type, sessionName, cursor, cb);
-    }
-    
-    compile(cb:(err, data:Cats.CompileResults)=>void) {
-        this.perform("compile", cb);
-    }
+        getFormattedTextForRange(sessionName: string, range: Range, cb: Function) {
+            this.perform("getFormattedTextForRange", sessionName, range, cb);
+        }
 
-    getScriptLexicalStructure(sessionName:string, cb: (err:any, data: NavigateToItem[])=>void) {
-        this.perform("getScriptLexicalStructure",sessionName,cb);
-    }
-    
-    getTypeAtPosition(name:string, docPos:Ace.Position, cb:(err:any, data: TypeInfo)=>void) {
-        this.perform("getTypeAtPosition", name, docPos, cb);
-    }
+        getDefinitionAtPosition(sessionName: string, cursor: Cats.Position, cb: (err: any, data: FileRange) => void) {
+            this.perform("getDefinitionAtPosition", sessionName, cursor, cb);
+        }
 
-    getDependencyGraph(cb) {
-        this.perform("getDependencyGraph",cb);
-    }
+        getInfoAtPosition(type: string, sessionName: string, cursor: Cats.Position, cb: (err: any, data: Cats.FileRange[]) => void) {
+            this.perform("getInfoAtPosition", type, sessionName, cursor, cb);
+        }
 
-   getObjectModel(cb) {
-        this.perform("getObjectModel",cb);
-    }
+        compile(cb: (err, data: Cats.CompileResults) => void) {
+            this.perform("compile", cb);
+        }
 
-    setSettings(compilerSettings, editorSettings) {
-         this.perform("setSettings", compilerSettings, editorSettings, null);
-    }
+        getScriptLexicalStructure(sessionName: string, cb: (err: any, data: NavigateToItem[]) => void) {
+            this.perform("getScriptLexicalStructure", sessionName, cb);
+        }
 
-    addScript(fileName:string,content:string) {
-        this.perform("addScript",fileName, content, null);
-    }
-    
-    updateScript(fileName:string,content:string) {
-        this.perform("updateScript",fileName, content, null);
-    }
+        getTypeAtPosition(name: string, docPos: Ace.Position, cb: (err: any, data: TypeInfo) => void) {
+            this.perform("getTypeAtPosition", name, docPos, cb);
+        }
 
-    getCompletions(fileName:string, cursor:Ace.Position, cb:(err, completes:TypeScript.Services.CompletionInfo) => void) {
-        this.perform("getCompletions", fileName, cursor, cb); 
-    }
+        getDependencyGraph(cb) {
+            this.perform("getDependencyGraph", cb);
+        }
 
-    initialize() {
-        this.perform("initialize", null);
-    }
-  
-    /**
-     * Invoke a method on the worker using JSON-RPC message structure
-     */ 
-    private perform(method:string, ...data:Array<any>) {
-        var handler = data.pop();
-        this.messageId++;
-        var message = {
-            id: this.messageId,
-            method: method,
-            params: data
-        };
-        this.worker.postMessage(message);
-        console.info("Send message: " + message.method);
-        if (handler) { this.registry[this.messageId] = handler; }
-    }
+        getObjectModel(cb) {
+            this.perform("getObjectModel", cb);
+        }
 
-    /**
-     * Clear any pending handlers
-     */ 
-    clear() {
-        this.registry = {};
-    }
+        setSettings(compilerSettings, editorSettings) {
+            this.perform("setSettings", compilerSettings, editorSettings, null);
+        }
 
-    /**
-     * Setup the message communication with the worker
-     */ 
-    private initWorker() {
-        // Setup the message handler
-        this.worker.onmessage = (e) => {
-            var msg = e.data;
-            // console.log("Received message " + JSON.stringify(msg) + " from worker");
-            // console.log("Received message reply " + msg.id + " from worker.");
-            if (msg.error) {
-                console.error("Got error back !!! ");
-                console.error(msg.error.stack);                
-            }
-            // @TODO handle exceptions better and call callback
-            var id = msg.id;
-            if (id) {
-                var handler = this.registry[id];
-                if (handler) {
-                    delete this.registry[id];
-                    handler(msg.error, msg.result); 
+        addScript(fileName: string, content: string) {
+            this.perform("addScript", fileName, content, null);
+        }
+
+        updateScript(fileName: string, content: string) {
+            this.perform("updateScript", fileName, content, null);
+        }
+
+        getCompletions(fileName: string, cursor: Ace.Position, cb: (err, completes: TypeScript.Services.CompletionEntry[]) => void) {
+            this.perform("getCompletions", fileName, cursor, cb);
+        }
+
+        initialize() {
+            this.perform("initialize", null);
+        }
+
+        /**
+         * Invoke a method on the worker using JSON-RPC message structure
+         */
+        private perform(method: string, ...data: Array<any>) {
+            var handler = data.pop();
+            this.messageId++;
+            var message = {
+                id: this.messageId,
+                method: method,
+                params: data
+            };
+            this.worker.postMessage(message);
+            console.info("Send message: " + message.method);
+            if (handler) { this.registry[this.messageId] = handler; }
+        }
+
+        /**
+         * Clear any pending handlers
+         */
+        clear() {
+            this.registry = {};
+        }
+
+        /**
+         * Setup the message communication with the worker
+         */
+        private initWorker() {
+            // Setup the message handler
+            this.worker.onmessage = (e) => {
+                var msg = e.data;
+                // console.log("Received message " + JSON.stringify(msg) + " from worker");
+                // console.log("Received message reply " + msg.id + " from worker.");
+                if (msg.error) {
+                    console.error("Got error back !!! ");
+                    console.error(msg.error.stack);
                 }
-            } else {
-                if (msg.method && (msg.method === "setBusy")) {
-                    IDE.statusBar.setBusy(msg.params[0]);
+                // @TODO handle exceptions better and call callback
+                var id = msg.id;
+                if (id) {
+                    var handler = this.registry[id];
+                    if (handler) {
+                        delete this.registry[id];
+                        handler(msg.error, msg.result);
+                    }
                 } else {
-                    console.info(msg.params[0]);
+                    if (msg.method && (msg.method === "setBusy")) {
+                        IDE.statusBar.setBusy(msg.params[0]);
+                    } 
+                    
+                    if (msg.method && (msg.method === "console")) {
+                        IDE.console.log(msg.params[0]);
+                    } 
                 }
-            }
-        };
-    }
+            };
+        }
 
-}
+    }
 
 }

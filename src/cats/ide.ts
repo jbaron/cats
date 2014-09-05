@@ -14,7 +14,7 @@
 //
 
 module Cats {
-    
+   
     var Events = require('events');
 
     export class Ide  {
@@ -29,20 +29,20 @@ module Cats {
             simple:qx.theme.Simple
         };
 
-        problemPane: TabView;
-        toolBar: ToolBar;
-        infoPane: TabView;
-        statusBar: StatusBar;
-        sessionTabView: SessionTabView;
-        console:ConsoleLog;
-        processTable:ProcessTable;
-        searchResult:ResultTable;
-        bookmarks:ResultTable;
-        problemResult:ResultTable;
-        menubar:Menu.Menubar;
-        outlineNavigator:OutlineNavigator; 
-        fileNavigator:FileNavigator;
-
+        problemPane: Gui.TabView;
+        toolBar: Gui.ToolBar;
+        infoPane: Gui.TabView;
+        statusBar: Gui.StatusBar;
+        sessionTabView: Gui.SessionTabView;
+        console: Gui.ConsoleLog;
+        processTable: Gui.ProcessTable;
+        bookmarks:Gui.ResultTable;
+        problemResult:Gui.ResultTable;
+        menubar:Gui.Menubar;
+        propertyTable:Gui.PropertyTable;
+        outlineNavigator:Gui.OutlineNavigator; 
+        fileNavigator:Gui.FileNavigator;
+        debug:boolean= false;
 
         catsHomeDir: string;
         project: Project;
@@ -63,16 +63,17 @@ module Cats {
          */ 
         init(rootDoc:qx.ui.container.Composite) {
             Cats.Commands.init();
-            var layouter = new Layout(rootDoc);
+            var layouter = new Gui.Layout(rootDoc);
             layouter.layout(this);
-            this.menubar = new Cats.Menu.Menubar();
+            this.menubar = new Gui.Menubar();
             this.initFileDropArea();
+            this.handleCloseWindow();
         }
 
         getActiveEditor() {
             var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
             if (! page) return null;
-            var editor:SourceEditor = <SourceEditor>page.getChildren()[0];
+            var editor:Gui.SourceEditor = <Gui.SourceEditor>page.getChildren()[0];
             return editor;
         }
 
@@ -113,6 +114,7 @@ module Cats {
                 event.dataTransfer.dropEffect = "copy"; // Explicitly show this is a copy.
             }, false);
         }
+
 
         /**
          * Process the file and open it inside a new ACE session
@@ -252,7 +254,7 @@ module Cats {
          * Open an existing session or if it doesn't exist yet create
          * a new one.
          */ 
-        openSession(name?: string, pos?:Ace.Position):Session {
+        openSession(name?: string, pos:Ace.Position = {row:0, column:0}):Session {
             var session:Session;
             if (name) session = this.getSession(name);
             if (! session) {
@@ -278,15 +280,6 @@ module Cats {
             return session;
         }
 
- 
-        /**
-         * Set the theme of the IDE
-         * @param theme The name of the new theme
-         */
-        setTheme(theme: string) {
-            this.config.theme = theme;
-            // IDE.mainEditor.setTheme(theme);
-        }
 
         /**
          * Add a new project to the IDE
@@ -297,11 +290,26 @@ module Cats {
               
             if (this.project) {
                 this.fileNavigator.setProject(this.project);
-                // var fileTree = new FileNavigator(this.project);
-                // this.navigatorPane.getChildren()[0].add(fileTree, { edge: 0 });
             }
-            
         }
+        
+        
+        private handleCloseWindow() {
+            // Catch the close of the windows in order to save any unsaved changes
+            var win = GUI.Window.get();
+            win.on("close", function() {
+                try {
+                    if (IDE.hasUnsavedSessions()) {
+                        if (!confirm("There are unsaved changes!\nDo you really want to continue?")) return;
+                    }
+                    IDE.saveConfig();
+                } catch (err) { } // lets ignore this
+                this.close(true);
+            });
+        }
+        
+        
+        
         
         /**
          * Close an open project

@@ -12,90 +12,99 @@
 // limitations under the License.
 //
 
-/**
- * This table displays problems and search result
- */
-class ResultTable extends qx.ui.table.Table {
+module Cats.Gui {
 
-    private data:Cats.FileRange[];
+    /**
+     * This table displays problems and search result
+     */
+    export class ResultTable extends qx.ui.table.Table {
 
-   private rangeToPosition(range: Cats.Range): string {
-        return (range.start.row + 1) + ":" + (range.start.column + 1);
-    }
+        private data: Cats.FileRange[];
 
-
-    clear() {
-        this.setData([]);
-    }
-
-
-    private convert(row:Cats.FileRange) {
-        return [
-                    row.message,
-                    row.fileName,
-                    this.rangeToPosition(row.range),
-                    row.range
-                ];
-    }
-
-    getData() :Cats.FileRange[] {
-        return this.data;
-    }
-
-    setData(data: Cats.FileRange[]) {
-        this.data = data;
-        var tableModel = new qx.ui.table.model.Simple();
-        var rows:any[] = [];
-        if (data) {
-            data.forEach((row)=>{
-                rows.push(this.convert(row));
-            });
+        private rangeToPosition(range: Cats.Range): string {
+            return (range.start.row + 1) + ":" + (range.start.column + 1);
         }
-        // tableModel.setColumns(ResultTable.HEADERS);
-        // tableModel.setData(rows);
-        // this.setTableModel(tableModel);
-        this.getTableModel().setData(rows);
-        this.getSelectionModel().resetSelection(); 
-    }
 
-    addData(row: Cats.FileRange) {
-        this.getTableModel().addRows([this.convert(row)]);
-    }
 
-    constructor(headers = ["Message", "File", "Position"]) {
-        
-        var tableModel = new qx.ui.table.model.Simple();
-        tableModel.setColumns(headers);
-        tableModel.setData([]);
+        clear() {
+            this.setData([]);
+        }
 
-        var custom: any = {
-            tableColumnModel: function(obj) {
-                return new qx.ui.table.columnmodel.Resize(obj);
+
+        private convert(row: Cats.FileRange) {
+            return [
+                row.message,
+                row.fileName,
+                this.rangeToPosition(row.range),
+                row.range
+            ];
+        }
+
+        getData(): Cats.FileRange[] {
+            return this.data;
+        }
+
+        private areEmpty(...args) {
+            for (var i=0; i< args.length; i++ ) {
+                var arr = args[i];
+                if (arr && (arr.length > 0)) return false
             }
-        };
-        super(tableModel, custom);
-        this.setDecorator(null);
+            return true;
+        }
 
-        this.setPadding(0, 0, 0, 0);
-        
-        this.getSelectionModel().addListener("changeSelection" , (data) => {
-            var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
-            var data = this.getTableModel().getRowData(selectedRow);
-            // IDE.console.log("Selected row:" + selectedRow);
-            if (data) IDE.openSession(data[1], data[3].start);
-        });
-        
-        this.setContextMenu(this.createContextMenu());
+        setData(data: Cats.FileRange[]) {
+            if (this.areEmpty(this.data, data)) return;
+            this.fireDataEvent("contentChange", null);
+            this.data = data;
+            var tableModel = new qx.ui.table.model.Simple();
+            var rows: any[] = [];
+            if (data) {
+                data.forEach((row) => {
+                    rows.push(this.convert(row));
+                });
+            }
+            this.getTableModel().setData(rows);
+            this.getSelectionModel().resetSelection();
+        }
+
+        addData(row: Cats.FileRange) {
+            this.getTableModel().addRows([this.convert(row)]);
+        }
+
+        constructor(headers = ["Message", "File", "Position"]) {
+
+            var tableModel = new qx.ui.table.model.Simple();
+            tableModel.setColumns(headers);
+            tableModel.setData([]);
+
+            var custom: any = {
+                tableColumnModel: function(obj) {
+                    return new qx.ui.table.columnmodel.Resize(obj);
+                }
+            };
+            super(tableModel, custom);
+            this.setDecorator(null);
+
+            this.setPadding(0, 0, 0, 0);
+
+            this.getSelectionModel().addListener("changeSelection", (data) => {
+                var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
+                var data = this.getTableModel().getRowData(selectedRow);
+                // IDE.console.log("Selected row:" + selectedRow);
+                if (data) IDE.openSession(data[1], data[3].start);
+            });
+
+            this.setContextMenu(this.createContextMenu());
+        }
+
+        private createContextMenu() {
+            var menu = new qx.ui.menu.Menu();
+            var item1 = new qx.ui.menu.Button("Clear Output");
+            item1.addListener("execute", () => { this.clear(); });
+            menu.add(item1);
+
+            return menu;
+        }
+
     }
-
-   private createContextMenu() {
-        var menu = new qx.ui.menu.Menu();
-        var item1 = new qx.ui.menu.Button("Clear Output");
-        item1.addListener("execute", () => { this.clear();});
-        menu.add(item1);
-        
-        return menu;
-    }
-
-
 }

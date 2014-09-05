@@ -12,131 +12,132 @@
 // limitations under the License.
 //
 
-/**
- * Used for all the tabs execpt the session tab
- */ 
-class TabView extends qx.ui.tabview.TabView {
-  private static IDNAME="___ID___" ;
-  private iconFolder = "./resource/qx/icon/Oxygen/16/";
-    private iconMapping = {
-        "search" : {
-            label : "Search",
-            icon: "actions/edit-find.png"
-        }, 
-        
-        "console" : {
-            icon : "apps/utilities-terminal.png"
-        },
-        
-        "process" : {
-            icon: "actions/view-process-all.png"  
-        },
-                
-         "files" : {
-            label: "Project Explorer",
-            icon: "actions/view-list-tree.png"
-            // icon: "filenav_nav.svg"
-        },
-        
-         "outline" : {
-            icon: "actions/code-class.png"
-            // icon: "outline_co.svg"
-        },
-        
-        "bookmarks" : {
-            icon: "actions/bookmarks-organize.png"
-        },
-        
-        "todo" : {
-          icon: "actions/view-pim-tasks.png"  
-        },
-        
-        "properties" : {
-          icon: "actions/document-properties.png"  
-        },
-        
-        "problems" : {
-            icon: "status/task-attention.png"  
-        }
-        
-        
-    } ; 
+module Cats.Gui {
 
-    constructor(tabNames: string[]=[]) {
-        super();
-        this.setPadding(0, 0, 0, 0);
-        this.setContentPadding(0, 0, 0, 0);
-        tabNames.forEach((name) => {
-            this.addPage(name);
-        });           
-        
-  
-    }
+      var iconMapping = {
+            "search": {
+                label: "Search",
+                icon: "actions/edit-find.png"
+            },
 
-    private getLabel(name:string) {
-        var label:string;
-        var entry = this.iconMapping[name];
-        if (entry) label = entry.label;
-        if (! label) label = qx.Bootstrap.firstUp(name);
-        return label;
-    }
+            "console": {
+                icon: "apps/utilities-terminal.png"
+            },
 
-    private getIconName(name:string) {
-        var entry = this.iconMapping[name];
-        if (entry) return this.iconFolder + entry.icon;
-    }
+            "process": {
+                icon: "actions/view-process-all.png"
+            },
 
-    addPage(id:string, tooltipText?:string, widget?:qx.ui.core.LayoutItem): qx.ui.tabview.Page {
-        var tab = new qx.ui.tabview.Page(this.getLabel(id), this.getIconName(id));
-        tab[TabView.IDNAME] = id;
-        tab.setLayout(new qx.ui.layout.Canvas());
+            "files": {
+                label: "Project Explorer",
+                icon: "actions/view-list-tree.png"
+                // icon: "filenav_nav.svg"
+            },
 
-        var button = (<any>tab).getButton();
-        button.setContextMenu(this.createContextMenu(tab));
+            "outline": {
+                icon: "actions/code-class.png"
+                // icon: "outline_co.svg"
+            },
 
-        if (tooltipText) {
-            var tooltip = new qx.ui.tooltip.ToolTip(tooltipText);
-            button.setToolTip(tooltip);
-            button.setBlockToolTip(false);
-        }
-        
-        if (widget) {
-            tab.add(widget, { edge: 0 });
-        }
-        
-        this.add(tab);
-        return tab;
-    }
+            "bookmarks": {
+                icon: "actions/bookmarks-organize.png"
+            },
 
-    private createContextMenu(tab: qx.ui.tabview.Page) {
-        var menu = new qx.ui.menu.Menu();
-        var item1 = new qx.ui.menu.Button("Close");
-        item1.addListener("execute", () => {
-            this.remove(tab);
-        });
+            "todo": {
+                icon: "actions/view-pim-tasks.png"
+            },
 
-        var item2 = new qx.ui.menu.Button("Close other");
-        var item3 = new qx.ui.menu.Button("Close all");
-        menu.add(item1);
-        menu.add(item2);
-        menu.add(item3);
-        return menu;
-    }
+            "properties": {
+                icon: "actions/document-properties.png"
+            },
 
-    getPage(id: string): qx.ui.tabview.Page {
-        var pages = this.getChildren();
-        for (var i = 0; i < pages.length; i++) {
-            var page = pages[i];
-            if (page[TabView.IDNAME] === id) {
-                return page;
+            "problems": {
+                icon: "status/task-attention.png"
+            },
+
+            "info": {
+                icon: "status/dialog-information.png"
             }
+
+        };
+
+    function getLabel(name: string) {
+            var label: string;
+            var entry = iconMapping[name];
+            if (entry) label = entry.label;
+            if (!label) label = qx.Bootstrap.firstUp(name);
+            return label;
+    }
+
+    function getIconName(name: string) {
+            var entry = iconMapping[name];
+            if (entry) return "./resource/qx/icon/Oxygen/16/" + entry.icon;
+    }
+
+
+    export class TabViewPage extends qx.ui.tabview.Page {
+        
+        autoSelect = false;
+        
+        constructor(public id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem) {
+            super(getLabel(id), getIconName(id));
+            this.setLayout(new qx.ui.layout.Canvas());
+
+            if (tooltipText) {
+                var button = this.getButton();
+                var tooltip = new qx.ui.tooltip.ToolTip(tooltipText);
+                button.setToolTip(tooltip);
+                button.setBlockToolTip(false);
+            }
+
+            if (widget) {
+                this.add(widget, { edge: 0 });
+                widget.addListener("contentChange",() => {
+                    if (this.autoSelect) this.select(); 
+                });
+            }
+
         }
-        return null;
+        
+        select() {
+            var tabView = this.getLayoutParent().getLayoutParent();
+            tabView.setSelection([this]); 
+        }
+        
     }
 
-    selectPage(id: string) {
-        var page = this.getPage(id);
-        if (page) this.setSelection([page]);
-    }
+    /**
+     * Used for all the tabs execpt the session tab
+     */
+    export class TabView extends qx.ui.tabview.TabView {
 
+        constructor() {
+            super();
+            this.setPadding(0, 0, 0, 0);
+            this.setContentPadding(0, 0, 0, 0);
+        }
+
+       addPage(id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem): TabViewPage {
+            var tab = new TabViewPage(id, tooltipText, widget);
+            this.add(tab);
+            return tab;
+        }
+
+        getPage(id: string): qx.ui.tabview.Page {
+            var pages = <TabViewPage[]>this.getChildren();
+            for (var i = 0; i < pages.length; i++) {
+                var page = pages[i];
+                if (page.id === id) {
+                    return page;
+                }
+            }
+            return null;
+        }
+
+        selectPage(id: string) {
+            var page = this.getPage(id);
+            if (page) this.setSelection([page]);
+        }
+
+    }
 }
