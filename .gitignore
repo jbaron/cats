@@ -4,4 +4,6 @@ node_modules
 .idea/*
 **/.DS_Store
 api_doc
+build
+cache
 

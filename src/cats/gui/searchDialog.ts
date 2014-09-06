@@ -13,7 +13,7 @@
 //
 
 module Cats.Gui {
-    
+
     /**
      * Base class for all the configuration dialogs forms in
      * CATS.
@@ -22,6 +22,7 @@ module Cats.Gui {
 
         private form = new qx.ui.form.Form();
         private rootDir: string;
+
 
         constructor() {
             super("Search");
@@ -41,23 +42,33 @@ module Cats.Gui {
 
 
 
-        private getResults(content: string, pattern: RegExp, fileName, result: Cats.FileRange[]) {
-            var lines = content.split("\n");
-            for (var x = 0; x < lines.length; x++) {
-                var line = lines[x];
-                if (line.match(pattern)) {
-                    var item: Cats.FileRange = {
-                        range: {
-                            start: { row: x, column: 0 },
-                            end: { row: x, column: 0 }
-                        },
-                        fileName: fileName,
-                        message: line
-                    };
-                    result.push(item);
-                }
-            }
+        private getResults(fileName: string, pattern: RegExp, result: Cats.FileRange[]) {
+            try {
+                var content = OS.File.readTextFile(fileName);
+                if (!content.match(pattern)) return;
 
+                var lines = content.split("\n");
+                for (var x = 0; x < lines.length; x++) {
+                    var line = lines[x];
+                    var match = null;
+                    while (match = pattern.exec(line)) {
+                        var columnX = pattern.lastIndex - match[0].length;
+                        var columnY = pattern.lastIndex;
+                        var item: Cats.FileRange = {
+                            range: {
+                                start: { row: x, column: columnX },
+                                end: { row: x, column: columnY }
+                            },
+                            fileName: fileName,
+                            message: line
+                        };
+                        result.push(item);
+                    }
+                }
+            } catch (err) {
+                console.error("Got error while handling file " + fileName);
+                console.error(err);
+            }
         }
 
         private run(param) {
@@ -68,24 +79,15 @@ module Cats.Gui {
             OS.File.find(param.glob, this.rootDir, (err: Error, files: Array<string>) => {
                 files.forEach((file) => {
                     if (result.length > param.maxHits) return;
-                    try {
-                        var fullName = OS.File.join(this.rootDir, file);
-                        var content = OS.File.readTextFile(fullName);
-                        if (content.match(searchPattern)) {
-                            this.getResults(content, searchPattern, fullName, result);
-                        }
-
-                    } catch (err) {
-                        console.error("Got error while handling file " + fullName);
-                        console.error(err);
-                    }
+                    var fullName = OS.File.join(this.rootDir, file);
+                    this.getResults(fullName, searchPattern, result);
                 });
                 var resultTable = new ResultTable();
                 var toolTipText = "Search results for " + searchPattern + " in " + this.rootDir + "/" + param.glob;
                 var page = IDE.problemPane.addPage("search", toolTipText, resultTable);
                 page.setShowCloseButton(true);
                 resultTable.setData(result);
-                IDE.problemPane.setSelection([page]);
+                page.select();
                 this.close();
             });
         }

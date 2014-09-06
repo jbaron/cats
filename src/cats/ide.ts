@@ -309,8 +309,6 @@ module Cats {
         }
         
         
-        
-        
         /**
          * Close an open project
          * @param project to be closed

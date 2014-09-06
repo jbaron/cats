@@ -16,6 +16,7 @@ module Cats.Gui {
 
     // var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
     var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
+    var Range: Ace.Range = ace.require("ace/range").Range;
 
     /**
      * Wrapper around the ACE editor. The rest of the code base should not use
@@ -30,6 +31,7 @@ module Cats.Gui {
         private pendingWorkerUpdate = false;
         private editSession: Ace.EditSession;
         private pendingPosition:Ace.Position;
+        private selectedTextMarker:any;
 
         constructor(private session: Cats.Session) {
             super();
@@ -65,6 +67,7 @@ module Cats.Gui {
                 this.autoCompletePopup.hide();
             
                 this.aceEditor.on("changeSelection", () => {
+                    this.clearSelectedTextMarker();
                     IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
                 });
 
@@ -181,13 +184,39 @@ module Cats.Gui {
             });
         }
 
-        moveToPosition(pos: Ace.Position) {
+        private clearSelectedTextMarker() {
+            if (this.selectedTextMarker) {
+                this.editSession.removeMarker(this.selectedTextMarker);
+                this.selectedTextMarker = null;
+            }
+        }
+
+        private addTempMarker(r: Cats.Range) {
+            this.clearSelectedTextMarker();
+            var range: Ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
+            this.selectedTextMarker = this.editSession.addMarker(range,"ace_selected-word", "text");
+        }
+
+        moveToPosition(pos: Cats.Range);
+        moveToPosition(pos: Ace.Position);
+        moveToPosition(pos: any) {
             if (! this.aceEditor) {
                 this.pendingPosition = pos;
             } else {
                 this.aceEditor.clearSelection();
-                this.aceEditor.moveCursorToPosition(pos);
-                setTimeout(()=>{this.aceEditor.centerSelection()},100);
+                
+                if (pos) { 
+                    if (pos.start) {
+                        this.aceEditor.moveCursorToPosition(pos.start);
+                    } else {
+                        this.aceEditor.moveCursorToPosition(pos);
+                    }    
+                    
+                }
+                setTimeout(()=>{
+                    this.aceEditor.centerSelection();
+                    if (pos && pos.start) this.addTempMarker(pos);
+                },100);
             }
         }
 

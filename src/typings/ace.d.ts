@@ -51,8 +51,8 @@ declare module Ace {
 	interface Range {
 		new(startRow:number,startColumn:number,endRow:number,endColumn:number);
 		isEmpty() : boolean;
-		start: any;
-		end: any;
+		start: Position;
+		end: Position;
 	}
 
 	interface UndoManager {
@@ -71,6 +71,8 @@ declare module Ace {
 	class EditSession {
 		constructor(content:string, mode:string);
 		getUndoManager():UndoManager;
+		addMarker:any;
+		removeMarker: any;
 		getValue():string;
         setOverwrite(val:boolean):void;
         getOverwrite():boolean;
