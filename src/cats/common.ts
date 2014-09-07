@@ -24,7 +24,7 @@ module Cats {
         name: string;
         operations?: Array<string>;
         attributes?: Array<string>;
-        extends?: string;
+        extends?: Array<string>;
         implements?: Array<string>;
     }    
 

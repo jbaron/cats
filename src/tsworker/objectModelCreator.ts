@@ -94,11 +94,7 @@ module Cats.TSWorker {
         }
         
         
-        public visitHeritageClause(node: TypeScript.HeritageClauseSyntax) {
-            var name = node.fullText();
-            this.last.extends = name;
-            super.visitHeritageClause(node);
-        }
+       
     
     }
 

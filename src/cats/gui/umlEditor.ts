@@ -22,6 +22,7 @@ module Cats.Gui {
     declare var UMLInterface:any;
     declare var UMLInterfaceExtended;
     declare var UMLGeneralization:any;
+    declare var UMLRealization:any;
 
     export class UMLEditor extends qx.ui.embed.Html implements Editor {
 
@@ -80,13 +81,13 @@ module Cats.Gui {
             var g = new dagre.Digraph();
 
             IDE.project.iSense.getObjectModel((err, model: Array<Cats.ModelEntry>) => {
-                var counter = 0;
+                if (! model) return;
+                
                 model.forEach((entry) => {
-                    counter++;
-                    if (counter > 100) return;
                     var name = entry.name;
                     var c;
                     if (entry.type === "class") c = new UMLClass();
+                    if (entry.type === "enum") c = new UMLClass();
                     if (entry.type === "interface") c = new UMLInterfaceExtended();
                     c.setName(name);
 
@@ -98,10 +99,35 @@ module Cats.Gui {
                         c.addAttribute(aName);
                     });
 
-
                     g.addNode(name, { width: c.getWidth(), height: c.getHeight() })
                    nodes[name] = c;
                 });
+
+                var rels = [];
+                model.forEach((entry) => {
+                    var curr = nodes[entry.name];
+                    if (! curr) return;
+                    
+                    entry.extends.forEach((ext) => {
+                        var base = nodes[ext];
+                        if (base) {
+                            var generalization = new UMLGeneralization({ b:base, a:curr });
+                            g.addEdge(null, ext, entry.name);
+                            rels.push(generalization); 
+                        }
+                    });
+                    
+                    entry.implements.forEach((ext) => {
+                        var base = nodes[ext];
+                        if (base) {
+                            var generalization = new UMLRealization({ b:base, a:curr });
+                            g.addEdge(null, ext, entry.name);
+                            rels.push(generalization); 
+                        }
+                    });
+                    
+                });    
+
 
                 var layout = dagre.layout().run(g);
                 var graph = layout.graph();
@@ -112,7 +138,10 @@ module Cats.Gui {
                     n._x = value.x - (n.getWidth() / 2);
                     n._y = value.y - (n.getHeight() / 2);
                     classDiagram.addElement(n);
+                    IDE.console.log("Adding node " + name + " at " + n._x + ":" + n._y);
                 });
+
+                rels.forEach((rel) => {classDiagram.addElement(rel)});
 
                 //Draw the diagram
                 classDiagram.draw();

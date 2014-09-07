@@ -102,6 +102,20 @@ module Cats.TSWorker {
         }
 
         public getObjectModel() {
+            //Force all symbols to be created.
+            this.getAllDiagnostics();
+            
+            var mc = new ModelCreator();
+            this.lsHost.getScriptFileNames().forEach((script) => {
+                if (script.indexOf(".d.ts") > 0) return;
+                var doc:TypeScript.Document = this.ls["compiler"].getDocument(script);
+                mc.parse(doc);
+            });
+            return mc.getModel();
+        }
+
+        /*
+        public getObjectModel() {
             var walker = new ObjectModelCreator();
             this.lsHost.getScriptFileNames().forEach((script) => {
                 if (script.indexOf(".d.ts") > 0) return;
@@ -110,6 +124,8 @@ module Cats.TSWorker {
             var result = walker.getModel();
             return result;
         }
+        */
+        
 
         /**
          * Convert Services to Cats NavigateToItems

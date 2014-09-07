@@ -1,12 +1,13 @@
 // This file contains the build logic for CATS
 
 var workerOptions = [
-   "src/typings/typescriptServices.d.ts",
-   "src/typings/cats.d.ts",
-   "src/cats/common.ts",
-   "src/tsworker/languageservicehost.ts",
-   "src/tsworker/isense.ts",
-   "src/tsworker/objectModelCreator.ts"
+    "src/typings/typescriptServices.d.ts",
+    "src/typings/cats.d.ts",
+    "src/cats/common.ts",
+    "src/tsworker/languageservicehost.ts",
+    "src/tsworker/isense.ts",
+    "src/tsworker/objectModelCreator.ts",
+    "src/tsworker/objectModel.ts"
 ];
 
 

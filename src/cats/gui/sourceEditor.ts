@@ -424,7 +424,7 @@ module Cats.Gui {
         private getInfoAt(type: string) {
 
             this.session.project.iSense.getInfoAtPosition(type, this.session.name, this.getPosition(), (err, data: Cats.FileRange[]) => {
-                console.debug("Called getInfoAt for with results #" + data.length);
+                if (! data) return;
                 var resultTable = new ResultTable();
                 var page = IDE.problemPane.addPage("info", null, resultTable);
                 page.setShowCloseButton(true);

@@ -9,7 +9,7 @@
         "generateDeclarationFiles": false,
         "mapSourceFiles": false,
         "propagateEnumConstants": false,
-        "allowAutomaticSemicolonInsertion": false,
+        "allowAutomaticSemicolonInsertion": true,
         "codeGenTarget": 1,
         "moduleGenTarget": 0,
         "outDirOption": null,
