@@ -79,11 +79,14 @@ module Cats.Gui {
         private render(container: HTMLElement) {
             var nodes = {};
             var g = new dagre.Digraph();
-
+            var max = 100;
+            
             IDE.project.iSense.getObjectModel((err, model: Array<Cats.ModelEntry>) => {
                 if (! model) return;
-                
+                var count = 0;
                 model.forEach((entry) => {
+                    count++;
+                    if (count > max) return;
                     var name = entry.name;
                     var c;
                     if (entry.type === "class") c = new UMLClass();
@@ -96,7 +99,7 @@ module Cats.Gui {
                     });
 
                     entry.attributes.forEach((aName) => {
-                        c.addAttribute(aName);
+                        c.addAttribute(aName.name);
                     });
 
                     g.addNode(name, { width: c.getWidth(), height: c.getHeight() })
@@ -120,9 +123,9 @@ module Cats.Gui {
                     entry.implements.forEach((ext) => {
                         var base = nodes[ext];
                         if (base) {
-                            var generalization = new UMLRealization({ b:base, a:curr });
+                            var realization = new UMLRealization({ b:base, a:curr });
                             g.addEdge(null, ext, entry.name);
-                            rels.push(generalization); 
+                            rels.push(realization); 
                         }
                     });
                     
@@ -131,16 +134,19 @@ module Cats.Gui {
 
                 var layout = dagre.layout().run(g);
                 var graph = layout.graph();
-                var classDiagram = new UMLClassDiagram({ id: container, width: graph.width + 100, height: graph.height + 100 });
+                var classDiagram = new UMLClassDiagram({ id: container, width: graph.width + 10, height: graph.height + 10 });
 
+                // Draw all the nodes
                 layout.eachNode((name, value) => {
                     var n = nodes[name];
-                    n._x = value.x - (n.getWidth() / 2);
-                    n._y = value.y - (n.getHeight() / 2);
+                    var x = value.x - (n.getWidth() / 2);
+                    var y = value.y - (n.getHeight() / 2);
+                    n.setPosition(x,y);
                     classDiagram.addElement(n);
-                    IDE.console.log("Adding node " + name + " at " + n._x + ":" + n._y);
+                    IDE.console.log("Adding node " + name + " at " + x + ":" + y);
                 });
 
+                // Now add the relations
                 rels.forEach((rel) => {classDiagram.addElement(rel)});
 
                 //Draw the diagram

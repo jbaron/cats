@@ -19,11 +19,19 @@
  */
 module Cats {
 
+
+       
+    export class Attribute {
+        name: string;
+        modifiers: string[];
+        type: string;
+    }
+
    export interface ModelEntry {
         type: string;
         name: string;
         operations?: Array<string>;
-        attributes?: Array<string>;
+        attributes?: Array<Attribute>;
         extends?: Array<string>;
         implements?: Array<string>;
     }    

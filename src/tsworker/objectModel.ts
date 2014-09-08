@@ -1,5 +1,7 @@
 module Cats.TSWorker {
     
+ 
+    
     
     export class ModelCreator {
 
@@ -104,7 +106,19 @@ module Cats.TSWorker {
             }
 
             if (node.kind === TypeScript.PullElementKind.Property) {
-                if (this.last) this.last.attributes.push(node.name);
+                if (this.last) {
+                    var attr:Attribute = {
+                        name: node.name,
+                        modifiers: [],
+                        type: null
+                    }
+                    
+                    if (node.getSymbol()) {
+                        var t = node.getSymbol().getTypeName();
+                        attr.type = t;
+                    }
+                    this.last.attributes.push(attr);
+                }
                 return;
             }
             

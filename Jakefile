@@ -6,7 +6,6 @@ var workerOptions = [
     "src/cats/common.ts",
     "src/tsworker/languageservicehost.ts",
     "src/tsworker/isense.ts",
-    "src/tsworker/objectModelCreator.ts",
     "src/tsworker/objectModel.ts"
 ];
 

@@ -107,7 +107,7 @@ module Cats.TSWorker {
             
             var mc = new ModelCreator();
             this.lsHost.getScriptFileNames().forEach((script) => {
-                if (script.indexOf(".d.ts") > 0) return;
+                if (script.indexOf("lib.d.ts") > 0) return;
                 var doc:TypeScript.Document = this.ls["compiler"].getDocument(script);
                 mc.parse(doc);
             });
