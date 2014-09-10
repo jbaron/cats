@@ -191,10 +191,12 @@ module Cats {
             if (this.iSense) this.iSense.stop();
             this.iSense = new TSWorkerProxy(this);
 
+            /*
             if (this.config.compiler.outFileOption) {
                 this.config.compiler.outFileOption = OS.File.join(this.projectDir, this.config.compiler.outFileOption);
                 console.info("Compiler output: " + this.config.compiler.outFileOption);
             }
+            */
 
             this.iSense.setSettings(this.config.compiler, this.config.codingStandards);
 

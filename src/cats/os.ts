@@ -198,10 +198,17 @@ module Cats.OS.File {
             if (newLineMode === "dos") {
                 value = value.replace(/\n/g, "\r\n");
             }
-            mkdirRecursiveSync(PATH.dirname(name));
-            fs.writeFileSync(name, value, "utf8");
             
-            if (stat) return fs.statSync(name);
+            var fileName = name;
+            
+            if (! PATH.isAbsolute(fileName)) {
+                fileName = PATH.join(IDE.project.projectDir, fileName);
+            }
+            
+            mkdirRecursiveSync(PATH.dirname(fileName));
+            fs.writeFileSync(fileName, value, "utf8");
+            
+            if (stat) return fs.statSync(fileName);
             return null;
         }
         

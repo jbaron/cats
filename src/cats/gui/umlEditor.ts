@@ -75,6 +75,16 @@ module Cats.Gui {
             }
         }
 
+        private getMaxSize(size:number) {
+            if (size > 30000) return 30000;
+            return size;    
+        }
+
+
+        private format(str:string, maxlen=20) {
+            if (! str) return str;
+            return str.substr(-maxlen);
+        }
 
         private render(container: HTMLElement) {
             var nodes = {};
@@ -92,14 +102,15 @@ module Cats.Gui {
                     if (entry.type === "class") c = new UMLClass();
                     if (entry.type === "enum") c = new UMLClass();
                     if (entry.type === "interface") c = new UMLInterfaceExtended();
-                    c.setName(name);
+                    c.setName(this.format(name));
 
                     entry.operations.forEach((mName) => {
-                        c.addOperation(mName + "()");
+                        c.addOperation(this.format(mName + "()",25));
                     });
 
-                    entry.attributes.forEach((aName) => {
-                        c.addAttribute(aName.name);
+                    entry.attributes.forEach((attr) => {
+                        var t = attr.type || "unknown";
+                        c.addAttribute(this.format(attr.name + ":" + attr.type,25));
                     });
 
                     g.addNode(name, { width: c.getWidth(), height: c.getHeight() })
@@ -134,7 +145,11 @@ module Cats.Gui {
 
                 var layout = dagre.layout().run(g);
                 var graph = layout.graph();
-                var classDiagram = new UMLClassDiagram({ id: container, width: graph.width + 10, height: graph.height + 10 });
+                var classDiagram = new UMLClassDiagram({ 
+                    id: container, 
+                    width: this.getMaxSize(graph.width + 10), 
+                    height: this.getMaxSize(graph.height + 10) 
+                });
 
                 // Draw all the nodes
                 layout.eachNode((name, value) => {

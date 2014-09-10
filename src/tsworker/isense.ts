@@ -22,9 +22,9 @@ module Cats.TSWorker {
      * not available in a worker.
      */
     export var console = {
-        log: function(str: string) { postMessage({ method: "console", params: [str] }, null); },
-        error: function(str: string) { postMessage({ method: "console", params: [str] }, null); },
-        info: function(str: string) { postMessage({ method: "console", params: [str] }, null); }
+        log: function(str: string) { postMessage({ method: "console", params: ["log",str] }, null); },
+        error: function(str: string) { postMessage({ method: "console", params: ["error",str] }, null); },
+        info: function(str: string) { postMessage({ method: "console", params: ["info",str] }, null); }
     };
     
     /**

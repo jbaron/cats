@@ -150,7 +150,7 @@ module Cats {
                     } 
                     
                     if (msg.method && (msg.method === "console")) {
-                        IDE.console.log(msg.params[0]);
+                        console[msg.params[0]](msg.params[1]);
                     } 
                 }
             };
