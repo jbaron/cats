@@ -17,13 +17,17 @@ module Cats.Gui {
     // var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
     var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
     var Range: Ace.Range = ace.require("ace/range").Range;
+    var modelist = ace.require('ace/ext/modelist');
+
 
     /**
      * Wrapper around the ACE editor. The rest of the code base should not use
      * ACE editor directly so it can be changed for another editor if required.
      */
-    export class SourceEditor extends qx.ui.core.Widget implements Editor {
+    export class SourceEditor extends FileEditor {
 
+
+        private mode:string;
         private aceEditor: Ace.Editor;
         private autoCompletePopup: AutoCompletePopup;
         private mouseMoveTimer: number;
@@ -32,29 +36,46 @@ module Cats.Gui {
         private editSession: Ace.EditSession;
         private pendingPosition:Ace.Position;
         private selectedTextMarker:any;
+        private widget:qx.ui.core.Widget;
+        
+        unsavedChanges = false;
 
-        constructor(private session: Cats.Session) {
-            super();
-            this.setDecorator(null);
-            this.setFont(null);
-            this.setAppearance(null);
-            this.editSession = new (<any>ace).EditSession(session.content, "ace/mode/" + session.mode);
+        constructor(fileName?:string) {
+            super(fileName);
+            
+            var widget = new qx.ui.core.Widget();
+            widget.setDecorator(null);
+            widget.setFont(null);
+            widget.setAppearance(null);
+            this.widget = widget;
+            
+            var content = fileName ? OS.File.readTextFile(fileName) : "";
+            
+            
+            this.mode = modelist.getModeForPath(fileName).mode
+            
+            this.editSession = new (<any>ace).EditSession(content, this.mode);
             this.editSession.setNewLineMode("unix");
             this.editSession.setUndoManager(new UndoManager());
-            this.editSession["__fileName__"] = session.name;
+            this.editSession["__fileName__"] = this.filePath;
             this.configureAceSession();
             this.editSession.on("change", this.onChangeHandler.bind(this));
+            this.editSession.on("changeAnnotation", () => {
+                var a = this.editSession.getAnnotations();
+                this.emit("errors", a);
+            });
+            
 
 
-            this.addListenerOnce("appear", () => {
-                var container = this.getContentElement().getDomElement();
+            widget.addListenerOnce("appear", () => {
+                var container = widget.getContentElement().getDomElement();
                 container.style.lineHeight = "normal";
                 this.aceEditor = this.createAceEditor(container);
                 
 
                 this.aceEditor.setSession(this.editSession);
 
-                if (session.mode === "binary") {
+                if (this.mode === "binary") {
                     this.aceEditor.setReadOnly(true);
                 } else {
                     this.aceEditor.setReadOnly(false);
@@ -78,21 +99,37 @@ module Cats.Gui {
 
             }, this);
 
-            this.addListener("appear", () => {
-                this.session.activate();
-                this.updateWorld();
+            widget.addListener("appear", () => {
+                // this.session.activate();
+                this.informWorld();
             });
 
-            session.on("errors", this.showErrors, this);
-            this.addListener("resize", () => { this.resizeHandler(); });
+            // session.on("errors", this.showErrors, this);
+            this.widget.addListener("resize", () => { this.resizeHandler(); });
 
-            
             IDE.infoBus.on("project.config", () => { this.configureAceSession(); });
             IDE.infoBus.on("ide.config", () => { this.configureEditor(); });
         }
 
         executeCommand(name, ...args): boolean {
             return false;
+        }
+
+        static SupportsFile(fileName:string) {
+            var name = PATH.basename(fileName);
+            var mode = modelist.getModeForPath(name);
+            
+            if (mode && mode.supportsFile(name)) return true;
+            return false;
+        }
+
+        getLayoutItem() {
+            return this.widget;
+        }
+
+
+        isTypeScript() {
+            return this.mode === "ace/mode/typescript";
         }
 
         setContent(content, keepPosition= true) {
@@ -111,15 +148,15 @@ module Cats.Gui {
 
 
         private configureAceSession() {
-            var config = this.session.project.config.codingStandards;
+            var config = this.project.config.codingStandards;
             var session = this.editSession;
             if (config.tabSize) session.setTabSize(config.tabSize);
             if (config.useSoftTabs != null) session.setUseSoftTabs(config.useSoftTabs);
         }
 
-        updateWorld() {
-            IDE.infoBus.emit("editor.overwrite", this.aceEditor.getSession().getOverwrite());
-            IDE.infoBus.emit("editor.mode", this.session.mode);
+        private informWorld() {
+            IDE.infoBus.emit("editor.overwrite", this.editSession.getOverwrite());
+            IDE.infoBus.emit("editor.mode", this.mode);
             IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
         }
 
@@ -128,7 +165,7 @@ module Cats.Gui {
         }
 
         getContent() {
-            return this.aceEditor.getSession().getValue();
+            return this.editSession.getValue();
         }
 
         /**
@@ -136,12 +173,13 @@ module Cats.Gui {
          * worker if required.
          */
         private onChangeHandler(event) {
-            if (!this.session.getChanged()) this.session.setChanged(true);
-
+            if (! this.unsavedChanges) {
+                this.unsavedChanges = true;
+                this.emit("changed", true);
+            }
+            
             this.pendingWorkerUpdate = true;
-
-
-            if (!this.session.isTypeScript()) return;
+            if (!this.isTypeScript()) return;
 
             clearTimeout(this.updateSourceTimer);
 
@@ -154,17 +192,9 @@ module Cats.Gui {
             }, 500);
         }
 
-        private createToolTip() {
-            var tooltip = new qx.ui.tooltip.ToolTip("");
-            tooltip.exclude();
-            tooltip.setRich(true);
-            tooltip.setMaxWidth(500);
-            this.setToolTip(tooltip);
-            return tooltip;
-        }
 
         private resizeHandler() {
-            if (!this.isSeeable()) {
+            if (!this.widget.isSeeable()) {
                 this.addListenerOnce("appear", () => { this.resizeEditor(); });
             } else {
                 this.resizeEditor();
@@ -178,9 +208,8 @@ module Cats.Gui {
         }
 
         private setupEvents() {
-            var session = this.aceEditor.getSession();
-            session.on("changeOverwrite", (a) => {
-                IDE.infoBus.emit("editor.overwrite", session.getOverwrite());
+            this.editSession.on("changeOverwrite", (a) => {
+                IDE.infoBus.emit("editor.overwrite", this.editSession.getOverwrite());
             });
         }
 
@@ -227,7 +256,7 @@ module Cats.Gui {
         /**
           * Get the Position based on mouse x,y coordinates
           */
-        private getPositionFromScreenOffset(x: number, y: number): Ace.Position {
+        getPositionFromScreenOffset(x: number, y: number): Ace.Position {
             var r = this.aceEditor.renderer;
             // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
             var offset = (x - r.$padding) / r.characterWidth;
@@ -242,35 +271,7 @@ module Cats.Gui {
             return docPos;
         }
 
-        /**
-         * Show info at Screen location
-         */
-        private showToolTipAt(ev: MouseEvent) {
-            // if (this.mode !== "typescript") return;
-
-            var docPos = this.getPositionFromScreenOffset(ev.offsetX, ev.offsetY);
-            var project = IDE.project;
-
-            project.iSense.getTypeAtPosition(this.session.name, docPos,
-                (err, data: Cats.TypeInfo) => {
-                    if (!data) return;
-                    var member = data.memberName;
-                    if (!member) return;
-
-                    var tip = data.description;
-                    if (data.docComment) {
-                        tip += '<hr>' + data.docComment;
-                    }
-
-                    if (tip && tip.trim()) {
-                        var tooltip: qx.ui.tooltip.ToolTip = this.getToolTip();
-                        if (!tooltip) tooltip = this.createToolTip();
-                        tooltip.setLabel(tip);
-                        tooltip.moveTo(ev.x, ev.y + 10);
-                        tooltip.show();
-                    }
-                });
-        }
+     
 
 
         /**
@@ -279,40 +280,18 @@ module Cats.Gui {
           */
         private update() {
                 var source = this.aceEditor.getSession().getValue();
-                this.session.updateContent(source);
+                // this.session.updateContent(source);
                 clearTimeout(this.updateSourceTimer);
                 this.pendingWorkerUpdate = false;
         }
 
         /**
-         * Perform code autocompletion. Right now support for TS.
+         * Perform code autocompletion.
          */
-        private showAutoComplete() {
-            var editor = this.aceEditor;
-           
-            // Any pending changes that are not yet send to the worker?
+        showAutoComplete() {
+             // Any pending changes that are not yet send to the worker?
             if (this.pendingWorkerUpdate) this.update();
-            
-            var session = editor.getSession();
-            var pos = editor.getCursorPosition();
-
-            var line = session.getLine(pos.row);
-            var prefix = retrievePrecedingIdentifier(line, pos.column);
-
-            // this.base = session.doc.createAnchor(pos.row, pos.column - prefix.length);
-
-            var matches = [];
-            var total = editor.completers.length;
-            editor.completers.forEach((completer, i) => {
-                completer.getCompletions(editor, session, pos, prefix, (err, results) => {
-                    total--;
-                    if (!err) matches = matches.concat(results);
-                    if (total === 0) {
-                        this.autoCompletePopup.showCompletions(matches);
-                    }
-                });
-            });
-            
+            this.autoCompletePopup.complete();
         }
 
 
@@ -342,18 +321,12 @@ module Cats.Gui {
         }
 
 
-        /**
-         * @TODO Put all the typescript feauture setup in here
-         */
-        private setupTypeScriptFeatures() {
-
-        }
-
         // Initialize the editor
         private createAceEditor(rootElement: HTMLElement): Ace.Editor {
             var editor: Ace.Editor = ace.edit(rootElement);
-            if (this.session.isTypeScript()) {
-                editor.completers =  [new TSCompleter(), snippetCompleter];
+            if (this.isTypeScript()) {
+                editor.completers =  [new TSCompleter(this,editor), snippetCompleter];
+                new TSTooltip(this);
             } else {
                 editor.completers =  [keyWordCompleter, snippetCompleter];
             }
@@ -388,42 +361,24 @@ module Cats.Gui {
                         win: "Ctrl-S",
                         mac: "Command-S"
                     },
-                    exec: () => { this.session.persist(); }
+                    exec: () => { this.save(); }
                 }
             ]);
             
-            if (this.session.isTypeScript()) {
-                editor.commands.on('afterExec', (e) => { this.liveAutoComplete(e);});
-      
-                var elem = rootElement; // TODo find scroller child
-                elem.onmousemove = this.onMouseMove.bind(this);
-                elem.onmouseout = () => {
-                    if (this.getToolTip() && this.getToolTip().isSeeable()) this.getToolTip().exclude();
-                    clearTimeout(this.mouseMoveTimer);
-                };
-            }
+           
             return editor;
         }
 
-        private liveAutoComplete(e) {
-            var text = e.args || "";
-            if ((e.command.name === "insertstring") && (text === ".")) {
-                this.showAutoComplete();
-            }
-        }
-
         private gotoDeclaration() {
-            var session = this.session;
-
-            session.project.iSense.getDefinitionAtPosition(session.name, this.getPosition(), (err, data: Cats.FileRange) => {
+            this.project.iSense.getDefinitionAtPosition(this.filePath, this.getPosition(), (err, data: Cats.FileRange) => {
                 if (data && data.fileName)
-                    IDE.openSession(data.fileName, data.range.start);
+                    IDE.openEditor(data.fileName, data.range.start);
             });
         }
 
         private getInfoAt(type: string) {
 
-            this.session.project.iSense.getInfoAtPosition(type, this.session.name, this.getPosition(), (err, data: Cats.FileRange[]) => {
+            this.project.iSense.getInfoAtPosition(type, this.filePath, this.getPosition(), (err, data: Cats.FileRange[]) => {
                 if (! data) return;
                 var resultTable = new ResultTable();
                 var page = IDE.problemPane.addPage("info", null, resultTable);
@@ -436,7 +391,7 @@ module Cats.Gui {
 
         private refactor() {
             var pos = this.getPosition();
-            Refactor.rename(this.session, pos);
+            Refactor.rename(this.filePath,this.project, pos);
         }
 
         private findReferences() {
@@ -452,9 +407,9 @@ module Cats.Gui {
             return this.getInfoAt("getImplementorsAtPosition");
         }
 
-        private createContextMenuItem(name: string, fn: Function) {
+        private createContextMenuItem(name: string, fn: Function, self?:any) {
             var button = new qx.ui.menu.Button(name);
-            button.addListener("execute", fn);
+            button.addListener("execute", fn, self);
             return button;
         }
 
@@ -464,7 +419,7 @@ module Cats.Gui {
                 var pos = this.getPosition();
                 IDE.bookmarks.addData({
                     message: name,
-                    fileName: this.session.name,
+                    fileName: this.filePath,
                     range: {
                         start: pos,
                         end: pos
@@ -475,27 +430,42 @@ module Cats.Gui {
 
         private createContextMenu() {
             var menu = new qx.ui.menu.Menu();
-            if (this.session.isTypeScript()) {
-                menu.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration.bind(this)));
-                menu.add(this.createContextMenuItem("Find References", this.findReferences.bind(this)));
-                menu.add(this.createContextMenuItem("Find Occurences", this.findOccurences.bind(this)));
-                menu.add(this.createContextMenuItem("FInd Implementations", this.findImplementors.bind(this)));
+            if (this.isTypeScript()) {
+                menu.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration,this));
+                menu.add(this.createContextMenuItem("Find References", this.findReferences, this));
+                menu.add(this.createContextMenuItem("Find Occurences", this.findOccurences, this));
+                menu.add(this.createContextMenuItem("FInd Implementations", this.findImplementors, this));
                 menu.addSeparator();
-                menu.add(this.createContextMenuItem("Rename", this.refactor.bind(this)));
+                menu.add(this.createContextMenuItem("Rename", this.refactor, this));
                 menu.addSeparator();
             }
-            menu.add(this.createContextMenuItem("Bookmark", this.bookmark.bind(this)));
-            this.setContextMenu(menu);
+            menu.add(this.createContextMenuItem("Bookmark", this.bookmark, this));
+            this.widget.setContextMenu(menu);
         }
 
-        private onMouseMove(ev: MouseEvent) {
-            if (this.getToolTip() && this.getToolTip().isSeeable()) this.getToolTip().exclude();
-            clearTimeout(this.mouseMoveTimer);
-            var elem = <HTMLElement>ev.srcElement;
-            if (elem.className !== "ace_content") return;
-            this.mouseMoveTimer = setTimeout(() => {
-                this.showToolTipAt(ev);
-            }, 800);
+      
+        /**
+         * Persist this session to the file system
+         */
+        save() {
+           
+            if (this.filePath == null) {
+                var dir = PATH.join(this.project.projectDir, "/");
+                this.filePath = prompt("Please enter the file name", dir);
+                if (! this.filePath) return;
+                this.filePath = OS.File.switchToForwardSlashes(this.filePath);
+            }
+
+
+            OS.File.writeTextFile(this.filePath, this.getContent());
+            this.unsavedChanges = false;
+            this.emit("changed", false);
+            this.updateProperties();
+
+            if (this.isTypeScript()) {
+                this.project.validate(false);
+                if (this.project.config.buildOnSave) Commands.runCommand(Commands.CMDS.project_build);
+            }
         }
 
     }

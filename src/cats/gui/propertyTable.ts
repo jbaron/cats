@@ -20,7 +20,7 @@ module Cats.Gui {
     export class PropertyTable extends qx.ui.table.Table {
 
         private data: Array<any>;
-        private session:Session;
+        private editor:Editor;
 
         constructor(headers = ["Name", "Value"]) {
             var tableModel = new qx.ui.table.model.Simple();
@@ -37,10 +37,10 @@ module Cats.Gui {
             this.setPadding(0, 0, 0, 0);
             
  
-            IDE.sessionTabView.addListener("changeSelection", (ev) => {
-                var page:SessionPage = ev.getData()[0];
+            IDE.editorTabView.addListener("changeSelection", (ev) => {
+                var page:EditorPage = ev.getData()[0];
                 if (page) {
-                    this.register(page.session);
+                    this.register(page.editor);
                 } else {
                     this.register(null);
                 }
@@ -52,15 +52,15 @@ module Cats.Gui {
             this.setData([]);
         }
 
-        private register(session) {
-            if (this.session) {
-                this.session.off("properties", this.setData, this);
+        private register(editor:Editor) {
+            if (this.editor) {
+                this.editor.off("properties", this.setData, this);
             }
-            this.session = session;
+            this.editor = editor;
             
-            if (session) {
-                session.on("properties", this.setData,this);
-                this.setData(session.properties);
+            if (editor) {
+                editor.on("properties", this.setData,this);
+                this.setData(editor.properties);
             } else {
                 this.clear();
             }
@@ -70,7 +70,7 @@ module Cats.Gui {
             return this.data;
         }
 
-        setData(data) {
+        setData(data:any[]) {
             this.data = data;
             var rows: any[] = [];
             if (data) {

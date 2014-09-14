@@ -21,26 +21,25 @@ module Cats.Refactor {
     
     var Range: Ace.Range = ace.require("ace/range").Range;
 
-    function renameFile(edits:Cats.FileRange[],name:string) {
+    function renameOccurences(edits:FileRange[],name:string) {
         for (var i = edits.length - 1; i >= 0; i--) {
             var data = edits[i];
-            var session = IDE.openSession(data.fileName);
-            var p = IDE.sessionTabView.getPageBySession(session);
+            var editor = <Gui.SourceEditor>IDE.openEditor(data.fileName);
             var r = data.range;
             var range: Ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
-            p.editor.replace(range,name);
+            editor.replace(range,name);
         };        
     }
 
     /**
      * Rename a class, interface, property or method throughout the project
      */ 
-    export function rename(session:Session, pos:Position) {
-        session.project.iSense.getTypeAtPosition(session.name, pos, (err,data) => {
+    export function rename(fileName:string, project:Project, pos:Position) {
+        project.iSense.getTypeAtPosition(fileName, pos, (err,data) => {
             var newName = prompt("Rename " + data.fullSymbolName +  " into:");
             if (!newName) return;
-            session.project.iSense.getInfoAtPosition("getReferencesAtPosition", session.name, pos, (err, data: Cats.FileRange[]) => {
-                renameFile(data, newName);
+            project.iSense.getInfoAtPosition("getReferencesAtPosition", fileName, pos, (err, data: Cats.FileRange[]) => {
+                renameOccurences(data, newName);
             });
         });
     }

@@ -59,7 +59,6 @@ module Cats {
         console.error("Uncaught exception occured: " + err);
         console.error(err.stack);
         IDE.console.error(err.stack);
-        // alert(err); // @TODO remove in production mode
     });
 
 

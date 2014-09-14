@@ -11,6 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+
 module Cats {
 
     /**
@@ -29,7 +30,7 @@ module Cats {
         };
 
 
-        add(entry: Gui.SessionPage, pos?) {
+        add(entry: Gui.EditorPage, pos?) {
             this.entries.push({
                 hash: entry.toHashCode(),
                 pos: pos
@@ -69,16 +70,16 @@ module Cats {
          */
         private exists(entry) {
             var hash = entry.hash;
-            var page = <Gui.SessionPage>qx.core.ObjectRegistry.fromHashCode(hash);
+            var page = <Gui.EditorPage>qx.core.ObjectRegistry.fromHashCode(hash);
             if (!page) return false;
-            return IDE.sessionTabView.getChildren().indexOf(page) > -1;
+            return IDE.editorTabView.getChildren().indexOf(page) > -1;
         }
 
 
         private goto(entry) {
             var hash = entry.hash;
-            var page = <Gui.SessionPage>qx.core.ObjectRegistry.fromHashCode(hash);
-            IDE.sessionTabView.navigateToPage(page, entry.pos, false);
+            var page = <Gui.EditorPage>qx.core.ObjectRegistry.fromHashCode(hash);
+            IDE.editorTabView.navigateToPage(page, entry.pos, false);
         }
 
 

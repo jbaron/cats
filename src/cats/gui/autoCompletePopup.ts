@@ -265,8 +265,6 @@ module Cats.Gui {
 
             this.listModel = qx.data.marshal.Json.createModel(rawData, false);
 
-
-
             this.list.setModel(this.listModel);
             this.updateFilter();
 
@@ -324,8 +322,35 @@ module Cats.Gui {
             setTimeout(() => { this.updateFilter(); }, 0);
         }
 
+        /**
+         * The method called form the ditor to start the code completion process. 
+         */ 
+        complete() {
+            var editor = this.editor;
+            var session = editor.getSession();
+           
+            var pos = editor.getCursorPosition();
 
-        showCompletions(completions: Cats.CompletionEntry[]) {
+            var line = session.getLine(pos.row);
+            var prefix = retrievePrecedingIdentifier(line, pos.column);
+
+            // this.base = session.doc.createAnchor(pos.row, pos.column - prefix.length);
+
+            var matches = [];
+            var total = editor.completers.length;
+            editor.completers.forEach((completer, i) => {
+                completer.getCompletions(editor, session, pos, prefix, (err, results) => {
+                    total--;
+                    if (!err) matches = matches.concat(results);
+                    if (total === 0) {
+                        this.showCompletions(matches);
+                    }
+                });
+            });
+            
+        }
+
+        private showCompletions(completions: Cats.CompletionEntry[]) {
             if (this.list.isSeeable() || (completions.length === 0)) return;
             console.debug("Received completions: " + completions.length);
             var cursor = this.editor.getCursorPosition();

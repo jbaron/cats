@@ -19,7 +19,8 @@ module Cats.Gui {
      */
     export class OutlineNavigator extends qx.ui.tree.VirtualTree {
 
-        private session: Cats.Session;
+        private editor: Editor;
+        private page:EditorPage;
         private static MAX = 200;
 
         constructor() {
@@ -33,7 +34,7 @@ module Cats.Gui {
                 var item = <any>this.getSelectedItem();
                 if (item) {
                     var position = this.modelToPosition(item.getRange().getStart());
-                    IDE.sessionTabView.navigateTo(this.session,position);
+                    IDE.editorTabView.navigateToPage(this.page,position);
                 }
             });
             this.setIconPath("");
@@ -43,10 +44,11 @@ module Cats.Gui {
                 }
             });
             
-            IDE.sessionTabView.addListener("changeSelection", (ev) => {
-                var page:SessionPage = ev.getData()[0];
+            IDE.editorTabView.addListener("changeSelection", (ev) => {
+                var page:EditorPage = ev.getData()[0];
                 if (page) {
-                    this.register(page.session);
+                    this.page = page;
+                    this.register(page.editor);
                 } else {
                     this.register(null);
                 }
@@ -64,15 +66,16 @@ module Cats.Gui {
         }
 
 
-        private register(session) {
-            if (this.session) {
-                this.session.off("outline", this.setData, this);
+        private register(editor) {
+            if (this.editor) {
+                this.editor.off("outline", this.setData, this);
             }
-            this.session = session;
             
-            if (session) {
-                session.on("outline", this.setData,this);
-                this.setData(session.outline);
+            this.editor = editor;
+            
+            if (editor && editor.outline) {
+                editor.on("outline", this.setData,this);
+                this.setData(editor.outline);
             } else {
                 this.clear();
             }

@@ -90,7 +90,7 @@ module Cats.Gui {
             this.getSelectionModel().addListener("changeSelection", (data) => {
                 var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
                 var data = this.getTableModel().getRowData(selectedRow);
-                if (data) IDE.openSession(data[1], data[3]);
+                if (data) IDE.openEditor(data[1], data[3]);
             });
 
             this.setContextMenu(this.createContextMenu());

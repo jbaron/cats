@@ -24,10 +24,13 @@ module Cats.Gui {
     declare var UMLGeneralization:any;
     declare var UMLRealization:any;
 
-    export class UMLEditor extends qx.ui.embed.Html implements Editor {
+    export class UMLEditor extends Editor {
 
         private backgroundColors = ["white", "black", "grey"];
         private diagram: any;
+        unsavedChanges = false;
+        widget = new qx.ui.embed.Html(null);
+        
         private static Resources1 = [
             "js/uml/css/UDStyle.css",
             "js/uml/UDCore.js"
@@ -39,28 +42,29 @@ module Cats.Gui {
 
         private static ResourcesLoaded = false;
 
-        constructor(private session: Cats.Session) {
-            super(null);
+        constructor(name:string) {
+            super();
+            this.label = name;
             if (!dagre) dagre = require("dagre");
-            this.setOverflow("auto", "auto");
-            this.addListenerOnce("appear", () => {
-                var container: HTMLElement = this.getContentElement().getDomElement();
+            this.widget.setOverflow("auto", "auto");
+            this.widget.addListenerOnce("appear", () => {
+                var container: HTMLElement = this.widget.getContentElement().getDomElement();
                 var div = document.createElement("div");
                 div.style.height = "100%";
                 div.style.width = "100%";
                 container.appendChild(div);
                 UMLEditor.LoadResources(() => {
                     this.render(div);
-                    this.focus();
+                    this.widget.focus();
                 });
             });
         }
 
-        executeCommand(name, ...args): boolean {
-            return false;
+        getLayoutItem() {
+            return this.widget;
         }
         
-
+        
         static LoadResources(cb: Function) {
             if (UMLEditor.ResourcesLoaded) {
                 cb();
@@ -181,11 +185,11 @@ module Cats.Gui {
             this.backgroundColors.forEach((color) => {
                 var button = new qx.ui.menu.Button("Background " + color);
                 button.addListener("execute", () => {
-                    this.setBackgroundColor(color);
+                    this.widget.setBackgroundColor(color);
                 });
                 menu.add(button);
             });
-            this.setContextMenu(menu);
+            this.widget.setContextMenu(menu);
         }
 
 

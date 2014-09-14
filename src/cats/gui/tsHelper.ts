@@ -13,23 +13,32 @@
 // limitations under the License.
 //
 
-module Cats {
 
-  
+module Cats.Gui {
 
-    export class Session  {
-
+    /**
+     * Thsi class provides assists the SourceEditor for TypeScript files
+     */ 
+    class TSHelper {
+        
         private errors: Cats.FileRange[] = [];
         outline: NavigateToItem[];
         private outlineTimer: number;
         private diagnosticTimer : number;
-
-
-        constructor(private editor:Gui.SourceEditor) {
+       
+        constructor(private editor:SourceEditor) {
+            this.init();
+        } 
+        
+        
+        private init() {
+            this.getWidget().addListener("appear", () => {
+                this.updateDiagnostics(0);
+            });
             
+
         }
-
-
+        
         setErrors(errors: Cats.FileRange[]) {
             if ((this.errors.length === 0) && (errors.length === 0)) return;
             this.errors = errors;
@@ -42,6 +51,12 @@ module Cats {
             this.editor.emit("outline", this.outline);
         }
 
+        private getWidget() {
+            return this.editor.getLayoutItem();
+        }
+
+ 
+     
 
         updateContent(content: string) {
             this.editor.project.iSense.updateScript(this.editor.filePath, this.editor.getContent());
@@ -68,19 +83,6 @@ module Cats {
         }
 
 
-        private convertPos(item: any): Cats.Range {
-            return {
-                start: {
-                    row: item.startPosition.line,
-                    column: item.startPosition.character
-                },
-                end: {
-                    row: item.endPosition.line,
-                    column: item.endPosition.position.character
-                }
-            };
-        }
-
         /**
          * Lets check the worker if something changed in the outline of the source.
          * But lets not call this too often.
@@ -96,7 +98,7 @@ module Cats {
            
         }
 
-
     }
-    
+
+
 }

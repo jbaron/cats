@@ -94,6 +94,7 @@ declare module Ace {
 		removeAllListeners(event:string);
 		getTokenAt(row:number, column:number): TokenInfo;	
 		setAnnotations(annotations:Annotation[]);
+		getAnnotations():Annotation[]
 		replace(range:Range,newText:string);
 	}
 

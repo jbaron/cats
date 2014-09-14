@@ -19,8 +19,6 @@
  */
 module Cats {
 
-
-       
     export class Attribute {
         name: string;
         modifiers: string[];
