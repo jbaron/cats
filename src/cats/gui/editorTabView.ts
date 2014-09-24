@@ -23,6 +23,12 @@ module Cats.Gui {
         // editor: Editor;
         session:Session;
         
+        private static ICONS = {
+            "error" :"./resource/qx/icon/Oxygen/16/status/dialog-error.png",
+            "warning":"./resource/qx/icon/Oxygen/16/status/dialog-warning.png",
+            "info":"./resource/qx/icon/Oxygen/16/status/dialog-information.png"
+        };
+        
 
         constructor(public editor:Editor) {
             super(editor.label);
@@ -84,9 +90,10 @@ module Cats.Gui {
         /**
          * Tell the Page that the editor on it has detected some errors in the code
          */
-        setHasErrors(errors: any[]) {
-            if (errors.length > 0) {
-                this.setIcon("./resource/qx/icon/Oxygen/16/status/task-attention.png");
+        setHasErrors(level:string) {
+            if (level) {
+                var icon = EditorPage.ICONS[level];
+                this.setIcon(icon);
             } else {
                 this.resetIcon();
             }
@@ -198,12 +205,16 @@ module Cats.Gui {
         
     
         /**
-         * Get the currently active session
+         * Get the currently active editor
          */
-        getActiveEditor() {
+        getActiveEditor(type?) {
             var page = this.getActivePage();
             if (!page) return null;
-            return page.editor;
+            if (type) {
+                if (page.editor instanceof type) return page.editor;   
+            } else {
+                return page.editor;
+            }
         }
 
         navigateToPage(page: EditorPage, pos?: any, storeHistory = true) {

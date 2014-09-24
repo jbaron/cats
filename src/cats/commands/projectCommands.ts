@@ -101,7 +101,7 @@ module Cats.Commands {
             } else {
                 var param = encodeURIComponent(projectPath);
                 this.value = ""; // Make sure the change event goes off next tome
-                window.open('index.html?project=' + param, '_blank');
+                window.open('index.html?project=' + param);
             }
         };
         chooser.click();

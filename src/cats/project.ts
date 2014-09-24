@@ -17,6 +17,7 @@
 module Cats {
     
     var typedoc;
+    
     /**
      * The project hold the informaiton related to a single project. This include 
      * a reference to a worker thread that does much of the TypeScript intelli sense.

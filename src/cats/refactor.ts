@@ -19,14 +19,14 @@
  */ 
 module Cats.Refactor {
     
-    var Range: Ace.Range = ace.require("ace/range").Range;
+    var Range: ace.Range = ace.require("ace/range").Range;
 
     function renameOccurences(edits:FileRange[],name:string) {
         for (var i = edits.length - 1; i >= 0; i--) {
             var data = edits[i];
             var editor = <Gui.SourceEditor>IDE.openEditor(data.fileName);
             var r = data.range;
-            var range: Ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
+            var range: ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
             editor.replace(range,name);
         };        
     }

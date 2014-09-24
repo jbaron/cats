@@ -26,7 +26,7 @@ module Cats {
 
     /**
      * Get a parameter from the URL. This is used when a new project is opened from within
-     * the IDE.
+     * the IDE and the project name is passed s a parameter
      */
     function getParameterByName(name: string): string {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");

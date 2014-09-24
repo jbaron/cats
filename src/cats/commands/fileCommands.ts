@@ -61,11 +61,11 @@ module Cats.Commands {
      * Save the active sessions under a different name
      */     
      function saveAs() {
-        var editor = IDE.editorTabView.getActiveEditor();
+        var editor = <Gui.SourceEditor>IDE.editorTabView.getActiveEditor(Gui.SourceEditor);
         if (editor) {
-            var newName = prompt("Enter new name", editor.name);
+            var newName = prompt("Enter new name", editor.filePath);
             if (newName) {
-                editor.name = newName;
+                editor.filePath = newName;
                 editor.save();
             }
         }

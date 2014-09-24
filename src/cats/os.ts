@@ -28,7 +28,9 @@ module Cats.OS.File {
         var glob = require("glob");
 
         /**
-         * Very lightweight watcher for files and directories
+         * Very lightweight watcher for files and directories, used to inform the user of changes
+         * in the underlying file system.
+         * 
          */ 
         export class Watcher extends EventEmitter {
             
@@ -37,7 +39,12 @@ module Cats.OS.File {
             constructor() {
                 super();
             }
+ 
             
+            /**
+             * Add a new file or directory to the watch list. If it already exists it is being ignored
+             * 
+             */ 
             add(name:string) {
                 if (this.watches[name]) return;
                 var w = fs.watch(name, (event,filename) => {
@@ -46,7 +53,13 @@ module Cats.OS.File {
                 });
                 this.watches[name] = w;
             }
-            
+ 
+ 
+           /**
+             * Add a new directory to the watch list. If it already exists it is being ignored. 
+             * Only rename type of events are interesting.
+             * 
+             */ 
             addDir(name:string) {
                 if (this.watches[name]) return;
                 var w = fs.watch(name, (event,filename) => {
@@ -56,6 +69,11 @@ module Cats.OS.File {
                 this.watches[name] = w;
             }
             
+            
+            /**
+             * Remove an entry from the watch list (file or directory)
+             * 
+             */ 
             remove(name:string) {
                 var w = this.watches[name];
                 if (w) w.close();
@@ -66,7 +84,9 @@ module Cats.OS.File {
 
        /**
          * Create recursively directories if they don't exist yet
+         * 
          * @param path The directory path to create
+         * 
          */ 
         export function mkdirRecursiveSync(path: string) {
             if (!fs.existsSync(path)) {
@@ -83,7 +103,10 @@ module Cats.OS.File {
             return watcher;
         }
 
-       
+       /**
+        * Get the stat of a file and return them as a set of properties
+        * 
+        */ 
        export function getProperties(fileName:string) {
            if (! fileName) return [];
            var stat:Object = fs.statSync(fileName);
@@ -103,7 +126,7 @@ module Cats.OS.File {
        }
        
         /**
-         * Run an external command like a build tool
+         * Run an external command like a build tool and log the output
          * 
          */ 
         export function runCommand(cmd:string, options:any, logger=IDE.console) {
@@ -133,7 +156,9 @@ module Cats.OS.File {
        
         /**
          * Remove a file or an empty directory
-         * @param path the path of the file or directory
+         * 
+         * @param path the path of the file or directory to be removed
+         * 
          */ 
         export function remove(path:string) {
             var isFile = fs.statSync(path).isFile();
@@ -179,6 +204,7 @@ module Cats.OS.File {
          * Determine the newLineMode.
          * 
          * @return Return value is either dos or unix
+         * 
          */ 
         function determineNewLIneMode(): string {
             var mode = IDE.project.config.codingStandards.newLineMode;
@@ -190,8 +216,11 @@ module Cats.OS.File {
 
         /**
          * Write text content to a file. If a directory doesn't exist, create it
+         * 
          * @param name The full name of the file
          * @param value The content of the file
+         * @param stat Indicate if we should return the stat values of the newly written file 
+         * 
          */ 
          export function writeTextFile(name: string, value: string, stat=false):any {
             var newLineMode = determineNewLIneMode();
@@ -212,10 +241,16 @@ module Cats.OS.File {
             return null;
         }
         
+        
+        /**
+         * Convert backward slashes (DOS) to forward slashes (UNIX)
+         * 
+         */ 
         export function switchToForwardSlashes(path:string):string {
             if (! path) return path;
             return path.replace(/\\/g, "/");
         }
+         
          
         /**
          * Sort two directory directorie entries first on 
@@ -233,7 +268,9 @@ module Cats.OS.File {
                 
         /**
          * Read the files from a directory
+         * 
          * @param directory The directory name that should be read
+         * 
          */ 
         export function readDir(directory:string, sorted=false): Cats.FileEntry[] {
             var files:string[] = fs.readdirSync(directory);
@@ -255,7 +292,9 @@ module Cats.OS.File {
       
         /**
          * Read the content from a text file
+         * 
          * @param name The full name/path of the file
+         * 
          */ 
         export function readTextFile(name: string): string {
             if (name == null ) return "";

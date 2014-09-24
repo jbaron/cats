@@ -15,7 +15,7 @@
 module Cats.Gui {
 
     /**
-     * The toolbar for CATS
+     * Represents the statusbar for CATS displayed at the bottom of the screen.
      */
     export class StatusBar extends qx.ui.toolbar.ToolBar {
 
@@ -33,6 +33,10 @@ module Cats.Gui {
         }
 
 
+        /**
+         * Create a new botton 
+         * 
+         */ 
         private createButton(label?: string, icon?: string) {
             var button = new qx.ui.toolbar.Button(label, icon);
             // button.setPadding(1,1,1,1);
@@ -43,6 +47,10 @@ module Cats.Gui {
         }
 
 
+        /**
+         * Initialize the status bar
+         * 
+         */ 
         private init() {
             this.positionInfo = this.createButton("-:-");
             this.add(this.positionInfo);
@@ -59,8 +67,10 @@ module Cats.Gui {
             this.add(this.overwriteInfo);
         }
 
+
         /**
          * Indicate if the worker is busy or not
+         * 
          */
         setBusy(busy: boolean) {
             if (busy) {
@@ -70,7 +80,10 @@ module Cats.Gui {
             }
         }
 
-
+        /**
+         * Setup the listerners so that if state changes the statusbar can be updated
+         * 
+         */ 
         private setupListeners() {
             IDE.infoBus.on("editor.overwrite", (value: boolean) => {
                 this.overwriteInfo.setLabel(value ? "OVERWRITE" : "INSERT");
@@ -80,7 +93,7 @@ module Cats.Gui {
                 this.modeInfo.setLabel(value.toUpperCase());
             });
 
-            IDE.infoBus.on("editor.position", (value: Ace.Position) => {
+            IDE.infoBus.on("editor.position", (value: ace.Position) => {
                 var label = (value.row + 1) + ":" + (value.column + 1);
                 this.positionInfo.setLabel(label);
             });

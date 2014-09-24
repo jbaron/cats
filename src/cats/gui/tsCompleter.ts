@@ -37,18 +37,11 @@ module Cats.Gui {
 
     export class TSCompleter {
 
-        constructor(private editor:SourceEditor, aceEditor:Ace.Editor) {
-            aceEditor.commands.on('afterExec', (e) => { this.liveAutoComplete(e);});
+        constructor(private editor:SourceEditor) {
         }
 
-         private liveAutoComplete(e) {
-            var text = e.args || "";
-            if ((e.command.name === "insertstring") && (text === ".")) {
-                this.editor.showAutoComplete();
-            }
-        }
-
-        getCompletions(editor:Ace.Editor, session:Ace.EditSession, pos:Ace.Position, prefix:string, cb:(any,completions: Cats.CompletionEntry[])=>void) {
+ 
+        getCompletions(editor:ace.Editor, session:ace.EditSession, pos:ace.Position, prefix:string, cb:(any,completions: Cats.CompletionEntry[])=>void) {
             
             var fileName = this.editor.filePath;
             if (! fileName) return [];

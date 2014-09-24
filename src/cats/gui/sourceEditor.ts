@@ -14,11 +14,12 @@
 
 module Cats.Gui {
 
-    // var EditSession: Ace.EditSession = ace.require("ace/edit_session").EditSession;
-    var UndoManager: Ace.UndoManager = ace.require("ace/undomanager").UndoManager;
-    var Range: Ace.Range = ace.require("ace/range").Range;
+    var UndoManager: ace.UndoManager = ace.require("ace/undomanager").UndoManager;
+    var Range: ace.Range = ace.require("ace/range").Range;
     var modelist = ace.require('ace/ext/modelist');
 
+    var autoCompletePopup = new AutoCompletePopup();
+    
 
     /**
      * Wrapper around the ACE editor. The rest of the code base should not use
@@ -28,15 +29,16 @@ module Cats.Gui {
 
 
         private mode:string;
-        private aceEditor: Ace.Editor;
-        private autoCompletePopup: AutoCompletePopup;
+        private aceEditor: ace.Editor;
         private mouseMoveTimer: number;
+        private outlineTimer: number
         private updateSourceTimer: number;
         private pendingWorkerUpdate = false;
-        private editSession: Ace.EditSession;
-        private pendingPosition:Ace.Position;
+        private editSession: ace.EditSession;
+        private pendingPosition:ace.Position;
         private selectedTextMarker:any;
         private widget:qx.ui.core.Widget;
+        private contextMenu:SourceEditorContextMenu;
         
         unsavedChanges = false;
 
@@ -49,10 +51,13 @@ module Cats.Gui {
             widget.setAppearance(null);
             this.widget = widget;
             
-            var content = fileName ? OS.File.readTextFile(fileName) : "";
+            var content = "";
+            this.mode = "ace/mode/text";
             
-            
-            this.mode = modelist.getModeForPath(fileName).mode
+            if (fileName) {
+                content = OS.File.readTextFile(fileName) ;
+                this.mode = modelist.getModeForPath(fileName).mode
+            }
             
             this.editSession = new (<any>ace).EditSession(content, this.mode);
             this.editSession.setNewLineMode("unix");
@@ -60,12 +65,13 @@ module Cats.Gui {
             this.editSession["__fileName__"] = this.filePath;
             this.configureAceSession();
             this.editSession.on("change", this.onChangeHandler.bind(this));
+        
             this.editSession.on("changeAnnotation", () => {
                 var a = this.editSession.getAnnotations();
-                this.emit("errors", a);
+                this.emit("errors", this.getMaxAnnotation(a));
             });
             
-
+            this.updateOutline(0);
 
             widget.addListenerOnce("appear", () => {
                 var container = widget.getContentElement().getDomElement();
@@ -81,12 +87,9 @@ module Cats.Gui {
                     this.aceEditor.setReadOnly(false);
                 }
 
-                this.createContextMenu();
+                this.contextMenu = new SourceEditorContextMenu(this);
+                this.widget.setContextMenu(this.contextMenu);
 
-                this.autoCompletePopup = new AutoCompletePopup(this.aceEditor);
-                this.autoCompletePopup.show();
-                this.autoCompletePopup.hide();
-            
                 this.aceEditor.on("changeSelection", () => {
                     this.clearSelectedTextMarker();
                     IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
@@ -111,6 +114,19 @@ module Cats.Gui {
             IDE.infoBus.on("ide.config", () => { this.configureEditor(); });
         }
 
+        /**
+         * Determine the maximum level of warnings within a set of annotations.
+         */ 
+        private getMaxAnnotation(annotations:ace.Annotation[]) {
+            if ((!annotations) || (annotations.length ===0)) return "";
+            var result = "info";
+            annotations.forEach((annotation) => {
+                if (annotation.type === "error") result = "error";
+                if (annotation.type === "warning" && result === "info") result = "warning";
+            });
+            return result;
+        }
+
         executeCommand(name, ...args): boolean {
             return false;
         }
@@ -123,22 +139,40 @@ module Cats.Gui {
             return false;
         }
 
+        /**
+         * Get the Qooxdoo Widget that can be added to the parent
+         */ 
         getLayoutItem() {
             return this.widget;
         }
 
 
+        /**
+         * Is the editor currently containing TypeScript content. This determines wehther all kind 
+         * of features are enabled or not.
+         */ 
         isTypeScript() {
             return this.mode === "ace/mode/typescript";
         }
 
+
+        /**
+         * Replace the current content of this editor with new content and indicate
+         * wether the cursor should stay on the same position
+         * 
+         */ 
         setContent(content, keepPosition= true) {
-            var pos: Ace.Position;
+            var pos: ace.Position;
             if (keepPosition) pos = this.getPosition();
             this.aceEditor.getSession().setValue(content);
             if (pos) this.moveToPosition(pos);
         }
 
+
+        /**
+         * Update the configuaration of the editor. 
+         *
+         */
         private configureEditor() {
             var config = IDE.config.editor;
             if (config.fontSize) this.aceEditor.setFontSize(config.fontSize + "px");
@@ -146,7 +180,10 @@ module Cats.Gui {
             if (config.theme) this.aceEditor.setTheme("ace/theme/" + config.theme);
         }
 
-
+        /**
+         * Update the configuration of the session.
+         * 
+         */ 
         private configureAceSession() {
             var config = this.project.config.codingStandards;
             var session = this.editSession;
@@ -154,16 +191,31 @@ module Cats.Gui {
             if (config.useSoftTabs != null) session.setUseSoftTabs(config.useSoftTabs);
         }
 
+
+        /**
+         * Inform the world about current status of the editor
+         * 
+         */ 
         private informWorld() {
             IDE.infoBus.emit("editor.overwrite", this.editSession.getOverwrite());
-            IDE.infoBus.emit("editor.mode", this.mode);
+            var mode = PATH.basename(this.mode)
+            IDE.infoBus.emit("editor.mode", mode);
             IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
         }
 
-        replace(range: Ace.Range, content: string) {
+        replace(range: ace.Range, content: string) {
             this.editSession.replace(range, content);
         }
 
+
+        getLine(row = this.getPosition().row) {
+            return this.editSession.getLine(row);   
+        }
+
+        /**
+         * Get the content of the editor
+         * 
+         */ 
         getContent() {
             return this.editSession.getValue();
         }
@@ -177,22 +229,13 @@ module Cats.Gui {
                 this.unsavedChanges = true;
                 this.emit("changed", true);
             }
-            
-            this.pendingWorkerUpdate = true;
-            if (!this.isTypeScript()) return;
-
-            clearTimeout(this.updateSourceTimer);
-
-            // Don't send too many updates to the session, wait for people to 
-            // finsih typing.
-            this.updateSourceTimer = setTimeout(() => {
-                if (this.pendingWorkerUpdate) {
-                    this.update();
-                }
-            }, 500);
+            this.updateOutline();
         }
 
-
+        /**
+         * Make sure the ace editor is resized when the Qooxdoo container is resized.
+         * 
+         */ 
         private resizeHandler() {
             if (!this.widget.isSeeable()) {
                 this.addListenerOnce("appear", () => { this.resizeEditor(); });
@@ -222,12 +265,12 @@ module Cats.Gui {
 
         private addTempMarker(r: Cats.Range) {
             this.clearSelectedTextMarker();
-            var range: Ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
+            var range: ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
             this.selectedTextMarker = this.editSession.addMarker(range,"ace_selected-word", "text");
         }
 
         moveToPosition(pos: Cats.Range);
-        moveToPosition(pos: Ace.Position);
+        moveToPosition(pos: ace.Position);
         moveToPosition(pos: any) {
             if (! this.aceEditor) {
                 this.pendingPosition = pos;
@@ -249,14 +292,18 @@ module Cats.Gui {
             }
         }
 
-        private getPosition() {
+        /**
+         * Get the position of the cursor within the content.
+         * 
+         */ 
+        getPosition() {
             return this.aceEditor.getCursorPosition();
         }
 
         /**
           * Get the Position based on mouse x,y coordinates
           */
-        getPositionFromScreenOffset(x: number, y: number): Ace.Position {
+        getPositionFromScreenOffset(x: number, y: number): ace.Position {
             var r = this.aceEditor.renderer;
             // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
             var offset = (x - r.$padding) / r.characterWidth;
@@ -271,8 +318,6 @@ module Cats.Gui {
             return docPos;
         }
 
-     
-
 
         /**
           * Update the session with the latest version of the content of this 
@@ -280,40 +325,33 @@ module Cats.Gui {
           */
         private update() {
                 var source = this.aceEditor.getSession().getValue();
+                this.project.iSense.updateScript(this.filePath, this.getContent());
                 // this.session.updateContent(source);
                 clearTimeout(this.updateSourceTimer);
                 this.pendingWorkerUpdate = false;
         }
 
+
         /**
          * Perform code autocompletion.
          */
-        showAutoComplete() {
+        showAutoComplete(memberCompletionOnly = false) {
              // Any pending changes that are not yet send to the worker?
             if (this.pendingWorkerUpdate) this.update();
-            this.autoCompletePopup.complete();
-        }
-
-
-        private mapSeverity(level: Cats.Severity): string {
-            switch (level) {
-                case Cats.Severity.Error: return "error";
-                case Cats.Severity.Warning: return "warning";
-                case Cats.Severity.Info: return "info";
-            }
+            autoCompletePopup.complete(memberCompletionOnly, this, this.aceEditor);
         }
 
 
         /**
          * Check if there are any errors for this session and show them.    
          */
-        private showErrors(result: Cats.FileRange[]) {
-            var annotations: Ace.Annotation[] = [];
+        showAnnotations(result: Cats.FileRange[]) {
+            var annotations: ace.Annotation[] = [];
             result.forEach((error: Cats.FileRange) => {
                 annotations.push({
                     row: error.range.start.row,
                     column: error.range.start.column,
-                    type: this.mapSeverity(error.severity),
+                    type: <any>error.severity,
                     text: error.message
                 });
             });
@@ -321,12 +359,24 @@ module Cats.Gui {
         }
 
 
-        // Initialize the editor
-        private createAceEditor(rootElement: HTMLElement): Ace.Editor {
-            var editor: Ace.Editor = ace.edit(rootElement);
+         private liveAutoComplete(e) {
+            var text = e.args || "";
+            if ((e.command.name === "insertstring") && (text === ".")) {
+                this.showAutoComplete(true);
+            }
+        }
+
+        /**
+         * Create a new isntance of the ACE editor and append is to a dom element
+         * 
+         */ 
+        private createAceEditor(rootElement: HTMLElement): ace.Editor {
+            var editor: ace.Editor = ace.edit(rootElement);
             if (this.isTypeScript()) {
-                editor.completers =  [new TSCompleter(this,editor), snippetCompleter];
+                editor.completers =  [new TSCompleter(this), snippetCompleter];
+                editor.commands.on('afterExec', (e) => { this.liveAutoComplete(e);});
                 new TSTooltip(this);
+                new TSHelper(this, this.editSession);
             } else {
                 editor.completers =  [keyWordCompleter, snippetCompleter];
             }
@@ -351,7 +401,7 @@ module Cats.Gui {
                         win: "F12",
                         mac: "F12"
                     },
-                    exec: () => { this.gotoDeclaration(); }
+                    exec: () => { this.contextMenu.gotoDeclaration(); }
                 },
 
 
@@ -369,83 +419,25 @@ module Cats.Gui {
             return editor;
         }
 
-        private gotoDeclaration() {
-            this.project.iSense.getDefinitionAtPosition(this.filePath, this.getPosition(), (err, data: Cats.FileRange) => {
-                if (data && data.fileName)
-                    IDE.openEditor(data.fileName, data.range.start);
-            });
-        }
 
-        private getInfoAt(type: string) {
-
-            this.project.iSense.getInfoAtPosition(type, this.filePath, this.getPosition(), (err, data: Cats.FileRange[]) => {
-                if (! data) return;
-                var resultTable = new ResultTable();
-                var page = IDE.problemPane.addPage("info", null, resultTable);
-                page.setShowCloseButton(true);
-                resultTable.setData(data);
-                page.select();
-            });
-        }
-
-
-        private refactor() {
-            var pos = this.getPosition();
-            Refactor.rename(this.filePath,this.project, pos);
-        }
-
-        private findReferences() {
-            return this.getInfoAt("getReferencesAtPosition");
-        }
-
-        private findOccurences() {
-            return this.getInfoAt("getOccurrencesAtPosition");
-        }
-
-
-        private findImplementors() {
-            return this.getInfoAt("getImplementorsAtPosition");
-        }
-
-        private createContextMenuItem(name: string, fn: Function, self?:any) {
-            var button = new qx.ui.menu.Button(name);
-            button.addListener("execute", fn, self);
-            return button;
-        }
-
-        private bookmark() {
-            var name = prompt("please provide bookmark name");
-            if (name) {
-                var pos = this.getPosition();
-                IDE.bookmarks.addData({
-                    message: name,
-                    fileName: this.filePath,
-                    range: {
-                        start: pos,
-                        end: pos
-                    }
-                });
-            }
-        }
-
-        private createContextMenu() {
-            var menu = new qx.ui.menu.Menu();
-            if (this.isTypeScript()) {
-                menu.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration,this));
-                menu.add(this.createContextMenuItem("Find References", this.findReferences, this));
-                menu.add(this.createContextMenuItem("Find Occurences", this.findOccurences, this));
-                menu.add(this.createContextMenuItem("FInd Implementations", this.findImplementors, this));
-                menu.addSeparator();
-                menu.add(this.createContextMenuItem("Rename", this.refactor, this));
-                menu.addSeparator();
-            }
-            menu.add(this.createContextMenuItem("Bookmark", this.bookmark, this));
-            this.widget.setContextMenu(menu);
-        }
-
-      
         /**
-         * Persist this session to the file system
+         * Lets check the worker if something changed in the outline of the source.
+         * But lets not call this too often.
+         * 
+         */
+        private updateOutline(timeout= 5000) {
+                if (! this.isTypeScript()) return;
+                clearTimeout(this.outlineTimer);
+                this.outlineTimer = setTimeout(() => {
+                    this.project.iSense.getScriptLexicalStructure(this.filePath, (err: Error, data: NavigateToItem[]) => {
+                        this.set("outline",data);
+                    });
+                }, timeout);
+        }
+
+     
+        /**
+         * Persist this session to the file system. This overrides the NOP in the base class
          */
         save() {
            
@@ -455,7 +447,6 @@ module Cats.Gui {
                 if (! this.filePath) return;
                 this.filePath = OS.File.switchToForwardSlashes(this.filePath);
             }
-
 
             OS.File.writeTextFile(this.filePath, this.getContent());
             this.unsavedChanges = false;

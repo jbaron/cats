@@ -26,6 +26,7 @@ module Cats.Gui {
             var tableModel = new qx.ui.table.model.Simple();
             tableModel.setColumns(headers);
             tableModel.setData([]);
+            this.setStatusBarVisible(false); 
 
             var custom: any = {
                 tableColumnModel: function(obj) {

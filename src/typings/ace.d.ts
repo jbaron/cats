@@ -16,7 +16,7 @@
 
 // Right now only defined what CATS is actually using
 
-declare module Ace {
+declare module ace {
 
 
 
@@ -141,41 +141,43 @@ declare module Ace {
 	}
 
 
-interface IAce {
+// interface IAce {
 
     /**
      * Provides access to require in packed noconflict mode
      * @param moduleName
     **/
-    require(moduleName: string): any;
+    function require(moduleName: string): any;
 
     /**
      * Embeds the Ace editor into the DOM, at the element provided by `el`.
      * @param el Either the id of an element, or the element itself
     **/
-    edit(el: string):Editor;
+    function edit(el: string):Editor;
 
     /**
      * Embeds the Ace editor into the DOM, at the element provided by `el`.
      * @param el Either the id of an element, or the element itself
     **/
-    edit(el: HTMLElement):Editor;
+    function edit(el: HTMLElement):Editor;
 
     /**
      * Creates a new [[EditSession]], and returns the associated [[Document]].
      * @param text {:textParam}
      * @param mode {:modeParam}
     **/
-    createEditSession(text: Document, mode: string);
+    function createEditSession(text: Document, mode: string);
 
     /**
      * Creates a new [[EditSession]], and returns the associated [[Document]].
      * @param text {:textParam}
      * @param mode {:modeParam}
     **/
-    createEditSession(text: string, mode: string);
-}
+    function createEditSession(text: string, mode: string);
+    
+    
+// }
 
 }
 
-declare var ace:Ace.IAce;
+// declare var ace:Ace.IAce;

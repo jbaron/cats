@@ -19,14 +19,17 @@ module Cats.Gui {
     /**
      * Thsi class provides assists the SourceEditor for TypeScript files
      */ 
-    class TSHelper {
+    export class TSHelper {
         
         private errors: Cats.FileRange[] = [];
         outline: NavigateToItem[];
-        private outlineTimer: number;
+     
         private diagnosticTimer : number;
+        private updateSourceTimer : number;
+        private pendingUpdates = false;
+        
        
-        constructor(private editor:SourceEditor) {
+        constructor(private editor:SourceEditor, private editSession: ace.EditSession) {
             this.init();
         } 
         
@@ -36,31 +39,36 @@ module Cats.Gui {
                 this.updateDiagnostics(0);
             });
             
-
+            this.editSession.on("change", (ev) => {
+                this.updateContent();
+            });
         }
         
-        setErrors(errors: Cats.FileRange[]) {
+        
+        setErrors(errors: Cats.FileRange[] = []) {
             if ((this.errors.length === 0) && (errors.length === 0)) return;
             this.errors = errors;
-            this.editor.emit("errors", this.errors);
+            this.editor.showAnnotations(this.errors);
         }
 
-
-        private setOutline(outline: NavigateToItem[]) {
-            this.outline = outline;
-            this.editor.emit("outline", this.outline);
-        }
+        
 
         private getWidget() {
             return this.editor.getLayoutItem();
         }
 
- 
-     
+       
 
-        updateContent(content: string) {
-            this.editor.project.iSense.updateScript(this.editor.filePath, this.editor.getContent());
-            this.updateDiagnostics();
+        updateContent(timeout=500) {
+            clearTimeout(this.updateSourceTimer);
+            this.pendingUpdates = true;
+            this.updateSourceTimer = setTimeout(() => {
+                if (this.pendingUpdates) {
+                    this.editor.project.iSense.updateScript(this.editor.filePath, this.editor.getContent());
+                    this.pendingUpdates = false;
+                     this.updateDiagnostics();
+                }
+            }, timeout);
         }
 
         /**
@@ -83,20 +91,7 @@ module Cats.Gui {
         }
 
 
-        /**
-         * Lets check the worker if something changed in the outline of the source.
-         * But lets not call this too often.
-         */
-        private updateOutline(timeout= 5000) {
-                // Clear any pending updates
-                clearTimeout(this.outlineTimer);
-                this.outlineTimer = setTimeout(() => {
-                    this.editor.project.iSense.getScriptLexicalStructure(this.editor.filePath, (err: Error, data: NavigateToItem[]) => {
-                        this.setOutline(data);
-                    });
-                }, timeout);
-           
-        }
+      
 
     }
 

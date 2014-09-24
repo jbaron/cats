@@ -27,6 +27,11 @@ module Cats.Gui {
     export class UMLEditor extends Editor {
 
         private backgroundColors = ["white", "black", "grey"];
+        properties = [
+            {key:"type" , value: "class diagram"},    
+            {key : "created", value: Date.now() }
+        ];
+
         private diagram: any;
         unsavedChanges = false;
         widget = new qx.ui.embed.Html(null);
@@ -193,7 +198,7 @@ module Cats.Gui {
         }
 
 
-        replace(range: Ace.Range, content: string) { }
+        replace(range: ace.Range, content: string) { }
 
         getContent(): string { return null; }
 
@@ -201,7 +206,7 @@ module Cats.Gui {
 
         updateWorld() { }
 
-        moveToPosition(pos: Ace.Position) { }
+        moveToPosition(pos: ace.Position) { }
 
 
     }

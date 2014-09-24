@@ -49,6 +49,7 @@ var catsOptions = [
     "src/cats/gui/fileNavigator.ts",
     "src/cats/gui/outlineNavigator.ts",
     "src/cats/gui/resultTable.ts",
+    "src/cats/gui/autoCompletePopup.ts",
     "src/cats/gui/sourceEditor.ts",
     "src/cats/gui/imageEditor.ts",
     "src/cats/gui/umlEditor.ts",
@@ -56,7 +57,6 @@ var catsOptions = [
     "src/cats/gui/toolBar.ts",
     "src/cats/gui/editorTabView.ts",
     "src/cats/gui/statusBar.ts",
-    "src/cats/gui/autoCompletePopup.ts",
     "src/cats/gui/fileContextMenu.ts",
     "src/cats/gui/configDialog.ts",
     "src/cats/gui/processTable.ts",
@@ -67,6 +67,7 @@ var catsOptions = [
     "src/cats/gui/menubar.ts",
     "src/cats/gui/tsTooltip.ts",
     "src/cats/gui/tsHelper.ts",
+    "src/cats/gui/sourceEditorContextMenu.ts",
     
 
     "src/cats/util/mime.ts",

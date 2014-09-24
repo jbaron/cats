@@ -76,6 +76,8 @@ module Cats.Gui {
 
             var table = new qx.ui.table.Table(tableModel, custom);
             table.setDecorator(null);
+            table.setStatusBarVisible(false); 
+
             table.getSelectionModel().addListener("changeSelection", (data) => {
                 var selectedRow = table.getSelectionModel().getLeadSelectionIndex();
                 var data = table.getTableModel().getRowData(selectedRow);

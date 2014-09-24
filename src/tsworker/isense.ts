@@ -114,19 +114,7 @@ module Cats.TSWorker {
             return mc.getModel();
         }
 
-        /*
-        public getObjectModel() {
-            var walker = new ObjectModelCreator();
-            this.lsHost.getScriptFileNames().forEach((script) => {
-                if (script.indexOf(".d.ts") > 0) return;
-                this.ls.getSyntaxTree(script).sourceUnit().accept(walker);
-            });
-            var result = walker.getModel();
-            return result;
-        }
-        */
-        
-
+  
         /**
          * Convert Services to Cats NavigateToItems
          * @todo properly do this conversion
@@ -279,6 +267,46 @@ module Cats.TSWorker {
             return compOptions;
         }
 
+
+       private isExecutable(kind) {
+            if (kind === "method" || kind === "function" || kind === "constructor") return true;
+            return false;
+        }
+
+
+        /**
+         * Convert the data for outline usage.
+         */
+        private getOutlineModelData(data: TypeScript.Services.NavigateToItem[]) {
+            if ((!data) || (!data.length)) {
+                return [];
+            }
+
+            var parents = {};
+            var root = {};
+
+            data.forEach((item) => {
+                var parentName = item.containerName;
+                var parent = parentName ? parents[parentName] : root;
+                if (!parent) console.info("No Parent for " + parentName);
+                if (!parent.children) parent.children = [];
+
+                var extension = this.isExecutable(item.kind) ? "()" : "";
+                var script = this.getScript(item.fileName);
+
+                var entry = {
+                    label: item.name + extension,
+                    position: this.positionToLineCol(script, item.minChar),
+                    kind: item.kind
+                };
+
+                var childName = parentName ? parentName + "." + item.name : item.name;
+                parents[childName] = entry;
+                parent.children.push(entry);
+            });
+            
+            return root;
+        }
 
         /**
          * Get the content of a script
@@ -469,10 +497,10 @@ module Cats.TSWorker {
             return this.convertNavigateTo(results);
         }
 
-        public getScriptLexicalStructure(fileName: string): NavigateToItem[] {
+        public getScriptLexicalStructure(fileName: string) {
             var results = this.ls.getScriptLexicalStructure(fileName);
             var finalResults = results.filter((entry) => { return entry.fileName === fileName; });
-            return this.convertNavigateTo(finalResults);
+            return this.getOutlineModelData(finalResults);
         }
 
         public getOutliningRegions(fileName: string): Range[] {

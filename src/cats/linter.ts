@@ -72,9 +72,13 @@ module Cats {
             return this.lintOptions;
         }
 
-        lint(name, content) {
 
-            var ll = new TSLint(name, content, this.getOptions());
+        /**
+         * Excute lint on the provided conent
+         * 
+         */ 
+        lint(fileName:string, content:string) {
+            var ll = new TSLint(fileName, content, this.getOptions());
             var result: Array<any> = JSON.parse(ll.lint().output);
             var r: Cats.FileRange[] = [];
             result.forEach((msg) => {

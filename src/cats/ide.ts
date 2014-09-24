@@ -227,7 +227,7 @@ module Cats {
          * Open an existing editor or if it doesn't exist yet create
          * a new one.
          */ 
-        openEditor(name: string, pos:Ace.Position = {row:0, column:0}):Editor {
+        openEditor(name: string, pos:ace.Position = {row:0, column:0}):Editor {
             var editor : Editor;
             var pages:Gui.EditorPage[] = [];
             pages = this.editorTabView.getPagesForFile(name);

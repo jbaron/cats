@@ -40,9 +40,9 @@ module Cats {
     }
 
     export enum Severity {
-        Info,
-        Warning,
-        Error
+        Info = <any>"info",
+        Warning = <any>"warning",
+        Error = <any>"error"
     }
 
     export interface FileRange {

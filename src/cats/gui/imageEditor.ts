@@ -80,7 +80,7 @@ module Cats.Gui {
             return supportedExt.indexOf(ext) > -1;
         }
 
-        replace(range: Ace.Range, content: string) { }
+        replace(range: ace.Range, content: string) { }
 
         getContent() { return null; }
 
@@ -88,7 +88,7 @@ module Cats.Gui {
 
         updateWorld() { }
 
-        moveToPosition(pos: Ace.Position) { }
+        moveToPosition(pos: ace.Position) { }
 
     }
 }

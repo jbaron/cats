@@ -20,7 +20,7 @@
 module Cats.Commands {
 
     function getRange(editor):Cats.Range {
-        var range:Ace.Range = editor.aceEditor.selection.getRange();
+        var range:ace.Range = editor.aceEditor.selection.getRange();
         if (range.isEmpty()) return null; 
         return {
             start : range.start,

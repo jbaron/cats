@@ -68,7 +68,7 @@ module Cats {
             this.perform("getScriptLexicalStructure", sessionName, cb);
         }
 
-        getTypeAtPosition(name: string, docPos: Ace.Position, cb: (err: any, data: TypeInfo) => void) {
+        getTypeAtPosition(name: string, docPos: ace.Position, cb: (err: any, data: TypeInfo) => void) {
             this.perform("getTypeAtPosition", name, docPos, cb);
         }
 
@@ -92,7 +92,7 @@ module Cats {
             this.perform("updateScript", fileName, content, null);
         }
 
-        getCompletions(fileName: string, cursor: Ace.Position, cb: (err, completes: TypeScript.Services.CompletionEntry[]) => void) {
+        getCompletions(fileName: string, cursor: ace.Position, cb: (err, completes: TypeScript.Services.CompletionEntry[]) => void) {
             this.perform("getCompletions", fileName, cursor, cb);
         }
 

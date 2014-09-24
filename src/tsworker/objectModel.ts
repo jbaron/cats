@@ -16,7 +16,8 @@ module Cats.TSWorker {
         getModel(): Array<ModelEntry> {
             var result = [];
             Object.keys(this.model).forEach((key) => {
-               result.push(this.model[key]); 
+               var entry:ModelEntry = this.model[key];
+               result.push(entry);
             });
             return result;
         }
