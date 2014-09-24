@@ -32,7 +32,7 @@ module Cats {
         attributes?: Array<Attribute>;
         extends?: Array<string>;
         implements?: Array<string>;
-    }    
+    }   
 
     export interface Range {
         start: Position;

@@ -109,7 +109,6 @@ module Cats {
                 this.updateProperties();
             }
             
-            
             updateProperties() {
                 if (this.filePath) {
                     try {

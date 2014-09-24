@@ -17,16 +17,13 @@
 module Cats.Gui {
 
     var UndoManager: ace.UndoManager = ace.require("ace/undomanager").UndoManager;
-    var Range: ace.Range = ace.require("ace/range").Range;
-    var modelist = ace.require('ace/ext/modelist');
+
+    export class EditSession extends ace.EditSession {
 
 
-    class EditSession extends ace.EditSession {
-    
-    
-    unsavedChanges = false;
+        unsavedChanges = false;
 
-    constructor(content:string, mode:string, private editor:SourceEditor) {
+        constructor(content: string, mode: string, private editor: SourceEditor) {
             super(content, mode);
             this.setNewLineMode("unix");
             this.setUndoManager(new UndoManager());
@@ -35,15 +32,34 @@ module Cats.Gui {
                 var a = this.getAnnotations();
                 this.editor.emit("errors", this.getMaxAnnotation(a));
             });
-            
+
             this.on("changeOverwrite", (a) => {
                 IDE.infoBus.emit("editor.overwrite", this.getOverwrite());
             });
-            
-            this.on("change", this.onChangeHandler.bind(this));
+
+            this.on("change", () => {
+                if (!this.unsavedChanges) this.setHasUnsavedChanges(true);
+            });
             
             IDE.infoBus.on("project.config", () => { this.configureAceSession(); });
         }
+
+       /**
+         * Check if there are any errors for this session and show them.    
+         */
+        showAnnotations(result: Cats.FileRange[]) {
+            var annotations: ace.Annotation[] = [];
+            result.forEach((error: Cats.FileRange) => {
+                annotations.push({
+                    row: error.range.start.row,
+                    column: error.range.start.column,
+                    type: <any>error.severity,
+                    text: error.message
+                });
+            });
+            this.setAnnotations(annotations);
+        }
+
 
         /**
          * Determine the maximum level of warnings within a set of annotations.
@@ -69,17 +85,11 @@ module Cats.Gui {
                 IDE.infoBus.emit("editor.overwrite", this.getOverwrite());
             });
         }
-        
-        
-        /**
-         * Keep track of changes made to the content and update the 
-         * worker if required.
-         */
-        private onChangeHandler(event) {
-            if (! this.unsavedChanges) {
-                this.unsavedChanges = true;
-                this.editor.emit("changed", true);
-            }
+
+
+        setHasUnsavedChanges(value: boolean) {
+            this.unsavedChanges = value;
+            this.editor.emit("changed", value);
         }
 
 

@@ -14,7 +14,7 @@
 
 module Cats.Gui {
 
-    var UndoManager: ace.UndoManager = ace.require("ace/undomanager").UndoManager;
+    
     var Range: ace.Range = ace.require("ace/range").Range;
     var modelist = ace.require('ace/ext/modelist');
 
@@ -34,14 +34,12 @@ module Cats.Gui {
         private outlineTimer: number
         private updateSourceTimer: number;
         private pendingWorkerUpdate = false;
-        private editSession: ace.EditSession;
+        private editSession: EditSession;
         private pendingPosition:ace.Position;
         private selectedTextMarker:any;
         private widget:qx.ui.core.Widget;
         private contextMenu:SourceEditorContextMenu;
         
-        unsavedChanges = false;
-
         constructor(fileName?:string) {
             super(fileName);
             
@@ -59,17 +57,7 @@ module Cats.Gui {
                 this.mode = modelist.getModeForPath(fileName).mode
             }
             
-            this.editSession = new (<any>ace).EditSession(content, this.mode);
-            this.editSession.setNewLineMode("unix");
-            this.editSession.setUndoManager(new UndoManager());
-            this.editSession["__fileName__"] = this.filePath;
-            this.configureAceSession();
-            this.editSession.on("change", this.onChangeHandler.bind(this));
-        
-            this.editSession.on("changeAnnotation", () => {
-                var a = this.editSession.getAnnotations();
-                this.emit("errors", this.getMaxAnnotation(a));
-            });
+            this.editSession = new EditSession(content, this.mode, this);
             
             this.updateOutline(0);
 
@@ -110,23 +98,11 @@ module Cats.Gui {
             // session.on("errors", this.showErrors, this);
             this.widget.addListener("resize", () => { this.resizeHandler(); });
 
-            IDE.infoBus.on("project.config", () => { this.configureAceSession(); });
+          
             IDE.infoBus.on("ide.config", () => { this.configureEditor(); });
         }
 
-        /**
-         * Determine the maximum level of warnings within a set of annotations.
-         */ 
-        private getMaxAnnotation(annotations:ace.Annotation[]) {
-            if ((!annotations) || (annotations.length ===0)) return "";
-            var result = "info";
-            annotations.forEach((annotation) => {
-                if (annotation.type === "error") result = "error";
-                if (annotation.type === "warning" && result === "info") result = "warning";
-            });
-            return result;
-        }
-
+       
         executeCommand(name, ...args): boolean {
             return false;
         }
@@ -180,17 +156,7 @@ module Cats.Gui {
             if (config.theme) this.aceEditor.setTheme("ace/theme/" + config.theme);
         }
 
-        /**
-         * Update the configuration of the session.
-         * 
-         */ 
-        private configureAceSession() {
-            var config = this.project.config.codingStandards;
-            var session = this.editSession;
-            if (config.tabSize) session.setTabSize(config.tabSize);
-            if (config.useSoftTabs != null) session.setUseSoftTabs(config.useSoftTabs);
-        }
-
+  
 
         /**
          * Inform the world about current status of the editor
@@ -220,18 +186,7 @@ module Cats.Gui {
             return this.editSession.getValue();
         }
 
-        /**
-         * Keep track of changes made to the content and update the 
-         * worker if required.
-         */
-        private onChangeHandler(event) {
-            if (! this.unsavedChanges) {
-                this.unsavedChanges = true;
-                this.emit("changed", true);
-            }
-            this.updateOutline();
-        }
-
+    
         /**
          * Make sure the ace editor is resized when the Qooxdoo container is resized.
          * 
@@ -250,11 +205,7 @@ module Cats.Gui {
             }, 100);
         }
 
-        private setupEvents() {
-            this.editSession.on("changeOverwrite", (a) => {
-                IDE.infoBus.emit("editor.overwrite", this.editSession.getOverwrite());
-            });
-        }
+    
 
         private clearSelectedTextMarker() {
             if (this.selectedTextMarker) {
@@ -346,16 +297,7 @@ module Cats.Gui {
          * Check if there are any errors for this session and show them.    
          */
         showAnnotations(result: Cats.FileRange[]) {
-            var annotations: ace.Annotation[] = [];
-            result.forEach((error: Cats.FileRange) => {
-                annotations.push({
-                    row: error.range.start.row,
-                    column: error.range.start.column,
-                    type: <any>error.severity,
-                    text: error.message
-                });
-            });
-            this.aceEditor.getSession().setAnnotations(annotations);
+            this.editSession.showAnnotations(result);
         }
 
 
@@ -449,8 +391,7 @@ module Cats.Gui {
             }
 
             OS.File.writeTextFile(this.filePath, this.getContent());
-            this.unsavedChanges = false;
-            this.emit("changed", false);
+            this.editSession.setHasUnsavedChanges(false);
             this.updateProperties();
 
             if (this.isTypeScript()) {
