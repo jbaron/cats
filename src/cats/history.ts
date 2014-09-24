@@ -29,7 +29,6 @@ module Cats {
             pos: any;
         };
 
-
         add(entry: Gui.EditorPage, pos?) {
             this.entries.push({
                 hash: entry.toHashCode(),

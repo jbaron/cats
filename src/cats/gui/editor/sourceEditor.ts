@@ -269,26 +269,12 @@ module Cats.Gui {
             return docPos;
         }
 
-
-        /**
-          * Update the session with the latest version of the content of this 
-          * editor.
-          */
-        private update() {
-                var source = this.aceEditor.getSession().getValue();
-                this.project.iSense.updateScript(this.filePath, this.getContent());
-                // this.session.updateContent(source);
-                clearTimeout(this.updateSourceTimer);
-                this.pendingWorkerUpdate = false;
-        }
-
-
         /**
          * Perform code autocompletion.
          */
         showAutoComplete(memberCompletionOnly = false) {
              // Any pending changes that are not yet send to the worker?
-            if (this.pendingWorkerUpdate) this.update();
+            this.project.iSense.updateScript(this.filePath, this.getContent());
             autoCompletePopup.complete(memberCompletionOnly, this, this.aceEditor);
         }
 

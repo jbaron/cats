@@ -336,7 +336,7 @@ module Cats.Gui {
             var matches = [];
             var completers = memberCompletionOnly ? [new TSCompleter(this.sourceEditor)] : editor.completers
             var total = completers.length;
-            editor.completers.forEach((completer, i) => {
+            completers.forEach((completer, i) => {
                 completer.getCompletions(editor, session, pos, prefix, (err, results) => {
                     total--;
                     if (!err) matches = matches.concat(results);
