@@ -234,8 +234,9 @@ module Cats {
             if (! pages.length) {
                 editor = this.createEditor(name);
                 if (! editor) {
-                    alert("No suitable editor found for this file type");
-                    return;
+                    var c = confirm("No suitable editor found for this file type, open with source editor?");
+                    if (! c) return; 
+                    editor = new Gui.SourceEditor(name);
                 }
                 IDE.editorTabView.addEditor(editor,pos);
             } else {
