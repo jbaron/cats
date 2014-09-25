@@ -29,7 +29,7 @@ module Cats.Gui {
         private backgroundColors = ["white", "black", "grey"];
         properties = [
             {key:"type" , value: "class diagram"},    
-            {key : "created", value: Date.now() }
+            {key : "created", value: new Date().toLocaleTimeString() }
         ];
 
         private diagram: any;
@@ -99,7 +99,7 @@ module Cats.Gui {
             var nodes = {};
             var g = new dagre.Digraph();
             var max = 100;
-            
+            IDE.console.log("Creating class diagram ...");
             IDE.project.iSense.getObjectModel((err, model: Array<Cats.ModelEntry>) => {
                 if (! model) return;
                 var count = 0;
@@ -167,7 +167,7 @@ module Cats.Gui {
                     var y = value.y - (n.getHeight() / 2);
                     n.setPosition(x,y);
                     classDiagram.addElement(n);
-                    IDE.console.log("Adding node " + name + " at " + x + ":" + y);
+                    // IDE.console.log("Adding node " + name + " at " + x + ":" + y);
                 });
 
                 // Now add the relations
@@ -179,7 +179,7 @@ module Cats.Gui {
                 //Interaction is possible (editable)
                 classDiagram.interaction(true);
                 this.diagram = classDiagram;
-
+                IDE.console.log("Finished creating class diagram.");
             });
 
             return;
