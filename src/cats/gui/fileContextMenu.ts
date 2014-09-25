@@ -20,7 +20,7 @@ module Cats.Gui {
  */ 
 export class FileContextMenu extends qx.ui.menu.Menu {
 
-    private gui = require('nw.gui');
+    private gui = require("nw.gui");
     private searchDialog = new SearchDialog();
 
     constructor(private fileNavigator:FileNavigator) {

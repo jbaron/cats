@@ -44,7 +44,7 @@ module Cats.Gui {
             IDE.infoBus.on("project.config", () => { this.configureAceSession(); });
         }
 
-       /**
+        /**
          * Check if there are any errors for this session and show them.    
          */
         showAnnotations(result: Cats.FileRange[]) {
@@ -80,20 +80,11 @@ module Cats.Gui {
             if (config.useSoftTabs != null) this.setUseSoftTabs(config.useSoftTabs);
         }
 
-        private setupEvents() {
-            this.on("changeOverwrite", (a) => {
-                IDE.infoBus.emit("editor.overwrite", this.getOverwrite());
-            });
-        }
-
-
         setHasUnsavedChanges(value: boolean) {
             this.unsavedChanges = value;
             this.editor.emit("changed", value);
         }
 
-
     }
-
 
 }

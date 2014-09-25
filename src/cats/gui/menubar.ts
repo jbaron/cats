@@ -43,7 +43,7 @@ module Cats.Gui {
 
 
         private createMenuBar() {
-            this.menu = new GUI.Menu({ type: 'menubar' });
+            this.menu = new GUI.Menu({ type: "menubar" });
 
             if (OS.File.isOSX() && this.menu.createMacBuiltin) {
                 this.menu.createMacBuiltin("CATS");

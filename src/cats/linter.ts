@@ -21,7 +21,7 @@ module Cats {
     /**
      * Simple helper class to call tslint functionality
      * Ideally this should be done in the tsworker to offload the main thread, but right now
-     * tslint uses require to load modules on the fly.
+     * tslint uses require to load modules on the fly and that doesn't function in worker threads
      */ 
     export class Linter {
 
@@ -93,5 +93,4 @@ module Cats {
             return r;
         }
     }
-
 }

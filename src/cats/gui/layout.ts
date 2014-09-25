@@ -15,7 +15,7 @@
 module Cats.Gui {
     
     /**
-     * Layout the different parts of the IDE.
+     * Start layout of IDE
      */
     export class Layout {
 
@@ -23,7 +23,7 @@ module Cats.Gui {
         }
 
         /**
-         * Use better OO encaps
+         * Layout various parts ode IDE.
          */
         layout(ide: Cats.Ide) {
             // container layout

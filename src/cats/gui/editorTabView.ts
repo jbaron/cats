@@ -20,9 +20,6 @@ module Cats.Gui {
      */
     export class EditorPage extends qx.ui.tabview.Page {
 
-        // editor: Editor;
-        session:Session;
-        
         private static ICONS = {
             "error" :"./resource/qx/icon/Oxygen/16/status/dialog-error.png",
             "warning":"./resource/qx/icon/Oxygen/16/status/dialog-warning.png",
@@ -34,7 +31,6 @@ module Cats.Gui {
             super(editor.label);
             this.add(editor.getLayoutItem(), { edge: 0 });
 
-            this.session = editor["session"];
             this.setShowCloseButton(true);
             this.setLayout(new qx.ui.layout.Canvas());
             this.setPadding(0, 0, 0, 0);
@@ -56,7 +52,7 @@ module Cats.Gui {
         }
 
         _onButtonClose() {
-            if (this.continueWhenNeedSaving()) super._onButtonClose();
+            if (this.continueWhenNeedSaving()) { super._onButtonClose(); }
         }
 
      
@@ -145,7 +141,9 @@ module Cats.Gui {
          * close one page
          */
         close(page= this.getActivePage()) {
-            if (page.continueWhenNeedSaving()) this.remove(page);
+            if (page.continueWhenNeedSaving()) {
+                this.remove(page);
+            }
         }
 
         /**
@@ -164,7 +162,7 @@ module Cats.Gui {
         }
 
         private continueIfUnsavedChanges(pages:EditorPage[]) {
-            var hasUnsaved = false 
+            var hasUnsaved = false; 
             hasUnsaved = pages.some((page) => { 
                 return page.editor.unsavedChanges;
             });
@@ -182,7 +180,7 @@ module Cats.Gui {
         }
 
    
-         /**
+        /**
          * Get all the open sessions
          */
         getEditors() {
@@ -194,16 +192,6 @@ module Cats.Gui {
         }
         
 
-        /**
-         * Get the currently active session
-         */
-        getActiveSession() {
-            var page = this.getActivePage();
-            if (!page) return null;
-            return page.session;
-        }
-        
-    
         /**
          * Get the currently active editor
          */

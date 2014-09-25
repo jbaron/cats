@@ -47,6 +47,7 @@ module Cats {
             var dir = PATH.resolve(projectDir);
             this.projectDir = OS.File.switchToForwardSlashes(dir);
             this.refresh();
+            if (this.config.codingStandards.useLint) this.linter = new Linter(this);
         }
 
         /**

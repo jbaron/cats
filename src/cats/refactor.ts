@@ -15,7 +15,7 @@
 
 /**
  * This module holds all the refactoring logic for CATS
- * 
+ *
  */ 
 module Cats.Refactor {
     
@@ -32,7 +32,8 @@ module Cats.Refactor {
     }
 
     /**
-     * Rename a class, interface, property or method throughout the project
+     * Rename a class, interface, property or method throughout the project. It finds all references
+     * and then replaces the macthed text with the new name. 
      */ 
     export function rename(fileName:string, project:Project, pos:Position) {
         project.iSense.getTypeAtPosition(fileName, pos, (err,data) => {
