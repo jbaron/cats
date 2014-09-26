@@ -55,7 +55,6 @@ module Cats.Gui {
             if (this.continueWhenNeedSaving()) { super._onButtonClose(); }
         }
 
-     
 
         private createToolTip() {
             var button: qx.ui.tabview.TabButton = (<any>this).getButton();
@@ -145,6 +144,18 @@ module Cats.Gui {
                 this.remove(page);
             }
         }
+
+        onChangeEditor(cb : (editor:Editor, page:EditorPage)=>void) {
+            this.addListener("changeSelection", (ev) => {
+                var page:EditorPage = ev.getData()[0];
+                if (page) {
+                    cb(page.editor, page);
+                } else {
+                    cb(null, null);
+                }
+            });
+        }
+
 
         /**
          * Close the other pages

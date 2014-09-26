@@ -38,14 +38,7 @@ module Cats.Gui {
             this.setPadding(0, 0, 0, 0);
             
  
-            IDE.editorTabView.addListener("changeSelection", (ev) => {
-                var page:EditorPage = ev.getData()[0];
-                if (page) {
-                    this.register(page.editor);
-                } else {
-                    this.register(null);
-                }
-            });
+            IDE.editorTabView.onChangeEditor(this.register.bind(this));
             
         }
 

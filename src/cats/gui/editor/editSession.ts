@@ -34,14 +34,14 @@ module Cats.Gui {
             });
 
             this.on("changeOverwrite", (a) => {
-                IDE.infoBus.emit("editor.overwrite", this.getOverwrite());
+                this.editor.informWorld();
             });
 
             this.on("change", () => {
                 if (!this.unsavedChanges) this.setHasUnsavedChanges(true);
             });
             
-            IDE.infoBus.on("project.config", () => { this.configureAceSession(); });
+            IDE.project.on("config", () => { this.configureAceSession(); });
         }
 
         /**

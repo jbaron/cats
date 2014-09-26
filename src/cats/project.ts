@@ -22,7 +22,7 @@ module Cats {
      * The project hold the informaiton related to a single project. This include 
      * a reference to a worker thread that does much of the TypeScript intelli sense.
      */
-    export class Project {
+    export class Project extends qx.event.Emitter {
 
         // The home directory of the project
         projectDir: string;
@@ -43,6 +43,7 @@ module Cats {
          * we remove old artifacts.
          */
         constructor(projectDir: string) {
+            super();
             IDE.project = this;
             var dir = PATH.resolve(projectDir);
             this.projectDir = OS.File.switchToForwardSlashes(dir);
@@ -55,7 +56,7 @@ module Cats {
          */
         updateConfig(config) {
             this.config = config;
-            IDE.infoBus.emit("project.config", config);
+            this.emit("config", config);
             var pc = new ProjectConfig(this.projectDir);
             if (this.config.codingStandards.useLint) this.linter = new Linter(this);
             pc.store(this.config);

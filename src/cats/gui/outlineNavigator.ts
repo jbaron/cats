@@ -45,25 +45,18 @@ module Cats.Gui {
                 }
             });
             
-            IDE.editorTabView.addListener("changeSelection", (ev) => {
-                var page:EditorPage = ev.getData()[0];
-                if (page) {
-                    this.page = page;
-                    this.register(<SourceEditor>page.editor);
-                } else {
-                    this.register(null);
-                }
-            });
+           
+           IDE.editorTabView.onChangeEditor(this.register.bind(this));
 
         }
 
 
-        private register(editor:SourceEditor) {
+        private register(editor:SourceEditor, page) {
             if (this.editor) {
                 this.editor.off("outline",  this.updateOutline, this);
             }
-            
-            if (editor && editor.isTypeScript && editor.isTypeScript()) {
+            this.page = page;
+            if (editor) {
                 this.editor = editor;
                 editor.on("outline", this.updateOutline,this);
                 this.updateOutline(editor.get("outline"));

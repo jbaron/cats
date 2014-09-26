@@ -17,7 +17,7 @@ module Cats {
   
     var Events = require('events');
 
-    export class Ide  {
+    export class Ide  extends qx.event.Emitter{
 
         // List of different themes that are available
         private themes = {                  
@@ -48,10 +48,10 @@ module Cats {
         project: Project;
         config:IDEConfiguration;
         private static STORE_KEY = "cats.config";
-        infoBus= <InfoBus> new Events.EventEmitter();
         history = new SessionHistory();
 
         constructor() {
+            super();
             this.catsHomeDir = process.cwd();
             this.config = this.loadConfig();
             this.configure();
@@ -182,7 +182,7 @@ module Cats {
 
         updateConfig(config) {
             this.config = config;
-            IDE.infoBus.emit("ide.config", config);
+            this.emit("config", config);
             this.configure();
             this.saveConfig();
         }

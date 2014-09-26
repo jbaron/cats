@@ -27,7 +27,7 @@ module Cats.Gui {
      */
     export class SourceEditor extends FileEditor {
 
-
+        private status = {};
         private mode:string;
         private aceEditor: ace.Editor;
         private mouseMoveTimer: number;
@@ -80,7 +80,7 @@ module Cats.Gui {
 
                 this.aceEditor.on("changeSelection", () => {
                     this.clearSelectedTextMarker();
-                    IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
+                    this.informWorld();
                 });
 
                 this.configureEditor();
@@ -99,7 +99,7 @@ module Cats.Gui {
             this.widget.addListener("resize", () => { this.resizeHandler(); });
 
           
-            IDE.infoBus.on("ide.config", () => { this.configureEditor(); });
+            IDE.on("config", () => { this.configureEditor(); });
         }
 
        
@@ -162,11 +162,18 @@ module Cats.Gui {
          * Inform the world about current status of the editor
          * 
          */ 
-        private informWorld() {
-            IDE.infoBus.emit("editor.overwrite", this.editSession.getOverwrite());
-            var mode = PATH.basename(this.mode)
-            IDE.infoBus.emit("editor.mode", mode);
-            IDE.infoBus.emit("editor.position", this.aceEditor.getCursorPosition());
+        informWorld() {
+            
+            var value = this.getPosition();    
+            var label = (value.row + 1) + ":" + (value.column + 1);
+            
+            this.status = {
+                overwrite : this.editSession.getOverwrite(),
+                mode : PATH.basename(this.mode).toUpperCase(),
+                position: label
+            };
+            
+            this.emit("status", this.status);
         }
 
         replace(range: ace.Range, content: string) {

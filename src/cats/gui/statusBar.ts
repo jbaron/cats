@@ -23,13 +23,55 @@ module Cats.Gui {
         private overwriteInfo: qx.ui.toolbar.Button;
         private positionInfo: qx.ui.toolbar.Button;
         private busyInfo: qx.ui.toolbar.Button;
-
+        private editor:Editor;
+        private status:any = {};
 
         constructor() {
             super();
             this.init();
             this.setPadding(0, 0, 0, 0);
-            this.setupListeners();
+            IDE.editorTabView.onChangeEditor(this.register.bind(this));
+        }
+
+
+        private clear() {
+             this.modeInfo.setLabel("");
+             this.overwriteInfo.setLabel("INSERT");
+             this.positionInfo.setLabel("");
+        }
+
+        private updateStatus(status) {
+            if (! status) return;
+            
+            if (status.mode !== this.status.mode) {
+                this.modeInfo.setLabel(status.mode || "Unknown");
+            }
+            
+            if (status.overwrite !== this.status.overwrite) {
+                this.overwriteInfo.setLabel(status.overwrite ? "OVERWRITE" : "INSERT");
+            } 
+            
+            if (status.position !== this.status.position) {
+                this.positionInfo.setLabel(status.position || ":");
+            }
+            
+            this.status = status;
+        }
+
+        private register(editor:SourceEditor) {
+            if (this.editor) {
+                this.editor.off("status",  this.updateStatus, this);
+            }
+            
+            if (editor) {
+                this.editor = editor;
+                editor.on("status", this.updateStatus,this);
+                this.updateStatus(editor.get("status"));
+            } else {
+                this.clear();
+                this.editor = null;
+            }
+           
         }
 
 
@@ -78,25 +120,6 @@ module Cats.Gui {
             } else {
                 this.busyInfo.setIcon("./resource/cats/loader.gif");
             }
-        }
-
-        /**
-         * Setup the listerners so that if state changes the statusbar can be updated
-         * 
-         */ 
-        private setupListeners() {
-            IDE.infoBus.on("editor.overwrite", (value: boolean) => {
-                this.overwriteInfo.setLabel(value ? "OVERWRITE" : "INSERT");
-            });
-
-            IDE.infoBus.on("editor.mode", (value: string) => {
-                this.modeInfo.setLabel(value.toUpperCase());
-            });
-
-            IDE.infoBus.on("editor.position", (value: ace.Position) => {
-                var label = (value.row + 1) + ":" + (value.column + 1);
-                this.positionInfo.setLabel(label);
-            });
         }
 
     }
