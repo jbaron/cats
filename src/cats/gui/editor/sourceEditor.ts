@@ -59,8 +59,6 @@ module Cats.Gui {
             
             this.editSession = new EditSession(content, this.mode, this);
             
-            this.updateOutline(0);
-
             widget.addListenerOnce("appear", () => {
                 var container = widget.getContentElement().getDomElement();
                 container.style.lineHeight = "normal";
@@ -352,22 +350,6 @@ module Cats.Gui {
             
            
             return editor;
-        }
-
-
-        /**
-         * Lets check the worker if something changed in the outline of the source.
-         * But lets not call this too often.
-         * 
-         */
-        private updateOutline(timeout= 5000) {
-                if (! this.isTypeScript()) return;
-                clearTimeout(this.outlineTimer);
-                this.outlineTimer = setTimeout(() => {
-                    this.project.iSense.getScriptLexicalStructure(this.filePath, (err: Error, data: NavigateToItem[]) => {
-                        this.set("outline",data);
-                    });
-                }, timeout);
         }
 
         hasUnsavedChanges() {

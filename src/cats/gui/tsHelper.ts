@@ -26,6 +26,7 @@ module Cats.Gui {
         outline: NavigateToItem[];
      
         private diagnosticTimer : number;
+        private outlineTimer : number;
         private updateSourceTimer : number;
         private pendingUpdates = false;
         
@@ -36,9 +37,13 @@ module Cats.Gui {
         
         
         private init() {
-            this.getWidget().addListener("appear", () => {
+            
+            this.updateDiagnostics(0);
+            this.updateOutline(0);
+            
+            this.editor.getLayoutItem().addListener("appear", () =>{
                 this.updateDiagnostics(0);
-            });
+            })
             
             this.editSession.on("change", (ev) => {
                 this.updateContent();
@@ -68,8 +73,24 @@ module Cats.Gui {
                     this.editor.project.iSense.updateScript(this.editor.filePath, this.editor.getContent());
                     this.pendingUpdates = false;
                      this.updateDiagnostics();
+                     this.updateOutline();
                 }
             }, timeout);
+        }
+
+         /**
+         * Lets check the worker if something changed in the outline of the source.
+         * But lets not call this too often.
+         * 
+         */
+        private updateOutline(timeout= 5000) {
+                var project = this.editor.project;
+                clearTimeout(this.outlineTimer);
+                this.outlineTimer = setTimeout(() => {
+                    project.iSense.getScriptLexicalStructure(this.editor.filePath, (err: Error, data: NavigateToItem[]) => {
+                        this.editor.set("outline",data);
+                    });
+                }, timeout);
         }
 
         /**
