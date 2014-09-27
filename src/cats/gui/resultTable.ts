@@ -20,6 +20,33 @@ module Cats.Gui {
     export class ResultTable extends qx.ui.table.Table {
 
         private data: Cats.FileRange[];
+        
+        constructor(headers = ["Message", "File", "Position"]) {
+
+            var tableModel = new qx.ui.table.model.Simple();
+            tableModel.setColumns(headers);
+            tableModel.setData([]);
+            this.setStatusBarVisible(false); 
+
+            var custom: any = {
+                tableColumnModel: function(obj) {
+                    return new qx.ui.table.columnmodel.Resize(obj);
+                }
+            };
+            super(tableModel, custom);
+            this.setDecorator(null);
+
+            this.setPadding(0, 0, 0, 0);
+
+            this.getSelectionModel().addListener("changeSelection", (data) => {
+                var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
+                var data = this.getTableModel().getRowData(selectedRow);
+                if (data) FileEditor.OpenEditor(data[1], data[3]);
+            });
+
+            this.setContextMenu(this.createContextMenu());
+        }
+
 
         private rangeToPosition(range: Cats.Range): string {
             return (range.start.row + 1) + ":" + (range.start.column + 1);
@@ -71,31 +98,6 @@ module Cats.Gui {
             this.getTableModel().addRows([this.convert(row)]);
         }
 
-        constructor(headers = ["Message", "File", "Position"]) {
-
-            var tableModel = new qx.ui.table.model.Simple();
-            tableModel.setColumns(headers);
-            tableModel.setData([]);
-
-            var custom: any = {
-                tableColumnModel: function(obj) {
-                    return new qx.ui.table.columnmodel.Resize(obj);
-                }
-            };
-            super(tableModel, custom);
-            this.setDecorator(null);
-
-            this.setPadding(0, 0, 0, 0);
-
-            this.getSelectionModel().addListener("changeSelection", (data) => {
-                var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
-                var data = this.getTableModel().getRowData(selectedRow);
-                // IDE.console.log("Selected row:" + selectedRow);
-                if (data) IDE.openSession(data[1], data[3].start);
-            });
-
-            this.setContextMenu(this.createContextMenu());
-        }
 
         private createContextMenu() {
             var menu = new qx.ui.menu.Menu();

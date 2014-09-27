@@ -37,9 +37,13 @@ module Cats.Gui {
 
     export class TSCompleter {
 
-        getCompletions(editor:Ace.Editor, session:Ace.EditSession, pos:Ace.Position, prefix:string, cb:(any,completions: Cats.CompletionEntry[])=>void) {
+        constructor(private editor:SourceEditor) {
+        }
+
+ 
+        getCompletions(editor:ace.Editor, session:ace.EditSession, pos:ace.Position, prefix:string, cb:(any,completions: Cats.CompletionEntry[])=>void) {
             
-            var fileName = session["__fileName__"];
+            var fileName = this.editor.filePath;
             if (! fileName) return [];
             
             IDE.project.iSense.getCompletions(fileName, pos, (err, completes: TypeScript.Services.CompletionEntry[]) => {
@@ -53,8 +57,6 @@ module Cats.Gui {
         }
     
     }
-    export function installCompleter() {
-        langTools.addCompleter(new TSCompleter());
-    }
+   
 
 }

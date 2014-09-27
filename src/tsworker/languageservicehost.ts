@@ -106,23 +106,23 @@ export class ScriptInfo {
         // IReferenceResolverHost implementation
         
         fileExists(path: string): boolean {
-            console.log("Called fileExist" + path);
+            console.info("Called fileExist" + path);
             return true;
         }
         
         directoryExists(path: string): boolean {
-            console.log("Called directoryExist" + path);
+            console.info("Called directoryExist" + path);
             return true;
         }
         
         getParentDirectory(path: string): string {
-            console.log("Called getParentDirectory" + path);
+            console.info("Called getParentDirectory" + path);
             return "";
         }
         
         
         resolveRelativePath(path: string, directory: string) : string{
-            console.log("Called resolveRelativePath p1:" + path + " p2:" + directory);
+            console.info("Called resolveRelativePath p1:" + path + " p2:" + directory);
             return path;
         }
         

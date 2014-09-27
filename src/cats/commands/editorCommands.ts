@@ -19,9 +19,8 @@
 
 module Cats.Commands {
 
-    function getRange():Cats.Range {
-        var activeEditor:any = IDE.getActiveEditor();
-        var range:Ace.Range = activeEditor.aceEditor.selection.getRange();
+    function getRange(editor):Cats.Range {
+        var range:ace.Range = editor.aceEditor.selection.getRange();
         if (range.isEmpty()) return null; 
         return {
             start : range.start,
@@ -31,12 +30,12 @@ module Cats.Commands {
 
     function formatText() {
       
-        var session = IDE.sessionTabView.getActiveSession();
-        if (session && session.isTypeScript()) {
-            var range = getRange();
-            session.project.iSense.getFormattedTextForRange( session.name, range , (err:Error, result:string) => {                    
+        var editor = <Gui.SourceEditor>IDE.editorTabView.getActiveEditor();
+        if (editor && editor.isTypeScript && editor.isTypeScript()) {
+            var range = getRange(editor);
+            IDE.project.iSense.getFormattedTextForRange( editor.filePath, range , (err:Error, result:string) => {                    
                 if (!err) {
-                    session.setContent(result);
+                    editor.setContent(result);
                 }
                 
             });
@@ -47,7 +46,7 @@ module Cats.Commands {
 
     function toggleInvisibles() {
         //@TODO fix,don't access private var
-        var aceSession = IDE.getActiveEditor()["aceEditor"];
+        var aceSession = IDE.editorTabView.getActiveEditor()["aceEditor"];
         aceSession.setShowInvisibles(!aceSession.getShowInvisibles());
     }
 
@@ -55,7 +54,7 @@ module Cats.Commands {
     function editorCommand(commandName:string) {
         return function(...args:Array<any>) {
              //@TODO fix,don't access private var
-              var aceEditor = IDE.getActiveEditor()["aceEditor"];
+              var aceEditor = IDE.editorTabView.getActiveEditor()["aceEditor"];
               // var command:Function = aceEditor.commands.byName[commandName];
               aceEditor.execCommand(commandName);
         };

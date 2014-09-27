@@ -15,7 +15,7 @@
 module Cats.Gui {
     
     /**
-     * Layout the different parts of the IDE.
+     * Start layout of IDE
      */
     export class Layout {
 
@@ -23,7 +23,7 @@ module Cats.Gui {
         }
 
         /**
-         * Use better OO encaps
+         * Layout various parts ode IDE.
          */
         layout(ide: Cats.Ide) {
             // container layout
@@ -56,9 +56,9 @@ module Cats.Gui {
             // editorSplit.setDecorator(null);
 
             var infoSplit = new qx.ui.splitpane.Pane("horizontal");
-            ide.sessionTabView = new SessionTabView();
+            ide.editorTabView = new EditorTabView();
             // infoSplit.set({ decorator: null });
-            infoSplit.add(ide.sessionTabView, 4); // editor
+            infoSplit.add(ide.editorTabView, 4); // editor
 
             ide.infoPane = new TabView();
             ide.outlineNavigator = new OutlineNavigator();

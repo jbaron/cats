@@ -1,12 +1,12 @@
 // This file contains the build logic for CATS
 
 var workerOptions = [
-   "src/typings/typescriptServices.d.ts",
-   "src/typings/cats.d.ts",
-   "src/cats/common.ts",
-   "src/tsworker/languageservicehost.ts",
-   "src/tsworker/isense.ts",
-   "src/tsworker/objectModelCreator.ts"
+    "src/typings/typescriptServices.d.ts",
+    "src/typings/cats.d.ts",
+    "src/cats/common.ts",
+    "src/tsworker/languageservicehost.ts",
+    "src/tsworker/isense.ts",
+    "src/tsworker/objectModel.ts"
 ];
 
 
@@ -27,13 +27,13 @@ var catsOptions = [
     "src/cats/common.ts",
     "src/cats/os.ts",
     "src/cats/ide.ts",
-    "src/cats/session.ts",
-    "src/cats/infoBus.ts",
     "src/cats/projectConfig.ts",
     "src/cats/tsWorkerProxy.ts",
     "src/cats/project.ts",
     "src/cats/refactor.ts",
     "src/cats/history.ts",
+    "src/cats/editor.ts",
+    "src/cats/linter.ts",
     
     "src/cats/commands/commander.ts",
     "src/cats/commands/editorCommands.ts",
@@ -42,20 +42,23 @@ var catsOptions = [
     "src/cats/commands/ideCommands.ts",
     "src/cats/commands/projectCommands.ts",
   
-    "src/cats/gui/tsCompleter.ts",    
-    "src/cats/gui/editor.ts",
+    "src/cats/gui/editor/tsCompleter.ts",
+    "src/cats/gui/editor/autoCompletePopup.ts",
+    "src/cats/gui/editor/sourceEditor.ts",
+    "src/cats/gui/editor/imageEditor.ts",
+    "src/cats/gui/editor/umlEditor.ts",
+    "src/cats/gui/editor/tsTooltip.ts",
+    "src/cats/gui/editor/sourceEditorContextMenu.ts",
+    "src/cats/gui/editor/editSession.ts",
+
     "src/cats/gui/console.ts",
     "src/cats/gui/fileNavigator.ts",
     "src/cats/gui/outlineNavigator.ts",
     "src/cats/gui/resultTable.ts",
-    "src/cats/gui/sourceEditor.ts",
-    "src/cats/gui/imageEditor.ts",
-    "src/cats/gui/umlEditor.ts",
     "src/cats/gui/tabView.ts",
     "src/cats/gui/toolBar.ts",
-    "src/cats/gui/sessionTabView.ts",
+    "src/cats/gui/editorTabView.ts",
     "src/cats/gui/statusBar.ts",
-    "src/cats/gui/autoCompletePopup.ts",
     "src/cats/gui/fileContextMenu.ts",
     "src/cats/gui/configDialog.ts",
     "src/cats/gui/processTable.ts",
@@ -64,6 +67,8 @@ var catsOptions = [
     "src/cats/gui/layout.ts",
     "src/cats/gui/searchDialog.ts",
     "src/cats/gui/menubar.ts",
+    "src/cats/gui/tsHelper.ts",
+    
 
     "src/cats/util/mime.ts",
     "src/cats/util/resourceLoader.ts",

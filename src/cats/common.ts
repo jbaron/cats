@@ -19,14 +19,20 @@
  */
 module Cats {
 
+    export class Attribute {
+        name: string;
+        modifiers: string[];
+        type: string;
+    }
+
    export interface ModelEntry {
         type: string;
         name: string;
         operations?: Array<string>;
-        attributes?: Array<string>;
-        extends?: string;
+        attributes?: Array<Attribute>;
+        extends?: Array<string>;
         implements?: Array<string>;
-    }    
+    }   
 
     export interface Range {
         start: Position;
@@ -34,9 +40,9 @@ module Cats {
     }
 
     export enum Severity {
-        Info,
-        Warning,
-        Error
+        Info = <any>"info",
+        Warning = <any>"warning",
+        Error = <any>"error"
     }
 
     export interface FileRange {

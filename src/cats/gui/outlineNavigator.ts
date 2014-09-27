@@ -19,8 +19,10 @@ module Cats.Gui {
      */
     export class OutlineNavigator extends qx.ui.tree.VirtualTree {
 
-        private session: Cats.Session;
+        private editor: SourceEditor;
+        private page:EditorPage;
         private static MAX = 200;
+        private outlineTimer: number;
 
         constructor() {
             super(null, "label", "children");
@@ -31,51 +33,38 @@ module Cats.Gui {
             this.setDecorator(null);
             this.addListener("click", (data) => {
                 var item = <any>this.getSelectedItem();
-                if (item) {
-                    var position = this.modelToPosition(item.getRange().getStart());
-                    IDE.sessionTabView.navigateTo(this.session,position);
+                if (item && item.getPosition) {
+                    var position = JSON.parse(qx.util.Serializer.toJson(item.getPosition())); 
+                    IDE.editorTabView.navigateToPage(this.page,position);
                 }
             });
-            this.setIconPath("");
+            this.setIconPath("kind");
             this.setIconOptions({
                 converter: (value, model) => {
-                    return this.getIconForKind(value.getKind());
+                    return this.getIconForKind(value);
                 }
             });
             
-            IDE.sessionTabView.addListener("changeSelection", (ev) => {
-                var page:SessionPage = ev.getData()[0];
-                if (page) {
-                    this.register(page.session);
-                } else {
-                    this.register(null);
-                }
-            });
-
-        }
-
-        private modelToPosition(start): Ace.Position {
-            var result = {
-                row: start.getRow(),
-                column: start.getColumn()
-            };
-            return result;
+           
+           IDE.editorTabView.onChangeEditor(this.register.bind(this));
 
         }
 
 
-        private register(session) {
-            if (this.session) {
-                this.session.off("outline", this.setData, this);
+        private register(editor:SourceEditor, page) {
+            if (this.editor) {
+                this.editor.off("outline",  this.updateOutline, this);
             }
-            this.session = session;
-            
-            if (session) {
-                session.on("outline", this.setData,this);
-                this.setData(session.outline);
+            this.page = page;
+            if (editor) {
+                this.editor = editor;
+                editor.on("outline", this.updateOutline,this);
+                this.updateOutline(editor.get("outline"));
             } else {
                 this.clear();
+                this.editor = null;
             }
+           
         }
 
         private getSelectedItem() {
@@ -123,45 +112,16 @@ module Cats.Gui {
         }
 
 
-        private isExecutable(kind) {
-            if (kind === "method" || kind === "function" || kind === "constructor") return true;
-            return false;
-        }
 
         /**
-         * Set the data for this outline.
+         * Lets check the worker if something changed in the outline of the source.
+         * But lets not call this too often.
          */
-        setData(data: Cats.NavigateToItem[]) {
-            if ((!data) || (!data.length)) {
-                this.clear();
-                return;
-            }
-
-            var parents = {};
-            var root = {};
-
-            data.forEach((item) => {
-                var parentName = item.containerName;
-                var parent = parentName ? parents[parentName] : root;
-                if (!parent) console.info("No Parent for " + parentName);
-                if (!parent.children) parent.children = [];
-
-                var extension = this.isExecutable(item.kind) ? "()" : "";
-
-                var entry = {
-                    label: item.name + extension,
-                    range: item.range,
-                    kind: item.kind
-                };
-
-                var childName = parentName ? parentName + "." + item.name : item.name;
-                parents[childName] = entry;
-                parent.children.push(entry);
-            });
-            this.setModel(qx.data.marshal.Json.createModel(root, false));
+        private updateOutline(data={}) {
+            this.setModel(qx.data.marshal.Json.createModel(data, false));
             this.expandAll(this.getModel());
-
         }
 
+       
     }
 }

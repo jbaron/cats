@@ -49,7 +49,7 @@ module Cats.Gui {
         private sendSignal(signal?: string) {
             var table = this.table;
             var selectedRow = table.getSelectionModel().getLeadSelectionIndex();
-            if (selectedRow < 0) return;
+            if (selectedRow < 0) { return; }
             var data = table.getTableModel().getRowData(selectedRow);
             var child = data[2];
             child.kill(signal);
@@ -76,10 +76,8 @@ module Cats.Gui {
 
             var table = new qx.ui.table.Table(tableModel, custom);
             table.setDecorator(null);
-            table.getSelectionModel().addListener("changeSelection", (data) => {
-                var selectedRow = table.getSelectionModel().getLeadSelectionIndex();
-                var data = table.getTableModel().getRowData(selectedRow);
-            });
+            table.setStatusBarVisible(false); 
+
             this.table = table;
             return table;
         }

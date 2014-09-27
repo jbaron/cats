@@ -22,51 +22,51 @@ module Cats.Commands {
      * Create a new edit session
      */ 
     function newFile() {
-        IDE.openSession();
+        IDE.editorTabView.addEditor(new Gui.SourceEditor(),{row:0, column:0});
     }
 
     /**
      * Close the active edit session
      */ 
     function closeFile() {
-      IDE.sessionTabView.close();
+      IDE.editorTabView.close();
     }
 
     /**
      * Close all edit sessions
      */ 
     function closeAllFiles() {
-        IDE.sessionTabView.closeAll();
+        IDE.editorTabView.closeAll();
     }
 
     /**
      * Close all edit sessions except the active session
      */ 
     function closeOtherFiles() {       
-        IDE.sessionTabView.closeOther();
+        IDE.editorTabView.closeOther();
     }
 
     /**
      * Save all edit sessions that have changed
      */ 
     function saveAll() {
-        var sessions = IDE.sessions;
-        for (var i = 0; i < sessions.length; i++) {
-            var session = sessions[i];
-            if (session.getChanged()) session.persist();
-        }
+        var editors = IDE.editorTabView.getEditors();
+        editors.forEach((editor)=>{
+            if (editor.hasUnsavedChanges()) editor.save();
+        });
     }
+       
         
     /**
      * Save the active sessions under a different name
      */     
      function saveAs() {
-        var session = IDE.sessionTabView.getActiveSession();
-        if (session) {
-            var newName = prompt("Enter new name", session.name);
+        var editor = <Gui.SourceEditor>IDE.editorTabView.getActiveEditor(Gui.SourceEditor);
+        if (editor) {
+            var newName = prompt("Enter new name", editor.filePath);
             if (newName) {
-                session.name = newName;
-                session.persist();
+                editor.filePath = newName;
+                editor.save();
             }
         }
     }
@@ -75,8 +75,8 @@ module Cats.Commands {
      * Save the active session
      */     
     function saveFile() {
-        var session = IDE.sessionTabView.getActiveSession();
-        if (session) session.persist();
+        var editor = IDE.editorTabView.getActiveEditor();
+        if (editor) editor.save();
     }
 
     export class FileCommands {

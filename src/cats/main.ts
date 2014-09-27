@@ -26,7 +26,7 @@ module Cats {
 
     /**
      * Get a parameter from the URL. This is used when a new project is opened from within
-     * the IDE.
+     * the IDE and the project name is passed s a parameter
      */
     function getParameterByName(name: string): string {
         name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -58,7 +58,7 @@ module Cats {
     process.on("uncaughtException", function(err: any) {
         console.error("Uncaught exception occured: " + err);
         console.error(err.stack);
-        alert(err); // @TODO remove in production mode
+        IDE.console.error(err.stack);
     });
 
 

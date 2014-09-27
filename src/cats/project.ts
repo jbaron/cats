@@ -17,11 +17,12 @@
 module Cats {
     
     var typedoc;
+    
     /**
      * The project hold the informaiton related to a single project. This include 
      * a reference to a worker thread that does much of the TypeScript intelli sense.
      */
-    export class Project {
+    export class Project extends qx.event.Emitter {
 
         // The home directory of the project
         projectDir: string;
@@ -35,17 +36,19 @@ module Cats {
         // Stores the project configuration paramters
         config: ProjectConfiguration;
 
-        private lintOptions;
+        linter:Linter;
 
         /**    
          * Set the project to a new directory and make sure 
          * we remove old artifacts.
          */
         constructor(projectDir: string) {
+            super();
             IDE.project = this;
             var dir = PATH.resolve(projectDir);
             this.projectDir = OS.File.switchToForwardSlashes(dir);
             this.refresh();
+            if (this.config.codingStandards.useLint) this.linter = new Linter(this);
         }
 
         /**
@@ -53,31 +56,22 @@ module Cats {
          */
         updateConfig(config) {
             this.config = config;
-            IDE.infoBus.emit("project.config", config);
+            this.emit("config", config);
             var pc = new ProjectConfig(this.projectDir);
+            if (this.config.codingStandards.useLint) this.linter = new Linter(this);
             pc.store(this.config);
         }
 
-        /**
-         * Are there session active that have unsaved changes
-         */
-        hasUnsavedSessions() {
-            var sessions = IDE.sessions;
-            for (var i = 0; i < sessions.length; i++) {
-                if (sessions[i].getChanged()) return true;
-            }
-            return false;
-        }
-
+    
         /**
          * Close the project
          */
         close() {
-            if (this.hasUnsavedSessions()) {
+            if (IDE.editorTabView.hasUnsavedChanges()) {
                 var c = confirm("You have some unsaved changes that will get lost.\n Continue anyway ?");
                 if (!c) return;
             }
-            IDE.sessionTabView.closeAll();
+            IDE.editorTabView.closeAll();
             IDE.fileNavigator.clear();
             IDE.outlineNavigator.clear();
             IDE.problemResult.clear();
@@ -191,10 +185,12 @@ module Cats {
             if (this.iSense) this.iSense.stop();
             this.iSense = new TSWorkerProxy(this);
 
+            /*
             if (this.config.compiler.outFileOption) {
                 this.config.compiler.outFileOption = OS.File.join(this.projectDir, this.config.compiler.outFileOption);
                 console.info("Compiler output: " + this.config.compiler.outFileOption);
             }
+            */
 
             this.iSense.setSettings(this.config.compiler, this.config.codingStandards);
 
@@ -270,32 +266,8 @@ module Cats {
             return "file://" + url;
         }
 
-        /**
-         * Get the configured Lint options
-         */
-        getLintOptions() {
-            if (!this.lintOptions) {
-                var fileName;
-
-                if (this.config.codingStandards.lintFile) {
-                    fileName = OS.File.join(this.projectDir, this.config.codingStandards.lintFile);
-                } else {
-                    fileName = OS.File.join(IDE.catsHomeDir, "static/tslint.json");
-                }
-
-                var content = OS.File.readTextFile(fileName);
-                var config = JSON.parse(content);
-                var options = {
-                    formatter: "json",
-                    configuration: config,
-                    rulesDirectory: "customRules/",
-                    formattersDirectory: "customFormatters/"
-                };
-                this.lintOptions = options;
-            };
-            return this.lintOptions;
-        }
-
+       
+       
         addScript(fullName: string, content: string) {
             this.iSense.addScript(fullName, content);
             if (this.tsfiles.indexOf(fullName) < 0) this.tsfiles.push(fullName);

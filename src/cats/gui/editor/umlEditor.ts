@@ -22,11 +22,20 @@ module Cats.Gui {
     declare var UMLInterface:any;
     declare var UMLInterfaceExtended;
     declare var UMLGeneralization:any;
+    declare var UMLRealization:any;
 
-    export class UMLEditor extends qx.ui.embed.Html implements Editor {
+    export class UMLEditor extends Editor {
 
         private backgroundColors = ["white", "black", "grey"];
+        properties = [
+            {key:"type" , value: "class diagram"},    
+            {key : "created", value: new Date().toLocaleTimeString() }
+        ];
+
         private diagram: any;
+        unsavedChanges = false;
+        widget = new qx.ui.embed.Html(null);
+        
         private static Resources1 = [
             "js/uml/css/UDStyle.css",
             "js/uml/UDCore.js"
@@ -38,28 +47,29 @@ module Cats.Gui {
 
         private static ResourcesLoaded = false;
 
-        constructor(private session: Cats.Session) {
-            super(null);
+        constructor(name:string) {
+            super();
+            this.label = name;
             if (!dagre) dagre = require("dagre");
-            this.setOverflow("auto", "auto");
-            this.addListenerOnce("appear", () => {
-                var container: HTMLElement = this.getContentElement().getDomElement();
+            this.widget.setOverflow("auto", "auto");
+            this.widget.addListenerOnce("appear", () => {
+                var container: HTMLElement = this.widget.getContentElement().getDomElement();
                 var div = document.createElement("div");
                 div.style.height = "100%";
                 div.style.width = "100%";
                 container.appendChild(div);
                 UMLEditor.LoadResources(() => {
                     this.render(div);
-                    this.focus();
+                    this.widget.focus();
                 });
             });
         }
 
-        executeCommand(name, ...args): boolean {
-            return false;
+        getLayoutItem() {
+            return this.widget;
         }
         
-
+        
         static LoadResources(cb: Function) {
             if (UMLEditor.ResourcesLoaded) {
                 cb();
@@ -74,45 +84,94 @@ module Cats.Gui {
             }
         }
 
+        private getMaxSize(size:number) {
+            if (size > 30000) return 30000;
+            return size;    
+        }
+
+
+        private format(str:string, maxlen=20) {
+            if (! str) return str;
+            return str.substr(-maxlen);
+        }
 
         private render(container: HTMLElement) {
             var nodes = {};
             var g = new dagre.Digraph();
-
+            var max = 100;
+            IDE.console.log("Creating class diagram ...");
             IDE.project.iSense.getObjectModel((err, model: Array<Cats.ModelEntry>) => {
-                var counter = 0;
+                if (! model) return;
+                var count = 0;
                 model.forEach((entry) => {
-                    counter++;
-                    if (counter > 100) return;
+                    count++;
+                    if (count > max) return;
                     var name = entry.name;
                     var c;
                     if (entry.type === "class") c = new UMLClass();
+                    if (entry.type === "enum") c = new UMLClass();
                     if (entry.type === "interface") c = new UMLInterfaceExtended();
-                    c.setName(name);
+                    c.setName(this.format(name));
 
                     entry.operations.forEach((mName) => {
-                        c.addOperation(mName + "()");
+                        c.addOperation(this.format(mName + "()",25));
                     });
 
-                    entry.attributes.forEach((aName) => {
-                        c.addAttribute(aName);
+                    entry.attributes.forEach((attr) => {
+                        var t = attr.type || "unknown";
+                        c.addAttribute(this.format(attr.name + ":" + attr.type,25));
                     });
-
 
                     g.addNode(name, { width: c.getWidth(), height: c.getHeight() })
                    nodes[name] = c;
                 });
 
+                var rels = [];
+                model.forEach((entry) => {
+                    var curr = nodes[entry.name];
+                    if (! curr) return;
+                    
+                    entry.extends.forEach((ext) => {
+                        var base = nodes[ext];
+                        if (base) {
+                            var generalization = new UMLGeneralization({ b:base, a:curr });
+                            g.addEdge(null, ext, entry.name);
+                            rels.push(generalization); 
+                        }
+                    });
+                    
+                    entry.implements.forEach((ext) => {
+                        var base = nodes[ext];
+                        if (base) {
+                            var realization = new UMLRealization({ b:base, a:curr });
+                            g.addEdge(null, ext, entry.name);
+                            rels.push(realization); 
+                        }
+                    });
+                    
+                });    
+
+
                 var layout = dagre.layout().run(g);
                 var graph = layout.graph();
-                var classDiagram = new UMLClassDiagram({ id: container, width: graph.width + 100, height: graph.height + 100 });
+                var classDiagram = new UMLClassDiagram({ 
+                    id: container, 
+                    width: this.getMaxSize(graph.width + 10), 
+                    height: this.getMaxSize(graph.height + 10) 
+                });
 
+                // Draw all the nodes
                 layout.eachNode((name, value) => {
                     var n = nodes[name];
-                    n._x = value.x - (n.getWidth() / 2);
-                    n._y = value.y - (n.getHeight() / 2);
+                    var x = value.x - (n.getWidth() / 2);
+                    var y = value.y - (n.getHeight() / 2);
+                    n.setPosition(x,y);
                     classDiagram.addElement(n);
+                    // IDE.console.log("Adding node " + name + " at " + x + ":" + y);
                 });
+
+                // Now add the relations
+                rels.forEach((rel) => {classDiagram.addElement(rel)});
 
                 //Draw the diagram
                 classDiagram.draw();
@@ -120,7 +179,7 @@ module Cats.Gui {
                 //Interaction is possible (editable)
                 classDiagram.interaction(true);
                 this.diagram = classDiagram;
-
+                IDE.console.log("Finished creating class diagram.");
             });
 
             return;
@@ -131,15 +190,15 @@ module Cats.Gui {
             this.backgroundColors.forEach((color) => {
                 var button = new qx.ui.menu.Button("Background " + color);
                 button.addListener("execute", () => {
-                    this.setBackgroundColor(color);
+                    this.widget.setBackgroundColor(color);
                 });
                 menu.add(button);
             });
-            this.setContextMenu(menu);
+            this.widget.setContextMenu(menu);
         }
 
 
-        replace(range: Ace.Range, content: string) { }
+        replace(range: ace.Range, content: string) { }
 
         getContent(): string { return null; }
 
@@ -147,7 +206,7 @@ module Cats.Gui {
 
         updateWorld() { }
 
-        moveToPosition(pos: Ace.Position) { }
+        moveToPosition(pos: ace.Position) { }
 
 
     }

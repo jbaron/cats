@@ -35,26 +35,19 @@ module Cats.Gui {
             this.setContextMenu(this.createContextMenu());
         }
 
-        private insertLine(line: string, severity?: number) {
+        private insertLine(line: string, severity: number) {
             if (line.trim()) {
                 var span = document.createElement("SPAN");
                 span.innerText = line;
-                if (severity) span.style.color = "red";
+                if (severity===2) span.style.color = "red";
+                if (severity===1) span.style.color = "green";
                 this.container.appendChild(span);
             }
             this.container.appendChild(document.createElement('BR'));
         }
 
-    
-        /**
-         * Log a message to the console widget. This should only be used for 
-         * logging mesages that are useful to the enduser (= developer) and not for
-         * debug information.
-         * 
-         * @TODO implement a better performing solution using addChild
-         */
-        log(msg: string, severity: number= 0) {
-            this.container.scrollTop = this.container.scrollHeight;
+        private print(msg: string, severity:number) {
+             this.container.scrollTop = this.container.scrollHeight;
             this.fireDataEvent("contentChange", null);
             if (this.container) {
                 var prefix = "";
@@ -71,9 +64,23 @@ module Cats.Gui {
                 this.container.scrollTop = this.container.scrollHeight;
             }
         }
+        /**
+         * Log a message to the console widget. This should only be used for 
+         * logging mesages that are useful to the enduser (= developer) and not for
+         * debug information.
+         * 
+         * @TODO implement a better performing solution using addChild
+         */
+        log(msg: string) {
+            this.print(msg,0);
+        }
+
+        info(msg: string) {
+            this.print(msg,1);
+        }
 
         error(msg: string) {
-            this.log(msg, 2);
+            this.print(msg, 2);
         }
 
 

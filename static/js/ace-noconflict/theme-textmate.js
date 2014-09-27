@@ -117,7 +117,11 @@ background: rgba(0, 0, 0, 0.07);\
 background-color : #dcdcdc;\
 }\
 .ace-tm .ace_marker-layer .ace_selected-word {\
-background: rgb(250, 250, 255);\
+background: yellow !important;\
+border: 1px solid rgb(200, 200, 250);\
+}\
+.ace_selected-word {\
+background: yellow !important;\
 border: 1px solid rgb(200, 200, 250);\
 }\
 .ace-tm .ace_indent-guide {\

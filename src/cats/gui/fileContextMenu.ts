@@ -20,7 +20,7 @@ module Cats.Gui {
  */ 
 export class FileContextMenu extends qx.ui.menu.Menu {
 
-    private gui = require('nw.gui');
+    private gui = require("nw.gui");
     private searchDialog = new SearchDialog();
 
     constructor(private fileNavigator:FileNavigator) {
@@ -93,10 +93,6 @@ export class FileContextMenu extends qx.ui.menu.Menu {
         
     }
 
-    private refresh() {
-        var item = this.getSelectedItem();
-        // IDE.project.getTreeView().refresh();
-    }
 
 
     private deleteFile() {
@@ -106,7 +102,6 @@ export class FileContextMenu extends qx.ui.menu.Menu {
         if (sure) {
             OS.File.remove(fullName);
         }
-        setTimeout(()=>{ this.refresh();}, 100);
     }
 
 
@@ -128,7 +123,6 @@ export class FileContextMenu extends qx.ui.menu.Menu {
         if (name == null) return;
         var fullName = OS.File.join(basedir, name);
         OS.File.writeTextFile(fullName, "");
-        this.refresh();
     }
 
     private newFolder() {
@@ -138,7 +132,6 @@ export class FileContextMenu extends qx.ui.menu.Menu {
         if (name == null) return;
         var fullName = OS.File.join(basedir, name);
         OS.File.mkdirRecursiveSync(fullName);
-        this.refresh(); 
     }
     
     private rename() {

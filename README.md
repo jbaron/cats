@@ -9,15 +9,16 @@ Right now CATS already has built-in support for the following features:
  
 <img width="680" src="https://raw.github.com/jbaron/cats/master/artifacts/cats_screenshot.png" />
 
-- Syntax highlighting for over 110 languages (TextMate/Sublime Text.tmlanguage files can be imported)
+- Syntax highlighting for over 110 languages (TextMate/Sublime Text.tmlanguage files can be imported).
+- Support for code snippets.
 - Support for refactoring and smart navigation.
 - TypeScript compilation to JavaScript.
 - Validation of the source code while you are typing.
 - Linter support for TypeScript and JavaScript.
 - Generate API documentation based on the comments in the source code.
-- Editing features like folding and indentation.
+- Editing features like folding, indentation and code formatting.
 - Running your application from within IDE and using the WebKit debugger to debug.
-- Support for external build systems like Grunt, Jake and Makefiles.
+- Support for external build systems like Grunt, Jake, Gulp and Makefiles.
 
 
 ## Building
@@ -71,7 +72,7 @@ nodewebkit --project </path/projectDirectory>
 
 Although you can use a relative path for specifying the project directory, 
 please notice it is relative to the CATS installation directory and not the 
-directory you are currently in. So normally better to use a full path.
+directory you are currently in. So normally it is better to specify the full path to the project directory.
 
 
 To open CATS with the same project as last time use the --restore option:

@@ -42,10 +42,13 @@ module Cats.Gui {
         private changeListener: Function;
         private list: qx.ui.list.List;
         private filtered: any[];
-
+       
         private cursorPos = 0;
 
-        constructor(private editor: Ace.Editor) {
+        private sourceEditor: SourceEditor;
+        private editor: ace.Editor;
+
+        constructor() {
             super(new qx.ui.layout.Flow());
             // this.setDecorator(null);
             this.setPadding(0, 0, 0, 0);
@@ -90,23 +93,12 @@ module Cats.Gui {
          * Get the text between cursor and start
          */
         private getInputText(): string {
-            var cursor = this.editor.getCursorPosition();
-            var text = this.editor.session.getLine(cursor.row).slice(0, cursor.column);
+            var cursor = this.sourceEditor.getPosition();
+            var text = this.sourceEditor.getLine(cursor.row).slice(0, cursor.column);
             // console.log("input text:" + text);
             var matches = text.match(/[a-zA-Z_0-9\$]*$/);
             if (matches && matches[0])
                 return matches[0];
-            else
-                return "";
-        }
-
-
-        // ALternative immplementation to get the text between cursor and start
-        private getInputText2(): string {
-            var pos = this.editor.getCursorPosition();
-            var result = this.editor.getSession().getTokenAt(pos.row, pos.column);
-            if (result && result.value)
-                return result.value.trim();
             else
                 return "";
         }
@@ -236,7 +228,11 @@ module Cats.Gui {
          * Show the popup and make sure the keybinding is in place
          * 
          */
-        private showPopup(coords, completions: Cats.CompletionEntry[]) {
+        private showPopup(completions: Cats.CompletionEntry[]) {
+            if (this.list.isSeeable() || (completions.length === 0)) return;
+            var cursor = this.editor.getCursorPosition();
+            var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
+            
             this.editor.keyBinding.addKeyboardHandler(this.handler);
             this.moveTo(coords.pageX, coords.pageY + 20);
 
@@ -264,8 +260,6 @@ module Cats.Gui {
             });
 
             this.listModel = qx.data.marshal.Json.createModel(rawData, false);
-
-
 
             this.list.setModel(this.listModel);
             this.updateFilter();
@@ -324,13 +318,34 @@ module Cats.Gui {
             setTimeout(() => { this.updateFilter(); }, 0);
         }
 
+        /**
+         * The method called form the editor to start the code completion process. 
+         */ 
+        complete(memberCompletionOnly:boolean, sourceEditor, editor) {
+            this.editor = editor;
+            this.sourceEditor = sourceEditor;
+            var session = editor.getSession();
+           
+            var pos = editor.getCursorPosition();
 
-        showCompletions(completions: Cats.CompletionEntry[]) {
-            if (this.list.isSeeable() || (completions.length === 0)) return;
-            console.debug("Received completions: " + completions.length);
-            var cursor = this.editor.getCursorPosition();
-            var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
-            this.showPopup(coords, completions);
+            var line = session.getLine(pos.row);
+            var prefix = retrievePrecedingIdentifier(line, pos.column);
+
+            // this.base = session.doc.createAnchor(pos.row, pos.column - prefix.length);
+
+            var matches = [];
+            var completers = memberCompletionOnly ? [new TSCompleter(this.sourceEditor)] : editor.completers
+            var total = completers.length;
+            completers.forEach((completer, i) => {
+                completer.getCompletions(editor, session, pos, prefix, (err, results) => {
+                    total--;
+                    if (!err) matches = matches.concat(results);
+                    if (total === 0) {
+                        this.showPopup(matches);
+                    }
+                });
+            });
+            
         }
 
 

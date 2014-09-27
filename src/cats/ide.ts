@@ -14,10 +14,10 @@
 //
 
 module Cats {
-   
+  
     var Events = require('events');
 
-    export class Ide  {
+    export class Ide  extends qx.event.Emitter{
 
         // List of different themes that are available
         private themes = {                  
@@ -33,7 +33,7 @@ module Cats {
         toolBar: Gui.ToolBar;
         infoPane: Gui.TabView;
         statusBar: Gui.StatusBar;
-        sessionTabView: Gui.SessionTabView;
+        editorTabView: Gui.EditorTabView;
         console: Gui.ConsoleLog;
         processTable: Gui.ProcessTable;
         bookmarks:Gui.ResultTable;
@@ -48,10 +48,10 @@ module Cats {
         project: Project;
         config:IDEConfiguration;
         private static STORE_KEY = "cats.config";
-        infoBus= <InfoBus> new Events.EventEmitter();
         history = new SessionHistory();
 
         constructor() {
+            super();
             this.catsHomeDir = process.cwd();
             this.config = this.loadConfig();
             this.configure();
@@ -70,19 +70,6 @@ module Cats {
             this.handleCloseWindow();
         }
 
-        getActiveEditor() {
-            var page = <qx.ui.tabview.Page>this.sessionTabView.getSelection()[0];
-            if (! page) return null;
-            var editor:Gui.SourceEditor = <Gui.SourceEditor>page.getChildren()[0];
-            return editor;
-        }
-
-
-        get sessions() {
-            return this.sessionTabView.getSessions();
-        }
-
-      
 
         /**
          * Configure the IDE based on the settings
@@ -131,7 +118,7 @@ module Cats {
             var files: FileList = event.dataTransfer.files;
 
             for(var i = 0; i < files.length; i++) {
-                this.openSession((<any>files[i]).path);
+                FileEditor.OpenEditor((<any>files[i]).path);
             }
         }
 
@@ -149,37 +136,13 @@ module Cats {
                     console.info("Found previous sessions: ", this.config.sessions.length);
                     this.config.sessions.forEach((session) => {
                         try {
-                            this.openSession(session.path);
+                            FileEditor.OpenEditor(session.path);
                         } catch (err) {
                             console.error("error " + err);
                         }
                     });
                 }
                 // this.project.refresh();
-            }
-        }
-
- 
-        /**
-         * Are there any session that have unsaved changes 
-         */
-        hasUnsavedSessions(): boolean {
-            if (! this.sessions) return false;
-            for (var i = 0; i < this.sessions.length; i++) {
-                if (this.sessions[i].getChanged()) return true;
-            }
-            return false;
-        }
-
-        /**
-         * Get the first session based on its filename
-         * @param name The name of the session
-         */
-        getSession(name: string) : Session {
-            var sessions = this.sessions; 
-            for (var i = 0; i < sessions.length; i++) {
-                var session = sessions[i];
-                if (session.name === name) return session;
             }
         }
 
@@ -219,7 +182,7 @@ module Cats {
 
         updateConfig(config) {
             this.config = config;
-            IDE.infoBus.emit("ide.config", config);
+            this.emit("config", config);
             this.configure();
             this.saveConfig();
         }
@@ -235,11 +198,14 @@ module Cats {
                 config.projects = [];
                 if (this.project) {
                     config.projects.push(this.project.projectDir);
-                    this.sessions.forEach((session)=>{               
-                        config.sessions.push({ 
-                            path: session.name
-                            // session.getPosition() //@TODO make session fully responsible
-                        });
+                    this.editorTabView.getEditors().forEach((editor)=>{ 
+                        var state = editor.getState();
+                        if (state !== null) {
+                            config.sessions.push({ 
+                                path: state
+                                // session.getPosition() //@TODO make session fully responsible
+                            });
+                        }
                     });
                 };
                 
@@ -250,35 +216,7 @@ module Cats {
             }
         }
 
-        /**
-         * Open an existing session or if it doesn't exist yet create
-         * a new one.
-         */ 
-        openSession(name?: string, pos:Ace.Position = {row:0, column:0}):Session {
-            var session:Session;
-            if (name) session = this.getSession(name);
-            if (! session) {
-                var content="";
-                if (name) {
-                    var mode = Session.determineMode(name);
-                    if (mode === "binary") {
-                        var validate = confirm("This might be a binary file, are you sure ?");
-                        if (! validate) return;
-                    } 
-                    content = OS.File.readTextFile(name);
-                }
-                session = new Session(name, content);
-                if (session.isTypeScript()) {
-                    this.project.addScript(name,content);
-                }
-                IDE.sessionTabView.addSession(session,pos);
-            } else {
-                 this.sessionTabView.navigateTo(session,pos);
-            }
 
-            var project = session.project;
-            return session;
-        }
 
 
         /**
@@ -299,7 +237,7 @@ module Cats {
             var win = GUI.Window.get();
             win.on("close", function() {
                 try {
-                    if (IDE.hasUnsavedSessions()) {
+                    if (IDE.editorTabView.hasUnsavedChanges()) {
                         if (!confirm("There are unsaved changes!\nDo you really want to continue?")) return;
                     }
                     IDE.saveConfig();
@@ -307,8 +245,6 @@ module Cats {
                 this.close(true);
             });
         }
-        
-        
         
         
         /**
@@ -322,7 +258,7 @@ module Cats {
         }
         
         quit() {
-            if (this.hasUnsavedSessions()) {
+            if (this.editorTabView.hasUnsavedChanges()) {
                 if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
             }
             this.saveConfig();

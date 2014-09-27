@@ -44,9 +44,7 @@ module Cats.Commands {
      * Show a class diagram of the project. 
      */ 
     function showDiagram() {
-        var session = new Session("Class Diagram");
-        session.uml = true;
-        IDE.sessionTabView.addSession(session);
+        IDE.editorTabView.addEditor(new Gui.UMLEditor("Class Diagram"));
     }
 
  
@@ -103,7 +101,7 @@ module Cats.Commands {
             } else {
                 var param = encodeURIComponent(projectPath);
                 this.value = ""; // Make sure the change event goes off next tome
-                window.open('index.html?project=' + param, '_blank');
+                window.open('index.html?project=' + param);
             }
         };
         chooser.click();

@@ -16,19 +16,28 @@ module Cats.Gui {
     /**
      * Simple image viewer for image files. Uses canvas to render the image.
      */
-    export class ImageEditor extends qx.ui.embed.Canvas implements Editor {
+    export class ImageEditor extends FileEditor {
 
         private backgroundColors = ["white", "black", "grey"];
+        unsavedChanges= false;
+        status = { mode : "image" };
+        private canvas = new qx.ui.embed.Canvas();
 
-        constructor(private session: Cats.Session) {
-            super();
-            this.loadImage(session.name);
+        constructor(fileName) {
+            super(fileName);
+            this.loadImage(fileName);
             this.createContextMenu();
+        }
+
+        getLayoutItem() {
+            return this.canvas;
         }
 
         executeCommand(name, ...args): boolean {
             return false;
         }
+
+        save() { /* NOP */ }
 
         private loadImage(url) {
             var image = new Image();
@@ -37,20 +46,20 @@ module Cats.Gui {
         }
 
         private resizeIfRequired(image: HTMLImageElement) {
-            if (image.width > this.getCanvasWidth()) {
-                this.setCanvasWidth(image.width);
+            if (image.width > this.canvas.getCanvasWidth()) {
+                this.canvas.setCanvasWidth(image.width);
             }
 
-            if (image.height > this.getCanvasHeight()) {
-                this.setCanvasHeight(image.height);
+            if (image.height > this.canvas.getCanvasHeight()) {
+                this.canvas.setCanvasHeight(image.height);
             }
         }
 
         private drawImage(image) {
             this.resizeIfRequired(image);
-            this.getContext2d().drawImage(image,
-                this.getCanvasWidth() / 2 - image.width / 2,
-                this.getCanvasHeight() / 2 - image.height / 2
+            this.canvas.getContext2d().drawImage(image,
+                this.canvas.getCanvasWidth() / 2 - image.width / 2,
+                this.canvas.getCanvasHeight() / 2 - image.height / 2
                 );
         }
 
@@ -59,15 +68,20 @@ module Cats.Gui {
             this.backgroundColors.forEach((color) => {
                 var button = new qx.ui.menu.Button("Background " + color);
                 button.addListener("execute", () => {
-                    this.setBackgroundColor(color);
+                    this.canvas.setBackgroundColor(color);
                 });
                 menu.add(button);
             });
-            this.setContextMenu(menu);
+            this.canvas.setContextMenu(menu);
         }
 
+        static SupportsFile(fileName:string) {
+            var supportedExt = [ ".png", ".gif", ".jpg" , ".jpeg"]
+            var ext = PATH.extname(fileName);
+            return supportedExt.indexOf(ext) > -1;
+        }
 
-        replace(range: Ace.Range, content: string) { }
+        replace(range: ace.Range, content: string) { }
 
         getContent() { return null; }
 
@@ -75,7 +89,7 @@ module Cats.Gui {
 
         updateWorld() { }
 
-        moveToPosition(pos: Ace.Position) { }
+        moveToPosition(pos: ace.Position) { }
 
     }
 }

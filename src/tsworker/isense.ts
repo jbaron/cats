@@ -22,9 +22,9 @@ module Cats.TSWorker {
      * not available in a worker.
      */
     export var console = {
-        log: function(str: string) { postMessage({ method: "console", params: [str] }, null); },
-        error: function(str: string) { postMessage({ method: "console", params: [str] }, null); },
-        info: function(str: string) { postMessage({ method: "console", params: [str] }, null); }
+        log: function(str: string) { postMessage({ method: "console", params: ["log",str] }, null); },
+        error: function(str: string) { postMessage({ method: "console", params: ["error",str] }, null); },
+        info: function(str: string) { postMessage({ method: "console", params: ["info",str] }, null); }
     };
     
     /**
@@ -102,15 +102,19 @@ module Cats.TSWorker {
         }
 
         public getObjectModel() {
-            var walker = new ObjectModelCreator();
+            //Force all symbols to be created.
+            this.getAllDiagnostics();
+            
+            var mc = new ModelCreator();
             this.lsHost.getScriptFileNames().forEach((script) => {
-                if (script.indexOf(".d.ts") > 0) return;
-                this.ls.getSyntaxTree(script).sourceUnit().accept(walker);
+                if (script.indexOf("lib.d.ts") > 0) return;
+                var doc:TypeScript.Document = this.ls["compiler"].getDocument(script);
+                mc.parse(doc);
             });
-            var result = walker.getModel();
-            return result;
+            return mc.getModel();
         }
 
+  
         /**
          * Convert Services to Cats NavigateToItems
          * @todo properly do this conversion
@@ -263,6 +267,46 @@ module Cats.TSWorker {
             return compOptions;
         }
 
+
+       private isExecutable(kind) {
+            if (kind === "method" || kind === "function" || kind === "constructor") return true;
+            return false;
+        }
+
+
+        /**
+         * Convert the data for outline usage.
+         */
+        private getOutlineModelData(data: TypeScript.Services.NavigateToItem[]) {
+            if ((!data) || (!data.length)) {
+                return [];
+            }
+
+            var parents = {};
+            var root = {};
+
+            data.forEach((item) => {
+                var parentName = item.containerName;
+                var parent = parentName ? parents[parentName] : root;
+                if (!parent) console.info("No Parent for " + parentName);
+                if (!parent.children) parent.children = [];
+
+                var extension = this.isExecutable(item.kind) ? "()" : "";
+                var script = this.getScript(item.fileName);
+
+                var entry = {
+                    label: item.name + extension,
+                    position: this.positionToLineCol(script, item.minChar),
+                    kind: item.kind
+                };
+
+                var childName = parentName ? parentName + "." + item.name : item.name;
+                parents[childName] = entry;
+                parent.children.push(entry);
+            });
+            
+            return root;
+        }
 
         /**
          * Get the content of a script
@@ -453,10 +497,10 @@ module Cats.TSWorker {
             return this.convertNavigateTo(results);
         }
 
-        public getScriptLexicalStructure(fileName: string): NavigateToItem[] {
+        public getScriptLexicalStructure(fileName: string) {
             var results = this.ls.getScriptLexicalStructure(fileName);
             var finalResults = results.filter((entry) => { return entry.fileName === fileName; });
-            return this.convertNavigateTo(finalResults);
+            return this.getOutlineModelData(finalResults);
         }
 
         public getOutliningRegions(fileName: string): Range[] {
