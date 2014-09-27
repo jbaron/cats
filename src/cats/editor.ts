@@ -22,11 +22,16 @@ module Cats {
         
         label = "Untitled"; // Labe to be used on the tab page
         editorClass = null; // The editor type
-        unsavedChanges = false; // Are there any ansaved changes
+       
         
         project = IDE.project;
         properties = [];
         outline = {};
+        
+        
+        hasUnsavedChanges() {
+            return false;
+        }
         
         /**
          * Save the content of the editor. Not all editors imeplement this method.

@@ -52,7 +52,7 @@ module Cats.Commands {
     function saveAll() {
         var editors = IDE.editorTabView.getEditors();
         editors.forEach((editor)=>{
-            if (editor.unsavedChanges) editor.save();
+            if (editor.hasUnsavedChanges()) editor.save();
         });
     }
        

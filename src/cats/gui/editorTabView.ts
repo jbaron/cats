@@ -44,7 +44,7 @@ module Cats.Gui {
         }
 
         continueWhenNeedSaving() {
-             if (this.editor.unsavedChanges) {
+             if (this.editor.hasUnsavedChanges()) {
                 var con = confirm("There are unsaved changes!\nDo you really want to continue?");
                 return con;
             }
@@ -175,7 +175,7 @@ module Cats.Gui {
         private continueIfUnsavedChanges(pages:EditorPage[]) {
             var hasUnsaved = false; 
             hasUnsaved = pages.some((page) => { 
-                return page.editor.unsavedChanges;
+                return page.editor.hasUnsavedChanges();
             });
             if (hasUnsaved) {
                 if (!confirm("There are unsaved changes!\nDo you really want to continue?")) return false;
@@ -186,18 +186,18 @@ module Cats.Gui {
     
         hasUnsavedChanges() {
             return this.getChildren().some((page:EditorPage) => {
-                return page.editor.unsavedChanges;
+                return page.editor.hasUnsavedChanges();
             });
         }
 
    
         /**
-         * Get all the open sessions
+         * Get all the editors
          */
         getEditors() {
             var result:Editor[] = [];
-            this.getChildren().forEach((child: EditorPage) => {
-                result.push(child.editor);
+            this.getChildren().forEach((page: EditorPage) => {
+                result.push(page.editor);
             });
             return result;
         }

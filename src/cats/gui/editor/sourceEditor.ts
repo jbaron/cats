@@ -370,6 +370,9 @@ module Cats.Gui {
                 }, timeout);
         }
 
+        hasUnsavedChanges() {
+            return this.editSession.unsavedChanges;
+        }
      
         /**
          * Persist this session to the file system. This overrides the NOP in the base class
@@ -386,7 +389,7 @@ module Cats.Gui {
             OS.File.writeTextFile(this.filePath, this.getContent());
             this.editSession.setHasUnsavedChanges(false);
             this.updateProperties();
-
+            IDE.console.log("Saved file " + this.filePath);
             if (this.isTypeScript()) {
                 this.project.validate(false);
                 if (this.project.config.buildOnSave) Commands.runCommand(Commands.CMDS.project_build);

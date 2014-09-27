@@ -20,6 +20,7 @@ module Cats.Gui {
 
         private backgroundColors = ["white", "black", "grey"];
         unsavedChanges= false;
+        status = { mode : "image" };
         private canvas = new qx.ui.embed.Canvas();
 
         constructor(fileName) {
