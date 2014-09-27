@@ -121,6 +121,38 @@ module Cats {
                     } catch (err) { /* NOP */ }
                  }
             }
+            
+        private static CreateEditor(fileName:string) : FileEditor {
+            if (Gui.ImageEditor.SupportsFile(fileName)) return new Gui.ImageEditor(fileName);
+            if (Gui.SourceEditor.SupportsFile(fileName)) return new Gui.SourceEditor(fileName);
+            return null;
+        }
+
+        /**
+         * Open an existing editor or if it doesn't exist yet create
+         * a new FileEditor.
+         */ 
+        static OpenEditor(name: string, pos:ace.Position = {row:0, column:0}):FileEditor {
+            var editor : FileEditor;
+            var pages:Gui.EditorPage[] = [];
+            pages = IDE.editorTabView.getPagesForFile(name);
+            if (! pages.length) {
+                editor = this.CreateEditor(name);
+                if (! editor) {
+                    var c = confirm("No suitable editor found for this file type, open with source editor?");
+                    if (! c) return; 
+                    editor = new Gui.SourceEditor(name);
+                }
+                IDE.editorTabView.addEditor(editor,pos);
+            } else {
+                editor = <Gui.SourceEditor>pages[0].editor;
+                IDE.editorTabView.setSelection([pages[0]]);
+                editor.moveToPosition(pos);
+            }
+
+            return editor;
+        }
+
         
     }
     

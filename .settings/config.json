@@ -19,7 +19,7 @@
         "newLineMode": "auto",
         "useSoftTabs": true,
         "tabSize": 4,
-        "useLint": true,
+        "useLint": false,
         "lintFile": null
     },
     "customBuild": {

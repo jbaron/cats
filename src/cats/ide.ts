@@ -118,7 +118,7 @@ module Cats {
             var files: FileList = event.dataTransfer.files;
 
             for(var i = 0; i < files.length; i++) {
-                this.openEditor((<any>files[i]).path);
+                FileEditor.OpenEditor((<any>files[i]).path);
             }
         }
 
@@ -136,7 +136,7 @@ module Cats {
                     console.info("Found previous sessions: ", this.config.sessions.length);
                     this.config.sessions.forEach((session) => {
                         try {
-                            this.openEditor(session.path);
+                            FileEditor.OpenEditor(session.path);
                         } catch (err) {
                             console.error("error " + err);
                         }
@@ -217,36 +217,6 @@ module Cats {
         }
 
 
-        private createEditor(fileName:string) : Editor {
-            if (Gui.ImageEditor.SupportsFile(fileName)) return new Gui.ImageEditor(fileName);
-            if (Gui.SourceEditor.SupportsFile(fileName)) return new Gui.SourceEditor(fileName);
-            return null;
-        }
-
-        /**
-         * Open an existing editor or if it doesn't exist yet create
-         * a new one.
-         */ 
-        openEditor(name: string, pos:ace.Position = {row:0, column:0}):Editor {
-            var editor : Editor;
-            var pages:Gui.EditorPage[] = [];
-            pages = this.editorTabView.getPagesForFile(name);
-            if (! pages.length) {
-                editor = this.createEditor(name);
-                if (! editor) {
-                    var c = confirm("No suitable editor found for this file type, open with source editor?");
-                    if (! c) return; 
-                    editor = new Gui.SourceEditor(name);
-                }
-                IDE.editorTabView.addEditor(editor,pos);
-            } else {
-                editor = <Gui.SourceEditor>pages[0].editor;
-                this.editorTabView.setSelection([pages[0]]);
-                editor.moveToPosition(pos);
-            }
-
-            return editor;
-        }
 
 
         /**

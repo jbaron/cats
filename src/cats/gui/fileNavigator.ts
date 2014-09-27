@@ -75,7 +75,7 @@ module Cats.Gui {
             this.addListener("dblclick", () => {
                 var file = this.getSelectedFile();
                 if (file) {
-                    IDE.openEditor(file.getFullPath());
+                    FileEditor.OpenEditor(file.getFullPath());
                 }
             });
 

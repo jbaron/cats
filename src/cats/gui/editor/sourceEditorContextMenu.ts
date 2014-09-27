@@ -41,7 +41,7 @@ module Cats.Gui {
         gotoDeclaration() {
             this.getIsense().getDefinitionAtPosition(this.editor.filePath, this.getPos(), (err, data: Cats.FileRange) => {
                 if (data && data.fileName)
-                    IDE.openEditor(data.fileName, data.range.start);
+                    FileEditor.OpenEditor(data.fileName, data.range.start);
             });
         }
 
