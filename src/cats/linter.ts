@@ -56,7 +56,7 @@ module Cats {
                 if (this.project.config.codingStandards.lintFile) {
                     fileName = OS.File.join(this.project.projectDir, this.project.config.codingStandards.lintFile);
                 } else {
-                    fileName = OS.File.join(IDE.catsHomeDir, "static/tslint.json");
+                    fileName = OS.File.join(IDE.catsHomeDir, "resource/tslint.json");
                 }
 
                 var content = OS.File.readTextFile(fileName);

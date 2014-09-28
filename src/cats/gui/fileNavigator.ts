@@ -108,7 +108,7 @@ module Cats.Gui {
          * Get all available icons for mime-types
          */
         private loadAvailableIcons() {
-            var iconFolder = "./static/resource/qx/icon/Oxygen/16/mimetypes";
+            var iconFolder = "resource/qx/icon/Oxygen/16/mimetypes";
             var files = OS.File.readDir(iconFolder);
             files.forEach((file) => {
                 if (file.isFile) {

@@ -8,7 +8,7 @@
       "url": "https://github.com/jbaron/cats/blob/master/LICENSE.txt"
     }
   ],
-  "main": "static/index.html",
+  "main": "index.html",
   "scripts": {
     "start": "nodewebkit --restore"
   },
@@ -28,7 +28,7 @@
     "url": "https://github.com/jbaron/cats.git"
   },
   "window": {
-    "icon": "static/logo.png",
+    "icon": "resource/logo.png",
     "toolbar": false,
     "position": "center",
     "width": 1000,
