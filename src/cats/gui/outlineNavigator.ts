@@ -74,7 +74,7 @@ module Cats.Gui {
 
 
         private getIconForKind(name: string) {
-            var iconPath = "./resource/qx/icon/Oxygen/16/types/";
+            var iconPath = "icon/16/types/";
             switch (name) {
                 case "function":
                 case "keyword":

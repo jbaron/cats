@@ -4123,10 +4123,12 @@ declare module qx.theme.classic {
 }
 declare module qx.theme.icon {
     class Oxygen {
+        static aliases:any;
     }
 }
 declare module qx.theme.icon {
     class Tango {
+        static aliases:any;
     }
 }
 declare module qx.theme.indigo {

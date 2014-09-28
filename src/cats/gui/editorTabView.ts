@@ -21,9 +21,9 @@ module Cats.Gui {
     export class EditorPage extends qx.ui.tabview.Page {
 
         private static ICONS = {
-            "error" :"./resource/qx/icon/Oxygen/16/status/dialog-error.png",
-            "warning":"./resource/qx/icon/Oxygen/16/status/dialog-warning.png",
-            "info":"./resource/qx/icon/Oxygen/16/status/dialog-information.png"
+            "error" :"icon/16/status/dialog-error.png",
+            "warning":"icon/16/status/dialog-warning.png",
+            "info":"icon/16/status/dialog-information.png"
         };
         
 

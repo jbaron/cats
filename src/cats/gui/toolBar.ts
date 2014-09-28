@@ -19,7 +19,6 @@ module Cats.Gui {
      */
     export class ToolBar extends qx.ui.toolbar.ToolBar {
 
-        private iconFolder = "resource/qx/icon/Oxygen/22/";
 
         private commands = [
             Cats.Commands.CMDS.file_new,
@@ -55,7 +54,9 @@ module Cats.Gui {
         }
 
         private createButton(cmd: Cats.Commands.Command) {
-            var icon = this.iconFolder + cmd.icon;
+            // var icon = this.iconFolder + cmd.icon;
+            var icon = "icon/22/" + cmd.icon;
+
             var button = new qx.ui.toolbar.Button(cmd.label, icon);
             button.setShow("icon");
             button.getChildControl("icon").set({
