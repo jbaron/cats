@@ -12,17 +12,19 @@
   "scripts": {
     "start": "nodewebkit --restore"
   },
-  "description": "Code Assistant for TypeScript",
+  "description": "CATS in an integrated development environment for TypeScript developers",
   "keywords": [
     "TypeScript",
     "JBaron",
     "editor",
-    "IDE"
+    "IDE",
+    "javascript",
+    "Windows, Linux, OSX"
   ],
   "bugs": {
     "url": "https://github.com/JBaron/cats/issues"
   },
-  "version": "1.1.2",
+  "version": "1.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jbaron/cats.git"

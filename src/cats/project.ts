@@ -82,7 +82,6 @@ module Cats {
          * Show the errors on a project level
          */
         validate(verbose= true) {
-            // @TODO don't compile just get the errors
             this.iSense.getAllDiagnostics((err, data) => {
                 if (data) {
                     IDE.problemResult.setData(data);
