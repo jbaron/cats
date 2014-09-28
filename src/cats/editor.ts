@@ -43,7 +43,9 @@ module Cats {
          * editor. For a text editorit could be a row and column, for an UML editor 
          * it could be an x an dy coordinate.  
          */ 
-        moveToPosition(pos: any) { /* NOP */ }
+        moveToPosition(pos?: any) { 
+            IDE.addHistory(this, pos);
+        }
         
 
         /**

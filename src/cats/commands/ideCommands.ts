@@ -38,11 +38,11 @@ module Cats.Commands {
 
 
     function next() {
-        IDE.history.next();
+        history.forward();
     }
 
     function prev() {
-        IDE.history.back();
+        history.back();
     }
 
     function configureIde() {

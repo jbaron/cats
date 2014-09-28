@@ -39,8 +39,7 @@ module Cats {
         linter:Linter;
 
         /**    
-         * Set the project to a new directory and make sure 
-         * we remove old artifacts.
+         * Create a new project.
          */
         constructor(projectDir: string) {
             super();
@@ -53,7 +52,7 @@ module Cats {
 
         /**
          * Save the project configuration
-         */
+         */     
         updateConfig(config) {
             this.config = config;
             this.emit("config", config);
@@ -61,7 +60,7 @@ module Cats {
             if (this.config.codingStandards.useLint) this.linter = new Linter(this);
             pc.store(this.config);
         }
-
+        
     
         /**
          * Close the project

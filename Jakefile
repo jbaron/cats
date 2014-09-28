@@ -31,7 +31,6 @@ var catsOptions = [
     "src/cats/tsWorkerProxy.ts",
     "src/cats/project.ts",
     "src/cats/refactor.ts",
-    "src/cats/history.ts",
     "src/cats/editor.ts",
     "src/cats/linter.ts",
     

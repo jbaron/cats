@@ -216,12 +216,24 @@ module Cats.Gui {
             }
         }
 
-        navigateToPage(page: EditorPage, pos?: any, storeHistory = true) {
+        /**
+         * Navigate to a certain page
+         */
+        navigateToPage(page: EditorPage, pos: any) {
             this.setSelection([page]);
-            if (pos) page.editor.moveToPosition(pos);
-            if (storeHistory) IDE.history.add(page, pos);
+            page.editor.moveToPosition(pos);
         }
 
+
+        /**
+         * Get the page that has a certain instance of an editor.
+         */ 
+        getPageForEditor(editor:Editor) {
+           var pages = <EditorPage[]>this.getChildren(); 
+           for (var x=0;x<pages.length;x++) {
+               if (pages[x].editor === editor) return pages[x];
+           }
+        }
   
         getPagesForFile(filePath) {
             var result:EditorPage[] = [];
