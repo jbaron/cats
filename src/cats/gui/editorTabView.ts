@@ -58,8 +58,8 @@ module Cats.Gui {
 
         private createToolTip() {
             var button: qx.ui.tabview.TabButton = (<any>this).getButton();
-            // @TODO longName
-            var tooltip = new qx.ui.tooltip.ToolTip(this.editor.label);
+            var tooltipText = this.editor.getDescription() || this.editor.label
+            var tooltip = new qx.ui.tooltip.ToolTip(tooltipText);
             button.setToolTip(tooltip);
         }
 

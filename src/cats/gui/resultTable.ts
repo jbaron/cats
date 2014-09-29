@@ -39,7 +39,7 @@ module Cats.Gui {
 
             this.setPadding(0, 0, 0, 0);
 
-            this.getSelectionModel().addListener("changeSelection", (data) => {
+            this.addListener("click", (data) => {
                 var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
                 var data = this.getTableModel().getRowData(selectedRow);
                 if (data) FileEditor.OpenEditor(data[1], data[3]);
