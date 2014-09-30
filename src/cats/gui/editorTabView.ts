@@ -220,6 +220,7 @@ module Cats.Gui {
          * Navigate to a certain page
          */
         navigateToPage(page: EditorPage, pos: any) {
+            if (this.getChildren().indexOf(page) === -1) return;
             this.setSelection([page]);
             page.editor.moveToPosition(pos);
         }
