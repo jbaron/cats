@@ -28,7 +28,7 @@ module Cats {
 
         constructor(private project: Project) {
             // Create a new webworker
-            this.worker = new Worker("../lib/tsworker.js");
+            this.worker = new Worker("lib/tsworker.js");
             this.initWorker();
         }
 

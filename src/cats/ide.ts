@@ -48,13 +48,24 @@ module Cats {
         project: Project;
         config:IDEConfiguration;
         private static STORE_KEY = "cats.config";
-        history = new SessionHistory();
+        private lastEntry = <any>{}; 
 
         constructor() {
             super();
             this.catsHomeDir = process.cwd();
             this.config = this.loadConfig();
             this.configure();
+            
+            window.onpopstate = (data) => {
+                if (data && data.state) this.goto(data.state);
+            }
+        }
+
+        private goto(entry) {
+            var hash = entry.hash;
+            this.lastEntry = entry;
+            var page = <Gui.EditorPage>qx.core.ObjectRegistry.fromHashCode(hash);
+            if (page) IDE.editorTabView.navigateToPage(page, entry.pos);
         }
 
         /**
@@ -68,6 +79,18 @@ module Cats {
             this.menubar = new Gui.Menubar();
             this.initFileDropArea();
             this.handleCloseWindow();
+        }
+
+        addHistory(editor:Editor, pos?:any) {
+             var page = this.editorTabView.getPageForEditor(editor);
+             if ((this.lastEntry.hash === page.toHashCode()) && (this.lastEntry.pos === pos)) return;
+            
+             var entry ={
+                hash: page.toHashCode(),
+                pos: pos
+            }; 
+            
+            history.pushState(entry,page.getLabel());
         }
 
 

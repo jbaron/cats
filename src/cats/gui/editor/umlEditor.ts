@@ -37,12 +37,12 @@ module Cats.Gui {
         widget = new qx.ui.embed.Html(null);
         
         private static Resources1 = [
-            "js/uml/css/UDStyle.css",
-            "js/uml/UDCore.js"
+            "resource/uml/css/UDStyle.css",
+            "resource/uml/UDCore.js"
         ];
 
         private static Resources2 = [
-            "js/uml/UDModules.js"
+            "resource/uml/UDModules.js"
         ];
 
         private static ResourcesLoaded = false;

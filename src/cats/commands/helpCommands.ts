@@ -21,7 +21,7 @@ module Cats.Commands {
      * Show the available keyboard shortcuts
      */ 
     function showShortcuts() {
-         var w = window.open("keyboard_shortcuts.html", "_blank", "width=800; height=595");
+         var w = window.open("resource/keyboard_shortcuts.html", "_blank", "width=800; height=595");
     }
 
     /**

@@ -108,7 +108,7 @@ module Cats.Gui {
          * Get all available icons for mime-types
          */
         private loadAvailableIcons() {
-            var iconFolder = "./static/resource/qx/icon/Oxygen/16/mimetypes";
+            var iconFolder = "resource/qx/icon/Oxygen/16/mimetypes";
             var files = OS.File.readDir(iconFolder);
             files.forEach((file) => {
                 if (file.isFile) {
@@ -127,7 +127,7 @@ module Cats.Gui {
 
             var icon = this.iconsForMime[mimetype];
             if (!icon) icon = this.iconsForMime["text-plain"];
-            icon = "./resource/qx/icon/Oxygen/16/mimetypes/" + icon;
+            icon = "icon/16/mimetypes/" + icon;
             // IDE.console.log("Icon: " + icon);
             return icon;
         }
@@ -138,7 +138,7 @@ module Cats.Gui {
             this.setIconOptions({
                 converter: (value, model) => {
                     if (value.getDirectory()) {
-                        return "./resource/qx/icon/Oxygen/16/places/folder.png";
+                        return "icon/16/places/folder.png";
                     }
                     return this.getIconForFile(value.getLabel());
                 }

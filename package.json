@@ -8,27 +8,29 @@
       "url": "https://github.com/jbaron/cats/blob/master/LICENSE.txt"
     }
   ],
-  "main": "static/index.html",
+  "main": "index.html",
   "scripts": {
     "start": "nodewebkit --restore"
   },
-  "description": "Code Assistant for TypeScript",
+  "description": "CATS in an integrated development environment for TypeScript developers",
   "keywords": [
     "TypeScript",
     "JBaron",
     "editor",
-    "IDE"
+    "IDE",
+    "javascript",
+    "Windows, Linux, OSX"
   ],
   "bugs": {
     "url": "https://github.com/JBaron/cats/issues"
   },
-  "version": "1.1.2",
+  "version": "1.2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jbaron/cats.git"
   },
   "window": {
-    "icon": "static/logo.png",
+    "icon": "resource/logo.png",
     "toolbar": false,
     "position": "center",
     "width": 1000,

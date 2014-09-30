@@ -15,7 +15,8 @@
 module Cats.Gui {
 
     /**
-     * This table displays problems and search result
+     * This table displays data that is related to a file. Can be 
+     * search results of erros messages or even bookmarks. 
      */
     export class ResultTable extends qx.ui.table.Table {
 
@@ -38,7 +39,7 @@ module Cats.Gui {
 
             this.setPadding(0, 0, 0, 0);
 
-            this.getSelectionModel().addListener("changeSelection", (data) => {
+            this.addListener("click", (data) => {
                 var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
                 var data = this.getTableModel().getRowData(selectedRow);
                 if (data) FileEditor.OpenEditor(data[1], data[3]);
@@ -52,7 +53,9 @@ module Cats.Gui {
             return (range.start.row + 1) + ":" + (range.start.column + 1);
         }
 
-
+        /**
+         * Clear all the data from the table
+         */ 
         clear() {
             this.setData([]);
         }
@@ -79,6 +82,9 @@ module Cats.Gui {
             return true;
         }
 
+        /**
+         * Set the data for this table
+         */ 
         setData(data: Cats.FileRange[]) {
             if (this.areEmpty(this.data, data)) return;
             this.fireDataEvent("contentChange", null);
@@ -94,6 +100,9 @@ module Cats.Gui {
             this.getSelectionModel().resetSelection();
         }
 
+        /**
+         * Add a row to the table
+         */ 
         addData(row: Cats.FileRange) {
             this.getTableModel().addRows([this.convert(row)]);
         }

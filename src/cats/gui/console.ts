@@ -69,7 +69,6 @@ module Cats.Gui {
          * logging mesages that are useful to the enduser (= developer) and not for
          * debug information.
          * 
-         * @TODO implement a better performing solution using addChild
          */
         log(msg: string) {
             this.print(msg,0);

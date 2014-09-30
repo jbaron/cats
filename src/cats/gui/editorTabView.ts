@@ -21,9 +21,9 @@ module Cats.Gui {
     export class EditorPage extends qx.ui.tabview.Page {
 
         private static ICONS = {
-            "error" :"./resource/qx/icon/Oxygen/16/status/dialog-error.png",
-            "warning":"./resource/qx/icon/Oxygen/16/status/dialog-warning.png",
-            "info":"./resource/qx/icon/Oxygen/16/status/dialog-information.png"
+            "error" :"icon/16/status/dialog-error.png",
+            "warning":"icon/16/status/dialog-warning.png",
+            "info":"icon/16/status/dialog-information.png"
         };
         
 
@@ -58,8 +58,8 @@ module Cats.Gui {
 
         private createToolTip() {
             var button: qx.ui.tabview.TabButton = (<any>this).getButton();
-            // @TODO longName
-            var tooltip = new qx.ui.tooltip.ToolTip(this.editor.label);
+            var tooltipText = this.editor.getDescription() || this.editor.label
+            var tooltip = new qx.ui.tooltip.ToolTip(tooltipText);
             button.setToolTip(tooltip);
         }
 
@@ -216,12 +216,25 @@ module Cats.Gui {
             }
         }
 
-        navigateToPage(page: EditorPage, pos?: any, storeHistory = true) {
+        /**
+         * Navigate to a certain page
+         */
+        navigateToPage(page: EditorPage, pos: any) {
+            if (this.getChildren().indexOf(page) === -1) return;
             this.setSelection([page]);
-            if (pos) page.editor.moveToPosition(pos);
-            if (storeHistory) IDE.history.add(page, pos);
+            page.editor.moveToPosition(pos);
         }
 
+
+        /**
+         * Get the page that has a certain instance of an editor.
+         */ 
+        getPageForEditor(editor:Editor) {
+           var pages = <EditorPage[]>this.getChildren(); 
+           for (var x=0;x<pages.length;x++) {
+               if (pages[x].editor === editor) return pages[x];
+           }
+        }
   
         getPagesForFile(filePath) {
             var result:EditorPage[] = [];

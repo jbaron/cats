@@ -71,7 +71,7 @@ module Cats.Gui {
 
     function getIconName(name: string) {
             var entry = iconMapping[name];
-            if (entry) return "./resource/qx/icon/Oxygen/16/" + entry.icon;
+            if (entry) return "icon/16/" + entry.icon;
     }
 
 

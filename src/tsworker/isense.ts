@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-importScripts("../static/js/typescriptServices.js");
+importScripts("../resource/typescriptServices.js");
 
 module Cats.TSWorker {
 

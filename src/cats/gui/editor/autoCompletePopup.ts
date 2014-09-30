@@ -57,6 +57,7 @@ module Cats.Gui {
             this.setHeight(200);
             this.createList();
             this.initHandler();
+            this.changeListener = (ev) => this.onChange(ev);
             this.addListener("disappear", this.hidePopup, this);
         }
 
@@ -85,7 +86,7 @@ module Cats.Gui {
             list.setDecorator(null);
             this.add(list);
             this.list = list;
-
+            this.list.addListener("click" , this.insertSelectedItem.bind(this));
         }
 
 
@@ -169,6 +170,21 @@ module Cats.Gui {
             // IDE.console.log("Cursor:" + this.cursorPos);
         }
 
+        private insertSelectedItem() {
+            var current = this.list.getSelection().getItem(0);;
+            if (current) {
+                var inputText = this.getInputText();
+                for (var i = 0; i < inputText.length; i++) {
+                    this.editor.remove("left");
+                }
+                if (current.getMeta() === "snippet") {
+                    this.editor.insertSnippet(current.getSnippet());
+                } else {
+                    this.editor.insert(current.getValue());
+                }
+            }
+            this.hidePopup();
+        }
 
         /**
          * Setup the different keybindings that would go to the 
@@ -183,25 +199,11 @@ module Cats.Gui {
             this.handler.bindKey("Up", () => { this.moveCursor(-1); });
             this.handler.bindKey("PageUp", () => { this.moveCursor(-10); });
             this.handler.bindKey("Esc", () => { this.hidePopup(); });
-            this.handler.bindKey("Return|Tab", () => {
-                var current = this.list.getSelection().getItem(0);;
-                if (current) {
-                    var inputText = this.getInputText();
-                    for (var i = 0; i < inputText.length; i++) {
-                        this.editor.remove("left");
-                    }
-                    if (current.getMeta() === "snippet") {
-                        this.editor.insertSnippet(current.getSnippet());
-                    } else {
-                        this.editor.insert(current.getValue());
-                    }
-                }
-                this.hidePopup();
-            });
+            this.handler.bindKey("Return|Tab", () => { this.insertSelectedItem(); });
         }
 
         private getIconForKind(name: string) {
-            var iconPath = "./resource/qx/icon/Oxygen/16/types/";
+            var iconPath = "icon/16/types/";
             switch (name) {
                 case "function":
                 case "keyword":
@@ -269,8 +271,8 @@ module Cats.Gui {
 
             this.show();
 
-            this.changeListener = (ev) => this.onChange(ev);
-            // this.editor.getSession().removeAllListeners('change');
+            
+            // this.editor.commands.on('afterExec', (e) => { this.onChange2(e);});
             this.editor.getSession().on("change", this.changeListener);
         }
 
@@ -281,12 +283,8 @@ module Cats.Gui {
         private hidePopup() {
             this.editor.keyBinding.removeKeyboardHandler(this.handler);
             this.exclude();
-
             this.editor.getSession().removeListener('change', this.changeListener);
-            // this.editor.getSession().removeAllListeners('change');
-
-            // this.editor.getSession().on("change",CATS.onChangeHandler);
-            // this.editor.getSession().removeAllListeners('change');
+            this.editor.focus();
         }
 
         /**
@@ -300,6 +298,18 @@ module Cats.Gui {
                 || ch === 95    //_
                 || ch === 36    //$
                 || ch > 127;     //non-ASCII letter. Not accurate, but good enough for autocomplete
+        }
+
+
+        private onChange2(e) {
+            var key = e.args || "";
+            alert(key);
+            if ((key == null) || (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0)))) {
+                this.hidePopup();
+                return;
+            }
+            
+            this.updateFilter();
         }
 
         /**
