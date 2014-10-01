@@ -13,7 +13,7 @@
 //
 
 module Cats {
-
+    
     /**
      * BaseClass for Editors. Editors should extend this class. The rest of the codebase is only 
      * dependent on this small subset of methods and properties.

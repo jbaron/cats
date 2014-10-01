@@ -84,14 +84,13 @@ export class ScriptInfo {
         private compilationSettings:ts.CompilerOptions = null;
 
         public scripts:Map<ScriptInfo> = {};
-        public maxScriptVersions = 100;
-        
+      
         public getScriptFileNames():string[] {
             return Object.keys(this.scripts);
         }
 
         getScriptIsOpen(fileName: string) {
-            return false;
+            return false; // @TODO generates error otherwise
         }
 
         getCancellationToken(): ts.CancellationToken {
@@ -176,23 +175,10 @@ export class ScriptInfo {
         }
 
         //////////////////////////////////////////////////////////////////////
-        // ILogger implementation
+        // Logger implementation
+       public log(s: string): void {}
         
-        public information(): boolean { return false; }
-        public debug(): boolean { return false; }
-        public warning(): boolean { return false; }
-        public error(): boolean { return false; }
-        public fatal(): boolean { return false; }
-
-        public log(s: string): void {}
-        
-        
-        public getDiagnosticsObject() {
-            return {
-                log : function (content: string) {}
-            };
-        }
-
+    
         //////////////////////////////////////////////////////////////////////
         // ILanguageServiceHost implementation
         //
@@ -207,7 +193,6 @@ export class ScriptInfo {
 
         
         public getScriptVersion(fileName: string): string {
-            // return null;
             var script = this.scripts[fileName];            
             return script.version + "";
         }
