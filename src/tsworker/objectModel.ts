@@ -34,9 +34,11 @@ module Cats.TSWorker {
             return result;
         }
         
-        parse(doc:TypeScript.Document) {
-            this.handle(doc.topLevelDecl());
+        parse(doc /* :TypeScript.Document @TODO */) {
+            // this.handle(doc.topLevelDecl());
         }
+        
+        /*
         
         private interest(kind:TypeScript.PullElementKind) {
             switch (kind) {
@@ -146,7 +148,7 @@ module Cats.TSWorker {
             this.last = null;
         }
         
-        
+        */
         
     }
    

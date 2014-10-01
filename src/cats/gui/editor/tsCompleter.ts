@@ -46,7 +46,7 @@ module Cats.Gui {
             var fileName = this.editor.filePath;
             if (! fileName) return [];
             
-            IDE.project.iSense.getCompletions(fileName, pos, (err, completes: TypeScript.Services.CompletionEntry[]) => {
+            IDE.project.iSense.getCompletions(fileName, pos, (err, completes: ts.CompletionEntry[]) => {
                     var result:Array<Cats.CompletionEntry> = [];
                     if (! completes) return result;
                     completes.forEach((entry) => {

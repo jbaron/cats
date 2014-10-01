@@ -25,7 +25,7 @@ module Cats.Gui {
         private outlineTimer: number;
 
         constructor() {
-            super(null, "label", "children");
+            super(null, "label", "kids");
             this.setDecorator(null);
             this.setPadding(0, 0, 0, 0);
             this.setHideRoot(true);
@@ -33,8 +33,8 @@ module Cats.Gui {
             this.setDecorator(null);
             this.addListener("click", (data) => {
                 var item = <any>this.getSelectedItem();
-                if (item && item.getPosition) {
-                    var position = JSON.parse(qx.util.Serializer.toJson(item.getPosition())); 
+                if (item && item.getPos) {
+                    var position = JSON.parse(qx.util.Serializer.toJson(item.getPos())); 
                     IDE.editorTabView.navigateToPage(this.page,position);
                 }
             });
@@ -97,9 +97,9 @@ module Cats.Gui {
 
 
         private expandAll(root,count=0) {
-            if (root && root.getChildren) {
+            if (root && root.getKids) {
                 this.openNode(root);
-                var children = root.getChildren();
+                var children = root.getKids();
                 count += children.length;
                 if (count > OutlineNavigator.MAX) return count;
                 for (var i=0;i<children.length;i++) {
@@ -112,13 +112,18 @@ module Cats.Gui {
         }
 
 
-
         /**
          * Lets check the worker if something changed in the outline of the source.
          * But lets not call this too often.
          */
-        private updateOutline(data={}) {
-            this.setModel(qx.data.marshal.Json.createModel(data, false));
+        private updateOutline(data=[]) {
+            // IDE.console.log("Received outline info:" + data.length);
+            var root = {
+                label : "root",
+                kids: data, 
+                kind : ""
+            };
+            this.setModel(qx.data.marshal.Json.createModel(root, false));
             this.expandAll(this.getModel());
         }
 

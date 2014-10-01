@@ -121,7 +121,7 @@ declare module Cats {
         column: number;
     }
 
-    class TypeInfo extends TypeScript.Services.TypeInfo {
+    interface TypeInfo extends ts.TypeInfo {
         description: string;
     }
 
@@ -130,7 +130,7 @@ declare module Cats {
         errors: FileRange[];
     }
 
-    class NavigateToItem extends TypeScript.Services.NavigateToItem {
+    interface NavigateToItem extends ts.NavigateToItem {
         range: Range;
     }
     

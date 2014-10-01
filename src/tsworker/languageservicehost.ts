@@ -79,9 +79,9 @@ export class ScriptInfo {
     }
 
    
-    export class LanguageServiceHost implements TypeScript.Services.ILanguageServiceHost {
+    export class LanguageServiceHost implements ts.LanguageServiceHost {
 
-        private compilationSettings:TypeScript.CompilationSettings = null;
+        private compilationSettings:ts.CompilerOptions = null;
 
         public scripts:Map<ScriptInfo> = {};
         public maxScriptVersions = 100;
@@ -91,11 +91,11 @@ export class ScriptInfo {
         }
 
         getScriptIsOpen(fileName: string) {
-            return true;
+            return false;
         }
 
-        getScriptByteOrderMark(fileName: string):TypeScript.ByteOrderMark {
-            return null;
+        getCancellationToken(): ts.CancellationToken {
+            return null ; // TODO find out right wat
         }
         
         getLocalizedDiagnosticMessages() {
@@ -106,23 +106,30 @@ export class ScriptInfo {
         // IReferenceResolverHost implementation
         
         fileExists(path: string): boolean {
-            console.info("Called fileExist" + path);
+            console.log("Called fileExist" + path);
             return true;
         }
         
         directoryExists(path: string): boolean {
-            console.info("Called directoryExist" + path);
+            console.log("Called directoryExist" + path);
             return true;
         }
         
         getParentDirectory(path: string): string {
-            console.info("Called getParentDirectory" + path);
+            console.log("Called getParentDirectory" + path);
             return "";
         }
         
+        getCurrentDirectory(): string {
+            return "";
+        }
+        
+        getDefaultLibFilename() : string {
+            return "";
+        }
         
         resolveRelativePath(path: string, directory: string) : string{
-            console.info("Called resolveRelativePath p1:" + path + " p2:" + directory);
+            console.log("Called resolveRelativePath p1:" + path + " p2:" + directory);
             return path;
         }
         
@@ -130,11 +137,13 @@ export class ScriptInfo {
              var script = this.scripts[fileName];
              var result =  TypeScript.ScriptSnapshot.fromString(script.content);
              
+             /*
              // Quick hack
-             result.getTextChangeRangeSinceVersion =  (version) => {
+             result. getTextChangeRangeSinceVersion =  (version) => {
                     return <TypeScript.TextChangeRange>null;
                     // return new TypeScript.TextChangeRange(new TypeScript.TextSpan(0, script.content.length),script.content.length);
              };
+             */
              
              return result;
         }
@@ -188,19 +197,19 @@ export class ScriptInfo {
         // ILanguageServiceHost implementation
         //
 
-        public getCompilationSettings(): TypeScript.CompilationSettings {
+        public getCompilationSettings(): ts.CompilerOptions {
             return this.compilationSettings; 
         }
 
-        public setCompilationSettings(value: TypeScript.CompilationSettings) {
+        public setCompilationSettings(value: ts.CompilerOptions) {
             this.compilationSettings = value;
         }
 
         
-        public getScriptVersion(fileName: string): number {
+        public getScriptVersion(fileName: string): string {
             // return null;
             var script = this.scripts[fileName];            
-            return script.version;
+            return script.version + "";
         }
 
     }

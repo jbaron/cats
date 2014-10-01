@@ -26,7 +26,7 @@ module Cats {
 
         project = IDE.project;
         properties = [];
-        outline = {};
+        outline = [];
 
 
         hasUnsavedChanges() {

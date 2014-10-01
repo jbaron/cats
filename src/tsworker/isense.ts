@@ -42,9 +42,9 @@ module Cats.TSWorker {
     class ISense {
 
         private maxErrors = 100;
-        ls: TypeScript.Services.ILanguageService;
+        ls: ts.LanguageService;
         private lsHost: LanguageServiceHost;
-        private formatOptions: TypeScript.Services.FormatCodeOptions;
+        private formatOptions: ts.FormatCodeOptions;
 
         /**
          * Create a new TypeScript ISense instance.
@@ -52,9 +52,13 @@ module Cats.TSWorker {
          */
         constructor() {
             this.lsHost = new LanguageServiceHost();
-            this.ls = new TypeScript.Services.TypeScriptServicesFactory().createPullLanguageService(this.lsHost);
-            this.formatOptions = new TypeScript.Services.FormatCodeOptions();
-            this.formatOptions.NewLineCharacter = "\n";
+            this.ls = ts.createLanguageService(this.lsHost, ts.createDocumentRegistry());
+
+        
+            // this.ls = new TypeScript.Services.TypeScriptServicesFactory().createPullLanguageService(this.lsHost);
+            // @TODO fix following
+            // this.formatOptions = new TypeScript.Services.FormatCodeOptions();
+            // this.formatOptions.NewLineCharacter = "\n";
         }
 
         /**
@@ -63,7 +67,7 @@ module Cats.TSWorker {
          */
         initialize() {
             try {
-                this.ls.refresh();
+                // this.ls.refresh();
                 this.compile();
             } catch (err) {
                 // Silently ignore
@@ -94,7 +98,7 @@ module Cats.TSWorker {
                 var info = infos[0]; // TODO handle better
                 return {
                     fileName: info.fileName,
-                    range: this.getRange(info.fileName, info.minChar, info.limChar)
+                    range: this.getRange(info.fileName, info.textSpan.start(), info.textSpan.end())
                 };
             } else {
                 return null;
@@ -108,8 +112,9 @@ module Cats.TSWorker {
             var mc = new ModelCreator();
             this.lsHost.getScriptFileNames().forEach((script) => {
                 if (script.indexOf("lib.d.ts") > 0) return;
-                var doc:TypeScript.Document = this.ls["compiler"].getDocument(script);
-                mc.parse(doc);
+                // @TODO fix
+                // var doc:TypeScript.Document = this.ls["compiler"].getDocument(script);
+                // mc.parse(doc);
             });
             return mc.getModel();
         }
@@ -119,11 +124,11 @@ module Cats.TSWorker {
          * Convert Services to Cats NavigateToItems
          * @todo properly do this conversion
          */
-        private convertNavigateTo(items: TypeScript.Services.NavigateToItem[]): NavigateToItem[] {
+        private convertNavigateTo(items: ts.NavigateToItem[]): NavigateToItem[] {
             var results = <NavigateToItem[]>items;
             for (var i = 0; i < results.length; i++) {
                 var result = results[i];
-                result.range = this.getRange(result.fileName, result.minChar, result.limChar);
+                result.range = this.getRange(result.fileName, result.textSpan.start(), result.textSpan.end());
             }
             return results;
         }
@@ -146,19 +151,19 @@ module Cats.TSWorker {
         /**
          * Convert the errors from a TypeScript format into Cats format 
          */
-        private convertErrors(errors: TypeScript.Diagnostic[], severity= Severity.Error): Cats.FileRange[] {
+        private convertErrors(errors: ts.Diagnostic[], severity= Severity.Error): Cats.FileRange[] {
 
             if (!(errors && errors.length)) return [];
 
             var result: Cats.FileRange[] = [];
             errors.forEach((error) => {
 
-                var r = this.getRange(error.fileName(), error.start(), error.start() + error.length());
+               var r = this.getRange(error.file.filename, error.start, error.start + error.length);
                 result.push({
                     range: r,
                     severity: severity,
-                    message: error.message(),
-                    fileName: error.fileName()
+                    message: error.messageText,
+                    fileName: error.file.filename
                 });
             });
             return result;
@@ -219,7 +224,7 @@ module Cats.TSWorker {
                 try {
                     var emitOutput = this.ls.getEmitOutput(fileName);
 
-                    emitOutput.outputFiles.forEach((file: TypeScript.OutputFile) => {
+                    emitOutput.outputFiles.forEach((file) => {
                         result.push({
                             fileName: file.name,
                             content: file.text
@@ -227,7 +232,7 @@ module Cats.TSWorker {
                     });
 
                     // No need to request other files if there is only one output file
-                    if (this.lsHost.getCompilationSettings().outFileOption) {
+                    if (this.lsHost.getCompilationSettings().out) {
                         break;
                     }
                 } catch (err) {/*ignore */}
@@ -248,8 +253,9 @@ module Cats.TSWorker {
          * Configure the compilation settings. Use a mixin to overwrite only the values
          * that are set, leave the other ones the default value.
          */
-        setSettings(compilerOptions, editorOptions): TypeScript.CompilationSettings {
-            var compOptions = new TypeScript.CompilationSettings();
+        setSettings(compilerOptions, editorOptions): ts.CompilationSettings {
+            var compOptions = ts.getDefaultCompilerOptions();
+ 
 
             // Do a quick mixin
             for (var i in compilerOptions) {
@@ -258,8 +264,9 @@ module Cats.TSWorker {
 
             this.lsHost.setCompilationSettings(compOptions);
 
-            this.formatOptions = new TypeScript.Services.FormatCodeOptions();
-            this.formatOptions.NewLineCharacter = "\n";
+            // @TODO fix these settings 
+            // this.formatOptions = new TypeScript.Services.FormatCodeOptions();
+            // this.formatOptions.NewLineCharacter = "\n";
 
             // @TODO
             //this.formatOptions.ConvertTabsToSpaces
@@ -277,7 +284,7 @@ module Cats.TSWorker {
         /**
          * Convert the data for outline usage.
          */
-        private getOutlineModelData(data: TypeScript.Services.NavigateToItem[]) {
+        private getOutlineModelDataOutdated(data: ts.NavigateToItem[]) {
             if ((!data) || (!data.length)) {
                 return [];
             }
@@ -296,7 +303,7 @@ module Cats.TSWorker {
 
                 var entry = {
                     label: item.name + extension,
-                    position: this.positionToLineCol(script, item.minChar),
+                    position: this.positionToLineCol(script, item.textSpan.start()),
                     kind: item.kind
                 };
 
@@ -306,6 +313,39 @@ module Cats.TSWorker {
             });
             
             return root;
+        }
+
+
+        /**
+         * Convert the data for outline usage.
+         */
+        private getOutlineModelData(fileName, data: ts.NavigationBarItem[]) {
+            if ((!data) || (!data.length)) {
+                return [];
+            }
+
+            var result = [];
+
+            data.forEach((item) => {
+               
+                var extension = this.isExecutable(item.kind) ? "()" : "";
+                var script = this.getScript(fileName);
+
+                var entry = {
+                    label: item.text + extension,
+                    pos: this.positionToLineCol(script, item.spans[0].start()),
+                    kind: item.kind,
+                    kids: []
+                };
+
+                if (item.childItems && (item.childItems.length > 0)) {
+                    entry.kids = this.getOutlineModelData(fileName, item.childItems)
+                }
+                result.push(entry);
+
+            });
+            
+            return result;
         }
 
         /**
@@ -324,11 +364,11 @@ module Cats.TSWorker {
          * 
          * Copied from TypeScript shim 
          */
-        private normalizeEdits(edits: TypeScript.Services.TextEdit[]): TypeScript.Services.TextEdit[] {
-            var result: TypeScript.Services.TextEdit[] = [];
+        private normalizeEdits(edits: ts.TextChange[]): ts.TextChange[] {
+            var result: ts.TextChange[] = [];
 
-            function mapEdits(edits: TypeScript.Services.TextEdit[]): { edit: TypeScript.Services.TextEdit; index: number; }[] {
-                var result: { edit: TypeScript.Services.TextEdit; index: number; }[] = [];
+            function mapEdits(edits: ts.TextChange[]): { edit: ts.TextChange; index: number; }[] {
+                var result: { edit: ts.TextChange; index: number; }[] = [];
                 for (var i = 0; i < edits.length; i++) {
                     result.push({ edit: edits[i], index: i });
                 }
@@ -336,7 +376,7 @@ module Cats.TSWorker {
             }
 
             var temp = mapEdits(edits).sort(function(a, b) {
-                var result = a.edit.minChar - b.edit.minChar;
+                var result = a.edit.span.start() - b.edit.span.start();
                 if (result === 0)
                     result = a.index - b.index;
                 return result;
@@ -354,7 +394,7 @@ module Cats.TSWorker {
                     continue;
                 }
                 var nextEdit = temp[next].edit;
-                var gap = nextEdit.minChar - currentEdit.limChar;
+                var gap = nextEdit.span.start() - currentEdit.span.end();
 
                 // non-overlapping edits
                 if (gap >= 0) {
@@ -366,7 +406,7 @@ module Cats.TSWorker {
 
                 // overlapping edits: for now, we only support ignoring an next edit 
                 // entirely contained in the current edit.
-                if (currentEdit.limChar >= nextEdit.limChar) {
+                if (currentEdit.span.end() >= nextEdit.span.end()) {
                     next++;
                     continue;
                 }
@@ -384,20 +424,19 @@ module Cats.TSWorker {
          * 
          * Copied from TypeScript shim
          */
-        private applyEdits(content: string, edits: TypeScript.Services.TextEdit[]): string {
+        private applyEdits(content: string, edits: ts.TextChange[]): string {
             var result = content;
             edits = this.normalizeEdits(edits);
 
             for (var i = edits.length - 1; i >= 0; i--) {
                 var edit = edits[i];
-                var prefix = result.substring(0, edit.minChar);
-                var middle = edit.text;
-                var suffix = result.substring(edit.limChar);
+                var prefix = result.substring(0, edit.span.start());
+                var middle = edit.newText;
+                var suffix = result.substring(edit.span.end());
                 result = prefix + middle + suffix;
             }
             return result;
         }
-
 
         public getFormattedTextForRange(fileName: string, range?:Cats.Range): string {
             var start, end;
@@ -497,14 +536,14 @@ module Cats.TSWorker {
             return this.convertNavigateTo(results);
         }
 
+
         public getScriptLexicalStructure(fileName: string) {
-            var results = this.ls.getScriptLexicalStructure(fileName);
-            var finalResults = results.filter((entry) => { return entry.fileName === fileName; });
-            return this.getOutlineModelData(finalResults);
+            var result =  this.ls.getNavigationBarItems(fileName); // getSyntacticClassifications();
+            return this.getOutlineModelData(fileName, result);
         }
 
         public getOutliningRegions(fileName: string): Range[] {
-            var results = this.ls.getOutliningRegions(fileName);
+            var results;// @TODO fix = this.ls.getOutliningRegions(fileName);
             return this.convertNavigateTo2(fileName, results);
         }
 
@@ -512,13 +551,13 @@ module Cats.TSWorker {
         public getInfoAtPosition(method: string, fileName: string, cursor: Position): Cats.FileRange[] {
             var pos = this.getPositionFromCursor(fileName, cursor);
             var result: Cats.FileRange[] = [];
-            var entries: TypeScript.Services.ReferenceEntry[] = this.ls[method](fileName, pos);
+            var entries: ts.ReferenceEntry[] = this.ls[method](fileName, pos);
             for (var i = 0; i < entries.length; i++) {
                 var ref = entries[i];
                 result.push({
                     fileName: ref.fileName,
-                    range: this.getRange(ref.fileName, ref.minChar, ref.limChar),
-                    message: this.getLine(ref.fileName, ref.minChar, ref.limChar)
+                    range: this.getRange(ref.fileName, ref.textSpan.start(), ref.textSpan.end()),
+                    message: this.getLine(ref.fileName, ref.textSpan.start(), ref.textSpan.end())
                 });
             }
             return result;
@@ -527,14 +566,14 @@ module Cats.TSWorker {
         /**
          * Determine the possible completions available at a certain position in a file.
          */
-        public getCompletions(fileName: string, cursor: Position): TypeScript.Services.CompletionEntry[] {
+        public getCompletions(fileName: string, cursor: Position): ts.CompletionEntry[] {
             if (! this.getScript(fileName)) return [];
             var pos = this.getPositionFromCursor(fileName, cursor);
             var memberMode = false;
             var type = this.determineAutoCompleteType(fileName, pos);
 
             // Lets find out what autocompletion there is possible		
-            var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode) || <TypeScript.Services.CompletionInfo>{};
+            var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode) || <ts.CompletionInfo>{};
             if (!completions.entries) completions.entries = []; // @Bug in TS
             completions.entries.sort(caseInsensitiveSort); // Sort case insensitive
             return completions.entries;
