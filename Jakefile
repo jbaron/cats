@@ -5,6 +5,7 @@ var workerOptions = [
     "src/typings/cats.d.ts",
     "src/cats/common.ts",
     "src/tsworker/languageservicehost.ts",
+    "src/tsworker/scriptInfo.ts",
     "src/tsworker/isense.ts",
     "src/tsworker/objectModel.ts"
 ];

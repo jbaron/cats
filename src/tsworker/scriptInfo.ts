@@ -1,0 +1,101 @@
+//
+// Copyright (c) JBaron.  All rights reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+
+
+// This is based on the harness.ts file from TypeScript
+// Major difference is that this module uses real language services API and not the Shim.
+// Licensed under the Apache License, Version 2.0. 
+
+
+module Cats.TSWorker {
+
+export class ScriptInfo {
+        public version: number = 1;
+        public editRanges: { length: number; textChangeRange: TypeScript.TextChangeRange; }[] = [];
+        private lineMap: TypeScript.LineMap = null;
+
+        constructor(public fileName: string, public content: string) {
+            this.setContent(content);
+        }
+
+        private setContent(content: string): void {
+            this.content = content;
+            this.lineMap = null;
+        }
+
+        public getLineMap() {
+            if (! this.lineMap) this.lineMap = TypeScript.LineMap1.fromString(this.content);
+            return this.lineMap;
+        }
+
+
+        public updateContent(content: string): void {
+            this.editRanges = [];
+            this.setContent(content);
+            this.version++;
+        }
+
+        public editContent(minChar: number, limChar: number, newText: string): void {
+            // Apply edits
+            var prefix = this.content.substring(0, minChar);
+            var middle = newText;
+            var suffix = this.content.substring(limChar);
+            this.setContent(prefix + middle + suffix);
+
+            // Store edit range + new length of script
+            this.editRanges.push({
+                length: this.content.length,
+                textChangeRange: new TypeScript.TextChangeRange(
+                    TypeScript.TextSpan.fromBounds(minChar, limChar), newText.length)
+            });
+
+            // Update version #
+            this.version++;
+        }
+
+        public getTextChangeRangeSinceVersion(version: number): TypeScript.TextChangeRange {
+            if (this.version === version) {
+                // No edits!
+                return TypeScript.TextChangeRange.unchanged;
+            }
+
+            var initialEditRangeIndex = this.editRanges.length - (this.version - version);
+
+            var entries = this.editRanges.slice(initialEditRangeIndex);
+            return TypeScript.TextChangeRange.collapseChangesAcrossMultipleVersions(entries.map(e => e.textChangeRange));
+        }
+        
+        /**
+         * Convert a TS offset position to a Cats Position
+         */
+        positionToLineCol(position: number): Position {
+            var result = this.getLineMap().getLineAndCharacterFromPosition(position);
+            return {
+                row: result.line(),
+                column: result.character()
+            };
+        }
+        
+        /**
+         * Get the chars offset based on the Ace position
+         */ 
+        getPositionFromCursor(cursor: Position): number {
+            var pos = this.getLineMap().getPosition(cursor.row, cursor.column);
+            return pos;
+        }
+        
+        
+    }
+}

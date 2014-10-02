@@ -57,7 +57,21 @@ module Cats.TSWorker {
         
             // this.ls = new TypeScript.Services.TypeScriptServicesFactory().createPullLanguageService(this.lsHost);
             // @TODO fix following
-            // this.formatOptions = new TypeScript.Services.FormatCodeOptions();
+            this.formatOptions = { 
+                    IndentSize: 4,
+                    TabSize: 4,
+                    NewLineCharacter: "\n",
+                    ConvertTabsToSpaces: true,
+                    InsertSpaceAfterCommaDelimiter: true,
+                    InsertSpaceAfterSemicolonInForStatements: true,
+                    InsertSpaceBeforeAndAfterBinaryOperators: true,
+                    InsertSpaceAfterKeywordsInControlFlowStatements: true,
+                    InsertSpaceAfterFunctionKeywordForAnonymousFunctions: true,
+                    InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: true,
+                    PlaceOpenBraceOnNewLineForFunctions: false,
+                    PlaceOpenBraceOnNewLineForControlBlocks: false
+            };
+            
             // this.formatOptions.NewLineCharacter = "\n";
         }
 
@@ -79,20 +93,11 @@ module Cats.TSWorker {
             return this.lsHost.scripts[fileName];
         }
 
-        /**
-         * Convert a TS offset position to a Cats Position
-         */
-        private positionToLineCol(script: ScriptInfo, position: number): Position {
-            var result = script.getLineMap().getLineAndCharacterFromPosition(position);
-            return {
-                row: result.line(),
-                column: result.character()
-            };
-        }
-
+        
 
         getDefinitionAtPosition(fileName: string, pos: Position): Cats.FileRange {
-            var chars = this.getPositionFromCursor(fileName, pos);
+            var script = this.getScript(fileName);
+            var chars = script.getPositionFromCursor(pos);
             var infos = this.ls.getDefinitionAtPosition(fileName, chars);
             if (infos) {
                 var info = infos[0]; // TODO handle better
@@ -303,7 +308,7 @@ module Cats.TSWorker {
 
                 var entry = {
                     label: item.name + extension,
-                    position: this.positionToLineCol(script, item.textSpan.start()),
+                    position: script.positionToLineCol(item.textSpan.start()),
                     kind: item.kind
                 };
 
@@ -333,7 +338,7 @@ module Cats.TSWorker {
 
                 var entry = {
                     label: item.text + extension,
-                    pos: this.positionToLineCol(script, item.spans[0].start()),
+                    pos: script.positionToLineCol(item.spans[0].start()),
                     kind: item.kind,
                     kids: []
                 };
@@ -440,13 +445,16 @@ module Cats.TSWorker {
 
         public getFormattedTextForRange(fileName: string, range?:Cats.Range): string {
             var start, end;
-            var content = this.getScriptContent(fileName);
+            var script = this.getScript(fileName);
+            
+            var content = script.content;
+            
             if (range == null) {
                 start = 0;
                 end = content.length;
             } else {
-                start = this.getPositionFromCursor(fileName, range.start);
-                end = this.getPositionFromCursor(fileName, range.end);
+                start = script.getPositionFromCursor(range.start);
+                end = script.getPositionFromCursor(range.end);
             }
             
             var edits = this.ls.getFormattingEditsForRange(fileName, start, end, this.formatOptions);
@@ -475,24 +483,17 @@ module Cats.TSWorker {
         private getRange(fileName: string, minChar: number, limChar: number): Cats.Range {
             var script = this.getScript(fileName);
             var result = {
-                start: this.positionToLineCol(script, minChar),
-                end: this.positionToLineCol(script, limChar)
+                start: script.positionToLineCol(minChar),
+                end: script.positionToLineCol(limChar)
             };
             return result;
         }
 
-        // Get the chars offset based on the Ace position
-        private getPositionFromCursor(fileName: string, cursor: Position): number {
-            var script = this.getScript(fileName);
-            if (script) {
-                var pos = script.getLineMap().getPosition(cursor.row, cursor.column);
-                return pos;
-            }
-        }
 
         // Get the position
         public getTypeAtPosition(fileName: string, coord: Cats.Position): TypeInfo {
-            var pos = this.getPositionFromCursor(fileName, coord);
+            var script = this.getScript(fileName);
+            var pos = script.getPositionFromCursor(coord);
             if (!pos) return;
             var result = <TypeInfo>this.ls.getTypeAtPosition(fileName, pos);
             if (result) result.description = TypeScript.MemberName.memberNameToString(result.memberName);
@@ -531,6 +532,7 @@ module Cats.TSWorker {
             return content.substring(min + 1, limChar + max);
         }
 
+
         public getNavigateToItems(search: string): NavigateToItem[] {
             var results = this.ls.getNavigateToItems(search);
             return this.convertNavigateTo(results);
@@ -538,18 +540,22 @@ module Cats.TSWorker {
 
 
         public getScriptLexicalStructure(fileName: string) {
-            var result =  this.ls.getNavigationBarItems(fileName); // getSyntacticClassifications();
+            var result =  this.ls.getNavigationBarItems(fileName);
             return this.getOutlineModelData(fileName, result);
         }
+
 
         public getOutliningRegions(fileName: string): Range[] {
             var results;// @TODO fix = this.ls.getOutliningRegions(fileName);
             return this.convertNavigateTo2(fileName, results);
         }
 
+
         // generic wrapper for info at a certain position 
         public getInfoAtPosition(method: string, fileName: string, cursor: Position): Cats.FileRange[] {
-            var pos = this.getPositionFromCursor(fileName, cursor);
+            var script = this.getScript(fileName);
+            
+            var pos = script.getPositionFromCursor(cursor);
             var result: Cats.FileRange[] = [];
             var entries: ts.ReferenceEntry[] = this.ls[method](fileName, pos);
             for (var i = 0; i < entries.length; i++) {
@@ -567,8 +573,10 @@ module Cats.TSWorker {
          * Determine the possible completions available at a certain position in a file.
          */
         public getCompletions(fileName: string, cursor: Position): ts.CompletionEntry[] {
-            if (! this.getScript(fileName)) return [];
-            var pos = this.getPositionFromCursor(fileName, cursor);
+            var script = this.getScript(fileName);
+            
+            if (script) return [];
+            var pos = script.getPositionFromCursor(cursor);
             var memberMode = false;
             var type = this.determineAutoCompleteType(fileName, pos);
 
