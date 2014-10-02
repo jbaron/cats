@@ -551,6 +551,12 @@ module Cats.TSWorker {
             return this.getOutlineModelData(fileName, result);
         }
 
+        public getRenameInfo(fileName:string, cursor: Position) {
+            var script = this.getScript(fileName);
+            var pos = script.getPositionFromCursor(cursor);
+            var result = this.ls.getRenameInfo(fileName, pos);
+            return result;
+        }
 
         public getOutliningRegions(fileName: string): Range[] {
             var results;// @TODO fix = this.ls.getOutliningRegions(fileName);

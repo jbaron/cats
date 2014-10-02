@@ -36,8 +36,14 @@ module Cats.Refactor {
      * and then replaces the macthed text with the new name. 
      */ 
     export function rename(fileName:string, project:Project, pos:Position) {
-        project.iSense.getTypeAtPosition(fileName, pos, (err,data) => {
-            var newName = "";// @TODO fix prompt("Rename " + data.fullSymbolName +  " into:");
+        project.iSense.getRenameInfo(fileName, pos, (err,data) => {
+            if (! data) return;
+            if (! data.canRename) {
+                alert("Cannot rename the selected element");
+                return;
+            }
+            
+            var newName = prompt("Rename " + data.displayName +  " into:");
             if (!newName) return;
             project.iSense.getInfoAtPosition("getReferencesAtPosition", fileName, pos, (err, data: Cats.FileRange[]) => {
                 renameOccurences(data, newName);

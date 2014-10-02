@@ -44,24 +44,7 @@ module Cats.TSWorker {
             // console.log("Called getLocalizedDiagnosticMessages");
         }
         
-        //////////////////////////////////////////////////////////////////////
-        // IReferenceResolverHost implementation
-        
-        fileExists(path: string): boolean {
-            console.log("Called fileExist" + path);
-            return true;
-        }
-        
-        directoryExists(path: string): boolean {
-            console.log("Called directoryExist" + path);
-            return true;
-        }
-        
-        getParentDirectory(path: string): string {
-            console.log("Called getParentDirectory" + path);
-            return "";
-        }
-        
+ 
         getCurrentDirectory(): string {
             return "";
         }
@@ -70,10 +53,7 @@ module Cats.TSWorker {
             return "";
         }
         
-        resolveRelativePath(path: string, directory: string) : string{
-            console.log("Called resolveRelativePath p1:" + path + " p2:" + directory);
-            return path;
-        }
+
         
         public getScriptSnapshot(fileName: string): TypeScript.IScriptSnapshot {
              var script = this.scripts[fileName];

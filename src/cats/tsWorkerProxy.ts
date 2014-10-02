@@ -72,6 +72,11 @@ module Cats {
             this.perform("getTypeAtPosition", name, docPos, cb);
         }
 
+        getRenameInfo(name: string, docPos: ace.Position, cb: (err: any, data: ts.RenameInfo) => void) {
+            this.perform("getRenameInfo", name, docPos, cb);
+        }
+
+
         getDependencyGraph(cb) {
             this.perform("getDependencyGraph", cb);
         }
