@@ -265,7 +265,7 @@ module Cats.Gui {
             var offset = (x - r.$padding) / r.characterWidth;
 
             // @BUG: Quickfix for strange issue with top
-            var correction = 0; // r.scrollTop ? 7 : 0;
+            var correction = r.scrollTop ? 7 : 0;
 
             var row = Math.floor((y + r.scrollTop - correction) / r.lineHeight);
             var col = Math.round(offset);

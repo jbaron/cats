@@ -28,9 +28,7 @@ module Cats.Gui {
             this.editor.project.iSense.getTypeAtPosition(this.editor.filePath, docPos,
                 (err, data: Cats.TypeInfo) => {
                     if (!data) return;
-                    var member = data.memberName;
-                    if (!member) return;
-
+                   
                     var tip = data.description;
                     if (data.docComment) {
                         tip += '<hr>' + data.docComment;

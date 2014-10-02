@@ -121,8 +121,9 @@ declare module Cats {
         column: number;
     }
 
-    interface TypeInfo extends ts.TypeInfo {
-        description: string;
+    interface TypeInfo  {
+        description?: string;
+        docComment?: string;
     }
 
     interface CompileResults {

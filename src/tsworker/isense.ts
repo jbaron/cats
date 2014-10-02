@@ -491,12 +491,19 @@ module Cats.TSWorker {
 
 
         // Get the position
-        public getTypeAtPosition(fileName: string, coord: Cats.Position): TypeInfo {
+        public getTypeAtPosition(fileName: string, coord: Cats.Position):TypeInfo {
             var script = this.getScript(fileName);
             var pos = script.getPositionFromCursor(coord);
             if (!pos) return;
-            var result = <TypeInfo>this.ls.getTypeAtPosition(fileName, pos);
-            if (result) result.description = TypeScript.MemberName.memberNameToString(result.memberName);
+            var info = this.ls.getQuickInfoAtPosition(fileName, pos);
+            if (! info) return {};
+            
+            var result = {
+                description : ts.SymbolDisplayPart.toString(info.displayParts),
+                docComment : ts.SymbolDisplayPart.toString(info.documentation),
+                memberName : ""
+            }
+
             return result;
         }
 

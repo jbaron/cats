@@ -37,7 +37,7 @@ module Cats.Refactor {
      */ 
     export function rename(fileName:string, project:Project, pos:Position) {
         project.iSense.getTypeAtPosition(fileName, pos, (err,data) => {
-            var newName = prompt("Rename " + data.fullSymbolName +  " into:");
+            var newName = "";// @TODO fix prompt("Rename " + data.fullSymbolName +  " into:");
             if (!newName) return;
             project.iSense.getInfoAtPosition("getReferencesAtPosition", fileName, pos, (err, data: Cats.FileRange[]) => {
                 renameOccurences(data, newName);
