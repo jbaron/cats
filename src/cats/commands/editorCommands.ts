@@ -45,18 +45,15 @@ module Cats.Commands {
 
 
     function toggleInvisibles() {
-        //@TODO fix,don't access private var
-        var aceSession = IDE.editorTabView.getActiveEditor()["aceEditor"];
-        aceSession.setShowInvisibles(!aceSession.getShowInvisibles());
+        var editor = IDE.editorTabView.getActiveEditor();
+        editor.executeCommand("toggleInvisibles");
     }
 
     
     function editorCommand(commandName:string) {
         return function(...args:Array<any>) {
-             //@TODO fix,don't access private var
-              var aceEditor = IDE.editorTabView.getActiveEditor()["aceEditor"];
-              // var command:Function = aceEditor.commands.byName[commandName];
-              aceEditor.execCommand(commandName);
+              var editor = IDE.editorTabView.getActiveEditor();
+              editor.executeCommand(commandName);
         };
         
     }

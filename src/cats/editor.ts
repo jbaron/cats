@@ -93,7 +93,7 @@ module Cats {
         /**
          * Command pattern implementation
          */
-        executeCommand(commandName: string, ...args): boolean { return false; }
+        executeCommand(commandName: string, ...args): any { /* NOP */ }
 
 
         /**

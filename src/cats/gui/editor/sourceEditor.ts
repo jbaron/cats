@@ -101,8 +101,16 @@ module Cats.Gui {
         }
 
        
-        executeCommand(name, ...args): boolean {
-            return false;
+        executeCommand(name, ...args): any {
+            switch (name) {
+                case 'toggleInvisibles':
+                    this.aceEditor.setShowInvisibles(!this.aceEditor.getShowInvisibles());
+                    break;
+                
+                default:
+                    this.aceEditor.execCommand(name);
+                    break;
+            }
         }
 
         static SupportsFile(fileName:string) {
