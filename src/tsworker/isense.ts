@@ -94,10 +94,12 @@ module Cats.TSWorker {
             var chars = script.getPositionFromCursor(pos);
             var infos = this.ls.getDefinitionAtPosition(fileName, chars);
             if (infos) {
-                var info = infos[0]; // TODO handle better
+                var info = infos[0];
+                var infoScript = this.lsHost.getScript(info.fileName);
+                // TODO handle better
                 return {
                     fileName: info.fileName,
-                    range: script.getRange(info.textSpan.start(), info.textSpan.end())
+                    range: infoScript.getRange(info.textSpan.start(), info.textSpan.end())
                 };
             } else {
                 return null;

@@ -82,6 +82,9 @@ module Cats {
             this.handleCloseWindow();
         }
 
+        /**
+         * Add an entry to the history list
+         */ 
         addHistory(editor:Editor, pos?:any) {
              var page = this.editorTabView.getPageForEditor(editor);
              if ((this.lastEntry.hash === page.toHashCode()) && (this.lastEntry.pos === pos)) return;
