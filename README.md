@@ -1,3 +1,8 @@
+# Warning
+
+This is an alpha version of CATS using the latest unstable version of TypeScript.
+In case you want a stable release for daily development, please download release 1.2
+
 ## CATS
 
 CATS is an IDE for the TypeScript developer. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. 
