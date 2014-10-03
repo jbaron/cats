@@ -15,13 +15,16 @@
 module Cats.Gui {
 
     /**      
-     * Provide an outline view of the source code.      
+     * Provide an outline view of the source code.
+     * 
+     * When you click on an entry wihin the outline, the corresponding source file will be opened 
+     * at the righ position.
      */
     export class OutlineNavigator extends qx.ui.tree.VirtualTree {
 
         private editor: SourceEditor;
         private page:EditorPage;
-        private static MAX = 200;
+        private static MAX_DEFAULT_OPEN = 200;
         private outlineTimer: number;
 
         constructor() {
@@ -101,11 +104,11 @@ module Cats.Gui {
                 this.openNode(root);
                 var children = root.getKids();
                 count += children.length;
-                if (count > OutlineNavigator.MAX) return count;
+                if (count > OutlineNavigator.MAX_DEFAULT_OPEN) return count;
                 for (var i=0;i<children.length;i++) {
                     var child = children.getItem(i);
                     count = this.expandAll(child, count);
-                    if (count > OutlineNavigator.MAX) return count;
+                    if (count > OutlineNavigator.MAX_DEFAULT_OPEN) return count;
                 }
             }
             return count;

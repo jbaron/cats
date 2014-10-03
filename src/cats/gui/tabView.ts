@@ -23,7 +23,7 @@ module Cats.Gui {
             
             "todo": {
                 label: "Todo",
-                icon: "status/task-reminder.png"
+                icon: "actions/view-task.png"
             },
 
             "console": {

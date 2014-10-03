@@ -15,8 +15,7 @@
 module Cats.Gui {
 
     /**
-     * Base class for all the configuration dialogs forms in
-     * CATS.
+     * Searchdialog for searching specific strings within the files.
      */
     export class SearchDialog extends qx.ui.window.Window {
 
@@ -35,11 +34,11 @@ module Cats.Gui {
 
         }
 
+
         search(rootDir) {
             this.rootDir = rootDir;
             this.show();
         }
-
 
 
         private getResults(fileName: string, pattern: RegExp, result: Cats.FileRange[]) {

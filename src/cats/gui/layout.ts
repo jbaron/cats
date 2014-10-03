@@ -15,7 +15,7 @@
 module Cats.Gui {
     
     /**
-     * Start layout of IDE
+     * This class takes care of the layout of the IDE
      */
     export class Layout {
 
@@ -23,7 +23,7 @@ module Cats.Gui {
         }
 
         /**
-         * Layout various parts ode IDE.
+         * Layout the various parts of de IDE
          */
         layout(ide: Cats.Ide) {
             // container layout

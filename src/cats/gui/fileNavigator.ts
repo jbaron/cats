@@ -32,10 +32,6 @@ module Cats.Gui {
             loaded: false
         };
 
-
-
-        static COUNT = 0;
-
         private directoryModels = {};
         private iconsForMime = {};
         private watcher: OS.File.Watcher;

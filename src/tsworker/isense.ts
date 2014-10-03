@@ -522,8 +522,8 @@ module Cats.TSWorker {
                 var refScript = this.lsHost.getScript(ref.fileName);
                 result.push({
                     fileName: ref.fileName,
-                    range: script.getRange(ref.textSpan.start(), ref.textSpan.end()),
-                    message: script.getLine(ref.textSpan.start(), ref.textSpan.end())
+                    range: refScript.getRange(ref.textSpan.start(), ref.textSpan.end()),
+                    message: refScript.getLine(ref.textSpan.start(), ref.textSpan.end())
                 });
             }
             return result;
