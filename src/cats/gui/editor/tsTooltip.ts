@@ -23,7 +23,8 @@ module Cats.Gui {
          */
         private showToolTipAt(ev: MouseEvent) {
 
-            var docPos = this.editor.getPositionFromScreenOffset(ev.offsetX, ev.offsetY);
+            // var docPos = this.editor.getPositionFromScreenOffset(ev.offsetX, ev.offsetY);
+            var docPos = this.editor.getPositionFromScreenOffset(ev);
 
             this.editor.project.iSense.getTypeAtPosition(this.editor.filePath, docPos,
                 (err, data: Cats.TypeInfo) => {

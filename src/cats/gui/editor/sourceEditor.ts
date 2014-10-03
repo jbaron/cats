@@ -259,7 +259,14 @@ module Cats.Gui {
         /**
           * Get the Position based on mouse x,y coordinates
           */
-        getPositionFromScreenOffset(x: number, y: number): ace.Position {
+        getPositionFromScreenOffset(ev:MouseEvent): ace.Position {
+            var x = ev.offsetX;
+            var y = ev.offsetY;
+            // var cursor = this.aceEditor.renderer.pixelToScreenCoordinates(x, y);
+            // IDE.console.log(JSON.stringify(cursor));
+            // var docPos2 = this.aceEditor.getSession().screenToDocumentPosition(cursor.row, cursor.col);
+            // IDE.console.log(JSON.stringify(docPos2));
+            
             var r = this.aceEditor.renderer;
             // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
             var offset = (x - r.$padding) / r.characterWidth;
@@ -271,6 +278,7 @@ module Cats.Gui {
             var col = Math.round(offset);
 
             var docPos = this.aceEditor.getSession().screenToDocumentPosition(row, col);
+            // IDE.console.log(JSON.stringify(docPos));
             return docPos;
         }
 

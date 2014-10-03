@@ -21,14 +21,23 @@
 
 module Cats.TSWorker {
 
-
+    /**
+     * The language service host serves as the interface between the TypeScript language
+     * services and the files editted within CATS.
+     * 
+     */ 
     export class LanguageServiceHost implements ts.LanguageServiceHost {
 
         private compilationSettings:ts.CompilerOptions = null;
 
-        public scripts:Map<ScriptInfo> = {};
+        private scripts:Map<ScriptInfo> = {};
+
+
+        getScript(fileName:string) {
+            return this.scripts[fileName];
+        }
       
-        public getScriptFileNames():string[] {
+        getScriptFileNames():string[] {
             return Object.keys(this.scripts);
         }
 
@@ -37,14 +46,14 @@ module Cats.TSWorker {
         }
 
         getCancellationToken(): ts.CancellationToken {
-            return null ; // TODO find out right wat
+            // return null ; TODO find out what this is used for
+            return ts.CancellationTokenObject.None;
         }
         
         getLocalizedDiagnosticMessages() {
             // console.log("Called getLocalizedDiagnosticMessages");
         }
         
- 
         getCurrentDirectory(): string {
             return "";
         }
@@ -53,9 +62,7 @@ module Cats.TSWorker {
             return "";
         }
         
-
-        
-        public getScriptSnapshot(fileName: string): TypeScript.IScriptSnapshot {
+        getScriptSnapshot(fileName: string): TypeScript.IScriptSnapshot {
              var script = this.scripts[fileName];
              var result =  TypeScript.ScriptSnapshot.fromString(script.content);
              
@@ -114,7 +121,6 @@ module Cats.TSWorker {
             this.compilationSettings = value;
         }
 
-        
         public getScriptVersion(fileName: string): string {
             var script = this.scripts[fileName];            
             return script.version + "";

@@ -16477,6 +16477,7 @@ var TypeScript;
                 return this._lineStartPositions;
             };
             StringScriptSnapshot.prototype.getChangeRange = function (oldSnapshot) {
+                return null; // @FIXED by JBaron
                 throw TypeScript.Errors.notYetImplemented();
             };
             return StringScriptSnapshot;

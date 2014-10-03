@@ -74,7 +74,7 @@ module Cats {
 
 
         /**
-         * Excute lint on the provided conent
+         * Excute lint on the provided content and return the resulting warnings
          * 
          */ 
         lint(fileName:string, content:string) {

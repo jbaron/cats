@@ -89,14 +89,9 @@ module Cats.TSWorker {
         }
 
 
-        private getScript(fileName: string): ScriptInfo {
-            return this.lsHost.scripts[fileName];
-        }
-
-        
 
         getDefinitionAtPosition(fileName: string, pos: Position): Cats.FileRange {
-            var script = this.getScript(fileName);
+            var script = this.lsHost.getScript(fileName);
             var chars = script.getPositionFromCursor(pos);
             var infos = this.ls.getDefinitionAtPosition(fileName, chars);
             if (infos) {
@@ -200,12 +195,12 @@ module Cats.TSWorker {
          * are regsitered in this worker
          */
         getAllDiagnostics() {
-            var scripts = this.lsHost.scripts;
+            
             var errors: FileRange[] = [];
 
-            for (var fileName in scripts) {
+            this.lsHost.getScriptFileNames().forEach((fileName) => {
                 errors = errors.concat(this.getErrors(fileName));
-            }
+            });
 
             var compilerSettingsErrors = this.ls.getCompilerOptionsDiagnostics();
             var newErrors = this.convertErrors(compilerSettingsErrors, Severity.Error);
@@ -220,13 +215,14 @@ module Cats.TSWorker {
          * compiles JS sources and errors (if any).
          */
         compile(): Cats.CompileResults {
-            var scripts = this.lsHost.scripts;
+            var scripts = this.lsHost.getScriptFileNames();
 
             var result: { fileName: string; content: string; }[] = [];
             var errors: FileRange[] = [];
 
-            for (var fileName in scripts) {
+            for (var x=0;x<scripts.length;x++) {
                 try {
+                    var fileName = scripts[x];
                     var emitOutput = this.ls.getEmitOutput(fileName);
 
                     emitOutput.outputFiles.forEach((file) => {
@@ -304,7 +300,7 @@ module Cats.TSWorker {
                 if (!parent.children) parent.children = [];
 
                 var extension = this.isExecutable(item.kind) ? "()" : "";
-                var script = this.getScript(item.fileName);
+                var script = this.lsHost.getScript(item.fileName);
 
                 var entry = {
                     label: item.name + extension,
@@ -334,7 +330,7 @@ module Cats.TSWorker {
             data.forEach((item) => {
                
                 var extension = this.isExecutable(item.kind) ? "()" : "";
-                var script = this.getScript(fileName);
+                var script = this.lsHost.getScript(fileName);
 
                 var entry = {
                     label: item.text + extension,
@@ -358,7 +354,7 @@ module Cats.TSWorker {
          * @param name Script name
          */
         getScriptContent(fileName: string): string {
-            var script = this.lsHost.scripts[fileName];
+            var script = this.lsHost.getScript(fileName);
             if (script) return script.content;
         }
 
@@ -445,7 +441,7 @@ module Cats.TSWorker {
 
         public getFormattedTextForRange(fileName: string, range?:Cats.Range): string {
             var start, end;
-            var script = this.getScript(fileName);
+            var script = this.lsHost.getScript(fileName);
             
             var content = script.content;
             
@@ -466,7 +462,7 @@ module Cats.TSWorker {
          * Add a new script to the compiler environment
          */
         public addScript(fileName: string, content: string) {
-            if (this.lsHost.scripts[fileName]) {
+            if (this.lsHost.getScript(fileName)) {
                 this.updateScript(fileName, content);
             } else {
                 this.lsHost.addScript(fileName, content);
@@ -481,7 +477,7 @@ module Cats.TSWorker {
 
         // Get an Ace Range from TS minChars and limChars
         private getRange(fileName: string, minChar: number, limChar: number): Cats.Range {
-            var script = this.getScript(fileName);
+            var script = this.lsHost.getScript(fileName);
             var result = {
                 start: script.positionToLineCol(minChar),
                 end: script.positionToLineCol(limChar)
@@ -492,7 +488,7 @@ module Cats.TSWorker {
 
         // Get the position
         public getTypeAtPosition(fileName: string, coord: Cats.Position):TypeInfo {
-            var script = this.getScript(fileName);
+            var script = this.lsHost.getScript(fileName);
             var pos = script.getPositionFromCursor(coord);
             if (!pos) return;
             var info = this.ls.getQuickInfoAtPosition(fileName, pos);
@@ -552,7 +548,7 @@ module Cats.TSWorker {
         }
 
         public getRenameInfo(fileName:string, cursor: Position) {
-            var script = this.getScript(fileName);
+            var script = this.lsHost.getScript(fileName);
             var pos = script.getPositionFromCursor(cursor);
             var result = this.ls.getRenameInfo(fileName, pos);
             return result;
@@ -566,7 +562,7 @@ module Cats.TSWorker {
 
         // generic wrapper for info at a certain position 
         public getInfoAtPosition(method: string, fileName: string, cursor: Position): Cats.FileRange[] {
-            var script = this.getScript(fileName);
+            var script = this.lsHost.getScript(fileName);
             
             var pos = script.getPositionFromCursor(cursor);
             var result: Cats.FileRange[] = [];
@@ -586,9 +582,9 @@ module Cats.TSWorker {
          * Determine the possible completions available at a certain position in a file.
          */
         public getCompletions(fileName: string, cursor: Position): ts.CompletionEntry[] {
-            var script = this.getScript(fileName);
+            var script = this.lsHost.getScript(fileName);
             
-            if (script) return [];
+            if (!script) return [];
             var pos = script.getPositionFromCursor(cursor);
             var memberMode = false;
             var type = this.determineAutoCompleteType(fileName, pos);

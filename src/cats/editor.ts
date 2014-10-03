@@ -19,16 +19,19 @@ module Cats {
      * dependent on this small subset of methods and properties.
      */
     export class Editor extends qx.event.Emitter {
-
+        
         label = "Untitled"; // Labe to be used on the tab page
         editorClass = null; // The editor type
 
-
+        // The project this editor belongs to
         project = IDE.project;
+        
         properties = [];
         outline = [];
 
-
+        /**
+         * Does the Editor have any unsaved changes
+         */ 
         hasUnsavedChanges() {
             return false;
         }
@@ -68,6 +71,9 @@ module Cats {
             return this[property];
         }
 
+        /**
+         * Get a long description for the content in the editor. Used for tooltip text.
+         */ 
         getDescription() {
             return this.label;
         }
@@ -82,13 +88,7 @@ module Cats {
             return this.get(property) != null;
         }
 
-        /**
-         * Which type of files does this editor supports for editing.
-         */
-        static SupportsFile(fileName: string) {
-            return false;
-        }
-
+  
 
         /**
          * Command pattern implementation
@@ -107,7 +107,7 @@ module Cats {
 
     /**
      * Base class that contains some common features for editors that work on resouces on the 
-     * file system.
+     * file system. 
      */
     export class FileEditor extends Editor {
 
@@ -127,32 +127,42 @@ module Cats {
             }
         }
 
+        /**
+         * Which type of files does this editor supports for editing.
+         */
+        static SupportsFile(fileName: string) {
+            return false;
+        }
+
 
         getDescription() {
             return this.filePath || this.label;
         }
 
-
+        /**
+         * Check for a given file which default editor should be opened and return an instance
+         * of that.
+         */ 
         private static CreateEditor(fileName: string): FileEditor {
-            if (Gui.ImageEditor.SupportsFile(fileName)) return new Gui.ImageEditor(fileName);
+            if ( Gui.ImageEditor.SupportsFile(fileName)) return new Gui.ImageEditor(fileName);
             if (Gui.SourceEditor.SupportsFile(fileName)) return new Gui.SourceEditor(fileName);
             return null;
         }
 
         /**
-         * Open an existing editor or if it doesn't exist yet create
-         * a new FileEditor.
+         * Open an existing file editor or if it doesn't exist yet create
+         * a new FileEditor suitable for the file selected.
          */
-        static OpenEditor(name: string, pos: ace.Position = { row: 0, column: 0 }): FileEditor {
+        static OpenEditor(fileName: string, pos: ace.Position = { row: 0, column: 0 }): FileEditor {
             var editor: FileEditor;
             var pages: Gui.EditorPage[] = [];
-            pages = IDE.editorTabView.getPagesForFile(name);
+            pages = IDE.editorTabView.getPagesForFile(fileName);
             if (!pages.length) {
-                editor = this.CreateEditor(name);
+                editor = this.CreateEditor(fileName);
                 if (!editor) {
                     var c = confirm("No suitable editor found for this file type, open with source editor?");
                     if (!c) return;
-                    editor = new Gui.SourceEditor(name);
+                    editor = new Gui.SourceEditor(fileName);
                 }
                 IDE.editorTabView.addEditor(editor, pos);
             } else {
