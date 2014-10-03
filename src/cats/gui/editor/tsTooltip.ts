@@ -23,16 +23,15 @@ module Cats.Gui {
          */
         private showToolTipAt(ev: MouseEvent) {
 
-            // var docPos = this.editor.getPositionFromScreenOffset(ev.offsetX, ev.offsetY);
             var docPos = this.editor.getPositionFromScreenOffset(ev);
 
             this.editor.project.iSense.getTypeAtPosition(this.editor.filePath, docPos,
                 (err, data: Cats.TypeInfo) => {
-                    if (!data) return;
+                    if ((!data) || (! data.description)) return;
                    
-                    var tip = data.description;
+                    var tip = data.description.replace("\n","<br>");
                     if (data.docComment) {
-                        tip += '<hr>' + data.docComment;
+                        tip += '<hr>' + data.docComment.replace("\n","<br>");;
                     }
 
                     if (tip && tip.trim()) {

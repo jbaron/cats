@@ -48,6 +48,10 @@ module Cats {
             this.perform("getAllDiagnostics", cb);
         }
 
+        getTodoItems(cb: (err, result: NavigateToItem[]) => void) {
+            this.perform("getTodoItems", cb);
+        }
+
         getFormattedTextForRange(sessionName: string, range: Range, cb: Function) {
             this.perform("getFormattedTextForRange", sessionName, range, cb);
         }

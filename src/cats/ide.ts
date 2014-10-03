@@ -36,6 +36,7 @@ module Cats {
         editorTabView: Gui.EditorTabView;
         console: Gui.ConsoleLog;
         processTable: Gui.ProcessTable;
+        todoList: Gui.ResultTable;
         bookmarks:Gui.ResultTable;
         problemResult:Gui.ResultTable;
         menubar:Gui.Menubar;

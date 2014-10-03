@@ -19,6 +19,12 @@ module Cats.Gui {
                 label: "Search",
                 icon: "actions/edit-find.png"
             },
+            
+            
+            "todo": {
+                label: "Todo",
+                icon: "status/task-reminder.png"
+            },
 
             "console": {
                 icon: "apps/utilities-terminal.png"
@@ -41,10 +47,6 @@ module Cats.Gui {
 
             "bookmarks": {
                 icon: "actions/bookmarks-organize.png"
-            },
-
-            "todo": {
-                icon: "actions/view-pim-tasks.png"
             },
 
             "properties": {

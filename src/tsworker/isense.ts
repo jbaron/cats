@@ -210,6 +210,35 @@ module Cats.TSWorker {
             return errors;
         }
 
+        private convertTodoNavigate(fileName:string, todos:ts.TodoComment[]) {
+            var result: FileRange[] = [];
+            todos.forEach((todo) => {
+                var entry:FileRange = {
+                    range: this.getRange(fileName, todo.position, todo.position),
+                    fileName: fileName,
+                    message: todo.message
+                };
+                result.push(entry);
+            });
+            return result;
+        }
+
+        getTodoItems() {
+            var descriptor = {
+                text: "@TODO",
+                priority: 1
+            };
+            
+            var result:FileRange[] = [];
+            this.lsHost.getScriptFileNames().forEach((fileName)=> {
+                var comments = this.ls.getTodoComments(fileName, [descriptor]);
+                var entries = this.convertTodoNavigate(fileName, comments);
+                result = result.concat(entries);
+            });
+            return result;
+        }
+
+
         /**
          * Compile the loaded TS files and return the 
          * compiles JS sources and errors (if any).

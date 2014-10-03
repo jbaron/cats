@@ -90,6 +90,11 @@ module Cats.Gui {
                     project.iSense.getScriptLexicalStructure(this.editor.filePath, (err: Error, data: NavigateToItem[]) => {
                         this.editor.set("outline",data);
                     });
+                    
+                    project.iSense.getTodoItems((err,data) => {
+                        IDE.todoList.setData(data);
+                    });
+                    
                 }, timeout);
         }
 

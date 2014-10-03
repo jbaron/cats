@@ -77,6 +77,7 @@ module Cats.Gui {
 
             ide.console = new ConsoleLog();
             ide.problemResult = new ResultTable();
+            ide.todoList = new ResultTable();
             ide.processTable = new ProcessTable();
             var problemPage = ide.problemPane.addPage("problems", null, ide.problemResult);
             problemPage.autoSelect = true;
@@ -84,6 +85,7 @@ module Cats.Gui {
             var consolePage = ide.problemPane.addPage("console", null, ide.console);
             consolePage.autoSelect = true;
             ide.problemPane.addPage("process", null, ide.processTable);
+            ide.problemPane.addPage("todo", null, ide.todoList);
 
             ide.problemPane.selectPage("console");
             // this.problemPane.setSelection([this.problemPane.getChildren()[2]]);
