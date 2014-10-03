@@ -91,9 +91,6 @@ module Cats.Gui {
                         this.editor.set("outline",data);
                     });
                     
-                    project.iSense.getTodoItems((err,data) => {
-                        IDE.todoList.setData(data);
-                    });
                     
                 }, timeout);
         }

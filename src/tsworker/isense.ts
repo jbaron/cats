@@ -42,7 +42,7 @@ module Cats.TSWorker {
     class ISense {
 
         private maxErrors = 100;
-        ls: ts.LanguageService;
+        private ls: ts.LanguageService;
         private lsHost: LanguageServiceHost;
         private formatOptions: ts.FormatCodeOptions;
 
@@ -53,27 +53,26 @@ module Cats.TSWorker {
         constructor() {
             this.lsHost = new LanguageServiceHost();
             this.ls = ts.createLanguageService(this.lsHost, ts.createDocumentRegistry());
-
-        
-            // this.ls = new TypeScript.Services.TypeScriptServicesFactory().createPullLanguageService(this.lsHost);
-            // @TODO fix following
-            this.formatOptions = { 
-                    IndentSize: 4,
-                    TabSize: 4,
-                    NewLineCharacter: "\n",
-                    ConvertTabsToSpaces: true,
-                    InsertSpaceAfterCommaDelimiter: true,
-                    InsertSpaceAfterSemicolonInForStatements: true,
-                    InsertSpaceBeforeAndAfterBinaryOperators: true,
-                    InsertSpaceAfterKeywordsInControlFlowStatements: true,
-                    InsertSpaceAfterFunctionKeywordForAnonymousFunctions: true,
-                    InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: true,
-                    PlaceOpenBraceOnNewLineForFunctions: false,
-                    PlaceOpenBraceOnNewLineForControlBlocks: false
-            };
-            
-            // this.formatOptions.NewLineCharacter = "\n";
+            this.formatOptions = this.getDefaultFormatOptions();
         }
+
+        private getDefaultFormatOptions() {
+            return { 
+                IndentSize: 4,
+                TabSize: 4,
+                NewLineCharacter: "\n",
+                ConvertTabsToSpaces: true,
+                InsertSpaceAfterCommaDelimiter: true,
+                InsertSpaceAfterSemicolonInForStatements: true,
+                InsertSpaceBeforeAndAfterBinaryOperators: true,
+                InsertSpaceAfterKeywordsInControlFlowStatements: true,
+                InsertSpaceAfterFunctionKeywordForAnonymousFunctions: true,
+                InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: true,
+                PlaceOpenBraceOnNewLineForFunctions: false,
+                PlaceOpenBraceOnNewLineForControlBlocks: false
+            };
+        }
+
 
         /**
          * Sometimes of the TS language services don't work first time
@@ -98,7 +97,7 @@ module Cats.TSWorker {
                 var info = infos[0]; // TODO handle better
                 return {
                     fileName: info.fileName,
-                    range: this.getRange(info.fileName, info.textSpan.start(), info.textSpan.end())
+                    range: script.getRange(info.textSpan.start(), info.textSpan.end())
                 };
             } else {
                 return null;
@@ -122,27 +121,14 @@ module Cats.TSWorker {
   
         /**
          * Convert Services to Cats NavigateToItems
-         * @todo properly do this conversion
          */
-        private convertNavigateTo(items: ts.NavigateToItem[]): NavigateToItem[] {
-            var results = <NavigateToItem[]>items;
-            for (var i = 0; i < results.length; i++) {
-                var result = results[i];
-                result.range = this.getRange(result.fileName, result.textSpan.start(), result.textSpan.end());
-            }
-            return results;
-        }
-
-        /**
-         * Convert Services to Cats NavigateToItems
-         * @todo properly do this conversion
-         */
-        private convertNavigateTo2(fileName: string, items: TypeScript.TextSpan[]): Range[] {
-            var result = new Array<Range>();
-            for (var i = 0; i < items.length; i++) {
-                var item = items[i];
-                var entry = this.getRange(fileName, item.start(), item.end());
-                result.push(entry);
+        private convertNavigateTo(item: ts.NavigateToItem): NavigateToItem {
+            var script = this.lsHost.getScript(item.fileName);
+            var result = {
+                range : script.getRange(item.textSpan.start(), item.textSpan.end()),
+                name : item.name,
+                fileName: item.fileName,
+                kind: item.kind
             }
             return result;
         }
@@ -154,24 +140,23 @@ module Cats.TSWorker {
         private convertErrors(errors: ts.Diagnostic[], severity= Severity.Error): Cats.FileRange[] {
 
             if (!(errors && errors.length)) return [];
-
-            var result: Cats.FileRange[] = [];
-            errors.forEach((error) => {
-
-               var r = this.getRange(error.file.filename, error.start, error.start + error.length);
-                result.push({
-                    range: r,
+        
+            return errors.map((error) => {
+                var script = this.lsHost.getScript(error.file.filename);  
+                return {
+                    range: script.getRange(error.start, error.start + error.length),
                     severity: severity,
                     message: error.messageText,
                     fileName: error.file.filename
-                });
+                };
             });
-            return result;
+            
         }
 
         /**
          * Get the errors for either one script or for 
          * all the scripts
+         * 
          * @param fileName name of the script. If none provided the errors
          * for all scripts will be returned.
          */
@@ -210,19 +195,21 @@ module Cats.TSWorker {
             return errors;
         }
 
-        private convertTodoNavigate(fileName:string, todos:ts.TodoComment[]) {
-            var result: FileRange[] = [];
-            todos.forEach((todo) => {
+        private convertTodoNavigate(fileName:string, todos:ts.TodoComment[]):FileRange[] {
+            var script = this.lsHost.getScript(fileName);
+            return todos.map((todo) => {
                 var entry:FileRange = {
-                    range: this.getRange(fileName, todo.position, todo.position),
+                    range: script.getRange(todo.position, todo.position + todo.descriptor.text.length),
                     fileName: fileName,
                     message: todo.message
                 };
-                result.push(entry);
+                return entry;
             });
-            return result;
         }
 
+        /**
+         * Get the various annotations in the comments, like TODO items.
+         */ 
         getTodoItems() {
             var descriptor = {
                 text: "@TODO",
@@ -291,16 +278,15 @@ module Cats.TSWorker {
             for (var i in compilerOptions) {
                 compOptions[i] = compilerOptions[i];
             }
-
             this.lsHost.setCompilationSettings(compOptions);
 
-            // @TODO fix these settings 
-            // this.formatOptions = new TypeScript.Services.FormatCodeOptions();
-            // this.formatOptions.NewLineCharacter = "\n";
-
-            // @TODO
-            //this.formatOptions.ConvertTabsToSpaces
-
+            
+            this.formatOptions = this.getDefaultFormatOptions();
+            // Do a quick mixin
+            for (var i in editorOptions) {
+                this.formatOptions[i] = editorOptions[i];
+            }
+            
             return compOptions;
         }
 
@@ -311,40 +297,7 @@ module Cats.TSWorker {
         }
 
 
-        /**
-         * Convert the data for outline usage.
-         */
-        private getOutlineModelDataOutdated(data: ts.NavigateToItem[]) {
-            if ((!data) || (!data.length)) {
-                return [];
-            }
-
-            var parents = {};
-            var root = {};
-
-            data.forEach((item) => {
-                var parentName = item.containerName;
-                var parent = parentName ? parents[parentName] : root;
-                if (!parent) console.info("No Parent for " + parentName);
-                if (!parent.children) parent.children = [];
-
-                var extension = this.isExecutable(item.kind) ? "()" : "";
-                var script = this.lsHost.getScript(item.fileName);
-
-                var entry = {
-                    label: item.name + extension,
-                    position: script.positionToLineCol(item.textSpan.start()),
-                    kind: item.kind
-                };
-
-                var childName = parentName ? parentName + "." + item.name : item.name;
-                parents[childName] = entry;
-                parent.children.push(entry);
-            });
-            
-            return root;
-        }
-
+    
 
         /**
          * Convert the data for outline usage.
@@ -376,15 +329,6 @@ module Cats.TSWorker {
             });
             
             return result;
-        }
-
-        /**
-         * Get the content of a script
-         * @param name Script name
-         */
-        getScriptContent(fileName: string): string {
-            var script = this.lsHost.getScript(fileName);
-            if (script) return script.content;
         }
 
 
@@ -504,16 +448,6 @@ module Cats.TSWorker {
             this.lsHost.updateScript(fileName, content);
         }
 
-        // Get an Ace Range from TS minChars and limChars
-        private getRange(fileName: string, minChar: number, limChar: number): Cats.Range {
-            var script = this.lsHost.getScript(fileName);
-            var result = {
-                start: script.positionToLineCol(minChar),
-                end: script.positionToLineCol(limChar)
-            };
-            return result;
-        }
-
 
         // Get the position
         public getTypeAtPosition(fileName: string, coord: Cats.Position):TypeInfo {
@@ -535,7 +469,7 @@ module Cats.TSWorker {
 
         // Determine type of autocompletion
         private determineAutoCompleteType(fileName: string, pos: number) {
-            var source = this.getScriptContent(fileName);
+            var source = this.lsHost.getScript(fileName).content;
             var identifyerMatch = /[0-9A-Za-z_\$]*$/;
             var previousCode = source.substring(0, pos);
 
@@ -553,21 +487,11 @@ module Cats.TSWorker {
             return result;
         }
 
-        /**
-         * Retieve the line of code that contains a certain range. Used to provide the 
-         * user with contexts of what is found
-         */
-        private getLine(fileName: string, minChar: number, limChar: number) {
-            var content = this.getScriptContent(fileName);
-            var min = content.substring(0, minChar).lastIndexOf("\n");
-            var max = content.substring(limChar).indexOf("\n");
-            return content.substring(min + 1, limChar + max);
-        }
+ 
 
-
-        public getNavigateToItems(search: string): NavigateToItem[] {
+        public getNavigateToItems(search: string) {
             var results = this.ls.getNavigateToItems(search);
-            return this.convertNavigateTo(results);
+            return results.map(this.convertNavigateTo);
         }
 
 
@@ -583,11 +507,6 @@ module Cats.TSWorker {
             return result;
         }
 
-        public getOutliningRegions(fileName: string): Range[] {
-            var results;// @TODO fix = this.ls.getOutliningRegions(fileName);
-            return this.convertNavigateTo2(fileName, results);
-        }
-
 
         // generic wrapper for info at a certain position 
         public getInfoAtPosition(method: string, fileName: string, cursor: Position): Cats.FileRange[] {
@@ -598,10 +517,11 @@ module Cats.TSWorker {
             var entries: ts.ReferenceEntry[] = this.ls[method](fileName, pos);
             for (var i = 0; i < entries.length; i++) {
                 var ref = entries[i];
+                var refScript = this.lsHost.getScript(ref.fileName);
                 result.push({
                     fileName: ref.fileName,
-                    range: this.getRange(ref.fileName, ref.textSpan.start(), ref.textSpan.end()),
-                    message: this.getLine(ref.fileName, ref.textSpan.start(), ref.textSpan.end())
+                    range: script.getRange(ref.textSpan.start(), ref.textSpan.end()),
+                    message: script.getLine(ref.textSpan.start(), ref.textSpan.end())
                 });
             }
             return result;

@@ -37,6 +37,8 @@ module Cats {
         config: ProjectConfiguration;
 
         linter:Linter;
+        
+        private refreshInterval:number;
 
         /**    
          * Create a new project.
@@ -48,6 +50,10 @@ module Cats {
             this.projectDir = OS.File.switchToForwardSlashes(dir);
             this.refresh();
             if (this.config.codingStandards.useLint) this.linter = new Linter(this);
+            
+            this.refreshInterval = setInterval(()=> {this.refreshTodoList()}, 30000);
+            
+            
         }
 
         /**
@@ -61,6 +67,12 @@ module Cats {
             pc.store(this.config);
         }
         
+        refreshTodoList() {
+            this.iSense.getTodoItems((err,data) => {
+                        IDE.todoList.setData(data);
+            });
+        }
+    
     
         /**
          * Close the project
@@ -75,6 +87,7 @@ module Cats {
             IDE.outlineNavigator.clear();
             IDE.problemResult.clear();
             if (this.iSense) this.iSense.stop();
+            clearInterval(this.refreshInterval);
         }
 
         /**
@@ -179,16 +192,9 @@ module Cats {
             this.name = this.config.name || PATH.basename(this.projectDir);
             document.title = "CATS | " + this.name;
 
-            // this.initJSSense();
             if (this.iSense) this.iSense.stop();
             this.iSense = new TSWorkerProxy(this);
 
-            /*
-            if (this.config.compiler.outFileOption) {
-                this.config.compiler.outFileOption = OS.File.join(this.projectDir, this.config.compiler.outFileOption);
-                console.info("Compiler output: " + this.config.compiler.outFileOption);
-            }
-            */
 
             this.iSense.setSettings(this.config.compiler, this.config.codingStandards);
 
@@ -202,11 +208,13 @@ module Cats {
             srcs.forEach((src: string) => {
                 this.loadTypeScriptFiles(src);
             });
+            
+            this.refreshTodoList();
 
         }
 
         /**
-         * Compile without actually saving the result
+         * Compile without actually saving the resulting files
          */
         trialCompile() {
             this.iSense.compile((err: Error, data: Cats.CompileResults) => {
@@ -265,8 +273,8 @@ module Cats {
         }
 
        
-       
-        addScript(fullName: string, content: string) {
+        
+        private addScript(fullName: string, content: string) {
             this.iSense.addScript(fullName, content);
             if (this.tsfiles.indexOf(fullName) < 0) this.tsfiles.push(fullName);
         }

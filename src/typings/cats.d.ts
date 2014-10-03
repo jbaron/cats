@@ -131,8 +131,11 @@ declare module Cats {
         errors: FileRange[];
     }
 
-    interface NavigateToItem extends ts.NavigateToItem {
+    interface NavigateToItem  {
         range: Range;
+        name: string;
+        kind: string;
+        fileName: string;
     }
     
      

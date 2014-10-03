@@ -42,11 +42,12 @@ module Cats.TSWorker {
         }
 
         getScriptIsOpen(fileName: string) {
-            return false; // @TODO generates error otherwise
+            // @FIX generates not-implemented yet error in TypeScript if return true;
+            return false; 
         }
 
         getCancellationToken(): ts.CancellationToken {
-            // return null ; TODO find out what this is used for
+            // @TODO find out what this is used for
             return ts.CancellationTokenObject.None;
         }
         

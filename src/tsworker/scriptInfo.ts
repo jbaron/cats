@@ -21,6 +21,10 @@
 
 module Cats.TSWorker {
 
+/**
+ * This class holds the TypeScript files and expose them to the TS language services
+ * 
+ */ 
 export class ScriptInfo {
         public version: number = 1;
         public editRanges: { length: number; textChangeRange: TypeScript.TextChangeRange; }[] = [];
@@ -96,6 +100,26 @@ export class ScriptInfo {
             return pos;
         }
         
+         /**
+         * Retieve the line of code that contains a certain range. Used to provide the 
+         * user with contexts of what is found
+         */
+        getLine(minChar: number, limChar: number) {
+            var min = this.content.substring(0, minChar).lastIndexOf("\n");
+            var max = this.content.substring(limChar).indexOf("\n");
+            return this.content.substring(min + 1, limChar + max);
+        }
+        
+        /**
+         * Get an CATS Range from TS minChars and limChars
+         */ 
+        getRange(minChar: number, limChar: number): Cats.Range {
+            var result = {
+                start: this.positionToLineCol(minChar),
+                end: this.positionToLineCol(limChar)
+            };
+            return result;
+        }
         
     }
 }
