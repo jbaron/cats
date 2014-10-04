@@ -13,6 +13,18 @@
 //
 
 module Cats.Gui {
+    
+    var registryEntryName = "ImageEditor";
+    
+    
+    function restoreState(state) {
+        var editor = new ImageEditor(state.fileName);
+        return editor;
+    }
+    
+    Editor.RegisterEditor(registryEntryName, restoreState);
+    
+    
     /**
      * Simple image viewer for image files. Uses canvas to render the image.
      */
@@ -51,13 +63,11 @@ module Cats.Gui {
             };
         }
        
-        protected static RestoreState(state) {
-            var editor = new ImageEditor(state.fileName);
-            return editor;
+        getType() {
+            return registryEntryName;
         }
-   
-
-
+ 
+ 
         private resizeIfRequired(image: HTMLImageElement) {
             if (image.width > this.canvas.getCanvasWidth()) {
                 this.canvas.setCanvasWidth(image.width);
