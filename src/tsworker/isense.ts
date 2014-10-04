@@ -451,8 +451,11 @@ module Cats.TSWorker {
         }
 
 
-        // Get the position
-        public getTypeAtPosition(fileName: string, coord: Cats.Position):TypeInfo {
+        /**
+         * Get the info at a certain position. Used for the tooltip in the editor
+         * 
+         */ 
+        public getInfoAtPosition(fileName: string, coord: Cats.Position):TypeInfo {
             var script = this.lsHost.getScript(fileName);
             var pos = script.getPositionFromCursor(coord);
             if (!pos) return;
@@ -461,10 +464,8 @@ module Cats.TSWorker {
             
             var result = {
                 description : ts.SymbolDisplayPart.toString(info.displayParts),
-                docComment : ts.SymbolDisplayPart.toString(info.documentation),
-                memberName : ""
-            }
-
+                docComment : ts.SymbolDisplayPart.toString(info.documentation)
+            };
             return result;
         }
 
@@ -510,8 +511,11 @@ module Cats.TSWorker {
         }
 
 
-        // generic wrapper for info at a certain position 
-        public getInfoAtPosition(method: string, fileName: string, cursor: Position): Cats.FileRange[] {
+        /**
+         * Generic method to get referecnes, implementations or occurences of a certain
+         * element at a position in a source file
+         */ 
+        public getCrossReference(method: string, fileName: string, cursor: Position): Cats.FileRange[] {
             var script = this.lsHost.getScript(fileName);
             
             var pos = script.getPositionFromCursor(cursor);

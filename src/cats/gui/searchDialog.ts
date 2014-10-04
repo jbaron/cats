@@ -25,16 +25,16 @@ module Cats.Gui {
 
         constructor() {
             super("Search");
-
             var layout = new qx.ui.layout.VBox();
             this.setLayout(layout);
             this.add(this.createForm());
             this.setModal(true);
             this.addListener("resize", this.center);
-
         }
 
-
+        /**
+         * Open the search dialog with a root directory
+         */ 
         search(rootDir) {
             this.rootDir = rootDir;
             this.show();

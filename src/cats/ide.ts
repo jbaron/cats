@@ -163,7 +163,8 @@ module Cats {
                     console.info("Found previous sessions: ", this.config.sessions.length);
                     this.config.sessions.forEach((session) => {
                         try {
-                            FileEditor.OpenEditor(session.path);
+                            var editor = Editor.Restore(session.type, session.state);
+                            IDE.editorTabView.addEditor(editor);
                         } catch (err) {
                             console.error("error " + err);
                         }
@@ -227,10 +228,10 @@ module Cats {
                     config.projects.push(this.project.projectDir);
                     this.editorTabView.getEditors().forEach((editor)=>{ 
                         var state = editor.getState();
-                        if (state !== null) {
+                        if ((state !== null) && (editor.getType())) {
                             config.sessions.push({ 
-                                path: state
-                                // session.getPosition() //@TODO make session fully responsible
+                                state: JSON.stringify(state),
+                                type: editor.getType()
                             });
                         }
                     });

@@ -20,6 +20,7 @@ module Cats.Gui {
 
     var autoCompletePopup = new AutoCompletePopup();
     
+    Editor.RegisterEditor("SourceEditor", SourceEditor);
 
     /**
      * Wrapper around the ACE editor. The rest of the code base should not use
@@ -111,6 +112,10 @@ module Cats.Gui {
                     this.aceEditor.execCommand(name);
                     break;
             }
+        }
+
+        getType() {
+            return "SourceEditor";
         }
 
         static SupportsFile(fileName:string) {
@@ -386,7 +391,7 @@ module Cats.Gui {
 
             OS.File.writeTextFile(this.filePath, this.getContent());
             this.editSession.setHasUnsavedChanges(false);
-            this.updateProperties();
+            this.updateFileInfo();
             IDE.console.log("Saved file " + this.filePath);
             if (this.isTypeScript()) {
                 this.project.validate(false);

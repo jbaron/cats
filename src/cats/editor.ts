@@ -20,14 +20,15 @@ module Cats {
      */
     export class Editor extends qx.event.Emitter {
         
+        private static Registry = {}; // 
+        
         label = "Untitled"; // Labe to be used on the tab page
         editorClass = null; // The editor type
 
         // The project this editor belongs to
         project = IDE.project;
         
-        properties = [];
-        outline = [];
+        properties = {};
 
         /**
          * Does the Editor have any unsaved changes
@@ -36,6 +37,10 @@ module Cats {
             return false;
         }
 
+
+        static RegisterEditor(name,editorClass) {
+            this.Registry[name] = editorClass;
+        }
         /**
          * Save the content of the editor. Not all editors imeplement this method.
          */
@@ -50,25 +55,43 @@ module Cats {
             IDE.addHistory(this, pos);
         }
 
+        getType() {
+            return null;
+        }
 
         /**
          * Based on the state previously returned by getState, create a new editor with identical state
          * Used during startup of CATS to restore same editors as before CATS was closed.
          */
-        static RestoreState(state: string): Editor {
+        static RestoreState(state: any): Editor {
             return null;
         }
+
+
+        /**
+         * Based on the state previously returned by getState, create a new editor with identical state
+         * Used during startup of CATS to restore same editors as before CATS was closed.
+         */
+        static Restore(type:string, state: string): Editor {
+            var editorClass = this.Registry[type];
+            return editorClass.RestoreState(JSON.parse(state));
+        }
+
+
 
         /**
          * Get the state of this editor so it can be at a later session revived. For example for 
          * a source file editor this would be the fileName and current position.
          */
-        getState(): string {
-            return null; // means doesn't support it;
+        getState(): any {
+            return null; // means doesn't support persisting;
         }
 
-        get(property: string) {
-            return this[property];
+        /**
+         * Get a certin property from the editor
+         */ 
+        get(propertyName: string) {
+            return this.properties[propertyName];
         }
 
         /**
@@ -78,12 +101,18 @@ module Cats {
             return this.label;
         }
 
-        set(property: string, value) {
-            if (!property) return;
-            this[property] = value;
-            this.emit(property, value);
+        /**
+         * Set a property on the editor
+         */ 
+        set(propertyName: string, value) {
+            if (!propertyName) return;
+            this.properties[propertyName] = value;
+            this.emit(propertyName, value);
         }
 
+        /**
+         * Does the editor support a certain property
+         */ 
         has(property: string) {
             return this.get(property) != null;
         }
@@ -116,13 +145,13 @@ module Cats {
             if (this.filePath) {
                 this.label = PATH.basename(this.filePath);
             }
-            this.updateProperties();
+            this.updateFileInfo();
         }
 
-        updateProperties() {
+        updateFileInfo() {
             if (this.filePath) {
                 try {
-                    this.set("properties", OS.File.getProperties(this.filePath));
+                    this.set("info", OS.File.getProperties(this.filePath));
                 } catch (err) { /* NOP */ }
             }
         }

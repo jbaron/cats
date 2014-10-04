@@ -25,13 +25,13 @@ module Cats.Gui {
 
             var docPos = this.editor.getPositionFromScreenOffset(ev);
 
-            this.editor.project.iSense.getTypeAtPosition(this.editor.filePath, docPos,
+            this.editor.project.iSense.getInfoAtPosition(this.editor.filePath, docPos,
                 (err, data: Cats.TypeInfo) => {
                     if ((!data) || (! data.description)) return;
                    
-                    var tip = data.description.replace("\n","<br>");
+                    var tip = data.description;
                     if (data.docComment) {
-                        tip += '<hr>' + data.docComment.replace("\n","<br>");;
+                        tip += '<hr>' + data.docComment;
                     }
 
                     if (tip && tip.trim()) {

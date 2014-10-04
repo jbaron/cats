@@ -16,10 +16,10 @@
 module Cats.Gui {
 
     /**      
-     * Overview of started processes. With the controls the processes can be paused,
+     * Overview of started processes. Also provides the controls so these processes can be paused,
      * stopped or killed.
      * 
-     * @TODO provide visualization of the status of a process
+     * @TODO provide feedback of the actuall status of a process
      */
     export class ProcessTable extends qx.ui.container.Composite {
 

@@ -62,8 +62,8 @@ declare module Cats {
         locale?:string;
         projects: string[];
         sessions: {
-            path: string;
-            state?: any;
+            state: string;
+            type: string;
         }[];
     }
 

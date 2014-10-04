@@ -48,13 +48,13 @@ module Cats.Gui {
 
         private register(editor:Editor) {
             if (this.editor) {
-                this.editor.off("properties", this.setData, this);
+                this.editor.off("info", this.setData, this);
             }
             this.editor = editor;
             
             if (editor) {
-                editor.on("properties", this.setData,this);
-                this.setData(editor.properties);
+                editor.on("info", this.setData,this);
+                this.setData(editor.get("info"));
             } else {
                 this.clear();
             }

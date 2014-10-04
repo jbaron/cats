@@ -51,7 +51,7 @@ module Cats.Gui {
 
         private getInfoAt(type: string) {
 
-            this.getIsense().getInfoAtPosition(type, this.editor.filePath, this.getPos(), (err, data: Cats.FileRange[]) => {
+            this.getIsense().getCrossReference(type, this.editor.filePath, this.getPos(), (err, data: Cats.FileRange[]) => {
                 if (!data) return;
                 var resultTable = new ResultTable();
                 var page = IDE.problemPane.addPage("info", null, resultTable);

@@ -60,8 +60,8 @@ module Cats {
             this.perform("getDefinitionAtPosition", sessionName, cursor, cb);
         }
 
-        getInfoAtPosition(type: string, sessionName: string, cursor: Cats.Position, cb: (err: any, data: Cats.FileRange[]) => void) {
-            this.perform("getInfoAtPosition", type, sessionName, cursor, cb);
+        getCrossReference(type: string, sessionName: string, cursor: Cats.Position, cb: (err: any, data: Cats.FileRange[]) => void) {
+            this.perform("getCrossReference", type, sessionName, cursor, cb);
         }
 
         compile(cb: (err, data: Cats.CompileResults) => void) {
@@ -72,8 +72,8 @@ module Cats {
             this.perform("getScriptLexicalStructure", sessionName, cb);
         }
 
-        getTypeAtPosition(name: string, docPos: ace.Position, cb: (err: any, data: TypeInfo) => void) {
-            this.perform("getTypeAtPosition", name, docPos, cb);
+        getInfoAtPosition(name: string, docPos: ace.Position, cb: (err: any, data: TypeInfo) => void) {
+            this.perform("getInfoAtPosition", name, docPos, cb);
         }
 
         getRenameInfo(name: string, docPos: ace.Position, cb: (err: any, data: ts.RenameInfo) => void) {
