@@ -19,8 +19,21 @@ module Cats.Gui {
     var modelist = ace.require('ace/ext/modelist');
 
     var autoCompletePopup = new AutoCompletePopup();
+    var registryEntryName = "SourceEditor";
     
-    Editor.RegisterEditor("SourceEditor", SourceEditor);
+    
+    function restoreState(state:SourceEditorState) {
+        var editor = new SourceEditor(state.fileName);
+        editor.moveToPosition(state.pos);
+        return editor;
+    }
+    
+    Editor.RegisterEditor(registryEntryName, restoreState);
+
+    interface SourceEditorState {
+        fileName : string;
+        pos: Position;
+    }    
 
     /**
      * Wrapper around the ACE editor. The rest of the code base should not use
@@ -102,6 +115,19 @@ module Cats.Gui {
         }
 
        
+        getState():SourceEditorState {
+            return {
+                fileName: this.filePath,
+                pos: this.getPosition()
+            };
+        }
+       
+        static RestoreState(state:SourceEditorState) {
+            var editor = new SourceEditor(state.fileName);
+            editor.moveToPosition(state.pos);
+            return editor;
+        }
+       
         executeCommand(name, ...args): any {
             switch (name) {
                 case 'toggleInvisibles':
@@ -115,7 +141,7 @@ module Cats.Gui {
         }
 
         getType() {
-            return "SourceEditor";
+            return registryEntryName;
         }
 
         static SupportsFile(fileName:string) {
@@ -394,6 +420,7 @@ module Cats.Gui {
             this.updateFileInfo();
             IDE.console.log("Saved file " + this.filePath);
             if (this.isTypeScript()) {
+                this.project.iSense.updateScript(this.filePath, this.getContent());
                 this.project.validate(false);
                 if (this.project.config.buildOnSave) Commands.runCommand(Commands.CMDS.project_build);
             }

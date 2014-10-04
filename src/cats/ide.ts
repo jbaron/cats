@@ -164,7 +164,7 @@ module Cats {
                     this.config.sessions.forEach((session) => {
                         try {
                             var editor = Editor.Restore(session.type, session.state);
-                            IDE.editorTabView.addEditor(editor);
+                            if (editor) IDE.editorTabView.addEditor(editor);
                         } catch (err) {
                             console.error("error " + err);
                         }

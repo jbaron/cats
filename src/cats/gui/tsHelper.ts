@@ -87,7 +87,7 @@ module Cats.Gui {
                 var project = this.editor.project;
                 clearTimeout(this.outlineTimer);
                 this.outlineTimer = setTimeout(() => {
-                    project.iSense.getScriptLexicalStructure(this.editor.filePath, (err: Error, data: NavigateToItem[]) => {
+                    project.iSense.getScriptOutline(this.editor.filePath, (err: Error, data: NavigateToItem[]) => {
                         this.editor.set("outline",data);
                     });
                     

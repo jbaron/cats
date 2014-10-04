@@ -106,6 +106,10 @@ module Cats.TSWorker {
             }
         }
 
+        /**
+         * Create a Class Model for project that can be used for example in the 
+         * UML viewer.
+         */ 
         public getObjectModel() {
             //Force all symbols to be created.
             this.getAllDiagnostics();
@@ -162,7 +166,7 @@ module Cats.TSWorker {
          * @param fileName name of the script. If none provided the errors
          * for all scripts will be returned.
          */
-        getErrors(fileName: string): Cats.FileRange[] {
+        getErrors(fileName: string): FileRange[] {
             var errors: Cats.FileRange[] = [];
             var fileErrors = this.ls.getSyntacticDiagnostics(fileName);
 
@@ -498,7 +502,7 @@ module Cats.TSWorker {
         }
 
 
-        public getScriptLexicalStructure(fileName: string) {
+        public getScriptOutline(fileName: string) {
             var result =  this.ls.getNavigationBarItems(fileName);
             return this.getOutlineModelData(fileName, result);
         }
@@ -513,7 +517,11 @@ module Cats.TSWorker {
 
         /**
          * Generic method to get referecnes, implementations or occurences of a certain
-         * element at a position in a source file
+         * element at a position in a source file.
+         * 
+         *    getReferencesAtPosition
+         *    getOccurrencesAtPosition
+         *    getImplementorsAtPosition
          */ 
         public getCrossReference(method: string, fileName: string, cursor: Position): Cats.FileRange[] {
             var script = this.lsHost.getScript(fileName);

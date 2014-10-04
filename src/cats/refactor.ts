@@ -14,7 +14,7 @@
 //
 
 /**
- * This module holds all the refactoring logic for CATS
+ * This module holds the refactoring logic for CATS
  *
  */ 
 module Cats.Refactor {

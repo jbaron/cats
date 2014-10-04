@@ -13,14 +13,14 @@
 //
 
 module Cats {
-    
+
     /**
      * BaseClass for Editors. Editors should extend this class. The rest of the codebase is only 
      * dependent on this small subset of methods and properties.
      */
     export class Editor extends qx.event.Emitter {
         
-        private static Registry = {}; // 
+        private static Registry = {}; 
         
         label = "Untitled"; // Labe to be used on the tab page
         editorClass = null; // The editor type
@@ -28,7 +28,7 @@ module Cats {
         // The project this editor belongs to
         project = IDE.project;
         
-        properties = {};
+        protected properties = {};
 
         /**
          * Does the Editor have any unsaved changes
@@ -38,8 +38,9 @@ module Cats {
         }
 
 
-        static RegisterEditor(name,editorClass) {
-            this.Registry[name] = editorClass;
+        static RegisterEditor(name,restoreFn:(state:any)=>Editor) {
+            console.log("Registered editor for type " + name);
+            Editor.Registry[name] = restoreFn;
         }
         /**
          * Save the content of the editor. Not all editors imeplement this method.
@@ -59,22 +60,19 @@ module Cats {
             return null;
         }
 
-        /**
-         * Based on the state previously returned by getState, create a new editor with identical state
-         * Used during startup of CATS to restore same editors as before CATS was closed.
-         */
-        static RestoreState(state: any): Editor {
-            return null;
-        }
-
-
+       
         /**
          * Based on the state previously returned by getState, create a new editor with identical state
          * Used during startup of CATS to restore same editors as before CATS was closed.
          */
         static Restore(type:string, state: string): Editor {
-            var editorClass = this.Registry[type];
-            return editorClass.RestoreState(JSON.parse(state));
+            var restoreFn = Editor.Registry[type];
+            if (! restoreFn) {
+                console.error("No restore function found for " + type);
+                return null;
+            }
+            var editor = restoreFn(JSON.parse(state));
+            return editor;
         }
 
 
@@ -117,7 +115,6 @@ module Cats {
             return this.get(property) != null;
         }
 
-  
 
         /**
          * Command pattern implementation
@@ -148,7 +145,7 @@ module Cats {
             this.updateFileInfo();
         }
 
-        updateFileInfo() {
+        protected updateFileInfo() {
             if (this.filePath) {
                 try {
                     this.set("info", OS.File.getProperties(this.filePath));

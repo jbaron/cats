@@ -47,10 +47,12 @@ Install Nodewebkit, TypeScript, Jake and the module dependencies:
 
 ```
 npm install -g nodewebkit
-npm install -g typescript
 npm install -g jake
 npm install
 ```
+
+This verison of CATS uses the latest unstable builds of TypeScript and also relies on certain 
+of those features. So if you want to build CATS yourself, better get that version from Github
 
 Use one of the following to build:
 

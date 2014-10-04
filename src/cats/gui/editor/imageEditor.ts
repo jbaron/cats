@@ -45,6 +45,19 @@ module Cats.Gui {
             image.src = url;
         }
 
+        getState() {
+            return {
+                fileName: this.filePath
+            };
+        }
+       
+        protected static RestoreState(state) {
+            var editor = new ImageEditor(state.fileName);
+            return editor;
+        }
+   
+
+
         private resizeIfRequired(image: HTMLImageElement) {
             if (image.width > this.canvas.getCanvasWidth()) {
                 this.canvas.setCanvasWidth(image.width);

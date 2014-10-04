@@ -36,6 +36,9 @@ module Cats {
             this.worker.terminate();
         }
 
+        /**
+         * Get the diagnostic messages for a file
+         */ 
         getErrors(fileName: string, cb: (err, result: FileRange[]) => void) {
             this.perform("getErrors", fileName, cb);
         }
@@ -68,8 +71,8 @@ module Cats {
             this.perform("compile", cb);
         }
 
-        getScriptLexicalStructure(sessionName: string, cb: (err: any, data: NavigateToItem[]) => void) {
-            this.perform("getScriptLexicalStructure", sessionName, cb);
+        getScriptOutline(sessionName: string, cb: (err: any, data: NavigateToItem[]) => void) {
+            this.perform("getScriptOutline", sessionName, cb);
         }
 
         getInfoAtPosition(name: string, docPos: ace.Position, cb: (err: any, data: TypeInfo) => void) {
@@ -80,10 +83,6 @@ module Cats {
             this.perform("getRenameInfo", name, docPos, cb);
         }
 
-
-        getDependencyGraph(cb) {
-            this.perform("getDependencyGraph", cb);
-        }
 
         getObjectModel(cb) {
             this.perform("getObjectModel", cb);
