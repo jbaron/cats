@@ -23,8 +23,7 @@ module Cats {
         private static Registry = {}; 
         
         label = "Untitled"; // Labe to be used on the tab page
-        editorClass = null; // The editor type
-
+ 
         // The project this editor belongs to
         project = IDE.project;
         
@@ -56,7 +55,10 @@ module Cats {
             IDE.addHistory(this, pos);
         }
 
-        getType() {
+        /**
+         * Return the type of the editor
+         */ 
+        getType():string {
             return null;
         }
 
@@ -65,13 +67,13 @@ module Cats {
          * Based on the state previously returned by getState, create a new editor with identical state
          * Used during startup of CATS to restore same editors as before CATS was closed.
          */
-        static Restore(type:string, state: string): Editor {
+        static Restore(type:string, state: any): Editor {
             var restoreFn = Editor.Registry[type];
             if (! restoreFn) {
                 console.error("No restore function found for " + type);
                 return null;
             }
-            var editor = restoreFn(JSON.parse(state));
+            var editor = restoreFn(state);
             return editor;
         }
 
@@ -156,7 +158,7 @@ module Cats {
         /**
          * Which type of files does this editor supports for editing.
          */
-        static SupportsFile(fileName: string) {
+        protected static SupportsFile(fileName: string) {
             return false;
         }
 

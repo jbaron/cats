@@ -30,13 +30,12 @@ module Cats.Gui {
      */
     export class ImageEditor extends FileEditor {
 
-        private backgroundColors = ["white", "black", "grey"];
-        unsavedChanges= false;
-        status = { mode : "image" };
+        private static BackgroundColors = ["white", "black", "grey"];
         private canvas = new qx.ui.embed.Canvas();
 
         constructor(fileName) {
             super(fileName);
+            this.set("status", { mode : "IMAGE" });
             this.loadImage(fileName);
             this.createContextMenu();
         }
@@ -45,7 +44,7 @@ module Cats.Gui {
             return this.canvas;
         }
 
-        executeCommand(name, ...args): boolean {
+        executeCommand(name, ...args): any {
             return false;
         }
 
@@ -88,7 +87,7 @@ module Cats.Gui {
 
         private createContextMenu() {
             var menu = new qx.ui.menu.Menu();
-            this.backgroundColors.forEach((color) => {
+            ImageEditor.BackgroundColors.forEach((color) => {
                 var button = new qx.ui.menu.Button("Background " + color);
                 button.addListener("execute", () => {
                     this.canvas.setBackgroundColor(color);
@@ -104,14 +103,7 @@ module Cats.Gui {
             return supportedExt.indexOf(ext) > -1;
         }
 
-        replace(range: ace.Range, content: string) { }
-
-        getContent() { return null; }
-
-        setContent(content, keepPosition= true) { }
-
-        updateWorld() { }
-
+  
         moveToPosition(pos: ace.Position) { }
 
     }

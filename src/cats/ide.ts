@@ -163,7 +163,7 @@ module Cats {
                     console.info("Found previous sessions: ", this.config.sessions.length);
                     this.config.sessions.forEach((session) => {
                         try {
-                            var editor = Editor.Restore(session.type, session.state);
+                            var editor = Editor.Restore(session.type, JSON.parse(session.state));
                             if (editor) IDE.editorTabView.addEditor(editor);
                         } catch (err) {
                             console.error("error " + err);
