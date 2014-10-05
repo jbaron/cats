@@ -15,32 +15,30 @@
 
 module Cats.Theme {
 
-    qx.Theme.define("cats.theme.Color",
+    qx.Theme.define("cats.theme.Color", {
+        extend: qx.theme.simple.Color,
+
+        colors:
         {
-            extend: qx.theme.simple.Color,
-
-            colors:
-            {
-                // "light-background": "#C0CCDF",
-                "light-background": "#A0ACBF",
-                "button-box-bright": "#B0BCCF"
-            }
-        });
+            "light-background": "#A0ACBF",
+            "button-box-bright": "#B0BCCF",
+            "link" : "black"
+        }
+    });
 
 
-    qx.Theme.define("cats.theme.ColorGrey",
+    qx.Theme.define("cats.theme.ColorGrey", {
+        extend: qx.theme.simple.Color,
+
+        colors:
         {
-            extend: qx.theme.simple.Color,
-
-            colors:
-            {
-                "light-background": "#B0B0B0",
-                "button-box-bright": "#A0A0A0",
-                "background-selected" : "#666666",
-                "border-main" : "#666666",
-                "background-selected-dark" : "#555555",
-                "link" : "#EEEEEE"
-            }
-        });
+            "light-background": "#B0B0B0",
+            "button-box-bright": "#A0A0A0",
+            "background-selected" : "#666666",
+            "border-main" : "#666666",
+            "background-selected-dark" : "#555555",
+            "link" : "#EEEEEE"
+        }
+    });
 
 }
