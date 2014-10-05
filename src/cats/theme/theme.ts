@@ -16,6 +16,7 @@ module Cats.Theme {
 
     // Fix for the fact that workign directory is not the same directory as the HMTL file
     qx.theme.icon.Oxygen.aliases.icon = "resource/" +  qx.theme.icon.Oxygen.aliases.icon;
+    qx.theme.icon.Tango.aliases.icon =  qx.theme.icon.Oxygen.aliases.icon;
 
     qx.Theme.define("cats.theme.Default",
         {
