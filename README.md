@@ -1,14 +1,9 @@
-# Warning
-
-This is an alpha version of CATS using the latest unstable version of TypeScript.
-In case you want a stable release for daily development, please download release 1.2
-
 ## CATS
 
-CATS is an IDE for the TypeScript developer. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. 
-CATS itself is written in TypeScript and even being developed using CATS as the IDE. 
+CATS is an IDE for TypeScript and Web developers. CATS is open source software released under the Apache 2.0 license and it runs on Linux, Windows and OS X. 
+CATS itself is also written in TypeScript, so you can easily customize it if required.
 
-Right now CATS already has built-in support for the following features:
+And although still work in progress, CATS is already very usable and has built-in support for the following features:
 
 - Intelligent code editor and code completion for TypeScript sources.
  
@@ -26,10 +21,54 @@ Right now CATS already has built-in support for the following features:
 - Support for external build systems like Grunt, Jake, Gulp and Makefiles.
 
 
+## Usage
+
+The easiest way to start using CATS it to follow these simple steps:
+
+* In case you haven't already installed nodewebkit on your machine, do that first. In case you have nodejs installed, you can install
+  nodewebkit by typing the following command (using npm, the node package manager):
+
+        npm install -g nodewebkit
+
+  Alternatively you can download Nodewebkit from the following page: [Nodewebkit downloads](https://github.com/rogerwang/node-webkit). 
+
+* Download the CATS package (it is a file called cats.nw). There are two versions available, a stable version meant for daily work 
+  and an unstable version if you want to try out the latest and greatest features. Download either one:
+
+  [CATS latest stable version](https://github.com/jbaron/cats/releases/download/latest_stable/cats.nw) 
+  
+  [CATS latest unstable version](https://github.com/jbaron/cats/releases/download/latest_unstable/cats.nw) 
+  
+  
+After you installed Nodewebkit, just go to the directory where you downloaded cats.nw and type:
+
+```shell
+nodewebkit cats.nw
+```
+
+If you already have a directory with TypeScript files, just select that directory from "Open project..." 
+to start editing your files.
+
+There are some commandline paramters you can use. For example to open CATS with a specific project, use:
+
+```shell        
+nodewebkit cats.nw --project </path/projectDirectory>
+```
+
+Please note that you have to specify the full path to the project directory you want to open. 
+
+To open CATS with the same project as last time you opened it, you can use the --restore option:
+
+```shell
+nodewebkit cats.nw --restore
+```
+
 ## Building
 
-In order to build CATS, ensure that you have 
-[Git](http://git-scm.com/downloads) and [Node.js](http://nodejs.org/) installed.
+In case you want to make changes to CATS and want to do build new versions, there are a few 
+additional steps to do.
+
+Ensure that you have [Git](http://git-scm.com/downloads) and [Node.js](http://nodejs.org/) installed.
 
 Clone a copy of the CATS repo:
 
@@ -47,12 +86,10 @@ Install Nodewebkit, TypeScript, Jake and the module dependencies:
 
 ```
 npm install -g nodewebkit
+npm install -g typescript
 npm install -g jake
 npm install
 ```
-
-This verison of CATS uses the latest unstable builds of TypeScript and also relies on certain 
-of those features. So if you want to build CATS yourself, better get that version from Github
 
 Use one of the following to build:
 
@@ -64,35 +101,6 @@ jake default                # Builds the full CATS application
 jake -T                     # List the above commands. 
 ```
 
-## Usage
-From the cats directory run 
-
-```shell
-nodewebkit
-```
-
-There are some option you can use. For example to open CATS with a specific project, use:
-
-```shell        
-nodewebkit --project </path/projectDirectory>
-```
-
-Although you can use a relative path for specifying the project directory, 
-please notice it is relative to the CATS installation directory and not the 
-directory you are currently in. So normally it is better to specify the full path to the project directory.
-
-
-To open CATS with the same project as last time use the --restore option:
-
-```shell
-nodewebkit --restore
-```
-
-With CATS you also get a samples directory with some small projects you can try out. Of course you can also open a directory that contains your own project. 
-
-```shell
-nodewebkit --project samples/greeter
-```
 
 ## Configuration
 
