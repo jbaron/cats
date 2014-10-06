@@ -25,6 +25,13 @@
         "info":  "icon/16/status/dialog-information.png"
     },
     
+    "annotation" : {
+        "error" :"icon/16/status/dialog-error.png",
+        "warning":"icon/16/status/dialog-warning.png",
+        "info":"icon/16/status/dialog-information.png"
+    },
+    
+    
     "mimetype" : {
         
     },

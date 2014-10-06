@@ -115,12 +115,13 @@ module Cats.Gui {
 
         }
 
+
+
         /**
          * Get an icon for a file based on its mimetype
          */
-        private getIconForFile(fileName: string) {
-            var mimetype: string = Util.MimeTypeFinder.lookup(fileName).replace("/", "-");
-
+        private getIconForMimeType(mimetype: string) {
+          
             var icon = this.iconsForMime[mimetype];
             if (!icon) icon = this.iconsForMime["text-plain"];
             icon = "icon/16/mimetypes/" + icon;
@@ -134,9 +135,10 @@ module Cats.Gui {
             this.setIconOptions({
                 converter: (value, model) => {
                     if (value.getDirectory()) {
-                        return "icon/16/places/folder.png";
+                        return this.getIconForMimeType("inode-directory");
                     }
-                    return this.getIconForFile(value.getLabel());
+                    var mimetype: string = Util.MimeTypeFinder.lookup(value.getLabel()).replace("/", "-");
+                    return this.getIconForMimeType(mimetype);
                 }
             });
 
