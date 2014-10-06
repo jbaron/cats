@@ -15,52 +15,9 @@
 module Cats.Gui {
 
       var iconMapping = {
-            "search": {
-                label: "Search",
-                icon: "actions/edit-find.png"
-            },
-            
-            
-            "todo": {
-                label: "Todo",
-                icon: "actions/view-task.png"
-            },
-
-            "console": {
-                icon: "apps/utilities-terminal.png"
-            },
-
-            "process": {
-                icon: "actions/view-process-all.png"
-            },
-
             "files": {
-                label: "Project Explorer",
-                icon: "actions/view-list-tree.png"
-                // icon: "filenav_nav.svg"
-            },
-
-            "outline": {
-                icon: "actions/code-class.png"
-                // icon: "outline_co.svg"
-            },
-
-            "bookmarks": {
-                icon: "actions/bookmarks-organize.png"
-            },
-
-            "properties": {
-                icon: "actions/document-properties.png"
-            },
-
-            "problems": {
-                icon: "status/task-attention.png"
-            },
-
-            "info": {
-                icon: "status/dialog-information.png"
+                label: "Project Explorer"
             }
-
         };
 
     function getLabel(name: string) {
@@ -72,8 +29,9 @@ module Cats.Gui {
     }
 
     function getIconName(name: string) {
-            var entry = iconMapping[name];
-            if (entry) return "icon/16/" + entry.icon;
+            var entry = IDE.icons.tab[name];
+            if (entry) return entry;
+            console.log("No icon found for tab with name " + name);
     }
 
 

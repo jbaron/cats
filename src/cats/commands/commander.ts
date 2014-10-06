@@ -18,86 +18,85 @@ module Cats.Commands {
     /**
      * List of known commands
      */ 
-    export enum CMDS {
-        help_devTools,
-        help_shortcuts,
-        help_processInfo,
-        help_about,
+    export var CMDS = {
+        help_devTools: "",
+        help_shortcuts: "",
+        help_processInfo: "",
+        help_about: "help_about",
         
-        file_new,
-        file_open,
-        file_close,
-        file_closeOther,
-        file_closeAll,
-        file_save,
-        file_saveAs,
-        file_saveAll,
+        file_new: "file_new",
+        file_open: "file_open",
+        file_close: "file_close",
+        file_closeOther: "file_closeOther",
+        file_closeAll: "file_closeAll",
+        file_save: "file_save",
+        file_saveAs: "file_saveAs",
+        file_saveAll: "file_saveAll",
         
-        edit_undo,
-        edit_redo,
-        edit_cut,
-        edit_copy,
-        edit_paste,
-        edit_find,
-        edit_findNext,
-        edit_findPrev,
-        edit_replace,
-        edit_replaceAll,
-        edit_toggleInvisibles, 
-        edit_toggleRecording,
-        edit_replayMacro,
+        edit_undo: "",
+        edit_redo: "",
+        edit_cut: "",
+        edit_copy: "",
+        edit_paste: "",
+        edit_find: "",
+        edit_findNext: "",
+        edit_findPrev: "",
+        edit_replace: "",
+        edit_replaceAll: "",
+        edit_toggleInvisibles: "",
+        edit_toggleRecording: "",
+        edit_replayMacro: "",
         
-        edit_toggleComment,
-        edit_indent,
-        edit_outdent,
-        edit_gotoLine,
+        edit_toggleComment: "",
+        edit_indent: "",
+        edit_outdent: "",
+        edit_gotoLine: "",
         
-        source_format,
-        source_openDeclaration,
-        source_findRef,
-        source_findDecl,
+        source_format: "",
+        source_openDeclaration: "",
+        source_findRef: "",
+        source_findDecl: "",
 
         
-        project_open,
-        project_close,
-        project_build,
-        project_validate,
-        project_run,
-        project_debug,
-        project_refresh,
-        project_properties,
-        project_classDiagram,
-        project_configure,
-        project_document,
+        project_open: "",
+        project_close: "",
+        project_build: "",
+        project_validate: "",
+        project_run: "",
+        project_debug: "",
+        project_refresh: "",
+        project_properties: "",
+        project_classDiagram: "",
+        project_configure: "",
+        project_document: "",
         
         
-        ide_quit,
-        ide_theme,
-        ide_fontSize,
-        ide_rightMargin,
-        ide_toggleView,
-        ide_configure,
-        ide_history_next,
-        ide_history_prev
-        
+        ide_quit: "",
+        ide_theme: "",
+        ide_fontSize: "",
+        ide_rightMargin: "",
+        ide_toggleView: "",
+        ide_configure: "",
+        ide_history_next: "",
+        ide_history_prev: ""
+      
+    };
+
+    for (var key in CMDS) {
+        CMDS[key] = key;
     }
 
+
 	export interface Command {
-		name:CMDS;
+		name:string;
 		label?: string;
 		command: any;
-		icon?: string;
 		shortcut?: string;
 	}
 
  
 	var commands:Command[] = [];
     var commandList:Command[] =[];
-
-
-    export function getAllCommands() {
-        return commands;
-    }
 
     /**
      * When a command has no function declared,
@@ -117,11 +116,11 @@ module Cats.Commands {
 	}
 
 
-    export function runCommand(name:CMDS):void  {
+    export function runCommand(name:string):void  {
 		commands[name].command();
 	}
 
-	export function get(name:CMDS) :Command {
+	export function get(name:string) :Command {
 		return commands[name];
 	}
 

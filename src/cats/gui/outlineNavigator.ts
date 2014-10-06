@@ -43,8 +43,9 @@ module Cats.Gui {
             });
             this.setIconPath("kind");
             this.setIconOptions({
-                converter: (value, model) => {
-                    return this.getIconForKind(value);
+                converter: (value) => {
+                    var icon = IDE.icons.kind[value] || IDE.icons.kind["default"];
+                    return icon;
                 }
             });
             
@@ -73,24 +74,6 @@ module Cats.Gui {
         private getSelectedItem() {
             var item = this.getSelection().getItem(0);
             return item;
-        }
-
-
-        private getIconForKind(name: string) {
-            var iconPath = "icon/16/types/";
-            switch (name) {
-                case "function":
-                case "keyword":
-                case "method": return iconPath + "method.png";
-                case "constructor": return iconPath + "constructor.png";
-                case "module": return iconPath + "module.png";
-                case "interface": return iconPath + "interface.png";
-                case "enum": return iconPath + "enum.png";
-                case "class": return iconPath + "class.png";
-                case "property":
-                case "var": return iconPath + "variable.png";
-                default: return iconPath + "method.png";
-            }
         }
 
 

@@ -1,0 +1,60 @@
+{
+    "kind" : {
+        "method": "icon/16/types/method.png",
+        "constructor": "icon/16/types/constructor.png",
+        "module": "icon/16/types/module.png",
+        "interface": "icon/16/types/interface.png",
+        "enum": "icon/16/types/enum.png",
+        "class": "icon/16/types/class.png",
+        "property":"icon/16/types/property.png",
+        "var": "icon/16/types/property.png",
+        "snippet" : "icon/16/types/snippet.png",
+        "default": "icon/16/types/method.png"
+    },
+    
+    "tab" : {
+        "search": "icon/16/actions/edit-find.png",
+        "todo": "icon/16/actions/view-task.png",
+        "console":  "icon/16/apps/utilities-terminal.png",
+        "process":  "icon/16/actions/view-process-all.png",
+        "files": "icon/16/actions/view-list-tree.png",
+        "outline":  "icon/16/actions/code-class.png",
+        "bookmarks": "icon/16/actions/bookmarks-organize.png",
+        "properties":  "icon/16/actions/document-properties.png",
+        "problems":  "icon/16/status/task-attention.png",
+        "info":  "icon/16/status/dialog-information.png"
+    },
+    
+    "mimetype" : {
+        
+    },
+    
+    "toolbar" : {
+        "edit_undo": "icon/22/actions/edit-undo.png",
+        "edit_redo": "icon/22/actions/edit-redo.png",
+        "edit_indent":"icon/22/actions/format-indent-more.png",
+        "edit_outdent": "icon/22/actions/format-indent-less.png",
+        "edit_find": "icon/22/actions/edit-find.png",
+        "edit_replace": "icon/22/actions/edit-find-replace.png",
+        "edit_toggleComment": "icon/22/comment.png",
+        "edit_toggleRecording" : "icon/22/actions/media-record.png" ,
+        "edit_replayMacro" : "icon/22/actions/media-playback-start.png",
+        
+        "file_new": "icon/22/actions/document-new.png",
+        "file_close":  "icon/22/actions/project-development-close.png",
+        "file_closeAll": "icon/22/actions/project-development-close-all.png",
+        "file_save": "icon/22/actions/document-save.png",
+        "file_saveAll": "icon/22/actions/document-save-all.png",
+        "file_saveAs": "icon/22/actions/document-save-as.png",
+        
+        "ide_history_next": "icon/22/actions/go-next.png",
+        "ide_history_prev": "icon/22/actions/go-previous.png",
+        
+        "project_open": "icon/22/actions/project-open.png",
+        "project_close": "icon/22/actions/project-development-close.png",
+        "project_build": "icon/22/categories/applications-development.png",
+        "project_refresh": "icon/22/actions/view-refresh.png",
+        "project_run": "icon/22/actions/arrow-right.png"
+    } 
+    
+}

@@ -15,6 +15,7 @@
 
 module Cats.Theme {
 
+
     qx.Theme.define("cats.theme.Color", {
         extend: qx.theme.simple.Color,
 

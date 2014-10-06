@@ -54,9 +54,7 @@ module Cats.Gui {
         }
 
         private createButton(cmd: Cats.Commands.Command) {
-            // var icon = this.iconFolder + cmd.icon;
-            var icon = "icon/22/" + cmd.icon;
-
+           var icon = IDE.icons.toolbar[cmd.name];
             var button = new qx.ui.toolbar.Button(cmd.label, icon);
             button.setShow("icon");
             button.getChildControl("icon").set({
@@ -82,7 +80,7 @@ module Cats.Gui {
                     this.addSeparator();
                 } else {
                     var cmd = Cats.Commands.get(cmdEnum);
-                    if (cmd && cmd.icon) {
+                    if (cmd) {
                         var button = this.createButton(cmd);
                         this.add(button);
                         // part.add(button);

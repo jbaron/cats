@@ -81,13 +81,13 @@ module Cats.Commands {
 
     export class FileCommands {
         static init(registry: (cmd: Command) => void ) {
-            registry({ name: CMDS.file_new, label: "New File", command: newFile, icon: "actions/document-new.png" });
-            registry({ name: CMDS.file_close, label: "Close File", command: closeFile, icon: "actions/project-development-close.png" });
+            registry({ name: CMDS.file_new, label: "New File", command: newFile});
+            registry({ name: CMDS.file_close, label: "Close File", command: closeFile });
             registry({ name: CMDS.file_closeOther, label: "Close Other Files", command: closeOtherFiles });
-            registry({ name: CMDS.file_closeAll, label: "Close All Files", command: closeAllFiles,icon: "actions/project-development-close-all.png"  });
-            registry({ name: CMDS.file_save, label: "Save File", command: saveFile, icon: "actions/document-save.png"  });
-            registry({ name: CMDS.file_saveAll, label: "Save All", command: saveAll, icon: "actions/document-save-all.png" });
-            registry({ name: CMDS.file_saveAs, label: "Save As....", command: saveAs,  icon: "actions/document-save-as.png"});
+            registry({ name: CMDS.file_closeAll, label: "Close All Files", command: closeAllFiles});
+            registry({ name: CMDS.file_save, label: "Save File", command: saveFile});
+            registry({ name: CMDS.file_saveAll, label: "Save All", command: saveAll});
+            registry({ name: CMDS.file_saveAs, label: "Save As....", command: saveAs});
         }
 
     }

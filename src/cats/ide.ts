@@ -50,16 +50,24 @@ module Cats {
         config:IDEConfiguration;
         private static STORE_KEY = "cats.config";
         private lastEntry = <any>{}; 
+        
+        icons;
 
         constructor() {
             super();
             this.catsHomeDir = process.cwd();
             this.config = this.loadConfig();
+            this.icons = this.loadIconsMap();
             this.configure();
             
             window.onpopstate = (data) => {
                 if (data && data.state) this.goto(data.state);
             }
+        }
+
+
+        private loadIconsMap() {
+            return JSON.parse(OS.File.readTextFile("resource/icons.json"));
         }
 
         private goto(entry) {

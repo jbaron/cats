@@ -30,8 +30,6 @@ module Cats.Util {
 
         private static default_type = 'application/octet-stream';
 
-       
-
         static types = {
             ".3gp": "video/3gpp",
             ".a": "application/octet-stream",

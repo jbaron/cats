@@ -110,12 +110,12 @@ module Cats.Commands {
 
     export class ProjectCommands {
         static init(registry) {
-            registry({ name: CMDS.project_open, label: "Open Project....", command: openProject, icon: "actions/project-open.png" });
-            registry({ name: CMDS.project_close, label: "Close project", command: closeProject, icon:"actions/project-development-close.png" });
-            registry({ name: CMDS.project_build, label: "Build Project", command: buildProject, icon: "categories/applications-development.png" });
+            registry({ name: CMDS.project_open, label: "Open Project....", command: openProject});
+            registry({ name: CMDS.project_close, label: "Close project", command: closeProject});
+            registry({ name: CMDS.project_build, label: "Build Project", command: buildProject});
             registry({ name: CMDS.project_validate, label: "Validate Project", command: validateProject });
-            registry({ name: CMDS.project_refresh, label: "Refresh Project", command: refreshProject, icon: "actions/view-refresh.png" });
-            registry({ name: CMDS.project_run, label: "Run Project", command: runProject, icon: "actions/arrow-right.png" });
+            registry({ name: CMDS.project_refresh, label: "Refresh Project", command: refreshProject});
+            registry({ name: CMDS.project_run, label: "Run Project", command: runProject});
             // registry({ name: CMDS.project_debug, label: "Debug Project", command: null, icon: "debug.png" });
             registry({ name: CMDS.project_classDiagram, label: "Class Diagram", command: showDiagram });
             registry({ name: CMDS.project_configure, label: "Settings....", command: configureProject });

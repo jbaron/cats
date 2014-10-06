@@ -64,21 +64,21 @@ module Cats.Commands {
         static init(registry:(cmd:Command)=>void) {
 
             var editorCommands: any[] = [
-               { id: Cats.Commands.CMDS.edit_undo, label: "Undo", icon: "actions/edit-undo.png" },
-               { id: Cats.Commands.CMDS.edit_redo, label: "Redo", icon: "actions/edit-redo.png" },
+               { id: Cats.Commands.CMDS.edit_undo, label: "Undo" },
+               { id: Cats.Commands.CMDS.edit_redo, label: "Redo" },
         
-               { id: Cats.Commands.CMDS.edit_indent, label: "Indent", icon: "actions/format-indent-more.png" },
-               { id: Cats.Commands.CMDS.edit_outdent, label: "Outdent", icon: "actions/format-indent-less.png" },
+               { id: Cats.Commands.CMDS.edit_indent, label: "Indent"},
+               { id: Cats.Commands.CMDS.edit_outdent, label: "Outdent"},
         
-               { id: Cats.Commands.CMDS.edit_find, label: "Find", cmd: "find", icon: "actions/edit-find.png" },
+               { id: Cats.Commands.CMDS.edit_find, label: "Find", cmd: "find"},
                { id: Cats.Commands.CMDS.edit_findNext, label: "Find Next", cmd: "findnext" },
                { id: Cats.Commands.CMDS.edit_findPrev, label: "Find Previous", cmd: "findprevious" },
-               { id: Cats.Commands.CMDS.edit_replace, label: "Find/Replace", cmd: "replace", icon: "actions/edit-find-replace.png", },
+               { id: Cats.Commands.CMDS.edit_replace, label: "Find/Replace", cmd: "replace"},
                { id: Cats.Commands.CMDS.edit_replaceAll, label: "Replace All", cmd: "replaceall" },
         
-               { id: Cats.Commands.CMDS.edit_toggleComment, label: "Toggle Comment", cmd: "togglecomment", icon: "comment.png" },
-               { id: Cats.Commands.CMDS.edit_toggleRecording, label: "Start/Stop Recording", cmd: "togglerecording", icon: "actions/media-record.png"  },
-               { id: Cats.Commands.CMDS.edit_replayMacro, label: "Playback Macro", cmd: "replaymacro", icon: "actions/media-playback-start.png" },
+               { id: Cats.Commands.CMDS.edit_toggleComment, label: "Toggle Comment", cmd: "togglecomment"},
+               { id: Cats.Commands.CMDS.edit_toggleRecording, label: "Start/Stop Recording", cmd: "togglerecording" },
+               { id: Cats.Commands.CMDS.edit_replayMacro, label: "Playback Macro", cmd: "replaymacro"},
                
                { id: Cats.Commands.CMDS.edit_gotoLine, label: "Goto Line", cmd: "gotoline" }
             ];
@@ -91,7 +91,6 @@ module Cats.Commands {
                 var item:Command = {
                     name: config.id,
                     label: config.label,
-                    icon: config.icon,
                     shortcut:null,
                     command: editorCommand(config.cmd),
                 };
@@ -99,7 +98,7 @@ module Cats.Commands {
                 registry(item);
             });
             
-            registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
+            registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles});
             registry({name:CMDS.source_format, label:"Format Code", command: formatText});
             registry({name:CMDS.edit_cut, label:"Cut", command: () => {document.execCommand("cut");}});
             registry({name:CMDS.edit_copy, label:"Copy", command: () => {document.execCommand("copy");}});

@@ -78,7 +78,8 @@ module Cats.Gui {
                 iconPath: "meta",
                 iconOptions: {
                     converter: (data) => {
-                        return this.getIconForKind(data);
+                        var icon = IDE.icons.kind[data] || IDE.icons.kind["default"];
+                        return icon;
                     }
                 }
             });
@@ -202,24 +203,7 @@ module Cats.Gui {
             this.handler.bindKey("Return|Tab", () => { this.insertSelectedItem(); });
         }
 
-        private getIconForKind(name: string) {
-            var iconPath = "icon/16/types/";
-            switch (name) {
-                case "function":
-                case "keyword":
-                case "method": return iconPath + "method.png";
-                case "constructor": return iconPath + "constructor.png";
-                case "module": return iconPath + "module.png";
-                case "interface": return iconPath + "interface.png";
-                case "enum": return iconPath + "enum.png";
-                case "class": return iconPath + "class.png";
-                case "property":
-                case "var": return iconPath + "property.png";
-                case "snippet" : return iconPath + "snippet.png";
-                default: return iconPath + "method.png";
-            }
-        }
-
+   
         private isExecutable(kind) {
             if (kind === "method" || kind === "function" || kind === "constructor") return true;
             return false;
