@@ -34,30 +34,76 @@
         <h2>
 <a name="cats" class="anchor" href="#cats"><span class="octicon octicon-link"></span></a>CATS</h2>
 
-<p>CATS is an IDE for the TypeScript developer. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. 
-CATS itself is written in TypeScript and even being developed using CATS as the IDE. </p>
+<p>CATS is an IDE for TypeScript and Web developers. CATS is open source software released under the Apache 2.0 license and it runs on Linux, Windows and OS X. 
+CATS itself is also written in TypeScript, so you can easily customize it if required.</p>
 
-<p>Right now CATS already has built-in support for the following features:</p>
+<p>And although still work in progress, CATS is already very usable and has built-in support for the following features:</p>
 
 <ul>
 <li>Intelligent code editor and code completion for TypeScript sources.</li>
 </ul><p><img width="680" src="https://raw.github.com/jbaron/cats/master/artifacts/cats_screenshot.png"></p>
 
 <ul>
-<li>Syntax highlighting for over 110 languages (TextMate/Sublime Text.tmlanguage files can be imported)</li>
+<li>Syntax highlighting for over 110 languages (TextMate/Sublime Text.tmlanguage files can be imported).</li>
+<li>Support for code snippets.</li>
 <li>Support for refactoring and smart navigation.</li>
 <li>TypeScript compilation to JavaScript.</li>
 <li>Validation of the source code while you are typing.</li>
 <li>Linter support for TypeScript and JavaScript.</li>
 <li>Generate API documentation based on the comments in the source code.</li>
-<li>Editing features like folding and indentation.</li>
+<li>Editing features like folding, indentation and code formatting.</li>
 <li>Running your application from within IDE and using the WebKit debugger to debug.</li>
-<li>Support for external build systems like Grunt, Jake and Makefiles.</li>
+<li>Support for external build systems like Grunt, Jake, Gulp and Makefiles.</li>
 </ul><h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>The easiest way to start using CATS it to follow these simple steps:</p>
+
+<ul>
+<li>
+<p>In case you haven't already installed nodewebkit on your machine, do that first. In case you have nodejs installed, you can install
+nodewebkit by typing the following command (using npm, the node package manager):</p>
+
+<pre><code>  npm install -g nodewebkit
+</code></pre>
+
+<p>Alternatively you can download Nodewebkit from the following page: <a href="https://github.com/rogerwang/node-webkit">Nodewebkit downloads</a>. </p>
+</li>
+<li>
+<p>Download the CATS package (it is a file called cats.nw). There are two versions available, a stable version meant for daily work 
+and an unstable version if you want to try out the latest and greatest features. Download either one:</p>
+
+<p><a href="https://github.com/jbaron/cats/releases/download/latest_stable/cats.nw">CATS latest stable version</a> </p>
+
+<p><a href="https://github.com/jbaron/cats/releases/download/latest_unstable/cats.nw">CATS latest unstable version</a> </p>
+</li>
+</ul><p>After you installed Nodewebkit, just go to the directory where you downloaded cats.nw and type:</p>
+
+<pre lang="shell"><code>nodewebkit cats.nw
+</code></pre>
+
+<p>If you already have a directory with TypeScript files, just select that directory from "Open project..." 
+to start editing your files.</p>
+
+<p>There are some commandline paramters you can use. For example to open CATS with a specific project, use:</p>
+
+<pre lang="shell"><code>nodewebkit cats.nw --project &lt;/path/projectDirectory&gt;
+</code></pre>
+
+<p>Please note that you have to specify the full path to the project directory you want to open. </p>
+
+<p>To open CATS with the same project as last time you opened it, you can use the --restore option:</p>
+
+<pre lang="shell"><code>nodewebkit cats.nw --restore
+</code></pre>
+
+<h2>
 <a name="building" class="anchor" href="#building"><span class="octicon octicon-link"></span></a>Building</h2>
 
-<p>In order to build CATS, ensure that you have 
-<a href="http://git-scm.com/downloads">Git</a> and <a href="http://nodejs.org/">Node.js</a> installed.</p>
+<p>In case you want to make changes to CATS and want to do build new versions, there are a few 
+additional steps to do.</p>
+
+<p>Ensure that you have <a href="http://git-scm.com/downloads">Git</a> and <a href="http://nodejs.org/">Node.js</a> installed.</p>
 
 <p>Clone a copy of the CATS repo:</p>
 
@@ -84,33 +130,6 @@ jake lib/tsworker.js        # Builds the Web workers module
 jake clean                  # Cleans the compiler output, declare files, and tests
 jake default                # Builds the full CATS application
 jake -T                     # List the above commands. 
-</code></pre>
-
-<h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
-
-<p>From the cats directory run </p>
-
-<pre lang="shell"><code>nodewebkit
-</code></pre>
-
-<p>There are some option you can use. For example to open CATS with a specific project, use:</p>
-
-<pre lang="shell"><code>nodewebkit --project &lt;/path/projectDirectory&gt;
-</code></pre>
-
-<p>Although you can use a relative path for specifying the project directory, 
-please notice it is relative to the CATS installation directory and not the 
-directory you are currently in. So normally better to use a full path.</p>
-
-<p>To open CATS with the same project as last time use the --restore option:</p>
-
-<pre lang="shell"><code>nodewebkit --restore
-</code></pre>
-
-<p>With CATS you also get a samples directory with some small projects you can try out. Of course you can also open a directory that contains your own project. </p>
-
-<pre lang="shell"><code>nodewebkit --project samples/greeter
 </code></pre>
 
 <h2>
@@ -144,23 +163,15 @@ already contributed to this project.</p>
 <p>And of course some of the main 3rd party components that we have used within CATS and couldn't have done without:</p>
 
 <ul>
-<li>
-<a href="http://www.typescriptlang.org">TypeScript</a> (of course), developed by Microsoft.</li>
-<li>
-<a href="http://www.qooxdoo.org">Qooxdoo</a>, an excellent JavaScript library with many great UI widgets.<br>
-</li>
-<li>
-<a href="http://ace.ajax.org">ACE</a>, an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.</li>
-<li>
-<a href="https://github.com/rogerwang/node-webkit">Node-webkit</a>. This is a great initiative from Intel to allow Node libraries to be used within a web page. 
-CATS use this to read and write local files without the need for a server-side component.</li>
-<li>
-<a href="https://github.com/palantir/tslint">TSLint</a>. A linter for the TypeScript language that help to improve yuor code base even further.</li>
-<li>
-<a href="https://github.com/sebastian-lenz/typedoc">TypeDoc</a>. This is a documentation generator for TypeScript projects that supports
-theming and a lot of other very impressive features. </li>
-<li>
-<a href="http://www.jrromero.net/tools/jsUML2">jsUML2</a>. This is library for creating UML diagrams done in pure JavaScript.</li>
+<li><p><a href="http://www.typescriptlang.org">TypeScript</a> (of course), developed by Microsoft.</p></li>
+<li><p><a href="http://www.qooxdoo.org">Qooxdoo</a>, an excellent JavaScript library with many great UI widgets.  </p></li>
+<li><p><a href="http://ace.ajax.org">ACE</a>, an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.</p></li>
+<li><p><a href="https://github.com/rogerwang/node-webkit">Node-webkit</a>. This is a great initiative from Intel to allow Node libraries to be used within a web page. 
+CATS use this to read and write local files without the need for a server-side component.</p></li>
+<li><p><a href="https://github.com/palantir/tslint">TSLint</a>. A linter for the TypeScript language that helps to improve your code base even further.</p></li>
+<li><p><a href="https://github.com/sebastian-lenz/typedoc">TypeDoc</a>. This is a documentation generator for TypeScript projects that supports
+theming and a lot of other very impressive features. </p></li>
+<li><p><a href="http://www.jrromero.net/tools/jsUML2">jsUML2</a>. This is library for creating UML diagrams done in pure JavaScript.</p></li>
 </ul><h2>
 <a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>Todo</h2>
 
