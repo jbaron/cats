@@ -103,6 +103,18 @@ task('compile', {async:true}, function(outFile, options) {
 		ex.run();	
 });
 
+desc("Build the cats.nw distrubution file");
+task('dist', {async: true}, function () {
+    jake.rmRf("../cats.nw");    
+  
+    var cmd = "zip -r ../cats.nw lib/* resource/* node_modules/* CopyrightNotice.txt LICENSE.txt index.html package.json";
+    
+    jake.exec([cmd], {printStdout: true}, function () {
+        console.log('Created cats.nw');
+        complete();
+    });
+});
+
 
 desc("Builds the main frontend for CATS");
 file("lib/main.js" , catsOptions, {async:true}, function() {

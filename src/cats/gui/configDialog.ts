@@ -231,10 +231,10 @@ module Cats.Gui {
             this.addCheckBox("Generate map source files", "mapSourceFiles");
             this.addCheckBox("Propagate enum constants", "propagateEnumConstants");
             this.addCheckBox("allowAutomaticSemicolonInsertion", "allowAutomaticSemicolonInsertion");
-            this.addSelectBox("JavaScript target", "codeGenTarget", this.jsTarget);
-            this.addSelectBox("Module generation", "moduleGenTarget", this.moduleGenTarget);
-            this.addTextField("Output to directory", "outDirOption");
-            this.addTextField("Output to single file", "outFileOption");
+            this.addSelectBox("JavaScript target", "target", this.jsTarget);
+            this.addSelectBox("Module generation", "module", this.moduleGenTarget);
+            this.addTextField("Output to directory", "outDir");
+            this.addTextField("Output to single file", "out");
         }
     }
 

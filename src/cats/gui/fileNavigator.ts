@@ -33,7 +33,6 @@ module Cats.Gui {
         };
 
         private directoryModels = {};
-        private iconsForMime = {};
         private watcher: OS.File.Watcher;
         private parents = {};
         private projectDir: string;
@@ -43,7 +42,6 @@ module Cats.Gui {
             super(null, "label", "children");
             this.setDecorator(null);
             this.setPadding(0, 0, 0, 0);
-            this.loadAvailableIcons();
             var contextMenu = new FileContextMenu(this);
             this.setContextMenu(contextMenu);
         }
@@ -100,32 +98,13 @@ module Cats.Gui {
             return null;
         }
 
-        /**
-         * Get all available icons for mime-types
-         */
-        private loadAvailableIcons() {
-            var iconFolder = "resource/qx/icon/Oxygen/16/mimetypes";
-            var files = OS.File.readDir(iconFolder);
-            files.forEach((file) => {
-                if (file.isFile) {
-                    var mimetype = PATH.basename(file.name, ".png");
-                    this.iconsForMime[mimetype] = file.name;
-                }
-            });
-
-        }
-
-
+      
 
         /**
          * Get an icon for a file based on its mimetype
          */
         private getIconForMimeType(mimetype: string) {
-          
-            var icon = this.iconsForMime[mimetype];
-            if (!icon) icon = this.iconsForMime["text-plain"];
-            icon = "icon/16/mimetypes/" + icon;
-            // IDE.console.log("Icon: " + icon);
+            var icon = IDE.icons.mimetype[mimetype] || IDE.icons.mimetype["text/plain"];
             return icon;
         }
 
@@ -135,9 +114,9 @@ module Cats.Gui {
             this.setIconOptions({
                 converter: (value, model) => {
                     if (value.getDirectory()) {
-                        return this.getIconForMimeType("inode-directory");
+                        return this.getIconForMimeType("inode/directory");
                     }
-                    var mimetype: string = Util.MimeTypeFinder.lookup(value.getLabel()).replace("/", "-");
+                    var mimetype: string = Util.MimeTypeFinder.lookup(value.getLabel());
                     return this.getIconForMimeType(mimetype);
                 }
             });

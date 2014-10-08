@@ -33,7 +33,18 @@
     
     
     "mimetype" : {
-        
+        "text/css" : "icon/16/mimetypes/text-css.png",
+        "text/plain" : "icon/16/mimetypes/text-plain.png",
+        "text/html" : "icon/16/mimetypes/text-html.png",
+        "application/javascript": "icon/16/mimetypes/application-javascript.png",
+        "application/x-typescript": "icon/16/mimetypes/application-typescript.png",
+
+        "application/pdf" : "icon/16/mimetypes/application-pdf.png",
+        "inode/directory" : "icon/16/mimetypes/inode-directory.png",
+        "image/png" : "icon/16/mimetypes/image-x-generic.png",
+        "image/gif" : "icon/16/mimetypes/image-x-generic.png",
+        "image/jpeg" : "icon/16/mimetypes/image-x-generic.png",
+        "application/zip" : "icon/16/mimetypes/application-x-archive.png"
     },
     
     "toolbar" : {

@@ -21,7 +21,7 @@ module Cats.Theme {
 
         colors:
         {
-            "light-background": "#A0ACBF",
+            "light-background": "#abc", // "#A0ACBF",
             "button-box-bright": "#B0BCCF",
             "link" : "black"
         }

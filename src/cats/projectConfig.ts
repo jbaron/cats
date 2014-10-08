@@ -63,18 +63,18 @@ module Cats {
          */
         private loadDefault() : ProjectConfiguration {
             var result:ProjectConfiguration = {
-                version: "1.1",
+                version: "1.3",
                 main: "index.html",
                 src: null, //If not set, the whole project directory is searched for source files
                 buildOnSave: false,
                 compiler: {
-                    "moduleGenTarget": 1,
+                    "module": ts.ModuleKind.None,
                     "noLib": false,
                     "removeComments": false,
                     "noImplicitAny" : false,
                     "generateDeclarationFiles": false,
                     "mapSourceFiles": false,
-                    "codeGenTarget": 1,
+                    "target": ts.ScriptTarget.ES5,
                 },
                 codingStandards: {
                     newLineMode: "unix",
