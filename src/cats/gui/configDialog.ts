@@ -200,21 +200,20 @@ module Cats.Gui {
     }
 
 
-
     /**
      * Dialog window to set the compiler settings
      */
     class ProjectCompilerSettings extends ConfigDialogPage {
 
         private moduleGenTarget = [
-            { label: "none", model: 0 },
-            { label: "commonjs", model: 1 },
-            { label: "amd", model: 2 },
+            { label: "none", model: ts.ModuleGenTarget.Unspecified },
+            { label: "commonjs", model: ts.ModuleGenTarget.Synchronous },
+            { label: "amd", model: ts.ModuleGenTarget.Asynchronous },
         ];
 
         private jsTarget = [
-            { label: "es3", model: 0 },
-            { label: "es5", model: 1 },
+            { label: "es3", model: ts.ScriptTarget.ES3 },
+            { label: "es5", model: ts.ScriptTarget.ES5 },
         ];
 
         constructor() {
