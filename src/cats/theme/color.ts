@@ -46,13 +46,7 @@ module Cats.Theme {
 
     qx.Theme.define( "cats.theme.Color", {
         
-        colors2:
-        {
-            "light-background": "#abc", // "#A0ACBF",
-            "button-box-bright": "#B0BCCF",
-            "link": "black"
-        },
-
+     
         colors:
         {
             // main
@@ -64,7 +58,7 @@ module Cats.Theme {
             // backgrounds
             "background-selected": "#6694E3",
             "background-selected-disabled": "#CDCDCD",
-            "background-selected-dark": "#5685D6",
+            "background-selected-dark": base.accent,
             "background-disabled": "#F7F7F7",
             "background-disabled-checked": "#BBBBBB",
             "background-pane": "#FAFBFE",

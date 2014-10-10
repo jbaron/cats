@@ -22,7 +22,7 @@ module Cats {
         
         private static Registry = {}; 
         
-        label = "Untitled"; // Labe to be used on the tab page
+        label = "Untitled"; // Label to be used on the tab page
  
         // The project this editor belongs to
         project = IDE.project;

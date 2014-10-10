@@ -467,8 +467,8 @@ module Cats.TSWorker {
             if (! info) return {};
             
             var result = {
-                description : ts.SymbolDisplayPart.toString(info.displayParts),
-                docComment : ts.SymbolDisplayPart.toString(info.documentation)
+                description : ts.displayPartsToString(info.displayParts),
+                docComment : ts.displayPartsToString(info.documentation)
             };
             return result;
         }
@@ -507,10 +507,29 @@ module Cats.TSWorker {
             return this.getOutlineModelData(fileName, result);
         }
 
+
         public getRenameInfo(fileName:string, cursor: Position) {
             var script = this.lsHost.getScript(fileName);
             var pos = script.getPositionFromCursor(cursor);
             var result = this.ls.getRenameInfo(fileName, pos);
+            return result;
+        }
+
+
+        public findRenameLocations(fileName: string, position: Position, findInStrings: boolean, findInComments: boolean) {
+            var script = this.lsHost.getScript(fileName);
+            var pos = script.getPositionFromCursor(position);
+            var result: Cats.FileRange[] = [];
+            var entries = this.ls.findRenameLocations(fileName,pos,findInStrings,findInComments);
+            for (var i = 0; i < entries.length; i++) {
+                var ref = entries[i];
+                var refScript = this.lsHost.getScript(ref.fileName);
+                result.push({
+                    fileName: ref.fileName,
+                    range: refScript.getRange(ref.textSpan.start(), ref.textSpan.end()),
+                    message: refScript.getLine(ref.textSpan.start(), ref.textSpan.end())
+                });
+            }
             return result;
         }
 

@@ -45,7 +45,7 @@ module Cats.Refactor {
             
             var newName = prompt("Rename " + data.displayName +  " into:");
             if (!newName) return;
-            project.iSense.getCrossReference("getReferencesAtPosition", fileName, pos, (err, data: Cats.FileRange[]) => {
+            project.iSense.findRenameLocations(fileName, pos, false, false, (err, data: Cats.FileRange[]) => {
                 renameOccurences(data, newName);
             });
         });

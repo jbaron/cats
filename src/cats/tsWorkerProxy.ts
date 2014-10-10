@@ -63,6 +63,11 @@ module Cats {
             this.perform("getDefinitionAtPosition", sessionName, cursor, cb);
         }
 
+
+        findRenameLocations(fileName: string, position: Position, findInStrings: boolean, findInComments: boolean, cb: (err: any, data: Cats.FileRange[]) => void) {
+            this.perform("findRenameLocations", fileName, position, findInStrings, findInComments, cb);
+        }
+ 
         getCrossReference(type: string, sessionName: string, cursor: Cats.Position, cb: (err: any, data: Cats.FileRange[]) => void) {
             this.perform("getCrossReference", type, sessionName, cursor, cb);
         }

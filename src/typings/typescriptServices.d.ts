@@ -15,6 +15,11 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
+        A_file_cannot_have_a_reference_to_itself: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
         Trailing_comma_not_allowed: {
             code: number;
             category: DiagnosticCategory;
@@ -1286,6 +1291,11 @@ declare module ts {
             key: string;
         };
         Property_0_is_protected_and_only_accessible_through_an_instance_of_class_1: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        The_0_operator_is_not_allowed_for_boolean_types_Consider_using_1_instead: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -2578,30 +2588,44 @@ declare module ts {
         getTypeOfNode(node: Node): Type;
         getApparentType(type: Type): ApparentType;
         typeToString(type: Type, enclosingDeclaration?: Node, flags?: TypeFormatFlags): string;
+        writeType(type: Type, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
         symbolToString(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): string;
-        typeToDisplayParts(type: Type, enclosingDeclaration?: Node, flags?: TypeFormatFlags): SymbolDisplayPart[];
-        symbolToDisplayParts(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): SymbolDisplayPart[];
+        writeSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration?: Node, meaning?: SymbolFlags, flags?: SymbolFormatFlags): void;
         getFullyQualifiedName(symbol: Symbol): string;
         getAugmentedPropertiesOfApparentType(type: Type): Symbol[];
         getRootSymbol(symbol: Symbol): Symbol;
         getContextualType(node: Node): Type;
         getResolvedSignature(node: CallExpression, candidatesOutArray?: Signature[]): Signature;
+        getSignatureFromDeclaration(declaration: SignatureDeclaration): Signature;
+        writeSignature(signatures: Signature, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        writeTypeParameter(tp: TypeParameter, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        writeTypeParametersOfSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaraiton?: Node, flags?: TypeFormatFlags): void;
+        isImplementationOfOverload(node: FunctionDeclaration): boolean;
         getEnumMemberValue(node: EnumMember): number;
         isValidPropertyAccess(node: PropertyAccess, propertyName: string): boolean;
+        getAliasedSymbol(symbol: Symbol): Symbol;
     }
-    interface TextWriter {
-        write(s: string): void;
-        trackSymbol(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): void;
+    interface SymbolWriter {
+        writeKind(text: string, kind: SymbolDisplayPartKind): void;
+        writeSymbol(text: string, symbol: Symbol): void;
         writeLine(): void;
         increaseIndent(): void;
         decreaseIndent(): void;
-        getText(): string;
+        clear(): void;
+        trackSymbol(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): void;
     }
     enum TypeFormatFlags {
         None = 0,
         WriteArrayAsGenericType = 1,
         UseTypeOfFunction = 2,
         NoTruncation = 4,
+        WriteArrowStyleSignature = 8,
+        WriteOwnNameForAnyLike = 16,
+        WriteTypeArgumentsOfSignature = 32,
+    }
+    enum SymbolFormatFlags {
+        None = 0,
+        WriteTypeParametersOrArguments = 1,
     }
     enum SymbolAccessibility {
         Accessible = 0,
@@ -2626,8 +2650,8 @@ declare module ts {
         hasSemanticErrors(): boolean;
         isDeclarationVisible(node: Declaration): boolean;
         isImplementationOfOverload(node: FunctionDeclaration): boolean;
-        writeTypeAtLocation(location: Node, enclosingDeclaration: Node, flags: TypeFormatFlags, writer: TextWriter): void;
-        writeReturnTypeOfSignatureDeclaration(signatureDeclaration: SignatureDeclaration, enclosingDeclaration: Node, flags: TypeFormatFlags, writer: TextWriter): void;
+        writeTypeAtLocation(location: Node, enclosingDeclaration: Node, flags: TypeFormatFlags, writer: SymbolWriter): void;
+        writeReturnTypeOfSignatureDeclaration(signatureDeclaration: SignatureDeclaration, enclosingDeclaration: Node, flags: TypeFormatFlags, writer: SymbolWriter): void;
         isSymbolAccessible(symbol: Symbol, enclosingDeclaration: Node, meaning: SymbolFlags): SymbolAccessiblityResult;
         isImportDeclarationEntityNameReferenceDeclarationVisibile(entityName: EntityName): SymbolAccessiblityResult;
         getConstantValue(node: PropertyAccess): number;
@@ -2660,6 +2684,7 @@ declare module ts {
         Merged = 16777216,
         Transient = 33554432,
         Prototype = 67108864,
+        Undefined = 134217728,
         Value,
         Type,
         Namespace,
@@ -3036,17 +3061,6 @@ declare module ts {
         tab = 9,
         verticalTab = 11,
     }
-    class SymbolDisplayPart {
-        text: string;
-        kind: SymbolDisplayPartKind;
-        symbol: Symbol;
-        constructor(text: string, kind: SymbolDisplayPartKind, symbol: Symbol);
-        toJSON(): {
-            text: string;
-            kind: string;
-        };
-        static toString(parts: SymbolDisplayPart[]): string;
-    }
     enum SymbolDisplayPartKind {
         aliasName = 0,
         className = 1,
@@ -3054,25 +3068,22 @@ declare module ts {
         fieldName = 3,
         interfaceName = 4,
         keyword = 5,
-        labelName = 6,
-        lineBreak = 7,
-        numericLiteral = 8,
-        stringLiteral = 9,
-        localName = 10,
-        methodName = 11,
-        moduleName = 12,
-        namespaceName = 13,
-        operator = 14,
-        parameterName = 15,
-        propertyName = 16,
-        punctuation = 17,
-        space = 18,
-        anonymousTypeIndicator = 19,
-        text = 20,
-        typeParameterName = 21,
-        enumMemberName = 22,
-        functionName = 23,
-        regularExpressionLiteral = 24,
+        lineBreak = 6,
+        numericLiteral = 7,
+        stringLiteral = 8,
+        localName = 9,
+        methodName = 10,
+        moduleName = 11,
+        operator = 12,
+        parameterName = 13,
+        propertyName = 14,
+        punctuation = 15,
+        space = 16,
+        text = 17,
+        typeParameterName = 18,
+        enumMemberName = 19,
+        functionName = 20,
+        regularExpressionLiteral = 21,
     }
     interface CancellationToken {
         isCancellationRequested(): boolean;
@@ -3131,10 +3142,12 @@ declare module ts {
     function isRootedDiskPath(path: string): boolean;
     function getNormalizedPathComponents(path: string, currentDirectory: string): string[];
     function getNormalizedPathFromPathComponents(pathComponents: string[]): string;
-    function getRelativePathToDirectoryOrUrl(directoryPathOrUrl: string, relativeOrAbsolutePath: string, currentDirectory: string, isAbsolutePathAnUrl: boolean): string;
+    function getRelativePathToDirectoryOrUrl(directoryPathOrUrl: string, relativeOrAbsolutePath: string, currentDirectory: string, getCanonicalFileName: (fileName: string) => string, isAbsolutePathAnUrl: boolean): string;
     function getBaseFilename(path: string): string;
     function combinePaths(path1: string, path2: string): string;
     function fileExtensionIs(path: string, extension: string): boolean;
+    function removeFileExtension(path: string): string;
+    function escapeString(s: string): string;
     interface ObjectAllocator {
         getNodeConstructor(kind: SyntaxKind): new () => Node;
         getSymbolConstructor(): new (flags: SymbolFlags, name: string) => Symbol;
@@ -3156,13 +3169,12 @@ declare module ts {
 }
 declare module ts {
     function getNodeConstructor(kind: SyntaxKind): new () => Node;
-    function getModuleNameFromFilename(filename: string): string;
     function getSourceFileOfNode(node: Node): SourceFile;
     function nodePosToString(node: Node): string;
     function getStartPosOfNode(node: Node): number;
     function getTokenPosOfNode(node: Node, sourceFile?: SourceFile): number;
-    function getSourceTextOfNodeFromSourceText(sourceText: string, node: Node): string;
-    function getSourceTextOfNode(node: Node): string;
+    function getTextOfNodeFromSourceText(sourceText: string, node: Node): string;
+    function getTextOfNode(node: Node): string;
     function escapeIdentifier(identifier: string): string;
     function unescapeIdentifier(identifier: string): string;
     function identifierToString(identifier: Identifier): string;
@@ -3170,6 +3182,7 @@ declare module ts {
     function createDiagnosticForNodeFromMessageChain(node: Node, messageChain: DiagnosticMessageChain, newLine: string): Diagnostic;
     function getErrorSpanForNode(node: Node): Node;
     function isExternalModule(file: SourceFile): boolean;
+    function isDeclarationFile(file: SourceFile): boolean;
     function isPrologueDirective(node: Node): boolean;
     function getLeadingCommentRangesOfNode(node: Node, sourceFileOfNode?: SourceFile): CommentRange[];
     function getJsDocComments(node: Declaration, sourceFileOfNode: SourceFile): CommentRange[];
@@ -3197,19 +3210,18 @@ declare module ts {
     function bindSourceFile(file: SourceFile): void;
 }
 declare module ts {
+    function getIndentString(level: number): string;
     function shouldEmitToOwnFile(sourceFile: SourceFile, compilerOptions: CompilerOptions): boolean;
     function isExternalModuleOrDeclarationFile(sourceFile: SourceFile): boolean;
     function emitFiles(resolver: EmitResolver, targetSourceFile?: SourceFile): EmitResult;
 }
 declare module ts {
     function getDeclarationOfKind(symbol: Symbol, kind: SyntaxKind): Declaration;
+    interface StringSymbolWriter extends SymbolWriter {
+        string(): string;
+    }
+    function getSingleLineStringWriter(): StringSymbolWriter;
     function createTypeChecker(program: Program, fullTypeCheck: boolean): TypeChecker;
-    function spacePart(): SymbolDisplayPart;
-    function keywordPart(kind: SyntaxKind): SymbolDisplayPart;
-    function punctuationPart(kind: SyntaxKind): SymbolDisplayPart;
-    function operatorPart(kind: SyntaxKind): SymbolDisplayPart;
-    function textPart(text: string): SymbolDisplayPart;
-    function symbolPart(text: string, symbol: Symbol): SymbolDisplayPart;
 }
 declare module TypeScript {
     var DiagnosticCode: {
@@ -3702,7 +3714,6 @@ declare module TypeScript {
     }
 }
 declare module TypeScript {
-    var LocalizedDiagnosticMessages: ts.Map<any>;
     class Location {
         private _fileName;
         private _lineMap;
@@ -6165,30 +6176,8 @@ declare module ts {
         function collectElements(sourceFile: SourceFile): OutliningSpan[];
     }
 }
-declare module TypeScript.Services {
-    class NavigationBarItemGetter {
-        private hasGlobalNode;
-        private getIndent(node);
-        private getKindModifiers(modifiers);
-        getItems(node: SourceUnitSyntax): ts.NavigationBarItem[];
-        private getChildNodes(nodes);
-        private getTopLevelNodes(node);
-        private addTopLevelNodes(nodes, topLevelNodes);
-        isTopLevelFunctionDeclaration(functionDeclaration: FunctionDeclarationSyntax): boolean;
-        private getItemsWorker(getNodes, createItem);
-        private merge(target, source);
-        private getNavigationBarItem(text, kind, kindModifiers, spans, childItems?, indent?);
-        private createChildItem(node);
-        private createTopLevelItem(node);
-        private getModuleNames(node);
-        private getModuleNamesHelper(name, result);
-        private createModuleItem(node);
-        private createFunctionItem(node);
-        private createSourceUnitItem(node);
-        private createClassItem(node);
-        private createEnumItem(node);
-        private createIterfaceItem(node);
-    }
+declare module ts.NavigationBar {
+    function getNavigationBarItems(sourceFile: SourceFile): NavigationBarItem[];
 }
 declare module TypeScript.Services.Breakpoints {
     function getBreakpointLocation(syntaxTree: SyntaxTree, askedPos: number): TextSpan;
@@ -6220,6 +6209,7 @@ declare module ts {
     function findTokenOnLeftOfPosition(file: SourceFile, position: number): Node;
     function findNextToken(previousToken: Node, parent: Node): Node;
     function findPrecedingToken(position: number, sourceFile: SourceFile, startNode?: Node): Node;
+    function isToken(n: Node): boolean;
 }
 declare module TypeScript.Services.Formatting {
     interface ITextSnapshot {
@@ -6808,32 +6798,6 @@ declare module TypeScript.ASTHelpers {
     function getModuleNames(name: ISyntaxElement, result?: ISyntaxToken[]): ISyntaxToken[];
 }
 declare module TypeScript {
-    class MemberName {
-        prefix: string;
-        suffix: string;
-        isString(): boolean;
-        isArray(): boolean;
-        isMarker(): boolean;
-        toString(): string;
-        static memberNameToString(memberName: MemberName, markerInfo?: number[], markerBaseLength?: number): string;
-        static create(text: string): MemberName;
-        static create(entry: MemberName, prefix: string, suffix: string): MemberName;
-    }
-    class MemberNameString extends MemberName {
-        text: string;
-        constructor(text: string);
-        isString(): boolean;
-    }
-    class MemberNameArray extends MemberName {
-        delim: string;
-        entries: MemberName[];
-        isArray(): boolean;
-        add(entry: MemberName): void;
-        addAll(entries: MemberName[]): void;
-        constructor();
-    }
-}
-declare module TypeScript {
     function stripStartAndEndQuotes(str: string): string;
     function isSingleQuoted(str: string): boolean;
     function isDoubleQuoted(str: string): boolean;
@@ -6876,7 +6840,7 @@ declare module ts {
         getFlags(): SymbolFlags;
         getName(): string;
         getDeclarations(): Declaration[];
-        getDocumentationComment(): string;
+        getDocumentationComment(): SymbolDisplayPart[];
     }
     interface Type {
         getFlags(): TypeFlags;
@@ -6894,6 +6858,7 @@ declare module ts {
         getTypeParameters(): Type[];
         getParameters(): Symbol[];
         getReturnType(): Type;
+        getDocumentationComment(): SymbolDisplayPart[];
     }
     interface SourceFile {
         getSourceUnit(): TypeScript.SourceUnitSyntax;
@@ -6926,12 +6891,12 @@ declare module ts {
         getCompletionsAtPosition(fileName: string, position: number, isMemberCompletion: boolean): CompletionInfo;
         getCompletionEntryDetails(fileName: string, position: number, entryName: string): CompletionEntryDetails;
         getQuickInfoAtPosition(fileName: string, position: number): QuickInfo;
-        getTypeAtPosition(fileName: string, position: number): TypeInfo;
         getNameOrDottedNameSpan(fileName: string, startPos: number, endPos: number): TypeScript.TextSpan;
         getBreakpointStatementAtPosition(fileName: string, position: number): TypeScript.TextSpan;
         getSignatureHelpItems(fileName: string, position: number): SignatureHelpItems;
         getSignatureAtPosition(fileName: string, position: number): SignatureInfo;
         getRenameInfo(fileName: string, position: number): RenameInfo;
+        findRenameLocations(fileName: string, position: number, findInStrings: boolean, findInComments: boolean): RenameLocation[];
         getDefinitionAtPosition(fileName: string, position: number): DefinitionInfo[];
         getReferencesAtPosition(fileName: string, position: number): ReferenceEntry[];
         getOccurrencesAtPosition(fileName: string, position: number): ReferenceEntry[];
@@ -7005,6 +6970,10 @@ declare module ts {
         span: TypeScript.TextSpan;
         newText: string;
     }
+    interface RenameLocation {
+        textSpan: TypeScript.TextSpan;
+        fileName: string;
+    }
     interface ReferenceEntry {
         textSpan: TypeScript.TextSpan;
         fileName: string;
@@ -7044,10 +7013,9 @@ declare module ts {
         containerKind: string;
         containerName: string;
     }
-    interface MemberName {
-        prefix: string;
-        suffix: string;
+    interface SymbolDisplayPart {
         text: string;
+        kind: string;
     }
     interface QuickInfo {
         kind: string;
@@ -7055,13 +7023,6 @@ declare module ts {
         textSpan: TypeScript.TextSpan;
         displayParts: SymbolDisplayPart[];
         documentation: SymbolDisplayPart[];
-    }
-    interface TypeInfo {
-        memberName: TypeScript.MemberName;
-        docComment: string;
-        fullSymbolName: string;
-        kind: string;
-        textSpan: TypeScript.TextSpan;
     }
     interface RenameInfo {
         canRename: boolean;
@@ -7106,9 +7067,8 @@ declare module ts {
         name: string;
         kind: string;
         kindModifiers: string;
-        type: string;
-        fullSymbolName: string;
-        docComment: string;
+        displayParts: SymbolDisplayPart[];
+        documentation: SymbolDisplayPart[];
     }
     interface EmitOutput {
         outputFiles: OutputFile[];
@@ -7181,6 +7141,7 @@ declare module ts {
         static typeParameterElement: string;
         static primitiveType: string;
         static label: string;
+        static alias: string;
     }
     class ScriptElementKindModifier {
         static none: string;
@@ -7207,6 +7168,16 @@ declare module ts {
         static moduleName: string;
         static typeParameterName: string;
     }
+    function displayPartsToString(displayParts: SymbolDisplayPart[]): string;
+    function spacePart(): SymbolDisplayPart;
+    function keywordPart(kind: SyntaxKind): SymbolDisplayPart;
+    function punctuationPart(kind: SyntaxKind): SymbolDisplayPart;
+    function operatorPart(kind: SyntaxKind): SymbolDisplayPart;
+    function textPart(text: string): SymbolDisplayPart;
+    function lineBreakPart(): SymbolDisplayPart;
+    function symbolPart(text: string, symbol: Symbol): SymbolDisplayPart;
+    function typeToDisplayParts(typechecker: TypeChecker, type: Type, enclosingDeclaration?: Node, flags?: TypeFormatFlags): SymbolDisplayPart[];
+    function symbolToDisplayParts(typeChecker: TypeChecker, symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags, flags?: SymbolFormatFlags): SymbolDisplayPart[];
     function getDefaultCompilerOptions(): CompilerOptions;
     function compareDataObjects(dst: any, src: any): boolean;
     class OperationCanceledException {
@@ -7219,7 +7190,7 @@ declare module ts {
         throwIfCancellationRequested(): void;
     }
     function createDocumentRegistry(): DocumentRegistry;
-    function getSymbolDocumentationDisplayParts(symbol: Symbol): SymbolDisplayPart[];
+    function getNodeModifiers(node: Node): string;
     function createLanguageService(host: LanguageServiceHost, documentRegistry: DocumentRegistry): LanguageService;
     function createClassifier(host: Logger): Classifier;
 }
@@ -7282,12 +7253,12 @@ declare module ts {
         getCompletionsAtPosition(fileName: string, position: number, isMemberCompletion: boolean): string;
         getCompletionEntryDetails(fileName: string, position: number, entryName: string): string;
         getQuickInfoAtPosition(fileName: string, position: number): string;
-        getTypeAtPosition(fileName: string, position: number): string;
         getNameOrDottedNameSpan(fileName: string, startPos: number, endPos: number): string;
         getBreakpointStatementAtPosition(fileName: string, position: number): string;
         getSignatureHelpItems(fileName: string, position: number): string;
         getSignatureAtPosition(fileName: string, position: number): string;
         getRenameInfo(fileName: string, position: number): string;
+        findRenameLocations(fileName: string, position: number, findInStrings: boolean, findInComments: boolean): string;
         getDefinitionAtPosition(fileName: string, position: number): string;
         getReferencesAtPosition(fileName: string, position: number): string;
         getOccurrencesAtPosition(fileName: string, position: number): string;
