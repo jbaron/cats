@@ -22,7 +22,6 @@
  */
 module Cats.OS.File {
 
-        window["EventEmitter"] = require("events").EventEmitter;
         var fs=require("fs");
         var exec = require("child_process").exec;
         var glob = require("glob");
@@ -32,7 +31,7 @@ module Cats.OS.File {
          * in the underlying file system.
          * 
          */ 
-        export class Watcher extends EventEmitter {
+        export class Watcher extends  qx.event.Emitter {
             
             private watches = {};
             
@@ -49,7 +48,7 @@ module Cats.OS.File {
                 if (this.watches[name]) return;
                 var w = fs.watch(name, (event,filename) => {
                     console.info("Node changed " + name + " event " + event + " fileName " + filename);
-                    this.emit("change", name, event, filename);
+                    this.emit("change", name);
                 });
                 this.watches[name] = w;
             }
@@ -57,14 +56,16 @@ module Cats.OS.File {
  
            /**
              * Add a new directory to the watch list. If it already exists it is being ignored. 
-             * Only rename type of events are interesting.
+             * Only rename type of events are being propgated (so new files or deletes).
+             * 
+             * Files within a directory changing size etc are not propagated.
              * 
              */ 
             addDir(name:string) {
                 if (this.watches[name]) return;
                 var w = fs.watch(name, (event,filename) => {
                     console.info("Node changed " + name + " event " + event + " fileName " + filename);
-                    if (event === "rename") this.emit("change", name, event, filename);
+                    if (event === "rename") this.emit("change", name);
                 });
                 this.watches[name] = w;
             }

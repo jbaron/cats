@@ -15,7 +15,8 @@
 module Cats.Gui {
 
     /**
-     * Rename dialog for rename refactoring.
+     * Dialog window for capturing rename options and invoke 
+     * required functionality
      */
     export class RenameDialog extends qx.ui.window.Window {
 

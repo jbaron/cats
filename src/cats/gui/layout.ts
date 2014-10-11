@@ -87,9 +87,8 @@ module Cats.Gui {
             ide.problemPane.addPage("process", null, ide.processTable);
             ide.problemPane.addPage("todo", null, ide.todoList);
 
-            ide.problemPane.selectPage("console");
-            // this.problemPane.setSelection([this.problemPane.getChildren()[2]]);
-
+            consolePage.select();
+ 
             mainsplit.add(editorSplit, 4); // main area
 
             mainContainer.add(mainsplit, { flex: 1 });

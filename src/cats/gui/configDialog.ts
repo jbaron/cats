@@ -150,7 +150,7 @@ module Cats.Gui {
         private documentationSettings: ConfigDialogPage;
 
         constructor(private project: Cats.Project) {
-            super("Project Settings");
+            super(super.tr("project_settings"));
             this.loadValues();
         }
 

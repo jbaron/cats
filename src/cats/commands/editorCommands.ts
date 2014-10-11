@@ -60,7 +60,6 @@ module Cats.Commands {
     
     export class EditorCommands {
 
-
         static init(registry:(cmd:Command)=>void) {
 
             var editorCommands: any[] = [

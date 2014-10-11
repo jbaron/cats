@@ -79,6 +79,13 @@ module Cats {
             IDE.debug = true;
         }
 
+        var map:IMap = {
+            "project_settings" : "Project Setting"
+        };
+
+        qx.locale.Manager.getInstance().setLocale("en");
+        qx.locale.Manager.getInstance().addTranslation("en", map);
+
         IDE.init(<qx.ui.container.Composite>app.getRoot());
 
         var prjName = determineProject();

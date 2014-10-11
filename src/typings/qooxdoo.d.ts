@@ -5426,7 +5426,7 @@ declare module qx.ui.core {
 declare module qx.ui.core {
     class Widget extends qx.ui.core.LayoutItem {
         marktr(messageId: string): string;
-        tr(messageId: string, varargs: any): qx.locale.LocalizedString;
+        tr(messageId: string, varargs?: any): string ; // qx.locale.LocalizedString;
         trc(hint: string, messageId: string, varargs: any): qx.locale.LocalizedString;
         trn(singularMessageId: string, pluralMessageId: string, count: number, varargs: any): qx.locale.LocalizedString;
         trnc(hint: string, singularMessageId: string, pluralMessageId: string, count: number, varargs: any): qx.locale.LocalizedString;

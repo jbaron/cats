@@ -547,7 +547,7 @@ module Cats.TSWorker {
             
             var pos = script.getPositionFromCursor(cursor);
             var result: Cats.FileRange[] = [];
-            var entries: ts.ReferenceEntry[] = this.ls[method](fileName, pos);
+            var entries: ts.ReferenceEntry[] = this.ls[method](fileName, pos) || [];
             for (var i = 0; i < entries.length; i++) {
                 var ref = entries[i];
                 var refScript = this.lsHost.getScript(ref.fileName);

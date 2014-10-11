@@ -14,33 +14,24 @@
 
 module Cats.Gui {
 
-      var iconMapping = {
-            "files": {
-                label: "Project Explorer"
-            }
-        };
-
-    function getLabel(name: string) {
-            var label: string;
-            var entry = iconMapping[name];
-            if (entry) label = entry.label;
-            if (!label) label = qx.Bootstrap.firstUp(name);
-            return label;
-    }
-
+ 
     function getIconName(name: string) {
             var entry = IDE.icons.tab[name];
             if (entry) return entry;
             console.log("No icon found for tab with name " + name);
     }
 
-
+    /**
+     * Generic tab used for all the tabs in CATS except for the edirtor tabs.
+     * Takes care of basic look & feel and some simple features
+     */ 
     export class TabViewPage extends qx.ui.tabview.Page {
         
+        // Hints if this tab want to get selected if its content changes 
         autoSelect = false;
         
         constructor(public id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem) {
-            super(getLabel(id), getIconName(id));
+            super(qx.Bootstrap.firstUp(super.tr(id)), getIconName(id));
             this.setLayout(new qx.ui.layout.Canvas());
 
             if (tooltipText) {
@@ -59,6 +50,9 @@ module Cats.Gui {
 
         }
         
+        /**
+         * Convenience method to select this page in the tab view.
+         */ 
         select() {
             var tabView = this.getLayoutParent().getLayoutParent();
             tabView.setSelection([this]); 
@@ -83,6 +77,9 @@ module Cats.Gui {
             return tab;
         }
 
+        /**
+         * @DEPRICATED not used anymore, can be removed 
+         */ 
         getPage(id: string): qx.ui.tabview.Page {
             var pages = <TabViewPage[]>this.getChildren();
             for (var i = 0; i < pages.length; i++) {
@@ -94,6 +91,9 @@ module Cats.Gui {
             return null;
         }
 
+        /**
+         * @DEPRICATED not used anymore, can be removed 
+         */ 
         selectPage(id: string) {
             var page = this.getPage(id);
             if (page) this.setSelection([page]);
