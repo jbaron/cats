@@ -272,11 +272,13 @@ module Cats {
             return "file://" + url;
         }
 
-       
+        hasScriptFile(fileName:string) {
+            return this.tsfiles.indexOf(fileName) !== -1 ;
+        }
         
-        private addScript(fullName: string, content: string) {
+        addScript(fullName: string, content: string) {
             this.iSense.addScript(fullName, content);
-            if (this.tsfiles.indexOf(fullName) < 0) this.tsfiles.push(fullName);
+            if (! this.hasScriptFile(fullName)) this.tsfiles.push(fullName);
         }
 
         /**

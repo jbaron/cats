@@ -353,10 +353,19 @@ module Cats.Gui {
         private createAceEditor(rootElement: HTMLElement): ace.Editor {
             var editor: ace.Editor = ace.edit(rootElement);
             if (this.isTypeScript()) {
-                editor.completers =  [new TSCompleter(this), snippetCompleter];
-                editor.commands.on('afterExec', (e) => { this.liveAutoComplete(e);});
-                new TSTooltip(this);
-                new TSHelper(this, this.editSession);
+                var isProjectFile = true;
+                
+                if (! this.project.hasScriptFile(this.filePath)) {
+                    isProjectFile = confirm("Not yet part of project, add it now?");
+                    if (isProjectFile) this.project.addScript(this.filePath, this.getContent());
+                }
+                
+                if (isProjectFile) {
+                    editor.completers =  [new TSCompleter(this), snippetCompleter];
+                    editor.commands.on('afterExec', (e) => { this.liveAutoComplete(e);});
+                    new TSTooltip(this);
+                    new TSHelper(this, this.editSession);
+                    }
             } else {
                 editor.completers =  [keyWordCompleter, snippetCompleter];
             }
