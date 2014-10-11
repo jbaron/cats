@@ -34,17 +34,26 @@
     
     "mimetype" : {
         "text/css" : "icon/16/mimetypes/text-css.png",
+        "text/csv" : "icon/16/mimetypes/text-csv.png",
         "text/plain" : "icon/16/mimetypes/text-plain.png",
         "text/html" : "icon/16/mimetypes/text-html.png",
+        "application/xhtml+xml" : "icon/16/mimetypes/text-html.png",
+        "application/octet-stream" : "icon/16/mimetypes/application-octet-stream.png",
         "application/javascript": "icon/16/mimetypes/application-javascript.png",
-        "application/x-typescript": "icon/16/mimetypes/application-typescript.png",
-
+        "application/json": "icon/16/mimetypes/application-json.png",
+        "application/x-typescript": "icon/16/mimetypes/application-x-typescript.png",
         "application/pdf" : "icon/16/mimetypes/application-pdf.png",
+        "application/x-shockwave-flash" : "icon/16/mimetypes/application-x-shockwave-flash.png",
         "inode/directory" : "icon/16/mimetypes/inode-directory.png",
         "image/png" : "icon/16/mimetypes/image-x-generic.png",
+        "image/tiff" : "icon/16/mimetypes/image-x-generic.png",
+        "image/bmp" : "icon/16/mimetypes/image-x-generic.png",
         "image/gif" : "icon/16/mimetypes/image-x-generic.png",
         "image/jpeg" : "icon/16/mimetypes/image-x-generic.png",
-        "application/zip" : "icon/16/mimetypes/application-x-archive.png"
+        "image/svg+xml" : "icon/16/mimetypes/image-svg+xml.png",
+        "application/zip" : "icon/16/mimetypes/application-x-archive.png",
+        "application/x-gzip" : "icon/16/mimetypes/application-x-archive.png",
+        "application/xml" : "icon/16/mimetypes/application-xml.png"
     },
     
     "toolbar" : {
@@ -54,7 +63,6 @@
         "edit_outdent": "icon/22/actions/format-indent-less.png",
         "edit_find": "icon/22/actions/edit-find.png",
         "edit_replace": "icon/22/actions/edit-find-replace.png",
-        "edit_toggleComment": "icon/22/comment.png",
         "edit_toggleRecording" : "icon/22/actions/media-record.png" ,
         "edit_replayMacro" : "icon/22/actions/media-playback-start.png",
         
