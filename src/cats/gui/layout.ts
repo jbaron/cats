@@ -45,7 +45,7 @@ module Cats.Gui {
 
             // ********************* Navigator Pane ********************
             var navigatorPane = new TabView();
-            ide.bookmarks = new ResultTable(["Bookmark"]);
+            ide.bookmarks = new ResultTable(["bookmark"]);
             ide.fileNavigator = new FileNavigator();
             navigatorPane.addPage("files_tab", null,ide.fileNavigator);
             navigatorPane.addPage("bookmarks_tab", null,ide.bookmarks);

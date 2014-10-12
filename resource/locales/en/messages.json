@@ -193,7 +193,13 @@
     "process_tab" : { "message": "Process" }, 
     "todo_tab" : { "message": "Todo" }, 
     "outline_tab" : { "message": "Outline" }, 
-    "properties_tab" : { "message": "Properties" }
+    "properties_tab" : { "message": "Properties" },
+    "info_tab" : { "message": "Info" },
+    
+    "result_table_message" : { "message": "Message" },
+    "result_table_file" : { "message": "File" },
+    "result_table_position" : { "message": "Position" },
+    "result_table_bookmark" : { "message": "Bookmark" }
 
     
 }

@@ -13,16 +13,16 @@
     },
     
     "tab" : {
-        "search": "icon/16/actions/edit-find.png",
-        "todo": "icon/16/actions/view-task.png",
-        "console":  "icon/16/apps/utilities-terminal.png",
-        "process":  "icon/16/actions/view-process-all.png",
-        "files": "icon/16/actions/view-list-tree.png",
-        "outline":  "icon/16/actions/code-class.png",
-        "bookmarks": "icon/16/actions/bookmarks-organize.png",
-        "properties":  "icon/16/actions/document-properties.png",
-        "problems":  "icon/16/status/task-attention.png",
-        "info":  "icon/16/status/dialog-information.png"
+        "search_tab": "icon/16/actions/edit-find.png",
+        "todo_tab": "icon/16/actions/view-task.png",
+        "console_tab":  "icon/16/apps/utilities-terminal.png",
+        "process_tab":  "icon/16/actions/view-process-all.png",
+        "files_tab": "icon/16/actions/view-list-tree.png",
+        "outline_tab":  "icon/16/actions/code-class.png",
+        "bookmarks_tab": "icon/16/actions/bookmarks-organize.png",
+        "properties_tab":  "icon/16/actions/document-properties.png",
+        "problems_tab":  "icon/16/status/task-attention.png",
+        "info_tab":  "icon/16/status/dialog-information.png"
     },
     
     "annotation" : {
