@@ -98,10 +98,10 @@ module Cats.Commands {
             });
             
             registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles});
-            registry({name:CMDS.source_format, label:"Format Code", command: formatText});
-            registry({name:CMDS.edit_cut, label:"Cut", command: () => {document.execCommand("cut");}});
-            registry({name:CMDS.edit_copy, label:"Copy", command: () => {document.execCommand("copy");}});
-            registry({name:CMDS.edit_paste, label:"Paste", command: () => {document.execCommand("paste");}});
+            registry({name:CMDS.source_format,  command: formatText});
+            registry({name:CMDS.edit_cut,  command: () => {document.execCommand("cut");}});
+            registry({name:CMDS.edit_copy,  command: () => {document.execCommand("copy");}});
+            registry({name:CMDS.edit_paste,  command: () => {document.execCommand("paste");}});
             
             
         }

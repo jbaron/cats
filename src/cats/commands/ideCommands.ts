@@ -56,11 +56,11 @@ module Cats.Commands {
      */
     export class IdeCommands {
         static init(registry: (cmd: Command) => void) {
-            registry({ name: CMDS.ide_quit, label: "Quit CATS", command: quit });
-            registry({ name: CMDS.ide_toggleView, label: "Toggle View", command: toggleView });
-            registry({ name: CMDS.ide_configure, label: "Preferences....", command: configureIde });
-            registry({ name: CMDS.ide_history_next, label: "Next", command: next});
-            registry({ name: CMDS.ide_history_prev, label: "Previous", command: prev});
+            registry({ name: CMDS.ide_quit,  command: quit });
+            registry({ name: CMDS.ide_toggleView,  command: toggleView });
+            registry({ name: CMDS.ide_configure,  command: configureIde });
+            registry({ name: CMDS.ide_history_next,  command: next});
+            registry({ name: CMDS.ide_history_prev,  command: prev});
         }
     }
 

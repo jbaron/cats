@@ -55,10 +55,10 @@ module Cats.Commands {
 
     export class HelpCommands {
         static init(registry) {
-            registry({name:CMDS.help_about, label:"About", command:showAbout});
-            registry({name:CMDS.help_devTools, label:"Developer Tools", command:showDevTools});
-            registry({name:CMDS.help_shortcuts, label:"Shortcuts", command:showShortcuts});
-            registry({name:CMDS.help_processInfo, label:"Process Info", command: showProcess});
+            registry({name:CMDS.help_about,  command:showAbout});
+            registry({name:CMDS.help_devTools,  command:showDevTools});
+            registry({name:CMDS.help_shortcuts,  command:showShortcuts});
+            registry({name:CMDS.help_processInfo,  command: showProcess});
         }
 
     }

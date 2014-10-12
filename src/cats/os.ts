@@ -180,7 +180,6 @@ module Cats.OS.File {
         export function join(a,b) : string{
             var result = PATH.join(a,b);
             return switchToForwardSlashes(result);
-            
         }
 
         export function find(pattern:string, rootDir:string, cb:Function) {
@@ -208,11 +207,14 @@ module Cats.OS.File {
          * 
          */ 
         function determineNewLIneMode(): string {
-            var mode = IDE.project.config.codingStandards.newLineMode;
-            if ((mode === "dos") || (mode ==="unix")) return mode;
-         
+            try {
+                var mode = IDE.project.config.codingStandards.newLineMode;
+                if ((mode === "dos") || (mode ==="unix")) return mode;
+            } catch (exp) {}
+            
             if (isWindows()) return "dos";
             return "unix";
+            
         }
 
         /**

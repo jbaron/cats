@@ -61,6 +61,15 @@ module Cats {
         if (IDE.console) IDE.console.error(err.stack);
     });
 
+    function loadMessages(locale="en") {
+        var fileName = "resource/locales/" + locale + "/messages.json";
+        var messages = JSON.parse(OS.File.readTextFile(fileName));
+        var map:IMap = {};
+        for (var key in messages) {
+            map[key] = messages[key].message;
+        }
+        return map;
+    }
 
     /**
      * This is the functions that start kicks it all of. When Qooxdoo is loaded it will 
@@ -84,7 +93,7 @@ module Cats {
         };
 
         qx.locale.Manager.getInstance().setLocale("en");
-        qx.locale.Manager.getInstance().addTranslation("en", map);
+        qx.locale.Manager.getInstance().addTranslation("en", loadMessages("en"));
 
         IDE.init(<qx.ui.container.Composite>app.getRoot());
 

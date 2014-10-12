@@ -3954,7 +3954,7 @@ declare module qx.locale {
         constructor();
         static getInstance(): qx.locale.Manager;
         static marktr(messageId: string): string;
-        static tr(messageId: string, varargs: any): qx.locale.LocalizedString;
+        static tr(messageId: string, varargs?: any): string;
         static trc(hint: string, messageId: string, varargs: any): qx.locale.LocalizedString;
         static trn(singularMessageId: string, pluralMessageId: string, count: number, varargs: any): qx.locale.LocalizedString;
         static trnc(hint: string, singularMessageId: string, pluralMessageId: string, count: number, varargs: any): qx.locale.LocalizedString;
@@ -3969,7 +3969,7 @@ declare module qx.locale {
         localize(messageId: string, args: any[], locale?: string): qx.locale.LocalizedString;
         resetLocale(): void;
         setLocale(value: any): any;
-        translate(messageId: string, args: any[], locale?: string): qx.locale.LocalizedString;
+        translate(messageId: string, args?: any[], locale?: string): qx.locale.LocalizedString;
     }
 }
 declare module qx.locale {

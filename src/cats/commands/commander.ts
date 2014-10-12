@@ -111,6 +111,11 @@ module Cats.Commands {
      */ 
 	export function register(command:Command)  {       
         if (! command.command) command.command = nop;
+        if (! command.name) {
+            alert("No Command name");
+            console.log(command);
+        }
+        command.label = qx.locale.Manager.tr(command.name);
 		commands[command.name] = command;
         commandList.push(command);
 	}
@@ -134,6 +139,20 @@ module Cats.Commands {
 		HelpCommands.init(register);
 	    ProjectCommands.init(register);
         IdeCommands.init(register);
+        
+        /*
+        var translations = {};
+        
+        commandList.forEach((command) => {
+            translations[command.name] = {
+                message : command.label,
+                description : "Menu item for " + command.label
+            }
+        });
+        setTimeout( () => {
+            OS.File.writeTextFile("resource/messages.json", JSON.stringify(translations,null,4));
+        }, 2000);
+        */
 	}
 
 
