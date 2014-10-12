@@ -31,7 +31,7 @@ module Cats.Gui {
         autoSelect = false;
         
         constructor(public id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem) {
-            super(qx.Bootstrap.firstUp(super.tr(id)), getIconName(id));
+            super(super.tr(id), getIconName(id));
             this.setLayout(new qx.ui.layout.Canvas());
 
             if (tooltipText) {

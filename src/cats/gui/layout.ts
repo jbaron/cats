@@ -47,8 +47,8 @@ module Cats.Gui {
             var navigatorPane = new TabView();
             ide.bookmarks = new ResultTable(["Bookmark"]);
             ide.fileNavigator = new FileNavigator();
-            navigatorPane.addPage("files", null,ide.fileNavigator);
-            navigatorPane.addPage("bookmarks", null,ide.bookmarks);
+            navigatorPane.addPage("files_tab", null,ide.fileNavigator);
+            navigatorPane.addPage("bookmarks_tab", null,ide.bookmarks);
 
             mainsplit.add(navigatorPane, 1); // navigator
 
@@ -63,8 +63,8 @@ module Cats.Gui {
             ide.infoPane = new TabView();
             ide.outlineNavigator = new OutlineNavigator();
             ide.propertyTable = new PropertyTable();
-            ide.infoPane.addPage("outline",null,ide.outlineNavigator);
-            ide.infoPane.addPage("properties",null,ide.propertyTable);
+            ide.infoPane.addPage("outline_tab",null,ide.outlineNavigator);
+            ide.infoPane.addPage("properties_tab",null,ide.propertyTable);
             
             
             infoSplit.add(ide.infoPane, 1); // todo
@@ -79,13 +79,13 @@ module Cats.Gui {
             ide.problemResult = new ResultTable();
             ide.todoList = new ResultTable();
             ide.processTable = new ProcessTable();
-            var problemPage = ide.problemPane.addPage("problems", null, ide.problemResult);
+            var problemPage = ide.problemPane.addPage("problems_tab", null, ide.problemResult);
             problemPage.autoSelect = true;
             
-            var consolePage = ide.problemPane.addPage("console", null, ide.console);
+            var consolePage = ide.problemPane.addPage("console_tab", null, ide.console);
             consolePage.autoSelect = true;
-            ide.problemPane.addPage("process", null, ide.processTable);
-            ide.problemPane.addPage("todo", null, ide.todoList);
+            ide.problemPane.addPage("process_tab", null, ide.processTable);
+            ide.problemPane.addPage("todo_tab", null, ide.todoList);
 
             consolePage.select();
  

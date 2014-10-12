@@ -184,8 +184,16 @@
     "project_menu_name" : { "message": "Project" },       
     "source_menu_name" : { "message": "Source" },       
     "window_menu_name" : { "message": "Window" },       
-    "help_menu_name" : { "message": "Help" }      
-
+    "help_menu_name" : { "message": "Help" },
+    
+     "files_tab" : { "message": "Files" },  
+    "bookmarks_tab" : { "message": "Bookmarks" }, 
+    "problems_tab" : { "message": "Problems" }, 
+    "console_tab" : { "message": "Console" }, 
+    "process_tab" : { "message": "Process" }, 
+    "todo_tab" : { "message": "Todo" }, 
+    "outline_tab" : { "message": "Outline" }, 
+    "properties_tab" : { "message": "Properties" }
 
     
 }
