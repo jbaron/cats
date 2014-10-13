@@ -75,11 +75,13 @@ module Cats.Commands {
         ide_theme: <Command>null,
         ide_fontSize: <Command>null,
         ide_rightMargin: <Command>null,
-        ide_toggleView: <Command>null,
         ide_configure: <Command>null,
         ide_history_next: <Command>null,
-        ide_history_prev: <Command>null
-      
+        ide_history_prev: <Command>null,
+        "ide_toggle_toolbar" : <Command>null,
+        "ide_toggle_statusbar" : <Command>null,
+        "ide_toggle_outline" : <Command>null,
+        "ide_toggle_result"  : <Command>null,
     };
 
  

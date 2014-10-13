@@ -57,7 +57,11 @@ module Cats.Commands {
     export class IdeCommands {
         static init(registry: (cmd: Command, fn:Function) => void) {
             registry(CMDS.ide_quit,  quit );
-            registry( CMDS.ide_toggleView,  toggleView );
+            registry( CMDS.ide_toggle_toolbar,  () => toggleView(IDE.toolBar) );
+            registry( CMDS.ide_toggle_statusbar,  () => toggleView(IDE.statusBar) );
+            registry( CMDS.ide_toggle_result,  () => toggleView(IDE.problemPane) );
+            registry( CMDS.ide_toggle_outline,  () => toggleView(IDE.infoPane) );
+            
             registry( CMDS.ide_configure,  configureIde );
             registry( CMDS.ide_history_next, next);
             registry(CMDS.ide_history_prev,  prev);

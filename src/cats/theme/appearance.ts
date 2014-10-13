@@ -70,7 +70,7 @@ module Cats.Theme {
                 style: function(states) {
                     return {
                         padding: [3, 3],
-                        margin: [5, 5]
+                        margin: [5, 0]
                     };
                 }
             }

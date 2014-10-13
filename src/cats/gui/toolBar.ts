@@ -24,6 +24,7 @@ module Cats.Gui {
             Cats.Commands.CMDS.file_new,
             Cats.Commands.CMDS.file_close,
             Cats.Commands.CMDS.file_closeAll,
+            null,
             Cats.Commands.CMDS.file_save,
             Cats.Commands.CMDS.file_saveAll,
             Cats.Commands.CMDS.file_saveAs,

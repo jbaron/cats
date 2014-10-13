@@ -39,7 +39,7 @@ module Cats {
         todoList: Gui.ResultTable;
         bookmarks:Gui.ResultTable;
         problemResult:Gui.ResultTable;
-        menubar:Gui.Menubar;
+        menuBar:Gui.MenuBar;
         propertyTable:Gui.PropertyTable;
         outlineNavigator:Gui.OutlineNavigator; 
         fileNavigator:Gui.FileNavigator;
@@ -87,7 +87,7 @@ module Cats {
             Cats.Commands.init();
             var layouter = new Gui.Layout(rootDoc);
             layouter.layout(this);
-            this.menubar = new Gui.Menubar();
+            this.menuBar = new Gui.MenuBar();
             this.initFileDropArea();
             this.handleCloseWindow();
         }

@@ -37,7 +37,7 @@ module Cats {
         }
 
 
-        static RegisterEditor(name,restoreFn:(state:any)=>Editor) {
+        static RegisterEditor(name:string,restoreFn:(state:any)=>Editor) {
             console.log("Registered editor for type " + name);
             Editor.Registry[name] = restoreFn;
         }
@@ -95,7 +95,7 @@ module Cats {
         }
 
         /**
-         * Get a long description for the content in the editor. Used for tooltip text.
+         * Provide an additional description for the content used in in the editor.
          */ 
         getDescription() {
             return this.label;
@@ -162,7 +162,9 @@ module Cats {
             return false;
         }
 
-
+        /**
+         * @override 
+         */ 
         getDescription() {
             return this.filePath || this.label;
         }

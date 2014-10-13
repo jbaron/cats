@@ -17,16 +17,10 @@ module Cats.Gui {
 
      var CMDS = Cats.Commands.CMDS;
      
-     function getItem(cmd:Cats.Commands.Command, ...params: Array<any>) {
-            // var cmd = Cats.Commands.get(id);
-            if (!cmd) {
-                console.error("No implementation available for command " + name);
-                return new GUI.MenuItem({ label: "Unknow command" });
-            }
-            var click = function() { cmd.command.apply({}, params); };
+     function getItem(cmd:Cats.Commands.Command) {
             var item = {
                 label: cmd.label,
-                click: click
+                click: cmd.command
             };
             return new GUI.MenuItem(item);
     }
@@ -36,7 +30,7 @@ module Cats.Gui {
      * is not using Qooxdoo but an API exposed by nodewebkit. 
      * This makes it possible to have the feeling of a native menubar.
      */
-    export class Menubar {
+    export class MenuBar {
 
         private menu: any;
         private menus: any = {};
@@ -192,18 +186,10 @@ module Cats.Gui {
         private createViewMenu() {
             
             var menu = this.menus.view;
-           
-
-            var views = [
-                { id: IDE.toolBar, name: "Toggle Toolbar" },
-                { id: IDE.statusBar, name: "Toggle Statusbar" },
-                { id: IDE.infoPane, name: "Toggle Info" }
-            ];
-            views.forEach((view: any) => {
-                var item; // = this.getMenuCommand(CMDS.ide_toggleView, view.name, view.id);
-                // menu.append(item);
-            });
-
+            menu.append(getItem(CMDS.ide_toggle_toolbar));
+            menu.append(getItem(CMDS.ide_toggle_statusbar));
+            menu.append(getItem(CMDS.ide_toggle_outline));
+            menu.append(getItem(CMDS.ide_toggle_result));
         }
 
     }
