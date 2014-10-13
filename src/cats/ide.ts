@@ -15,7 +15,7 @@
 
 module Cats {
   
-    var Events = require('events');
+    // var Events = require('events');
 
     export class Ide  extends qx.event.Emitter{
 
