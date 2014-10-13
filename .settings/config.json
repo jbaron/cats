@@ -10,10 +10,10 @@
         "mapSourceFiles": false,
         "propagateEnumConstants": false,
         "allowAutomaticSemicolonInsertion": true,
-        "codeGenTarget": 1,
-        "moduleGenTarget": 0,
-        "outDirOption": null,
-        "outFileOption": null
+        "target": 0,
+        "module": 0,
+        "outDir": null,
+        "out": null
     },
     "codingStandards": {
         "newLineMode": "auto",

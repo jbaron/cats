@@ -80,14 +80,14 @@ module Cats.Commands {
     }
 
     export class FileCommands {
-        static init(registry: (cmd: Command) => void ) {
-            registry({ name: CMDS.file_new,  command: newFile});
-            registry({ name: CMDS.file_close,  command: closeFile });
-            registry({ name: CMDS.file_closeOther,  command: closeOtherFiles });
-            registry({ name: CMDS.file_closeAll,  command: closeAllFiles});
-            registry({ name: CMDS.file_save,  command: saveFile});
-            registry({ name: CMDS.file_saveAll,  command: saveAll});
-            registry({ name: CMDS.file_saveAs,  command: saveAs});
+        static init(registry: (cmd: Command, fn:Function) => void ) {
+            registry(CMDS.file_new, newFile);
+            registry(CMDS.file_close, closeFile );
+            registry(CMDS.file_closeOther,closeOtherFiles );
+            registry(CMDS.file_closeAll, closeAllFiles);
+            registry(CMDS.file_save, saveFile);
+            registry(CMDS.file_saveAll, saveAll);
+            registry(CMDS.file_saveAs, saveAs);
         }
 
     }

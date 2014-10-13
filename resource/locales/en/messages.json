@@ -186,7 +186,7 @@
     "window_menu_name" : { "message": "Window" },       
     "help_menu_name" : { "message": "Help" },
     
-     "files_tab" : { "message": "Files" },  
+    "files_tab" : { "message": "Files" },  
     "bookmarks_tab" : { "message": "Bookmarks" }, 
     "problems_tab" : { "message": "Problems" }, 
     "console_tab" : { "message": "Console" }, 
@@ -196,10 +196,26 @@
     "properties_tab" : { "message": "Properties" },
     "info_tab" : { "message": "Info" },
     
-    "result_table_message" : { "message": "Message" },
-    "result_table_file" : { "message": "File" },
-    "result_table_position" : { "message": "Position" },
-    "result_table_bookmark" : { "message": "Bookmark" }
-
+    "tableheader_message" : { "message": "Message" },
+    "tableheader_file" : { "message": "File" },
+    "tableheader_position" : { "message": "Position" },
+    "tableheader_bookmark" : { "message": "Bookmark" },
+    "tableheader_pid" : { "message": "PID" },
+    "tableheader_command" : { "message": "Command" },
+    "tableheader_name" : { "message": "Name" },
+    "tableheader_value" : { "message": "Value" },
+    
+    
+    "config_removeComments" : { "message": "Remove comments"},
+    "config_generateDeclarationFiles" : { "message": "Generate declaration files"},
+    "config_mapSourceFiles" : { "message": "Generate map source files"},
+    "config_propagateEnumConstants" : { "message": "Propagate enum constants"},
+    "config_allowAutomaticSemicolonInsertion" : { "message": "Allow  for automatic semicolon insertion"},
+    "config_target" : { "message": "Compile for EcmaScript version"},
+    "config_module" : { "message": "Compile for module"},
+    "config_noLib" : { "message": "Don't include lib.d.ts"},
+    "config_outDir" : { "message": "Output to directory"},
+    "config_out" : { "message": "Output to single file"}
+    
     
 }

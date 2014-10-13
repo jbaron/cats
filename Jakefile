@@ -7,7 +7,7 @@ var workerOptions = [
     "src/tsworker/languageservicehost.ts",
     "src/tsworker/scriptInfo.ts",
     "src/tsworker/isense.ts",
-    "src/tsworker/objectModel.ts"
+    "src/tsworker/modelCreator.ts"
 ];
 
 

@@ -19,86 +19,79 @@ module Cats.Commands {
      * List of known commands
      */ 
     export var CMDS = {
-        help_devTools: "",
-        help_shortcuts: "",
-        help_processInfo: "",
-        help_about: "help_about",
+        help_devTools: <Command>null,
+        help_shortcuts: <Command>null,
+        help_processInfo: <Command>null,
+        help_about: <Command>null,
         
-        file_new: "file_new",
-        file_open: "file_open",
-        file_close: "file_close",
-        file_closeOther: "file_closeOther",
-        file_closeAll: "file_closeAll",
-        file_save: "file_save",
-        file_saveAs: "file_saveAs",
-        file_saveAll: "file_saveAll",
+        file_new: <Command>null,
+        file_open: <Command>null,
+        file_close: <Command>null,
+        file_closeOther: <Command>null,
+        file_closeAll: <Command>null,
+        file_save: <Command>null,
+        file_saveAs: <Command>null,
+        file_saveAll: <Command>null,
         
-        edit_undo: "",
-        edit_redo: "",
-        edit_cut: "",
-        edit_copy: "",
-        edit_paste: "",
-        edit_find: "",
-        edit_findNext: "",
-        edit_findPrev: "",
-        edit_replace: "",
-        edit_replaceAll: "",
-        edit_toggleInvisibles: "",
-        edit_toggleRecording: "",
-        edit_replayMacro: "",
+        edit_undo: <Command>null,
+        edit_redo: <Command>null,
+        edit_cut: <Command>null,
+        edit_copy: <Command>null,
+        edit_paste: <Command>null,
+        edit_find: <Command>null,
+        edit_findNext: <Command>null,
+        edit_findPrev: <Command>null,
+        edit_replace: <Command>null,
+        edit_replaceAll: <Command>null,
+        edit_toggleInvisibles: <Command>null,
+        edit_toggleRecording: <Command>null,
+        edit_replayMacro: <Command>null,
         
-        edit_toggleComment: "",
-        edit_indent: "",
-        edit_outdent: "",
-        edit_gotoLine: "",
+        edit_toggleComment: <Command>null,
+        edit_indent: <Command>null,
+        edit_outdent: <Command>null,
+        edit_gotoLine: <Command>null,
         
-        source_format: "",
-        source_openDeclaration: "",
-        source_findRef: "",
-        source_findDecl: "",
+        source_format: <Command>null,
+        source_openDeclaration: <Command>null,
+        source_findRef: <Command>null,
+        source_findDecl: <Command>null,
 
         
-        project_open: "",
-        project_close: "",
-        project_build: "",
-        project_validate: "",
-        project_run: "",
-        project_debug: "",
-        project_refresh: "",
-        project_properties: "",
-        project_classDiagram: "",
-        project_configure: "",
-        project_document: "",
+        project_open: <Command>null,
+        project_close: <Command>null,
+        project_build: <Command>null,
+        project_validate: <Command>null,
+        project_run: <Command>null,
+        project_debug: <Command>null,
+        project_refresh: <Command>null,
+        project_properties: <Command>null,
+        project_classDiagram: <Command>null,
+        project_configure: <Command>null,
+        project_document: <Command>null,
         
         
-        ide_quit: "",
-        ide_theme: "",
-        ide_fontSize: "",
-        ide_rightMargin: "",
-        ide_toggleView: "",
-        ide_configure: "",
-        ide_history_next: "",
-        ide_history_prev: ""
+        ide_quit: <Command>null,
+        ide_theme: <Command>null,
+        ide_fontSize: <Command>null,
+        ide_rightMargin: <Command>null,
+        ide_toggleView: <Command>null,
+        ide_configure: <Command>null,
+        ide_history_next: <Command>null,
+        ide_history_prev: <Command>null
       
     };
 
-    for (var key in CMDS) {
-        CMDS[key] = key;
-    }
+ 
 
 
 	export interface Command {
 		name:string;
-		label?: string;
-		command: any;
-		shortcut?: string;
+		label: string;
+		command: Function;
 	}
 
- 
-	var commands:Command[] = [];
-    var commandList:Command[] =[];
-
-    /**
+   /**
      * When a command has no function declared,
      * use this one 
      */ 
@@ -109,24 +102,8 @@ module Cats.Commands {
     /**
      * Register a new command
      */ 
-	export function register(command:Command)  {       
-        if (! command.command) command.command = nop;
-        if (! command.name) {
-            alert("No Command name");
-            console.log(command);
-        }
-        command.label = qx.locale.Manager.tr(command.name);
-		commands[command.name] = command;
-        commandList.push(command);
-	}
-
-
-    export function runCommand(name:string):void  {
-		commands[name].command();
-	}
-
-	export function get(name:string) :Command {
-		return commands[name];
+	function register(command:Command, fn:Function)  {       
+        command.command = fn;
 	}
 
     /**
@@ -134,25 +111,20 @@ module Cats.Commands {
      * themselves
      */ 
 	export function init() {
+	   for (var key in CMDS) {
+            CMDS[key] = {
+                name: key,
+                label : qx.locale.Manager.tr(key),
+                command: nop
+            };
+        }
+	    
+	    
 		EditorCommands.init(register);
 	    FileCommands.init(register);
 		HelpCommands.init(register);
 	    ProjectCommands.init(register);
         IdeCommands.init(register);
-        
-        /*
-        var translations = {};
-        
-        commandList.forEach((command) => {
-            translations[command.name] = {
-                message : command.label,
-                description : "Menu item for " + command.label
-            }
-        });
-        setTimeout( () => {
-            OS.File.writeTextFile("resource/messages.json", JSON.stringify(translations,null,4));
-        }, 2000);
-        */
 	}
 
 

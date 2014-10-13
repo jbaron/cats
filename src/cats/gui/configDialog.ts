@@ -85,6 +85,12 @@ module Cats.Gui {
             var cb = new qx.ui.form.CheckBox();
             this.form.add(cb, label, null, model);
         }
+        
+        addCheckBox2(model: string) {
+            var cb = new qx.ui.form.CheckBox();
+            var label = this.tr("config_" + model);
+            this.form.add(cb, label, null, model);
+        }
 
         addSpinner(label: string, model: string, min: number, max: number) {
             var s = new qx.ui.form.Spinner();
@@ -223,13 +229,13 @@ module Cats.Gui {
         }
 
         createForm() {
-            this.addCheckBox("Don't include lib.d.ts", "noLib");
-            this.addCheckBox("Remove comments", "removeComments");
-            this.addCheckBox("Don't allow implicit any", "noImplicitAny");
-            this.addCheckBox("Generate declaration files", "generateDeclarationFiles");
-            this.addCheckBox("Generate map source files", "mapSourceFiles");
-            this.addCheckBox("Propagate enum constants", "propagateEnumConstants");
-            this.addCheckBox("allowAutomaticSemicolonInsertion", "allowAutomaticSemicolonInsertion");
+            this.addCheckBox2("noLib");
+            this.addCheckBox2("removeComments");
+            this.addCheckBox2("noImplicitAny");
+            this.addCheckBox2("generateDeclarationFiles");
+            this.addCheckBox2("mapSourceFiles");
+            this.addCheckBox2("propagateEnumConstants");
+            this.addCheckBox2("allowAutomaticSemicolonInsertion");
             this.addSelectBox("JavaScript target", "target", this.jsTarget);
             this.addSelectBox("Module generation", "module", this.moduleGenTarget);
             this.addTextField("Output to directory", "outDir");

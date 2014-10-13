@@ -14,7 +14,10 @@
 
 module Cats.TSWorker {
     
-   
+    
+    /**
+     * Creates a class model to be used for displaying as an UML diagram
+     */ 
     export class ModelCreator {
 
         private model = {};

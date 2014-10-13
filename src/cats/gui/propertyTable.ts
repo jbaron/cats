@@ -22,8 +22,9 @@ module Cats.Gui {
         private data: Array<any>;
         private editor:Editor;
 
-        constructor(headers = ["Name", "Value"]) {
+        constructor() {
             var tableModel = new qx.ui.table.model.Simple();
+            var headers = [super.tr("tableheader_name"), super.tr("tableheader_value")];
             tableModel.setColumns(headers);
             tableModel.setData([]);
             this.setStatusBarVisible(false); 

@@ -51,7 +51,7 @@ module Cats {
         private static STORE_KEY = "cats.config";
         private lastEntry = <any>{}; 
         
-        icons;
+        icons:IconMap;
 
         constructor() {
             super();
@@ -65,7 +65,9 @@ module Cats {
             }
         }
 
-
+        /**
+         * Load the icons map from the file.
+         */ 
         private loadIconsMap() {
             return JSON.parse(OS.File.readTextFile("resource/icons.json"));
         }
@@ -253,10 +255,9 @@ module Cats {
         }
 
 
-
-
         /**
          * Add a new project to the IDE
+         * 
          * @param projectDir the directory of the new project
          */
         addProject(project: Project) {
@@ -293,6 +294,10 @@ module Cats {
             this.project = null;
         }
         
+        /**
+         * Quit the application. Check if there are unsaved changes and ask the user if he really
+         * wants to quit.
+         */ 
         quit() {
             if (this.editorTabView.hasUnsavedChanges()) {
                 if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;

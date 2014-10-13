@@ -18,7 +18,8 @@ module Cats {
     /** 
      * Load the TSWorker and handles the communication with the web worker
      * This implementation uses internally a JSON-RPC style message format 
-     * for the communication.
+     * for the communication. However it exposes a typed interface to towards
+     * the outside world.
      */
     export class TSWorkerProxy {
 

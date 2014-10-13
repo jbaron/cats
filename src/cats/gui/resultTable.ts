@@ -22,11 +22,11 @@ module Cats.Gui {
 
         private data: Cats.FileRange[];
         
-        constructor(headers = ["message", "file", "position"]) {
+        constructor(headers = ["tableheader_message", "tableheader_file", "tableheader_position"]) {
 
             var tableModel = new qx.ui.table.model.Simple();
             var columns = [];
-            headers.forEach((header) => columns.push(this.tr("result_table_" + header)));
+            headers.forEach((header) => columns.push(this.tr(header)));
             tableModel.setColumns(columns);
             tableModel.setData([]);
             this.setStatusBarVisible(false); 

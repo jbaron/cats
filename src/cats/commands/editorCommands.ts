@@ -60,48 +60,33 @@ module Cats.Commands {
     
     export class EditorCommands {
 
-        static init(registry:(cmd:Command)=>void) {
+        static init(registry:(cmd:Command, fn:Function)=>void) {
 
-            var editorCommands: any[] = [
-               { id: Cats.Commands.CMDS.edit_undo, label: "Undo" },
-               { id: Cats.Commands.CMDS.edit_redo, label: "Redo" },
-        
-               { id: Cats.Commands.CMDS.edit_indent, label: "Indent"},
-               { id: Cats.Commands.CMDS.edit_outdent, label: "Outdent"},
-        
-               { id: Cats.Commands.CMDS.edit_find, label: "Find", cmd: "find"},
-               { id: Cats.Commands.CMDS.edit_findNext, label: "Find Next", cmd: "findnext" },
-               { id: Cats.Commands.CMDS.edit_findPrev, label: "Find Previous", cmd: "findprevious" },
-               { id: Cats.Commands.CMDS.edit_replace, label: "Find/Replace", cmd: "replace"},
-               { id: Cats.Commands.CMDS.edit_replaceAll, label: "Replace All", cmd: "replaceall" },
-        
-               { id: Cats.Commands.CMDS.edit_toggleComment, label: "Toggle Comment", cmd: "togglecomment"},
-               { id: Cats.Commands.CMDS.edit_toggleRecording, label: "Start/Stop Recording", cmd: "togglerecording" },
-               { id: Cats.Commands.CMDS.edit_replayMacro, label: "Playback Macro", cmd: "replaymacro"},
-               
-               { id: Cats.Commands.CMDS.edit_gotoLine, label: "Goto Line", cmd: "gotoline" }
-            ];
-
-
-
-            editorCommands.forEach((config) => {
-                if (!config.cmd) config.cmd = config.label.toLowerCase();
-                // var label = addShortcut(config.label, config.cmd);
-                var item:Command = {
-                    name: config.id,
-                    label: config.label,
-                    shortcut:null,
-                    command: editorCommand(config.cmd),
-                };
-                // if (config.icon) item.icon = config.icon;
-                registry(item);
-            });
+      
             
-            registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles});
-            registry({name:CMDS.source_format,  command: formatText});
-            registry({name:CMDS.edit_cut,  command: () => {document.execCommand("cut");}});
-            registry({name:CMDS.edit_copy,  command: () => {document.execCommand("copy");}});
-            registry({name:CMDS.edit_paste,  command: () => {document.execCommand("paste");}});
+               registry(CMDS.edit_undo, editorCommand("undo"));
+               registry(CMDS.edit_redo, editorCommand("redo"));
+        
+               registry(CMDS.edit_indent, editorCommand("indent"));
+               registry(CMDS.edit_outdent, editorCommand("outdent"));
+        
+               registry(CMDS.edit_find, editorCommand("find"));
+               registry(CMDS.edit_findNext, editorCommand("findnext"));
+               registry(CMDS.edit_findPrev, editorCommand("findprevious"));
+               registry(CMDS.edit_replace, editorCommand("replace"));
+               registry(CMDS.edit_replaceAll, editorCommand("replaceall"));
+        
+               registry(CMDS.edit_toggleComment, editorCommand("togglecomment"));
+               registry(CMDS.edit_toggleRecording, editorCommand( "togglerecording"));
+               registry(CMDS.edit_replayMacro, editorCommand("replaymacro"));
+               
+               registry(CMDS.edit_gotoLine,editorCommand("gotoline"));
+
+            registry(CMDS.edit_toggleInvisibles, toggleInvisibles);
+            registry(CMDS.source_format, formatText);
+            registry(CMDS.edit_cut,   () => {document.execCommand("cut");});
+            registry(CMDS.edit_copy,  () => {document.execCommand("copy");});
+            registry(CMDS.edit_paste, () => {document.execCommand("paste");});
             
             
         }

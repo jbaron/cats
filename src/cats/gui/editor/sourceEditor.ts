@@ -431,7 +431,7 @@ module Cats.Gui {
             if (this.isTypeScript()) {
                 this.project.iSense.updateScript(this.filePath, this.getContent());
                 this.project.validate(false);
-                if (this.project.config.buildOnSave) Commands.runCommand(Commands.CMDS.project_build);
+                if (this.project.config.buildOnSave) Commands.CMDS.project_build.command();
             }
         }
 

@@ -72,22 +72,19 @@ module Cats.Gui {
         }
 
         private init() {
-            // var part = new qx.ui.toolbar.Part();
-            this.commands.forEach((cmdEnum) => {
-                if (cmdEnum === null) {
-                    // this.add(part);
-                    // part = new qx.ui.toolbar.Part();
-                    this.addSeparator();
+            var part = new qx.ui.toolbar.Part();
+            this.commands.forEach((cmd) => {
+                if (cmd === null) {
+                    this.add(part);
+                    part = new qx.ui.toolbar.Part();
+                    // this.addSeparator();
                 } else {
-                    var cmd = Cats.Commands.get(cmdEnum);
-                    if (cmd) {
-                        var button = this.createButton(cmd);
-                        this.add(button);
-                        // part.add(button);
-                    }
+                    var button = this.createButton(cmd);
+                    // this.add(button);
+                    part.add(button);
                 }
             });
-            // this.add(part);
+            this.add(part);
             return;
         }
 

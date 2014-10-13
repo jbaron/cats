@@ -22,6 +22,15 @@ module Cats {
         type: string;
     }
 
+
+    export interface IconMap {
+        kind: Map<string>;
+        tab: Map<string>;
+        annotation: Map<string>;
+        mimetype: Map<string>;
+        toolbar: Map<string>;
+    }
+
    export interface ModelEntry {
         type: string;
         name: string;

@@ -17,8 +17,8 @@ module Cats.Gui {
 
      var CMDS = Cats.Commands.CMDS;
      
-     function getItem(id:string, ...params: Array<any>) {
-            var cmd = Cats.Commands.get(id);
+     function getItem(cmd:Cats.Commands.Command, ...params: Array<any>) {
+            // var cmd = Cats.Commands.get(id);
             if (!cmd) {
                 console.error("No implementation available for command " + name);
                 return new GUI.MenuItem({ label: "Unknow command" });
