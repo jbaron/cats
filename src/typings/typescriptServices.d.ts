@@ -560,6 +560,11 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
+        An_enum_member_cannot_have_a_numeric_name: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
         Duplicate_identifier_0: {
             code: number;
             category: DiagnosticCategory;
@@ -886,16 +891,6 @@ declare module ts {
             key: string;
         };
         Operator_0_cannot_be_applied_to_types_1_and_2: {
-            code: number;
-            category: DiagnosticCategory;
-            key: string;
-        };
-        No_best_common_type_exists_between_0_1_and_2: {
-            code: number;
-            category: DiagnosticCategory;
-            key: string;
-        };
-        No_best_common_type_exists_between_0_and_1: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -2190,60 +2185,61 @@ declare module ts {
         TypeLiteral = 129,
         ArrayType = 130,
         TupleType = 131,
-        ArrayLiteral = 132,
-        ObjectLiteral = 133,
-        PropertyAssignment = 134,
-        PropertyAccess = 135,
-        IndexedAccess = 136,
-        CallExpression = 137,
-        NewExpression = 138,
-        TypeAssertion = 139,
-        ParenExpression = 140,
-        FunctionExpression = 141,
-        ArrowFunction = 142,
-        PrefixOperator = 143,
-        PostfixOperator = 144,
-        BinaryExpression = 145,
-        ConditionalExpression = 146,
-        OmittedExpression = 147,
-        Block = 148,
-        VariableStatement = 149,
-        EmptyStatement = 150,
-        ExpressionStatement = 151,
-        IfStatement = 152,
-        DoStatement = 153,
-        WhileStatement = 154,
-        ForStatement = 155,
-        ForInStatement = 156,
-        ContinueStatement = 157,
-        BreakStatement = 158,
-        ReturnStatement = 159,
-        WithStatement = 160,
-        SwitchStatement = 161,
-        CaseClause = 162,
-        DefaultClause = 163,
-        LabeledStatement = 164,
-        ThrowStatement = 165,
-        TryStatement = 166,
-        TryBlock = 167,
-        CatchBlock = 168,
-        FinallyBlock = 169,
-        DebuggerStatement = 170,
-        VariableDeclaration = 171,
-        FunctionDeclaration = 172,
-        FunctionBlock = 173,
-        ClassDeclaration = 174,
-        InterfaceDeclaration = 175,
-        EnumDeclaration = 176,
-        ModuleDeclaration = 177,
-        ModuleBlock = 178,
-        ImportDeclaration = 179,
-        ExportAssignment = 180,
-        EnumMember = 181,
-        SourceFile = 182,
-        Program = 183,
-        SyntaxList = 184,
-        Count = 185,
+        UnionType = 132,
+        ArrayLiteral = 133,
+        ObjectLiteral = 134,
+        PropertyAssignment = 135,
+        PropertyAccess = 136,
+        IndexedAccess = 137,
+        CallExpression = 138,
+        NewExpression = 139,
+        TypeAssertion = 140,
+        ParenExpression = 141,
+        FunctionExpression = 142,
+        ArrowFunction = 143,
+        PrefixOperator = 144,
+        PostfixOperator = 145,
+        BinaryExpression = 146,
+        ConditionalExpression = 147,
+        OmittedExpression = 148,
+        Block = 149,
+        VariableStatement = 150,
+        EmptyStatement = 151,
+        ExpressionStatement = 152,
+        IfStatement = 153,
+        DoStatement = 154,
+        WhileStatement = 155,
+        ForStatement = 156,
+        ForInStatement = 157,
+        ContinueStatement = 158,
+        BreakStatement = 159,
+        ReturnStatement = 160,
+        WithStatement = 161,
+        SwitchStatement = 162,
+        CaseClause = 163,
+        DefaultClause = 164,
+        LabeledStatement = 165,
+        ThrowStatement = 166,
+        TryStatement = 167,
+        TryBlock = 168,
+        CatchBlock = 169,
+        FinallyBlock = 170,
+        DebuggerStatement = 171,
+        VariableDeclaration = 172,
+        FunctionDeclaration = 173,
+        FunctionBlock = 174,
+        ClassDeclaration = 175,
+        InterfaceDeclaration = 176,
+        EnumDeclaration = 177,
+        ModuleDeclaration = 178,
+        ModuleBlock = 179,
+        ImportDeclaration = 180,
+        ExportAssignment = 181,
+        EnumMember = 182,
+        SourceFile = 183,
+        Program = 184,
+        SyntaxList = 185,
+        Count = 186,
         FirstAssignment,
         LastAssignment,
         FirstReservedWord,
@@ -2345,6 +2341,9 @@ declare module ts {
     }
     interface TupleTypeNode extends TypeNode {
         elementTypes: NodeArray<TypeNode>;
+    }
+    interface UnionTypeNode extends TypeNode {
+        types: NodeArray<TypeNode>;
     }
     interface StringLiteralTypeNode extends TypeNode {
         text: string;
@@ -2593,7 +2592,7 @@ declare module ts {
         writeSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration?: Node, meaning?: SymbolFlags, flags?: SymbolFormatFlags): void;
         getFullyQualifiedName(symbol: Symbol): string;
         getAugmentedPropertiesOfApparentType(type: Type): Symbol[];
-        getRootSymbol(symbol: Symbol): Symbol;
+        getRootSymbols(symbol: Symbol): Symbol[];
         getContextualType(node: Node): Type;
         getResolvedSignature(node: CallExpression, candidatesOutArray?: Signature[]): Signature;
         getSignatureFromDeclaration(declaration: SignatureDeclaration): Signature;
@@ -2601,6 +2600,8 @@ declare module ts {
         writeTypeParameter(tp: TypeParameter, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
         writeTypeParametersOfSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaraiton?: Node, flags?: TypeFormatFlags): void;
         isImplementationOfOverload(node: FunctionDeclaration): boolean;
+        isUndefinedSymbol(symbol: Symbol): boolean;
+        isArgumentsSymbol(symbol: Symbol): boolean;
         getEnumMemberValue(node: EnumMember): number;
         isValidPropertyAccess(node: PropertyAccess, propertyName: string): boolean;
         getAliasedSymbol(symbol: Symbol): Symbol;
@@ -2626,6 +2627,7 @@ declare module ts {
     enum SymbolFormatFlags {
         None = 0,
         WriteTypeParametersOrArguments = 1,
+        UseOnlyExternalAliasing = 2,
     }
     enum SymbolAccessibility {
         Accessible = 0,
@@ -2676,15 +2678,16 @@ declare module ts {
         ConstructSignature = 65536,
         IndexSignature = 131072,
         TypeParameter = 262144,
-        ExportValue = 524288,
-        ExportType = 1048576,
-        ExportNamespace = 2097152,
-        Import = 4194304,
-        Instantiated = 8388608,
-        Merged = 16777216,
-        Transient = 33554432,
-        Prototype = 67108864,
-        Undefined = 134217728,
+        UnionProperty = 524288,
+        ExportValue = 1048576,
+        ExportType = 2097152,
+        ExportNamespace = 4194304,
+        Import = 8388608,
+        Instantiated = 16777216,
+        Merged = 33554432,
+        Transient = 67108864,
+        Prototype = 134217728,
+        Undefined = 268435456,
         Value,
         Type,
         Namespace,
@@ -2734,6 +2737,7 @@ declare module ts {
         mapper?: TypeMapper;
         referenced?: boolean;
         exportAssignSymbol?: Symbol;
+        unionType?: UnionType;
     }
     interface TransientSymbol extends Symbol, SymbolLinks {
     }
@@ -2759,6 +2763,7 @@ declare module ts {
         isIllegalTypeReferenceInConstraint?: boolean;
         isVisible?: boolean;
         localModuleName?: string;
+        assignmentChecks?: Map<boolean>;
     }
     enum TypeFlags {
         Any = 1,
@@ -2775,8 +2780,9 @@ declare module ts {
         Interface = 2048,
         Reference = 4096,
         Tuple = 8192,
-        Anonymous = 16384,
-        FromSignature = 32768,
+        Union = 16384,
+        Anonymous = 32768,
+        FromSignature = 65536,
         Intrinsic,
         StringLike,
         NumberLike,
@@ -2820,6 +2826,9 @@ declare module ts {
         elementTypes: Type[];
         baseArrayType: TypeReference;
     }
+    interface UnionType extends ObjectType {
+        types: Type[];
+    }
     interface ResolvedObjectType extends ObjectType {
         members: SymbolTable;
         properties: Symbol[];
@@ -2847,6 +2856,7 @@ declare module ts {
         hasStringLiterals: boolean;
         target?: Signature;
         mapper?: TypeMapper;
+        unionSignatures?: Signature[];
         erasedSignatureCache?: Signature;
         isolatedSignatureType?: ObjectType;
     }
@@ -2859,6 +2869,7 @@ declare module ts {
     }
     interface InferenceContext {
         typeParameters: TypeParameter[];
+        inferenceCount: number;
         inferences: Type[][];
         inferredTypes: Type[];
     }
@@ -3112,7 +3123,7 @@ declare module ts {
     function filter<T>(array: T[], f: (x: T) => boolean): T[];
     function map<T, U>(array: T[], f: (x: T) => U): U[];
     function concatenate<T>(array1: T[], array2: T[]): T[];
-    function uniqueElements<T>(array: T[]): T[];
+    function deduplicate<T>(array: T[]): T[];
     function sum(array: any[], prop: string): number;
     function binarySearch(array: number[], value: number): number;
     function hasProperty<T>(map: Map<T>, key: string): boolean;

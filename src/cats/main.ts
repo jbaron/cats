@@ -24,6 +24,7 @@ var IDE: Cats.Ide;
  */
 module Cats {
 
+
     /**
      * Get a parameter from the URL. This is used when a new project is opened from within
      * the IDE and the project name is passed s a parameter
