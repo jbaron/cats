@@ -257,6 +257,8 @@ module Cats {
                 console.info("Opening file: " + startPage);
                 var win2 = GUI.Window.open(startPage, {
                     toolbar: true,
+                    // nodejs: true,
+                    // "new-instance": true,
                     webkit: {
                         "page-cache": false
                     }

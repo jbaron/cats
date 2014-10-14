@@ -1,6 +1,6 @@
 {
     "src": "src/**/*.ts",
-    "main": "static/index.html",
+    "main": "index.html",
     "buildOnSave": false,
     "compiler": {
         "noLib": false,
