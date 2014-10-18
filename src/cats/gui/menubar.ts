@@ -14,6 +14,7 @@
 //
 
 module Cats.Gui {
+    var GUI = require('nw.gui');
 
      var CMDS = Cats.Commands.CMDS;
      

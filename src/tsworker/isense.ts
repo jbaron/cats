@@ -183,7 +183,7 @@ module Cats.TSWorker {
 
         /**
          * Get the diagnostic messages for all the files that 
-         * are regsitered in this worker
+         * are registered in this worker
          */
         getAllDiagnostics() {
             
@@ -273,10 +273,11 @@ module Cats.TSWorker {
 
 
         /**
-         * Configure the compilation settings. Use a mixin to overwrite only the values
-         * that are set, leave the other ones the default value.
+         * Configure the compilation and format settings. 
+         * Tthis method uses a simple mixin to overwrite only the values
+         * that are set, leave the other ones at the default value.
          */
-        setSettings(compilerOptions, editorOptions): ts.CompilationSettings {
+        setSettings(compilerOptions, editorOptions) {
             var compOptions = ts.getDefaultCompilerOptions();
  
 
@@ -293,7 +294,6 @@ module Cats.TSWorker {
                 this.formatOptions[i] = editorOptions[i];
             }
             
-            return compOptions;
         }
 
 

@@ -16,6 +16,7 @@
 
 module Cats {
     
+    var GUI = require('nw.gui');
     var typedoc;
     
     /**
@@ -46,14 +47,13 @@ module Cats {
         constructor(projectDir: string) {
             super();
             IDE.project = this;
-            var dir = PATH.resolve(projectDir);
+            var dir = OS.File.PATH.resolve(projectDir);
             this.projectDir = OS.File.switchToForwardSlashes(dir);
             this.refresh();
             if (this.config.codingStandards.useLint) this.linter = new Linter(this);
             
+            // @TODO optimize only refresh in case of changes
             this.refreshInterval = setInterval(()=> {this.refreshTodoList()}, 30000);
-            
-            
         }
 
         /**
@@ -65,6 +65,7 @@ module Cats {
             var pc = new ProjectConfig(this.projectDir);
             if (this.config.codingStandards.useLint) this.linter = new Linter(this);
             pc.store(this.config);
+            this.iSense.setSettings(this.config.compiler, this.config.codingStandards);
         }
         
         refreshTodoList() {
@@ -189,7 +190,7 @@ module Cats {
         refresh() {
             var projectConfig = new ProjectConfig(this.projectDir);
             this.config = projectConfig.load();
-            this.name = this.config.name || PATH.basename(this.projectDir);
+            this.name = this.config.name || OS.File.PATH.basename(this.projectDir);
             document.title = "CATS | " + this.name;
 
             if (this.iSense) this.iSense.stop();

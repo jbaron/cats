@@ -99,7 +99,7 @@ module Cats.Gui {
 
         static SupportsFile(fileName:string) {
             var supportedExt = [ ".png", ".gif", ".jpg" , ".jpeg"]
-            var ext = PATH.extname(fileName);
+            var ext = OS.File.PATH.extname(fileName);
             return supportedExt.indexOf(ext) > -1;
         }
 

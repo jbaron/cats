@@ -69,6 +69,22 @@ module Cats.Gui {
             super();
             this.setPadding(0, 0, 0, 0);
             this.setContentPadding(0, 0, 0, 0);
+            this.createContextMenu();
+        }
+
+        private createContextMenu() {
+            
+            var menu = new qx.ui.menu.Menu();
+            var directions = ["top", "left", "right", "bottom"];
+            directions.forEach((dir) => {
+                var item = new qx.ui.menu.Button(this.tr(dir));
+                item.addListener("execute", () => { this.setBarPosition(dir) });
+                menu.add(item);
+            });
+            var mainmenu = new qx.ui.menu.Menu();
+            var b = new qx.ui.menu.Button("Bar layout", null,null,menu);
+            mainmenu.add(b);
+            this.setContextMenu(mainmenu);
         }
 
        addPage(id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem): TabViewPage {

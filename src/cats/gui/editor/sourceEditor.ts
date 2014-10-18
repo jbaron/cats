@@ -145,7 +145,7 @@ module Cats.Gui {
         }
 
         static SupportsFile(fileName:string) {
-            var name = PATH.basename(fileName);
+            var name = OS.File.PATH.basename(fileName);
             var mode = modelist.getModeForPath(name);
             
             if (mode && mode.supportsFile(name)) return true;
@@ -206,7 +206,7 @@ module Cats.Gui {
             
             this.status = {
                 overwrite : this.editSession.getOverwrite(),
-                mode : PATH.basename(this.mode).toUpperCase(),
+                mode : OS.File.PATH.basename(this.mode).toUpperCase(),
                 position: label
             };
             
@@ -418,7 +418,7 @@ module Cats.Gui {
         save() {
            
             if (this.filePath == null) {
-                var dir = PATH.join(this.project.projectDir, "/");
+                var dir = OS.File.join(this.project.projectDir, "/");
                 this.filePath = prompt("Please enter the file name", dir);
                 if (! this.filePath) return;
                 this.filePath = OS.File.switchToForwardSlashes(this.filePath);

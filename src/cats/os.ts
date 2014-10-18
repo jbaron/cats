@@ -22,9 +22,11 @@
  */
 module Cats.OS.File {
 
+        export var PATH = require("path");
         var fs=require("fs");
         var exec = require("child_process").exec;
         var glob = require("glob");
+
 
         /**
          * Very lightweight watcher for files and directories, used to inform the user of changes
@@ -82,7 +84,7 @@ module Cats.OS.File {
             
         }
 
-
+ 
        /**
          * Create recursively directories if they don't exist yet
          * 
@@ -177,9 +179,10 @@ module Cats.OS.File {
             return process.platform === "win32";
         }
 
-        export function join(a,b) : string{
+        export function join(a:string,b:string, native=false) : string{
             var result = PATH.join(a,b);
-            return switchToForwardSlashes(result);
+            if (!native) result = switchToForwardSlashes(result);
+            return result;
         }
 
         export function find(pattern:string, rootDir:string, cb:Function) {

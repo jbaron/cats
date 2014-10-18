@@ -15,6 +15,7 @@
 
 module Cats {
   
+    var GUI = require('nw.gui');
     // var Events = require('events');
 
     export class Ide  extends qx.event.Emitter{

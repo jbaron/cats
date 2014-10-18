@@ -142,7 +142,7 @@ module Cats {
         constructor(public filePath: string) {
             super();
             if (this.filePath) {
-                this.label = PATH.basename(this.filePath);
+                this.label = OS.File.PATH.basename(this.filePath);
             }
             this.updateFileInfo();
         }

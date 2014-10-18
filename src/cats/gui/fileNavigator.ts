@@ -57,7 +57,7 @@ module Cats.Gui {
 
             var directory = project.projectDir;
             this.rootTop.fullPath = directory;
-            this.rootTop.label = PATH.basename(directory);
+            this.rootTop.label = OS.File.PATH.basename(directory);
             var root = qx.data.marshal.Json.createModel(this.rootTop, true);
             this.setModel(root);
 

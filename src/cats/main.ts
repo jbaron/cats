@@ -13,17 +13,15 @@
 // limitations under the License.
 //
 
-var PATH = require("path");
-var GUI = require('nw.gui');
-
-// GLOBAL variable used for accessing the singleton IDE instance
-var IDE: Cats.Ide;
 
 /**
  * Main module of the CATS IDE
  */
 module Cats {
 
+    // Variable used everywhere for accessing the singleton IDE instance
+    export var IDE: Cats.Ide;
+    var GUI = require('nw.gui');
 
     /**
      * Get a parameter from the URL. This is used when a new project is opened from within
