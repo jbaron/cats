@@ -169,6 +169,7 @@ module Cats.Gui {
            var proj = this.menus.project;
             proj.append(getItem(CMDS.project_open));
             proj.append(getItem(CMDS.project_close));
+            proj.append(getItem(CMDS.project_new));
 
             proj.append(new GUI.MenuItem({ type: "separator" }));
             proj.append(getItem(CMDS.project_build));

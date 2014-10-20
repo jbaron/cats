@@ -119,6 +119,10 @@
         "message": "Open Project....",
         "description": "Menu item for Open Project...."
     },
+       "project_new": {
+        "message": "New Project....",
+        "description": "Menu item for New Project...."
+    },
     "project_close": {
         "message": "Close project",
         "description": "Menu item for Close project"

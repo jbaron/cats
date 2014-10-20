@@ -51,7 +51,9 @@ module Cats {
             }
         }
         
-
+        /**
+         * Store the configuration
+         */ 
         store(config:ProjectConfiguration) {
             var name = this.getFileName();
             var content = JSON.stringify(config, null, 4);

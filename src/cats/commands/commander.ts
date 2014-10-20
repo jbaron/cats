@@ -60,6 +60,7 @@ module Cats.Commands {
         
         project_open: <Command>null,
         project_close: <Command>null,
+        project_new: <Command>null,
         project_build: <Command>null,
         project_validate: <Command>null,
         project_run: <Command>null,

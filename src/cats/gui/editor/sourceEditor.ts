@@ -95,6 +95,10 @@ module Cats.Gui {
                     this.informWorld();
                 });
 
+                this.aceEditor.on("blur", () => {
+                   if (this.widget.isVisible()) this.aceEditor.focus(); 
+                });
+
                 this.configureEditor();
 
                 if (this.pendingPosition) this.moveToPosition(this.pendingPosition);

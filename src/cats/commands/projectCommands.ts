@@ -22,21 +22,21 @@ module Cats.Commands {
      * Close all open projects
      */ 
     function closeAllProjects() {
-        IDE.closeProject(IDE.project);
+        if (IDE.project) IDE.closeProject(IDE.project);
     }
 
     /**
      * Close the project
      */ 
     function closeProject() { 
-        IDE.closeProject(IDE.project);
+        if (IDE.project) IDE.closeProject(IDE.project);
     }
 
     /**
      * Run the project
      */ 
     function runProject() {
-        IDE.project.run();
+        if (IDE.project) IDE.project.run();
     };
 
 
@@ -44,7 +44,7 @@ module Cats.Commands {
      * Show a class diagram of the project. 
      */ 
     function showDiagram() {
-        IDE.editorTabView.addEditor(new Gui.UMLEditor("Class Diagram"));
+        if (IDE.project) IDE.editorTabView.addEditor(new Gui.UMLEditor("Class Diagram"));
     }
 
  
@@ -53,30 +53,31 @@ module Cats.Commands {
      * to see if there are any issues popping up.
      */ 
     function validateProject() {
-        var project = IDE.project;
-        project.validate();
+        if (IDE.project) IDE.project.validate();
     }
 
     /**
      * Build the project
      */ 
     function buildProject() {
-        IDE.project.build();
+        if (IDE.project) IDE.project.build();
     }
 
     /**
      * Generate the API documentation for the project
      */ 
     function documentProject() {
-        IDE.project.document();
+        if (IDE.project) IDE.project.document();
     }
 
     /**
      * Provide the user with an UI to configure the project settings
      */ 
     function configureProject() {
-        var w = new Gui.ProjectConfigDialog(IDE.project);
-        w.show();
+        if (IDE.project) {
+            var w = new Gui.ProjectConfigDialog(IDE.project);
+            w.show();
+        }
     }
 
     /**
@@ -84,8 +85,22 @@ module Cats.Commands {
      * filesystem changes are done (like renaming TS files etc).
      */ 
     function refreshProject() {
-        IDE.project.refresh();
+        if (IDE.project) IDE.project.refresh();
     }
+
+    /**
+     * Open a project. If current windows doesn't have a project yet, opene there.
+     * Otherwise open the project in a new window.
+     * 
+     * @TODO: for a new project provide template capabilities
+     */ 
+    function newProject() {
+        var chooser: any = document.getElementById('fileDialog');
+        chooser.onchange = function(evt) {
+            IDE.addProject(<string>this.value);
+        };
+        chooser.click();
+    };
 
 
     /**
@@ -95,14 +110,7 @@ module Cats.Commands {
     function openProject() {
         var chooser: any = document.getElementById('fileDialog');
         chooser.onchange = function(evt) {
-            var projectPath: string = this.value;
-            if (! IDE.project) {
-                IDE.addProject(new Project(projectPath));
-            } else {
-                var param = encodeURIComponent(projectPath);
-                this.value = ""; // Make sure the change event goes off next tome
-                window.open('index.html?project=' + param);
-            }
+            IDE.addProject(<string>this.value);
         };
         chooser.click();
     };
@@ -111,6 +119,7 @@ module Cats.Commands {
     export class ProjectCommands {
         static init(registry: (cmd: Command, fn:Function) => void) {
             registry(CMDS.project_open,openProject);
+            registry(CMDS.project_new,newProject);
             registry(CMDS.project_close,closeProject);
             registry(CMDS.project_build,buildProject);
             registry(CMDS.project_validate, validateProject);

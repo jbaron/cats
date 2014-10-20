@@ -168,7 +168,7 @@ module Cats {
             console.info("restoring previous project and sessions.");
             if (this.config.projects && this.config.projects.length) { 
                 var projectDir = this.config.projects[0]; 
-                this.addProject(new Project(projectDir));
+                this.addProject(projectDir);
             
                 if (this.config.sessions) {
                     console.info("Found previous sessions: ", this.config.sessions.length);
@@ -261,11 +261,13 @@ module Cats {
          * 
          * @param projectDir the directory of the new project
          */
-        addProject(project: Project) {
-            this.project = project;
-              
-            if (this.project) {
+        addProject(projectDir: string) {
+            if (! this.project) {
+                this.project = new Project(projectDir);
                 this.fileNavigator.setProject(this.project);
+            } else {
+                var param = encodeURIComponent(projectDir);
+                window.open('index.html?project=' + param);
             }
         }
         

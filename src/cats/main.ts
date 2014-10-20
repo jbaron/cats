@@ -96,9 +96,9 @@ module Cats {
 
         IDE.init(<qx.ui.container.Composite>app.getRoot());
 
-        var prjName = determineProject();
-        if (prjName) {
-            IDE.addProject(new Project(prjName));
+        var prjDir = determineProject();
+        if (prjDir) {
+            IDE.addProject(prjDir);
         } else {
             if (args.indexOf("--restore") > -1) IDE.restorePreviousProjects();
         }

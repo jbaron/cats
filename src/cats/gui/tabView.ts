@@ -44,7 +44,9 @@ module Cats.Gui {
             if (widget) {
                 this.add(widget, { edge: 0 });
                 widget.addListener("contentChange",() => {
-                    if (this.autoSelect) this.select(); 
+                    if (this.autoSelect) {
+                        this.select();
+                    }
                 });
             }
 

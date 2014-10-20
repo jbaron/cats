@@ -23,7 +23,7 @@
 module Cats.OS.File {
 
         export var PATH = require("path");
-        var fs=require("fs");
+        var fs =require("fs");
         var exec = require("child_process").exec;
         var glob = require("glob");
 
@@ -35,7 +35,8 @@ module Cats.OS.File {
          */ 
         export class Watcher extends  qx.event.Emitter {
             
-            private watches = {};
+            // Keeps track of the files and directories that are being watched 
+            private watches = {}; 
             
             constructor() {
                 super();
@@ -171,6 +172,9 @@ module Cats.OS.File {
                 fs.rmdirSync(path);
         }
 
+        /**
+         * Is this instance running on the OSX platform
+         */ 
         export function isOSX() {
             return process.platform === "darwin";
         }
@@ -179,12 +183,18 @@ module Cats.OS.File {
             return process.platform === "win32";
         }
 
+        /**
+         * Join two paths together and return the result.
+         */ 
         export function join(a:string,b:string, native=false) : string{
             var result = PATH.join(a,b);
             if (!native) result = switchToForwardSlashes(result);
             return result;
         }
 
+        /**
+         * Find a file matching a certain patterns and in the certain directory
+         */ 
         export function find(pattern:string, rootDir:string, cb:Function) {
             var files:Array<string> = glob.sync(pattern, {cwd:rootDir, mark:true}) ;
             files = files.filter((name) => {return name.slice(-1) !== "/"; });

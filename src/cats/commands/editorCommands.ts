@@ -46,14 +46,14 @@ module Cats.Commands {
 
     function toggleInvisibles() {
         var editor = IDE.editorTabView.getActiveEditor();
-        editor.executeCommand( "toggleInvisibles" );
+        if (editor) editor.executeCommand( "toggleInvisibles" );
     }
 
 
     function editorCommand( commandName: string ) {
         return function ( ...args: Array<any> ) {
             var editor = IDE.editorTabView.getActiveEditor();
-            editor.executeCommand( commandName );
+            if (editor) editor.executeCommand( commandName );
         };
 
     }

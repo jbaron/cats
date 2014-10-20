@@ -16,7 +16,6 @@
 
 module Cats {
 
-    var TSLint;
 
     /**
      * Simple helper class to call tslint functionality
@@ -26,9 +25,9 @@ module Cats {
     export class Linter {
 
         private lintOptions;
+        private TSLint = require("tslint");
 
         constructor(private project: Project) {
-            if (!TSLint) TSLint = require("tslint");
         }
 
 
@@ -78,7 +77,7 @@ module Cats {
          * 
          */ 
         lint(fileName:string, content:string) {
-            var ll = new TSLint(fileName, content, this.getOptions());
+            var ll = new this.TSLint(fileName, content, this.getOptions());
             var result: Array<any> = JSON.parse(ll.lint().output);
             var r: Cats.FileRange[] = [];
             result.forEach((msg) => {

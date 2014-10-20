@@ -22,6 +22,10 @@ module Cats.Commands {
      * Create a new edit session
      */ 
     function newFile() {
+        if (! IDE.project) {
+            alert("Please open a project first.");
+            return;
+        }
         IDE.editorTabView.addEditor(new Gui.SourceEditor(),{row:0, column:0});
     }
 

@@ -46,7 +46,7 @@ module Cats {
          */
         constructor(projectDir: string) {
             super();
-            IDE.project = this;
+            // IDE.project = this;
             var dir = OS.File.PATH.resolve(projectDir);
             this.projectDir = OS.File.switchToForwardSlashes(dir);
             this.refresh();
