@@ -59,8 +59,8 @@ module Cats.Commands {
             registry(CMDS.ide_quit,  quit );
             registry( CMDS.ide_toggle_toolbar,  () => toggleView(IDE.toolBar) );
             registry( CMDS.ide_toggle_statusbar,  () => toggleView(IDE.statusBar) );
-            registry( CMDS.ide_toggle_result,  () => toggleView(IDE.problemPane) );
-            registry( CMDS.ide_toggle_outline,  () => toggleView(IDE.infoPane) );
+            registry( CMDS.ide_toggle_result,  () => toggleView(IDE.resultPane) );
+            registry( CMDS.ide_toggle_outline,  () => toggleView(IDE.contextPane) );
             
             registry( CMDS.ide_configure,  configureIde );
             registry( CMDS.ide_history_next, next);

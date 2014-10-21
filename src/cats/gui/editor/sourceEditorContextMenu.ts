@@ -54,10 +54,9 @@ module Cats.Gui {
             this.getIsense().getCrossReference(type, this.editor.filePath, this.getPos(), (err, data: Cats.FileRange[]) => {
                 if (!data) return;
                 var resultTable = new ResultTable();
-                var page = IDE.problemPane.addPage("info_tab", null, resultTable);
+                var page = IDE.resultPane.addPage("info_tab", null, resultTable);
                 page.setShowCloseButton(true);
                 resultTable.setData(data);
-                page.select();
             });
         }
 

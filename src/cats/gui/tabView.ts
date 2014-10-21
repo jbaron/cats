@@ -45,7 +45,10 @@ module Cats.Gui {
                 this.add(widget, { edge: 0 });
                 widget.addListener("contentChange",() => {
                     if (this.autoSelect) {
+                        var w = qx.ui.core.FocusHandler.getInstance().getFocusedWidget();
                         this.select();
+                        // var page = IDE.editorTabView.getActivePage();
+                        if (w) w.focus();
                     }
                 });
             }
@@ -55,7 +58,7 @@ module Cats.Gui {
         /**
          * Convenience method to select this page in the tab view.
          */ 
-        select() {
+        private select() {
             var tabView = this.getLayoutParent().getLayoutParent();
             tabView.setSelection([this]); 
         }
@@ -92,30 +95,10 @@ module Cats.Gui {
        addPage(id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem): TabViewPage {
             var tab = new TabViewPage(id, tooltipText, widget);
             this.add(tab);
+            this.setSelection([tab]);
             return tab;
         }
 
-        /**
-         * @DEPRICATED not used anymore, can be removed 
-         */ 
-        getPage(id: string): qx.ui.tabview.Page {
-            var pages = <TabViewPage[]>this.getChildren();
-            for (var i = 0; i < pages.length; i++) {
-                var page = pages[i];
-                if (page.id === id) {
-                    return page;
-                }
-            }
-            return null;
-        }
-
-        /**
-         * @DEPRICATED not used anymore, can be removed 
-         */ 
-        selectPage(id: string) {
-            var page = this.getPage(id);
-            if (page) this.setSelection([page]);
-        }
 
     }
 }

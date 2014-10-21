@@ -14,7 +14,7 @@
 //
 
 module Cats {
-  
+ 
     var GUI = require('nw.gui');
     // var Events = require('events');
 
@@ -30,9 +30,9 @@ module Cats {
             simple:qx.theme.Simple
         };
 
-        problemPane: Gui.TabView;
+        resultPane: Gui.TabView;
         toolBar: Gui.ToolBar;
-        infoPane: Gui.TabView;
+        contextPane: Gui.TabView;
         statusBar: Gui.StatusBar;
         editorTabView: Gui.EditorTabView;
         console: Gui.ConsoleLog;

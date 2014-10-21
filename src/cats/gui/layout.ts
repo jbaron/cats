@@ -47,8 +47,9 @@ module Cats.Gui {
             var navigatorPane = new TabView();
             ide.bookmarks = new ResultTable(["tableheader_bookmark"]);
             ide.fileNavigator = new FileNavigator();
-            navigatorPane.addPage("files_tab", null,ide.fileNavigator);
+            var fileTab = navigatorPane.addPage("files_tab", null,ide.fileNavigator);
             navigatorPane.addPage("bookmarks_tab", null,ide.bookmarks);
+            navigatorPane.setSelection([fileTab]);
 
             mainsplit.add(navigatorPane, 1); // navigator
 
@@ -60,34 +61,34 @@ module Cats.Gui {
             // infoSplit.set({ decorator: null });
             infoSplit.add(ide.editorTabView, 4); // editor
 
-            ide.infoPane = new TabView();
+            ide.contextPane = new TabView();
             ide.outlineNavigator = new OutlineNavigator();
             ide.propertyTable = new PropertyTable();
-            ide.infoPane.addPage("outline_tab",null,ide.outlineNavigator);
-            ide.infoPane.addPage("properties_tab",null,ide.propertyTable);
+            var outlineTab = ide.contextPane.addPage("outline_tab",null,ide.outlineNavigator);
+            ide.contextPane.addPage("properties_tab",null,ide.propertyTable);
+            ide.contextPane.setSelection([outlineTab]);
             
             
-            infoSplit.add(ide.infoPane, 1); // todo
+            infoSplit.add(ide.contextPane, 1); // todo
 
             editorSplit.add(infoSplit, 4);
 
             // **********************  Problem Pane ***************************
-            ide.problemPane = new TabView();
-            editorSplit.add(ide.problemPane, 2); // Info
+            ide.resultPane = new TabView();
+            editorSplit.add(ide.resultPane, 2); // Info
 
             ide.console = new ConsoleLog();
             ide.problemResult = new ResultTable();
             ide.todoList = new ResultTable();
             ide.processTable = new ProcessTable();
-            var problemPage = ide.problemPane.addPage("problems_tab", null, ide.problemResult);
+            var problemPage = ide.resultPane.addPage("problems_tab", null, ide.problemResult);
             problemPage.autoSelect = true;
             
-            var consolePage = ide.problemPane.addPage("console_tab", null, ide.console);
+            var consolePage = ide.resultPane.addPage("console_tab", null, ide.console);
             consolePage.autoSelect = true;
-            ide.problemPane.addPage("process_tab", null, ide.processTable);
-            ide.problemPane.addPage("todo_tab", null, ide.todoList);
-
-            consolePage.select();
+            ide.resultPane.addPage("process_tab", null, ide.processTable);
+            ide.resultPane.addPage("todo_tab", null, ide.todoList);
+            ide.resultPane.setSelection([consolePage]);
  
             mainsplit.add(editorSplit, 4); // main area
 
