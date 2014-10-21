@@ -99,7 +99,7 @@ module Cats.Gui {
                 });
             }
             this.getTableModel().setData(rows);
-            this.getSelectionModel().resetSelection();
+            // this.getSelectionModel().resetSelection();
         }
 
         /**

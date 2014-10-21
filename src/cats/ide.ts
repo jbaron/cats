@@ -14,7 +14,7 @@
 //
 
 module Cats {
- 
+
     var GUI = require('nw.gui');
     // var Events = require('events');
 

@@ -45,10 +45,11 @@ module Cats.Gui {
                 this.add(widget, { edge: 0 });
                 widget.addListener("contentChange",() => {
                     if (this.autoSelect) {
-                        var w = qx.ui.core.FocusHandler.getInstance().getFocusedWidget();
+                        var elem = <HTMLElement>document.activeElement;
                         this.select();
-                        // var page = IDE.editorTabView.getActivePage();
-                        if (w) w.focus();
+                        setTimeout(() => {
+                            if (elem) elem.focus();
+                        }, 10);
                     }
                 });
             }

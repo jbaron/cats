@@ -33,6 +33,7 @@ module Cats.Gui {
                 this.container = this.getContentElement().getDomElement();
             });
             this.setContextMenu(this.createContextMenu());
+            this.setFocusable(false);
         }
 
         private insertLine(line: string, severity: number) {
