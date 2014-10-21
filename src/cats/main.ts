@@ -21,7 +21,6 @@ module Cats {
 
     // Variable used everywhere for accessing the singleton IDE instance
     export var IDE: Cats.Ide;
-    var GUI = require('nw.gui');
 
     /**
      * Get a parameter from the URL. This is used when a new project is opened from within
@@ -43,10 +42,9 @@ module Cats {
      * Determine which project(s) we should load during 
      * startup. This is used when the IDE is started from the command line
      */
-    function determineProject(): string {
+    function determineProject(args:string[]): string {
         var projectName = getParameterByName("project");
         if (!projectName) {
-            var args = GUI.App.argv;
             var i = args.indexOf("--project");
             if (i > -1) projectName = args[i + 1];
         }
@@ -75,8 +73,9 @@ module Cats {
      * call this main to start the application 
      */
     function main(app: qx.application.Standalone) {
+        var GUI = require('nw.gui');
 
-        var args = GUI.App.argv;
+        var args:string[] = GUI.App.argv;
         if (args.indexOf("--debug") === -1) {
             console.info = function() { /* NOP */};
             console.debug = function() { /* NOP */};
@@ -96,7 +95,7 @@ module Cats {
 
         IDE.init(<qx.ui.container.Composite>app.getRoot());
 
-        var prjDir = determineProject();
+        var prjDir = determineProject(args);
         if (prjDir) {
             IDE.addProject(prjDir);
         } else {

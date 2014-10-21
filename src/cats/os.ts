@@ -23,7 +23,7 @@
 module Cats.OS.File {
 
         export var PATH = require("path");
-        var fs =require("fs");
+        var fs = require("fs");
         var exec = require("child_process").exec;
         var glob = require("glob");
 
@@ -77,10 +77,15 @@ module Cats.OS.File {
             /**
              * Remove an entry from the watch list (file or directory)
              * 
+             * @param name The filepath that no longer should be watched
+             * 
              */ 
             remove(name:string) {
                 var w = this.watches[name];
-                if (w) w.close();
+                if (w) {
+                    w.close();
+                    delete this.watches[name];
+                }
             }
             
         }

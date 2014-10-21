@@ -16,7 +16,6 @@
 module Cats {
 
     var GUI = require('nw.gui');
-    // var Events = require('events');
 
     export class Ide  extends qx.event.Emitter{
 
@@ -289,16 +288,17 @@ module Cats {
         
         /**
          * Close an open project
+         * 
          * @param project to be closed
          */
         closeProject(project:Project) {
-            // TODO put code on IDE
+            // TODO support multiple projects open in same IDE
             this.project.close();
             this.project = null;
         }
         
         /**
-         * Quit the application. Check if there are unsaved changes and ask the user if he really
+         * Quit the application. If there are unsaved changes ask the user if he really
          * wants to quit.
          */ 
         quit() {

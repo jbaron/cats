@@ -217,14 +217,16 @@ module Cats.TSWorker {
          * Get the various annotations in the comments, like TODO items.
          */ 
         getTodoItems() {
-            var descriptor = {
-                text: "@TODO",
-                priority: 1
-            };
+            var descriptors = [
+                {text: "@TODO",  priority: 1},
+                {text: "@BUG",  priority: 1},
+                {text: "@FIXME",  priority: 1},
+                {text: "TODO",  priority: 1},
+            ];
             
             var result:FileRange[] = [];
             this.lsHost.getScriptFileNames().forEach((fileName)=> {
-                var comments = this.ls.getTodoComments(fileName, [descriptor]);
+                var comments = this.ls.getTodoComments(fileName, descriptors);
                 var entries = this.convertTodoNavigate(fileName, comments);
                 result = result.concat(entries);
             });
