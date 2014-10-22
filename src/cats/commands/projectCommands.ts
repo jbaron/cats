@@ -44,7 +44,7 @@ module Cats.Commands {
      * Show a class diagram of the project. 
      */ 
     function showDiagram() {
-        if (IDE.project) IDE.editorTabView.addEditor(new Gui.UMLEditor("Class Diagram"));
+       if (IDE.project) IDE.editorTabView.addEditor(new Gui.UMLEditor("Class Diagram"));
     }
 
  
