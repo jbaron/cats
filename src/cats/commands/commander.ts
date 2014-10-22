@@ -81,7 +81,7 @@ module Cats.Commands {
         ide_history_prev: <Command>null,
         "ide_toggle_toolbar" : <Command>null,
         "ide_toggle_statusbar" : <Command>null,
-        "ide_toggle_outline" : <Command>null,
+        "ide_toggle_context" : <Command>null,
         "ide_toggle_result"  : <Command>null,
     };
 

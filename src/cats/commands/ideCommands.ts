@@ -47,7 +47,6 @@ module Cats.Commands {
 
     function configureIde() {
         var w = new Gui.IdeConfigDialog(IDE.config);
-        // w.setData(IDE.project.config.compiler);
         w.show();
     }
 
@@ -60,7 +59,7 @@ module Cats.Commands {
             registry( CMDS.ide_toggle_toolbar,  () => toggleView(IDE.toolBar) );
             registry( CMDS.ide_toggle_statusbar,  () => toggleView(IDE.statusBar) );
             registry( CMDS.ide_toggle_result,  () => toggleView(IDE.resultPane) );
-            registry( CMDS.ide_toggle_outline,  () => toggleView(IDE.contextPane) );
+            registry( CMDS.ide_toggle_context,  () => toggleView(IDE.contextPane) );
             
             registry( CMDS.ide_configure,  configureIde );
             registry( CMDS.ide_history_next, next);

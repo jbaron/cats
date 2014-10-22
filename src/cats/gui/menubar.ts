@@ -190,7 +190,7 @@ module Cats.Gui {
             var menu = this.menus.view;
             menu.append(getItem(CMDS.ide_toggle_toolbar));
             menu.append(getItem(CMDS.ide_toggle_statusbar));
-            menu.append(getItem(CMDS.ide_toggle_outline));
+            menu.append(getItem(CMDS.ide_toggle_context));
             menu.append(getItem(CMDS.ide_toggle_result));
         }
 

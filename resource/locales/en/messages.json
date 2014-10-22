@@ -162,8 +162,8 @@
     
     "ide_toggle_toolbar" : { "message": "Toggle Tool Bar"},
     "ide_toggle_statusbar" : { "message": "Toggle Status Bar"},
-    "ide_toggle_outline" : { "message": "Toggle Context Pane"},
-    "ide_toggle_result" : { "message": "Toggle Output Pane"},
+    "ide_toggle_context" : { "message": "Toggle Context Pane"},
+    "ide_toggle_result" : { "message": "Toggle Result Pane"},
     
    
     "ide_configure": {
