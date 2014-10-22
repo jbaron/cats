@@ -24,7 +24,7 @@ module Cats.Gui {
 
 
         constructor() {
-            super("Search");
+            super("Search in Files");
             var layout = new qx.ui.layout.VBox();
             this.setLayout(layout);
             this.add(this.createForm());

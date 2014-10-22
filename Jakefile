@@ -28,7 +28,7 @@ var catsOptions = [
     "src/cats/common.ts",
     "src/cats/os.ts",
     "src/cats/ide.ts",
-    "src/cats/projectConfig.ts",
+    "src/cats/projectSettings.ts",
     "src/cats/tsWorkerProxy.ts",
     "src/cats/project.ts",
     "src/cats/refactor.ts",

@@ -105,6 +105,7 @@ module Cats.Gui {
             widget.addListener("appear", () => {
                 // this.session.activate();
                 this.informWorld();
+                if (this.aceEditor) this.aceEditor.focus();
             });
 
             // session.on("errors", this.showErrors, this);

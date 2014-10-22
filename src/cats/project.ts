@@ -34,8 +34,7 @@ module Cats {
         // The singleton TSWorker handler instance
         iSense: TSWorkerProxy;
 
-        // Stores the project configuration paramters
-        config: ProjectConfiguration;
+        private settings: ProjectSettings;
 
         linter:Linter;
         
@@ -57,14 +56,20 @@ module Cats {
         }
 
         /**
+         * Get the project settings
+         */ 
+        get config() {
+            return this.settings.value;
+        }
+
+        /**
          * Save the project configuration
          */     
-        updateConfig(config) {
-            this.config = config;
+        updateConfig(config:ProjectConfiguration) {
+            this.settings.value = config;
             this.emit("config", config);
-            var pc = new ProjectConfig(this.projectDir);
             if (this.config.codingStandards.useLint) this.linter = new Linter(this);
-            pc.store(this.config);
+            this.settings.store();
             this.iSense.setSettings(this.config.compiler, this.config.codingStandards);
         }
         
@@ -188,8 +193,8 @@ module Cats {
          *  again from the filesystem to be fully in sync
          */
         refresh() {
-            var projectConfig = new ProjectConfig(this.projectDir);
-            this.config = projectConfig.load();
+            this.settings = new ProjectSettings(this.projectDir);
+            this.settings.load();
             this.name = this.config.name || OS.File.PATH.basename(this.projectDir);
             document.title = "CATS | " + this.name;
 
@@ -224,7 +229,6 @@ module Cats {
         }
 
         private showCompilationResults(data: Cats.CompileResults) {
-
             if (data.errors && (data.errors.length > 0)) {
                 IDE.problemResult.setData(data.errors);
                 return;

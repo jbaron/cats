@@ -14,57 +14,59 @@
 //
 
 module Cats {
-   
+
     /**
      *  Loads the configuration for a project. If no configuration file is found, it  
      *  returns sensible defaults that will be used instead.
      */
-    export class ProjectConfig {
+    export class ProjectSettings {
 
-        constructor(private projectRoot: string) {
+        value:ProjectConfiguration;
+
+        constructor( private projectRoot: string ) {
         }
-        
+
         /**
          * Get the name of the configuation file
          */
-        private getFileName() : string {
-            return OS.File.join(this.projectRoot, ".settings/config.json");
+        private getFileName(): string {
+            return OS.File.join( this.projectRoot, ".settings/config.json" );
         }
 
-       
+
         /**
          * Load the configuration for this project
          */
-        load() : ProjectConfiguration {
+        load(){
             var fileName = this.getFileName();
             try {
-                var content = OS.File.readTextFile(fileName);
-                var result:ProjectConfiguration = JSON.parse(content);
-                
+                var content = OS.File.readTextFile( fileName );
+                var result: ProjectConfiguration = JSON.parse( content );
+
                 // Do some basic sanitizing
-                if (! result.codingStandards) result.codingStandards = {};
-                if (! result.compiler) result.compiler = {};
-                return result;
-            } catch (err) {
-                console.info("Couldn't find project configuration, loading defaults");
-                return this.loadDefault();
+                if ( !result.codingStandards ) result.codingStandards = {};
+                if ( !result.compiler ) result.compiler = {};
+                this.value = result;
+            } catch ( err ) {
+                console.info( "Couldn't find project configuration, loading defaults" );
+                this.loadDefault();
             }
         }
-        
+
         /**
          * Store the configuration
-         */ 
-        store(config:ProjectConfiguration) {
+         */
+        store() {
             var name = this.getFileName();
-            var content = JSON.stringify(config, null, 4);
-            OS.File.writeTextFile(name,content);
+            var content = JSON.stringify( this.value, null, 4 );
+            OS.File.writeTextFile( name, content );
         }
 
         /**
          * Load the default configuration for a project
          */
-        private loadDefault() : ProjectConfiguration {
-            var result:ProjectConfiguration = {
+        private loadDefault() {
+            var result: ProjectConfiguration = {
                 version: "1.3",
                 main: "index.html",
                 src: null, //If not set, the whole project directory is searched for source files
@@ -73,7 +75,7 @@ module Cats {
                     "module": ts.ModuleKind.None,
                     "noLib": false,
                     "removeComments": false,
-                    "noImplicitAny" : false,
+                    "noImplicitAny": false,
                     "generateDeclarationFiles": false,
                     "mapSourceFiles": false,
                     "target": ts.ScriptTarget.ES5,
@@ -86,12 +88,12 @@ module Cats {
                     lintFile: null
                 },
                 documentation: {
-                    
+
                 }
-                
+
             };
-            
-            return result;
+
+            this.value = result;
         }
 
     }

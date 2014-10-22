@@ -75,7 +75,7 @@ module Cats.Commands {
      */ 
     function configureProject() {
         if (IDE.project) {
-            var w = new Gui.ProjectConfigDialog(IDE.project);
+            var w = new Gui.ProjectSettingsDialog(IDE.project);
             w.show();
         }
     }

@@ -146,7 +146,7 @@ module Cats.Gui {
      * This class represents the configuration windows for the project specific 
      * settings.
      */
-    export class ProjectConfigDialog extends ConfigDialog {
+    export class ProjectSettingsDialog extends ConfigDialog {
 
         private compilerSettings: ConfigDialogPage;
         private projectSettings: ConfigDialogPage;
@@ -348,7 +348,7 @@ module Cats.Gui {
      * The main class for the IDE configuration window. This window allows to configure 
      * all kind of personal settings and preferences.
      */
-    export class IdeConfigDialog extends ConfigDialog {
+    export class IdePreferencesDialog extends ConfigDialog {
 
         private ideGenericSettings: ConfigDialogPage;
         private editorSettings: ConfigDialogPage;
@@ -368,14 +368,14 @@ module Cats.Gui {
         saveValues() {
             var config: Cats.IDEConfiguration = this.ideGenericSettings.getData();
             config.editor = this.editorSettings.getData();
-            IDE.updateConfig(config);
+            IDE.updatePreferences(config);
         }
 
 
         addTabs() {
             var tab = new qx.ui.tabview.TabView();
-            this.ideGenericSettings = new IDEGenericSettings;
-            this.editorSettings = new EditorSettings;
+            this.ideGenericSettings = new GenericPreferences;
+            this.editorSettings = new EditorPreferences;
 
             tab.add(this.ideGenericSettings);
             tab.add(this.editorSettings);
@@ -386,7 +386,7 @@ module Cats.Gui {
     /**
      * This class contains the configuration page for the overal IDE
      */
-    class IDEGenericSettings extends ConfigDialogPage {
+    class GenericPreferences extends ConfigDialogPage {
 
         private themes = [
             { label: "CATS", model: "cats" },
@@ -418,7 +418,7 @@ module Cats.Gui {
     /**
      * This class contains the configuration page for the source editor
      */
-    class EditorSettings extends ConfigDialogPage {
+    class EditorPreferences extends ConfigDialogPage {
         private completionMode = [
             { label: "strict", model: "strict" },
             { label: "forgiven", model: "forgiven" }

@@ -56,7 +56,7 @@ module Cats.Gui {
 
         private createButton(cmd: Cats.Commands.Command) {
            var icon = IDE.icons.toolbar[cmd.name];
-            var button = new qx.ui.toolbar.Button(cmd.label, icon);
+           var button = new qx.ui.toolbar.Button(cmd.label, icon);
             button.setShow("icon");
             button.getChildControl("icon").set({
                 width: 22,
@@ -78,16 +78,28 @@ module Cats.Gui {
                 if (cmd === null) {
                     this.add(part);
                     part = new qx.ui.toolbar.Part();
-                    // this.addSeparator();
                 } else {
                     var button = this.createButton(cmd);
-                    // this.add(button);
                     part.add(button);
                 }
             });
             this.add(part);
-            return;
         }
+
+        /**
+         * Alternative way to adding buttons to the toolbar
+         */ 
+        private init2() {
+            this.commands.forEach((cmd) => {
+                if (cmd === null) {
+                    this.addSeparator();
+                } else {
+                    var button = this.createButton(cmd);
+                    this.add(button);
+                }
+            });
+        }
+        
 
     }
 }

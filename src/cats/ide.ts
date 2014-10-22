@@ -56,7 +56,7 @@ module Cats {
         constructor() {
             super();
             this.catsHomeDir = process.cwd();
-            this.config = this.loadConfig();
+            this.config = this.loadPreferences();
             this.icons = this.loadIconsMap();
             this.configure();
             
@@ -155,9 +155,11 @@ module Cats {
             var files: FileList = event.dataTransfer.files;
 
             for(var i = 0; i < files.length; i++) {
-                FileEditor.OpenEditor((<any>files[i]).path);
+                var path:string = (<any>files[i]).path;
+                FileEditor.OpenEditor(path);
             }
         }
+
 
         /**
          * Load the projects and files that were open last time before the
@@ -189,7 +191,7 @@ module Cats {
          * Load the configuration for the IDE. If there is no configuration
          * found, create the default one to use.
          */ 
-        private loadConfig() {
+        private loadPreferences() {
             
             var defaultConfig:IDEConfiguration = {
                 version: "1.1",
@@ -218,17 +220,21 @@ module Cats {
             return defaultConfig;
         }
 
-        updateConfig(config) {
+        /**
+         * Update the configuration for IDE
+         * 
+         */ 
+        updatePreferences(config) {
             this.config = config;
             this.emit("config", config);
             this.configure();
-            this.saveConfig();
+            this.savePreferences();
         }
 
         /**
          * Persist the current IDE configuration to a file
          */ 
-        saveConfig() {
+        savePreferences() {
             try {
                 var config = this.config;
                 config.version = "1.1";
@@ -279,7 +285,7 @@ module Cats {
                     if (IDE.editorTabView.hasUnsavedChanges()) {
                         if (!confirm("There are unsaved changes!\nDo you really want to continue?")) return;
                     }
-                    IDE.saveConfig();
+                    IDE.savePreferences();
                 } catch (err) { } // lets ignore this
                 this.close(true);
             });
@@ -305,7 +311,7 @@ module Cats {
             if (this.editorTabView.hasUnsavedChanges()) {
                 if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
             }
-            this.saveConfig();
+            this.savePreferences();
             GUI.App.quit();
         }
  

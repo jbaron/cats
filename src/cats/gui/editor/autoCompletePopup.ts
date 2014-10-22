@@ -108,7 +108,7 @@ module Cats.Gui {
 
         private match_strict(text: string, completion: string) {
             if (!text) return true;
-            if (completion.toLowerCase().indexOf(text) === 0) return true;
+            if (completion.indexOf(text) === 0) return true;
             return false;
         }
 
@@ -127,10 +127,10 @@ module Cats.Gui {
             var text = this.getInputText();
             if (text) text = text.toLowerCase();
 
-            var matchText = this.match_forgiven;
+            var matchFunction = this.match_forgiven;
             if (IDE.config.editor.completionMode) {
                 var methodName = "match_" + IDE.config.editor.completionMode;
-                if (this[methodName]) matchText = this[methodName];
+                if (this[methodName]) matchFunction = this[methodName];
             }
 
             var lastItem = this.listModel.getItem(this.listModel.getLength() - 1);
@@ -140,7 +140,7 @@ module Cats.Gui {
             var delegate = {};
             delegate["filter"] = (data) => {
                 var value = data.getCaption().toLowerCase();
-                var result = this.match_forgiven(text, value); // TODO hwo to deal with this
+                var result = matchFunction(text, value); // TODO hwo to deal with this
                 if (result) this.filtered.push(data);
                 if (data === lastItem) {
                     // IDE.console.log("filtered items: " + this.filtered.length);
