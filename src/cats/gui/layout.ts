@@ -47,8 +47,8 @@ module Cats.Gui {
             var navigatorPane = new TabView();
             ide.bookmarks = new ResultTable(["tableheader_bookmark"]);
             ide.fileNavigator = new FileNavigator();
-            var fileTab = navigatorPane.addPage("files_tab", null,ide.fileNavigator);
-            navigatorPane.addPage("bookmarks_tab", null,ide.bookmarks);
+            var fileTab = navigatorPane.addPage("files_tab", ide.fileNavigator);
+            navigatorPane.addPage("bookmarks_tab", ide.bookmarks);
             navigatorPane.setSelection([fileTab]);
 
             mainsplit.add(navigatorPane, 1); // navigator
@@ -64,8 +64,8 @@ module Cats.Gui {
             ide.contextPane = new TabView();
             ide.outlineNavigator = new OutlineNavigator();
             ide.propertyTable = new PropertyTable();
-            var outlineTab = ide.contextPane.addPage("outline_tab",null,ide.outlineNavigator);
-            ide.contextPane.addPage("properties_tab",null,ide.propertyTable);
+            var outlineTab = ide.contextPane.addPage("outline_tab",ide.outlineNavigator);
+            ide.contextPane.addPage("properties_tab",ide.propertyTable);
             ide.contextPane.setSelection([outlineTab]);
             
             
@@ -81,13 +81,13 @@ module Cats.Gui {
             ide.problemResult = new ResultTable();
             ide.todoList = new ResultTable();
             ide.processTable = new ProcessTable();
-            var problemPage = ide.resultPane.addPage("problems_tab", null, ide.problemResult);
+            var problemPage = ide.resultPane.addPage("problems_tab", ide.problemResult);
             problemPage.autoSelect = true;
             
-            var consolePage = ide.resultPane.addPage("console_tab", null, ide.console);
+            var consolePage = ide.resultPane.addPage("console_tab", ide.console);
             consolePage.autoSelect = true;
-            ide.resultPane.addPage("process_tab", null, ide.processTable);
-            ide.resultPane.addPage("todo_tab", null, ide.todoList);
+            ide.resultPane.addPage("process_tab",  ide.processTable);
+            ide.resultPane.addPage("todo_tab",  ide.todoList);
             ide.resultPane.setSelection([consolePage]);
  
             mainsplit.add(editorSplit, 4); // main area

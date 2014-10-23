@@ -17,6 +17,11 @@ module Cats {
 
     var GUI = require('nw.gui');
 
+    /**
+     * This class represents the total IDE. The CATS is started a single isntance will be
+     * created that takes care of rendering all the components and open a project if applicable.
+     * 
+     */ 
     export class Ide  extends qx.event.Emitter{
 
         // List of different themes that are available
@@ -56,6 +61,7 @@ module Cats {
         constructor() {
             super();
             this.catsHomeDir = process.cwd();
+            this.loadMessages();
             this.config = this.loadPreferences();
             this.icons = this.loadIconsMap();
             this.configure();
@@ -71,6 +77,25 @@ module Cats {
         private loadIconsMap() {
             return JSON.parse(OS.File.readTextFile("resource/icons.json"));
         }
+
+
+        /**
+         * Load all the locale dependend messages from the message file.
+         * 
+         * @param locale The locale you want to retrieve the messages for 
+         */ 
+        private loadMessages(locale="en") {
+            var fileName = "resource/locales/" + locale + "/messages.json";
+            var messages = JSON.parse(OS.File.readTextFile(fileName));
+            var map:IMap = {};
+            for (var key in messages) {
+                map[key] = messages[key].message;
+            }
+            qx.locale.Manager.getInstance().setLocale(locale);
+            qx.locale.Manager.getInstance().addTranslation(locale, map);
+
+        }
+
 
         private goto(entry) {
             var hash = entry.hash;

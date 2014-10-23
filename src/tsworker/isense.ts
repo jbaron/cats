@@ -424,7 +424,7 @@ module Cats.TSWorker {
             var start, end;
             var script = this.lsHost.getScript(fileName);
             
-            var content = script.content;
+            var content = script.getContent();
             
             if (range == null) {
                 start = 0;
@@ -476,27 +476,7 @@ module Cats.TSWorker {
         }
 
 
-        // Determine type of autocompletion
-        private determineAutoCompleteType(fileName: string, pos: number) {
-            var source = this.lsHost.getScript(fileName).content;
-            var identifyerMatch = /[0-9A-Za-z_\$]*$/;
-            var previousCode = source.substring(0, pos);
-
-            var match = previousCode.match(identifyerMatch);
-            var newPos = pos;
-            var memberMode = false;
-            if (match && match[0]) newPos = pos - match[0].length;
-            if (source[newPos - 1] === '.') memberMode = true;
-
-            var result = {
-                pos: newPos,
-                memberMode: memberMode
-            };
-
-            return result;
-        }
-
- 
+     
 
         public getNavigateToItems(search: string) {
             var results = this.ls.getNavigateToItems(search);
@@ -571,7 +551,7 @@ module Cats.TSWorker {
             if (!script) return [];
             var pos = script.getPositionFromCursor(cursor);
             var memberMode = false;
-            var type = this.determineAutoCompleteType(fileName, pos);
+            var type = script.determineMemeberMode(pos);
 
             // Lets find out what autocompletion there is possible		
             var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode) || <ts.CompletionInfo>{};

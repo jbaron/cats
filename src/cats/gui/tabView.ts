@@ -15,12 +15,6 @@
 module Cats.Gui {
 
  
-    function getIconName(name: string) {
-            var entry = IDE.icons.tab[name];
-            if (entry) return entry;
-            console.log("No icon found for tab with name " + name);
-    }
-
     /**
      * Generic tab used for all the tabs in CATS except for the edirtor tabs.
      * Takes care of basic look & feel and some simple features
@@ -30,8 +24,8 @@ module Cats.Gui {
         // Hints if this tab want to get selected if its content changes 
         autoSelect = false;
         
-        constructor(public id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem) {
-            super(super.tr(id), getIconName(id));
+        constructor(public id: string, widget: qx.ui.core.LayoutItem, tooltipText?: string) {
+            super(super.tr(id), IDE.icons.tab[id]);
             this.setLayout(new qx.ui.layout.Canvas());
 
             if (tooltipText) {
@@ -55,6 +49,9 @@ module Cats.Gui {
             }
 
         }
+        
+        
+        
         
         /**
          * Convenience method to select this page in the tab view.
@@ -88,13 +85,13 @@ module Cats.Gui {
                 menu.add(item);
             });
             var mainmenu = new qx.ui.menu.Menu();
-            var b = new qx.ui.menu.Button("Bar layout", null,null,menu);
+            var b = new qx.ui.menu.Button("Tab layout", null,null,menu);
             mainmenu.add(b);
             this.setContextMenu(mainmenu);
         }
 
-       addPage(id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem): TabViewPage {
-            var tab = new TabViewPage(id, tooltipText, widget);
+       addPage(id: string, widget: qx.ui.core.LayoutItem, tooltipText?: string): TabViewPage {
+            var tab = new TabViewPage(id,widget, tooltipText);
             this.add(tab);
             this.setSelection([tab]);
             return tab;

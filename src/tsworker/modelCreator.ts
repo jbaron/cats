@@ -17,6 +17,8 @@ module Cats.TSWorker {
     
     /**
      * Creates a class model to be used for displaying as an UML diagram
+     * 
+     * @TODO Fix this using the new language service API. Right now disabled.
      */ 
     export class ModelCreator {
 

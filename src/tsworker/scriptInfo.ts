@@ -22,7 +22,9 @@
 module Cats.TSWorker {
 
 /**
- * This class holds the TypeScript files and expose them to the TS language services
+ * This class holds the TypeScript files and expose them to the TS language services. It also
+ * provides a number of basic conversions between different ways of determining the position 
+ * within a file.
  * 
  */ 
 export class ScriptInfo {
@@ -30,7 +32,7 @@ export class ScriptInfo {
         public editRanges: { length: number; textChangeRange: TypeScript.TextChangeRange; }[] = [];
         private lineMap: TypeScript.LineMap = null;
 
-        constructor(public fileName: string, public content: string) {
+        constructor(public fileName: string, private content: string) {
             this.setContent(content);
         }
 
@@ -44,6 +46,9 @@ export class ScriptInfo {
             return this.lineMap;
         }
 
+        public getContent() {
+            return this.content;
+        }
 
         public updateContent(content: string): void {
             this.editRanges = [];
@@ -120,6 +125,35 @@ export class ScriptInfo {
             };
             return result;
         }
+        
+        /**
+         * Based on the position within the script, determine the memeber mode
+         * 
+         */ 
+        determineMemeberMode(pos: number) {
+            var source = this.content;
+            var identifyerMatch = /[0-9A-Za-z_\$]*$/;
+            var previousCode = source.substring(0, pos);
+
+            var match = previousCode.match(identifyerMatch);
+            var newPos = pos;
+            var memberMode = false;
+            if (match && match[0]) newPos = pos - match[0].length;
+            if (source[newPos - 1] === '.') memberMode = true;
+
+            var result = {
+                pos: newPos,
+                memberMode: memberMode
+            };
+
+            return result;
+        }
+        
+        getScriptSnapshot() {
+             return  TypeScript.ScriptSnapshot.fromString(this.content);
+        }
+
+        
         
     }
 }

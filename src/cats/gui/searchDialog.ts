@@ -83,7 +83,7 @@ module Cats.Gui {
                 });
                 var resultTable = new ResultTable();
                 var toolTipText = "Search results for " + searchPattern + " in " + this.rootDir + "/" + param.glob;
-                var page = IDE.resultPane.addPage("search", toolTipText, resultTable);
+                var page = IDE.resultPane.addPage("search", resultTable, toolTipText);
                 page.setShowCloseButton(true);
                 resultTable.setData(result);
                 this.close();

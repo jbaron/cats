@@ -65,17 +65,7 @@ module Cats.TSWorker {
         
         getScriptSnapshot(fileName: string): TypeScript.IScriptSnapshot {
              var script = this.scripts[fileName];
-             var result =  TypeScript.ScriptSnapshot.fromString(script.content);
-             
-             /*
-             // Quick hack
-             result. getTextChangeRangeSinceVersion =  (version) => {
-                    return <TypeScript.TextChangeRange>null;
-                    // return new TypeScript.TextChangeRange(new TypeScript.TextSpan(0, script.content.length),script.content.length);
-             };
-             */
-             
-             return result;
+             if (script) return script.getScriptSnapshot();
         }
 
 

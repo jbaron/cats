@@ -24,17 +24,13 @@ module Cats {
 
     /**
      * Get a parameter from the URL. This is used when a new project is opened from within
-     * the IDE and the project name is passed s a parameter
+     * the IDE and the project name is passed s a parameter.
      */
-    function getParameterByName(name: string): string {
-        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-        var regexS = "[\\?&]" + name + "=([^&#]*)";
-        var regex = new RegExp(regexS);
-        var results = regex.exec(window.location.search);
-        if (results == null) {
-            return "";
-        } else {
-            return decodeURIComponent(results[1].replace(/\+/g, " "));
+    function getParameterByName(val:string) {
+        var items = location.search.substr(1).split("&");
+        for (var index = 0; index < items.length; index++) {
+            var tmp = items[index].split("=");
+            if (tmp[0] === val) return decodeURIComponent(tmp[1]);
         }
     }
 
@@ -51,22 +47,13 @@ module Cats {
         return projectName;
     }
 
-    // Catch unhandled expections so they don't showup in the IDE.
+    // Catch unhandled expections so they don't stop the process.
     process.on("uncaughtException", function(err: any) {
         console.error("Uncaught exception occured: " + err);
         console.error(err.stack);
         if (IDE.console) IDE.console.error(err.stack);
     });
 
-    function loadMessages(locale="en") {
-        var fileName = "resource/locales/" + locale + "/messages.json";
-        var messages = JSON.parse(OS.File.readTextFile(fileName));
-        var map:IMap = {};
-        for (var key in messages) {
-            map[key] = messages[key].message;
-        }
-        return map;
-    }
 
     /**
      * This is the functions that start kicks it all of. When Qooxdoo is loaded it will 
@@ -86,14 +73,7 @@ module Cats {
             IDE.debug = true;
         }
 
-        var map:IMap = {
-            "project_settings" : "Project Setting"
-        };
-
-        qx.locale.Manager.getInstance().setLocale("en");
-        qx.locale.Manager.getInstance().addTranslation("en", loadMessages("en"));
-
-        IDE.init(<qx.ui.container.Composite>app.getRoot());
+       IDE.init(<qx.ui.container.Composite>app.getRoot());
 
         var prjDir = determineProject(args);
         if (prjDir) {
