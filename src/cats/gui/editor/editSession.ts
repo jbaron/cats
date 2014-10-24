@@ -20,27 +20,11 @@ module Cats.Gui {
 
     export class EditSession extends ace.EditSession {
 
-
-        unsavedChanges = false;
-
         constructor(content: string, mode: string, private editor: SourceEditor) {
             super(content, mode);
             this.setNewLineMode("unix");
             this.setUndoManager(new UndoManager());
 
-            this.on("changeAnnotation", () => {
-                var a = this.getAnnotations();
-                this.editor.emit("errors", this.getMaxAnnotation(a));
-            });
-
-            this.on("changeOverwrite", (a) => {
-                this.editor.informWorld();
-            });
-
-            this.on("change", () => {
-                if (!this.unsavedChanges) this.setHasUnsavedChanges(true);
-            });
-            
             IDE.project.on("config", () => { this.configureAceSession(); });
         }
 
@@ -64,7 +48,8 @@ module Cats.Gui {
         /**
          * Determine the maximum level of warnings within a set of annotations.
          */
-        private getMaxAnnotation(annotations: ace.Annotation[]) {
+        getMaxAnnotation() {
+            var annotations = this.getAnnotations();
             if ((!annotations) || (annotations.length === 0)) return "";
             var result = "info";
             annotations.forEach((annotation) => {
@@ -78,11 +63,6 @@ module Cats.Gui {
             var config = this.editor.project.config.codingStandards;
             if (config.tabSize) this.setTabSize(config.tabSize);
             if (config.useSoftTabs != null) this.setUseSoftTabs(config.useSoftTabs);
-        }
-
-        setHasUnsavedChanges(value: boolean) {
-            this.unsavedChanges = value;
-            this.editor.emit("changed", value);
         }
 
     }

@@ -43,6 +43,7 @@ module Cats.Gui {
 
         private status = {};
         private mode:string;
+        private unsavedChanges = false;
         private aceEditor: ace.Editor;
         private mouseMoveTimer: number;
         private outlineTimer: number
@@ -56,49 +57,29 @@ module Cats.Gui {
         
         constructor(fileName?:string) {
             super(fileName);
-            
+            this.createEditSession(fileName);
+            this.contextMenu = new SourceEditorContextMenu(this);
+            this.createWidget();
+
+            IDE.on("config", () => { this.configureEditor(); });
+        }
+
+
+        private createWidget() {
             var widget = new qx.ui.core.Widget();
             widget.setDecorator(null);
             widget.setFont(null);
             widget.setAppearance(null);
-            this.widget = widget;
-            
-            var content = "";
-            this.mode = "ace/mode/text";
-            
-            if (fileName) {
-                content = OS.File.readTextFile(fileName) ;
-                this.mode = modelist.getModeForPath(fileName).mode
-            }
-            
-            this.editSession = new EditSession(content, this.mode, this);
+            widget.setContextMenu(this.contextMenu);
             
             widget.addListenerOnce("appear", () => {
                 var container = widget.getContentElement().getDomElement();
                 container.style.lineHeight = "normal";
                 this.aceEditor = this.createAceEditor(container);
-                
-
-                this.aceEditor.setSession(this.editSession);
-
-                if (this.mode === "binary") {
-                    this.aceEditor.setReadOnly(true);
-                } else {
-                    this.aceEditor.setReadOnly(false);
-                }
-
-                this.contextMenu = new SourceEditorContextMenu(this);
-                this.widget.setContextMenu(this.contextMenu);
-
-                this.aceEditor.on("changeSelection", () => {
-                    this.clearSelectedTextMarker();
-                    this.informWorld();
-                });
-
+              
                 this.configureEditor();
 
                 if (this.pendingPosition) this.moveToPosition(this.pendingPosition);
-
 
             }, this);
 
@@ -109,12 +90,42 @@ module Cats.Gui {
             });
 
             // session.on("errors", this.showErrors, this);
-            this.widget.addListener("resize", () => { this.resizeHandler(); });
+            widget.addListener("resize", () => { this.resizeHandler(); });
 
-          
-            IDE.on("config", () => { this.configureEditor(); });
+            this.widget = widget;
         }
 
+        private createEditSession(fileName:string) {
+            var content = "";
+            this.mode = "ace/mode/text";
+            
+            if (fileName) {
+                content = OS.File.readTextFile(fileName) ;
+                this.mode = modelist.getModeForPath(fileName).mode
+            }
+
+            this.editSession = new EditSession(content, this.mode, this);
+            
+            this.editSession.on("changeAnnotation", () => {
+                this.emit("errors", this.editSession.getMaxAnnotation());
+            });
+            
+            this.editSession.on("changeOverwrite", (a) => {
+                this.informWorld();
+            });
+            
+            this.on("change", () => {
+                this.setHasUnsavedChanges(true);
+            });
+            
+        }
+ 
+       
+        private setHasUnsavedChanges(value: boolean) {
+            if (value === this.unsavedChanges) return;
+            this.unsavedChanges = value;
+            this.emit("changed", value);
+        }
        
         getState():SourceEditorState {
             return {
@@ -348,12 +359,46 @@ module Cats.Gui {
         }
 
         /**
+         * Configure the editor based on the mode 
+         */ 
+        private configureMode() {
+              this.mode = modelist.getModeForPath(this.filePath).mode
+              this.aceEditor.getSession().setMode(this.mode);
+               
+
+             if (this.isTypeScript()) {
+                var isProjectFile = true;
+                
+                if (! this.project.hasScriptFile(this.filePath)) {
+                    isProjectFile = confirm("Not yet part of project, add it now?");
+                    if (isProjectFile) this.project.addScript(this.filePath, this.getContent());
+                }
+                
+                if (isProjectFile) {
+                    this.aceEditor.completers =  [new TSCompleter(this), snippetCompleter];
+                    this.aceEditor.commands.on('afterExec', (e) => { this.liveAutoComplete(e);});
+                    new TSTooltip(this);
+                    new TSHelper(this, this.editSession);
+                    }
+            } else {
+                this.aceEditor.completers =  [keyWordCompleter, snippetCompleter];
+            }
+        }
+
+        /**
          * Create a new isntance of the ACE editor and append is to a dom element
          * 
          */ 
         private createAceEditor(rootElement: HTMLElement): ace.Editor {
             var editor: ace.Editor = ace.edit(rootElement);
-            if (this.isTypeScript()) {
+            editor.setSession(this.editSession);
+            editor.on("changeSelection", () => {
+                    this.clearSelectedTextMarker();
+                    this.informWorld();
+            });
+
+            
+             if (this.isTypeScript()) {
                 var isProjectFile = true;
                 
                 if (! this.project.hasScriptFile(this.filePath)) {
@@ -410,7 +455,7 @@ module Cats.Gui {
         }
 
         hasUnsavedChanges() {
-            return this.editSession.unsavedChanges;
+            return this.unsavedChanges;
         }
      
         /**
@@ -423,10 +468,12 @@ module Cats.Gui {
                 this.filePath = prompt("Please enter the file name", dir);
                 if (! this.filePath) return;
                 this.filePath = OS.File.switchToForwardSlashes(this.filePath);
+                this.label = OS.File.PATH.basename(this.filePath);
+                IDE.editorTabView.getPageForEditor(this).setLabel(this.label);
             }
 
             OS.File.writeTextFile(this.filePath, this.getContent());
-            this.editSession.setHasUnsavedChanges(false);
+            this.setHasUnsavedChanges(false);
             this.updateFileInfo();
             IDE.console.log("Saved file " + this.filePath);
             if (this.isTypeScript()) {

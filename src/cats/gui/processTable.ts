@@ -71,7 +71,7 @@ module Cats.Gui {
             tableModel.setColumns(headers);
             tableModel.setData([]);
 
-            var custom: any = {
+            var custom: IMap = {
                 tableColumnModel: function(obj) {
                     return new qx.ui.table.columnmodel.Resize(obj);
                 }

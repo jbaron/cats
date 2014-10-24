@@ -17,7 +17,7 @@
 module Cats.Gui {
 
     /**
-     * Thsi class assists the SourceEditor for TypeScript files. It takes care of
+     * This class assists the SourceEditor for TypeScript files. It takes care of
      * diagnostics and outline updates.
      */ 
     export class TSHelper {
