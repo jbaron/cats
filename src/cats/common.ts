@@ -22,7 +22,6 @@ module Cats {
         type: string;
     }
 
-
     export interface IconMap {
         kind: Map<string>;
         tab: Map<string>;

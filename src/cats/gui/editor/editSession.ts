@@ -17,17 +17,43 @@
 module Cats.Gui {
 
     var UndoManager: ace.UndoManager = ace.require("ace/undomanager").UndoManager;
+    var modelist = ace.require('ace/ext/modelist');
 
+
+    /**
+     * Wrapper class around the Ace EditSession that takes care of the common
+     * features for all edit sessions.
+     * 
+     */ 
     export class EditSession extends ace.EditSession {
 
-        constructor(content: string, mode: string, private editor: SourceEditor) {
-            super(content, mode);
+        private editor;
+        mode: string;
+
+        constructor(editor:SourceEditor) {
+            var content = "";
+            this.mode = "ace/mode/text";
+            this.editor = editor;
+            
+            if (editor.filePath) {
+                content = OS.File.readTextFile(editor.filePath) ;
+                this.mode = modelist.getModeForPath(editor.filePath).mode
+                
+                if ( this.isTypeScript() && (!IDE.project.hasScriptFile( editor.filePath )) ) {
+                    var isProjectFile = confirm( "Not yet part of project, add it now?" );
+                    if ( isProjectFile ) IDE.project.addScript( editor.filePath, content );
+                }
+            
+            }
+            
+            super(content, this.mode);
             this.setNewLineMode("unix");
             this.setUndoManager(new UndoManager());
 
-            IDE.project.on("config", () => { this.configureAceSession(); });
+            IDE.project.on("config", (c) => { this.configureAceSession(c); });
         }
 
+ 
         /**
          * Check if there are any errors for this session and show them.    
          */
@@ -45,10 +71,26 @@ module Cats.Gui {
         }
 
 
+       /**
+         * Is the editor currently containing TypeScript content. This determines wehther all kind 
+         * of features are enabled or not.
+         */ 
+        isTypeScript() {
+            return this.mode === "ace/mode/typescript";
+        }
+
+        setMode(mode:string) {
+            this.mode=mode;
+            super.setMode(mode);
+        }
+
+
         /**
-         * Determine the maximum level of warnings within a set of annotations.
+         * Determine the maximum level of severity within a set of annotations.
+         * 
+         * @return Possible return values are info, warning or error
          */
-        getMaxAnnotation() {
+        getMaxAnnotationLevel() {
             var annotations = this.getAnnotations();
             if ((!annotations) || (annotations.length === 0)) return "";
             var result = "info";
@@ -59,11 +101,36 @@ module Cats.Gui {
             return result;
         }
 
-        private configureAceSession() {
-            var config = this.editor.project.config.codingStandards;
+        private configureAceSession(projectConfig:ProjectConfiguration) {
+            var config = projectConfig.codingStandards;
             if (config.tabSize) this.setTabSize(config.tabSize);
             if (config.useSoftTabs != null) this.setUseSoftTabs(config.useSoftTabs);
         }
+        
+        /**
+         * Persist this session to the file system. This overrides the NOP in the base class
+         */
+        save() {
+            var filePath = this.editor.filePath;
+            if (filePath == null) {
+                var dir = OS.File.join(IDE.project.projectDir, "/");
+                filePath = prompt("Please enter the file name", dir);
+                if (! filePath) return;
+                filePath = OS.File.switchToForwardSlashes(filePath);
+                this.editor.setFilePath(filePath);
+            }
+
+            OS.File.writeTextFile(filePath, this.getValue());
+            this.editor.setHasUnsavedChanges(false);
+            this.editor.updateFileInfo();
+            IDE.console.log("Saved file " + filePath);
+            if (this.isTypeScript()) {
+                IDE.project.iSense.updateScript(filePath, this.getValue());
+                IDE.project.validate(false);
+                if (IDE.project.config.buildOnSave) Commands.CMDS.project_build.command();
+            }
+        }
+        
 
     }
 

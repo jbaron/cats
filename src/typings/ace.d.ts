@@ -108,6 +108,7 @@ declare module ace {
 		focus();
 		resize();
 		completers:any;
+		selection:any;
 		insertSnippet:any;
 		on(event:string,callback);
         setReadOnly(readOnly:boolean);

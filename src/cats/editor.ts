@@ -78,7 +78,6 @@ module Cats {
         }
 
 
-
         /**
          * Get the state of this editor so it can be at a later session revived. For example for 
          * a source file editor this would be the fileName and current position.
@@ -138,13 +137,12 @@ module Cats {
      * file system. 
      */
     export class FileEditor extends Editor {
+        
+        filePath:string;
 
-        constructor(public filePath: string) {
+        constructor(filePath: string) {
             super();
-            if (this.filePath) {
-                this.label = OS.File.PATH.basename(this.filePath);
-            }
-            this.updateFileInfo();
+            if (filePath) this.setFilePath(filePath);
         }
 
         protected updateFileInfo() {
@@ -154,6 +152,12 @@ module Cats {
                 } catch (err) { /* NOP */ }
             }
         }
+
+        setFilePath(filePath:string) {
+            this.filePath = filePath;
+            this.label = OS.File.PATH.basename(this.filePath);
+            this.updateFileInfo();
+        } 
 
         /**
          * Which type of files does this editor supports for editing.

@@ -19,28 +19,10 @@
 
 module Cats.Commands {
 
-    function getRange( editor ): Cats.Range {
-        var range: ace.Range = editor.aceEditor.selection.getRange();
-        if ( range.isEmpty() ) return null;
-        return {
-            start: range.start,
-            end: range.end
-        };
-    }
-
+   
     function formatText() {
-
         var editor = <Gui.SourceEditor>IDE.editorTabView.getActiveEditor();
-        if ( editor && editor.isTypeScript && editor.isTypeScript() ) {
-            var range = getRange( editor );
-            IDE.project.iSense.getFormattedTextForRange( editor.filePath, range, ( err: Error, result: string ) => {
-                if ( !err ) {
-                    editor.setContent( result );
-                }
-
-            });
-        }
-
+        if (editor) editor.executeCommand( "formatText" );
     }
 
 

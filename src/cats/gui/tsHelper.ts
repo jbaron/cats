@@ -22,7 +22,6 @@ module Cats.Gui {
      */ 
     export class TSHelper {
         
-        private errors: Cats.FileRange[] = [];
         outline: NavigateToItem[];
      
         private diagnosticTimer : number;
@@ -31,7 +30,7 @@ module Cats.Gui {
         private pendingUpdates = false;
         
        
-        constructor(private editor:SourceEditor, private editSession: ace.EditSession) {
+        constructor(private editor:SourceEditor, private editSession: EditSession) {
             this.init();
         } 
         
@@ -51,13 +50,7 @@ module Cats.Gui {
         }
         
         
-        setErrors(errors: Cats.FileRange[] = []) {
-            if ((this.errors.length === 0) && (errors.length === 0)) return;
-            this.errors = errors;
-            this.editor.showAnnotations(this.errors);
-        }
 
-        
 
         private getWidget() {
             return this.editor.getLayoutItem();
@@ -70,10 +63,10 @@ module Cats.Gui {
             this.pendingUpdates = true;
             this.updateSourceTimer = setTimeout(() => {
                 if (this.pendingUpdates) {
-                    this.editor.project.iSense.updateScript(this.editor.filePath, this.editor.getContent());
+                    this.editor.project.iSense.updateScript(this.editor.filePath, this.editSession.getValue());
                     this.pendingUpdates = false;
-                     this.updateDiagnostics();
-                     this.updateOutline();
+                    this.updateDiagnostics();
+                    this.updateOutline();
                 }
             }, timeout);
         }
@@ -108,7 +101,7 @@ module Cats.Gui {
                         if (project.config.codingStandards.useLint) {
                             result = result.concat(project.linter.lint(this.editor.filePath, this.editor.getContent()));
                         }
-                        this.setErrors(result);
+                        this.editSession.showAnnotations(result);
                     });
                 
             }, timeout);    
