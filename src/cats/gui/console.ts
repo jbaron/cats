@@ -14,6 +14,22 @@
 
 module Cats.Gui {
 
+
+    function handleClick() {
+        var line = this.innerText;
+        var sections = line.split("(");
+        var fileName = sections[0];
+        var location:Array<string> = sections[1].split(")")[0].split(",");
+        if (! OS.File.PATH.isAbsolute(fileName)) {
+            fileName = OS.File.join(IDE.project.projectDir, fileName);
+        }
+        fileName = OS.File.switchToForwardSlashes(fileName);
+        FileEditor.OpenEditor(fileName,{ 
+            row : parseInt(location[0], 10)-1,
+            column : parseInt(location[1], 10)-1
+        });
+    }
+
     /**
      * Basic logging widget that can be used to write 
      * logging information that are of interest to the user.
@@ -23,6 +39,7 @@ module Cats.Gui {
 
         private container: HTMLElement;
         private printTime = true;
+        private tsRef = /ts\([0-9]+,[0-9]+\):/i ;
   
         constructor() {
             super(null);
@@ -36,19 +53,34 @@ module Cats.Gui {
             this.setFocusable(false);
         }
 
-        private insertLine(line: string, severity: number) {
+ 
+
+        private addBody(parent: HTMLSpanElement,prefix: string, line:string) {
+            if (line.search(this.tsRef) === -1) {
+                parent.innerText = prefix + line;
+            } else {
+                parent.innerText = prefix;
+                var a = document.createElement("a");
+                a.href = "#";
+                a.onclick = handleClick;
+                a.innerText = line;
+                parent.appendChild(a);
+            }
+        }
+
+        private insertLine(prefix:string, line: string, severity: number) {
             if (line.trim()) {
-                var span = document.createElement("SPAN");
-                span.innerText = line;
-                if (severity===2) span.style.color = "red";
-                if (severity===1) span.style.color = "green";
-                this.container.appendChild(span);
+                var elem = document.createElement("span");// HTMLAnchorElement|HTMLSpanElement;
+                this.addBody(elem,prefix, line);
+                if (severity===2) elem.style.color = "red";
+                if (severity===1) elem.style.color = "green";
+                this.container.appendChild(elem);
             }
             this.container.appendChild(document.createElement('BR'));
         }
 
         private print(msg: string, severity:number) {
-             this.container.scrollTop = this.container.scrollHeight;
+            this.container.scrollTop = this.container.scrollHeight;
             this.fireDataEvent("contentChange", null);
             if (this.container) {
                 var prefix = "";
@@ -58,8 +90,7 @@ module Cats.Gui {
                 }
                 var lines = msg.split("\n");
                 lines.forEach((line) => {
-                    if (line.trim()) line = prefix + line;
-                    this.insertLine(line, severity);
+                    this.insertLine(prefix, line, severity);
                 });
 
                 this.container.scrollTop = this.container.scrollHeight;

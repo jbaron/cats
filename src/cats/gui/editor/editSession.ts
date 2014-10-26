@@ -29,16 +29,17 @@ module Cats.Gui.Editor {
 
         private editor;
         mode: string;
+        private version:number;
 
         constructor(editor:SourceEditor) {
             var content = "";
-            this.mode = "ace/mode/text";
+            this.version = 0;
             this.editor = editor;
+            this.mode = this.calculateMode();
             
             if (editor.filePath) {
                 content = OS.File.readTextFile(editor.filePath) ;
-                this.mode = modelist.getModeForPath(editor.filePath).mode
-                
+
                 if ( this.isTypeScript() && (!IDE.project.hasScriptFile( editor.filePath )) ) {
                     var isProjectFile = confirm( "Not yet part of project, add it now?" );
                     if ( isProjectFile ) IDE.project.addScript( editor.filePath, content );
@@ -51,8 +52,15 @@ module Cats.Gui.Editor {
             this.setUndoManager(new UndoManager());
 
             IDE.project.on("config", (c) => { this.configureAceSession(c); });
+            this.on("change", () => {this.version++});
         }
 
+ 
+        private calculateMode() {
+            if (! this.editor.filePath) return "ace/mode/text";
+            var mode = modelist.getModeForPath(this.editor.filePath).mode
+            return mode;    
+        }
  
         /**
          * Check if there are any errors for this session and show them.    
@@ -107,25 +115,36 @@ module Cats.Gui.Editor {
             if (config.useSoftTabs != null) this.setUseSoftTabs(config.useSoftTabs);
         }
         
+    
         /**
          * Persist this session to the file system. This overrides the NOP in the base class
          */
         save() {
             var filePath = this.editor.filePath;
+            var content = this.getValue();
             if (filePath == null) {
                 var dir = OS.File.join(IDE.project.projectDir, "/");
                 filePath = prompt("Please enter the file name", dir);
                 if (! filePath) return;
                 filePath = OS.File.switchToForwardSlashes(filePath);
                 this.editor.setFilePath(filePath);
+                
+                this.mode = this.calculateMode();
+                this.setMode(this.mode); 
+                
+                if ( this.isTypeScript() && (!IDE.project.hasScriptFile(filePath)) ) {
+                    var isProjectFile = confirm( "Not yet part of project, add it now?" );
+                    if (isProjectFile) IDE.project.addScript(filePath, content );
+                }
+                
             }
 
-            OS.File.writeTextFile(filePath, this.getValue());
+            OS.File.writeTextFile(filePath, content);
             this.editor.setHasUnsavedChanges(false);
             this.editor.updateFileInfo();
             IDE.console.log("Saved file " + filePath);
             if (this.isTypeScript()) {
-                IDE.project.iSense.updateScript(filePath, this.getValue());
+                IDE.project.iSense.updateScript(filePath, content);
                 IDE.project.validate(false);
                 if (IDE.project.config.buildOnSave) Commands.CMDS.project_build.command();
             }

@@ -16,7 +16,6 @@
 
 module Cats {
 
-
     /**
      * Simple helper class to call tslint functionality
      * Ideally this should be done in the tsworker to offload the main thread, but right now
