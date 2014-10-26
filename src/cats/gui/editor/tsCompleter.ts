@@ -18,8 +18,8 @@ module Cats.Gui {
     
     var langTools = ace.require("ace/ext/language_tools");
 
-    export var snippetCompleter = langTools.snippetCompleter;
-    export var keyWordCompleter = langTools.keyWordCompleter;
+    var snippetCompleter = langTools.snippetCompleter;
+    var keyWordCompleter = langTools.keyWordCompleter;
     
     var ID_REGEX = /[a-zA-Z_0-9\$\-\u00A2-\uFFFF]/;
 
@@ -34,6 +34,21 @@ module Cats.Gui {
         }
         return buf.reverse().join("");
     };
+    
+    
+    export function getCompleters(editor:SourceEditor, memberCompletionOnly:boolean) {
+            if (memberCompletionOnly && editor.isTypeScript()) {
+                return [new TSCompleter(editor)]
+            } 
+            
+            if (editor.isTypeScript()) {
+                return  [new TSCompleter(editor ), snippetCompleter];
+            }
+            
+            return [keyWordCompleter, snippetCompleter];
+        }
+    
+    
 
     export class TSCompleter {
 
@@ -42,7 +57,7 @@ module Cats.Gui {
 
  
         getCompletions(editor:ace.Editor, session:ace.EditSession, pos:ace.Position, prefix:string, cb:(any,completions: Cats.CompletionEntry[])=>void) {
-            
+
             var fileName = this.editor.filePath;
             if (! fileName) return [];
             

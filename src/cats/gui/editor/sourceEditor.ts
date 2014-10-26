@@ -77,8 +77,7 @@ module Cats.Gui {
                 this.aceEditor = this.createAceEditor( container );
 
                 this.configureEditor();
-                this.configureModeSupport();
-
+           
                 if ( this.pendingPosition ) this.moveToPosition( this.pendingPosition );
 
             }, this );
@@ -354,27 +353,14 @@ module Cats.Gui {
         }
 
         private liveAutoComplete( e ) {
+            if (! this.isTypeScript()) return;
             var text = e.args || "";
             if ( ( e.command.name === "insertstring" ) && ( text === "." ) ) {
                 this.showAutoComplete( true );
             }
         }
 
-        /**
-         * Configure the editor based on the mode 
-         */
-        private configureModeSupport() {
-
-            if (this.isTypeScript()) {
-                this.aceEditor.completers = [new TSCompleter( this ), snippetCompleter];
-                this.aceEditor.commands.on( 'afterExec', ( e ) => { this.liveAutoComplete( e ); });
-                new TSTooltip( this );
-                new TSHelper( this, this.editSession );
-            } else {
-                this.aceEditor.completers = [keyWordCompleter, snippetCompleter];
-            }
-        }
-
+    
         /**
          * Create a new isntance of the ACE editor and append is to a dom element
          * 
@@ -386,6 +372,8 @@ module Cats.Gui {
                 this.clearSelectedTextMarker();
                 this.informWorld();
             });
+
+            editor.commands.on( 'afterExec', ( e ) => { this.liveAutoComplete( e ); });
 
             editor.setOptions( {
                 enableSnippets: true

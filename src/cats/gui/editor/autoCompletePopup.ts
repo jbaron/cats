@@ -312,6 +312,10 @@ module Cats.Gui {
             setTimeout(() => { this.updateFilter(); }, 0);
         }
 
+
+ 
+        
+
         /**
          * The method called form the editor to start the code completion process. 
          */ 
@@ -328,7 +332,7 @@ module Cats.Gui {
             // this.base = session.doc.createAnchor(pos.row, pos.column - prefix.length);
 
             var matches = [];
-            var completers = memberCompletionOnly ? [new TSCompleter(this.sourceEditor)] : editor.completers
+            var completers = getCompleters(sourceEditor, memberCompletionOnly);
             var total = completers.length;
             completers.forEach((completer, i) => {
                 completer.getCompletions(editor, session, pos, prefix, (err, results) => {
