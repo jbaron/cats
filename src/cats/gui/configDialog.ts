@@ -214,12 +214,13 @@ module Cats.Gui {
         private moduleGenTarget = [
             { label: "none", model: ts.ModuleGenTarget.Unspecified },
             { label: "commonjs", model: ts.ModuleGenTarget.Synchronous },
-            { label: "amd", model: ts.ModuleGenTarget.Asynchronous },
+            { label: "amd", model: ts.ModuleGenTarget.Asynchronous }
         ];
 
         private jsTarget = [
             { label: "es3", model: ts.ScriptTarget.ES3 },
             { label: "es5", model: ts.ScriptTarget.ES5 },
+            { label: "es6", model: ts.ScriptTarget.ES6 }
         ];
 
         constructor() {

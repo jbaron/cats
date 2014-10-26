@@ -560,7 +560,32 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
-        An_enum_member_cannot_have_a_numeric_name: {
+        var_let_or_const_expected: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        let_declarations_are_only_available_when_targeting_ECMAScript_6_and_higher: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        const_declarations_are_only_available_when_targeting_ECMAScript_6_and_higher: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        const_declarations_must_be_initialized: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        const_declarations_can_only_be_declared_inside_a_block: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        let_declarations_can_only_be_declared_inside_a_block: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -1295,6 +1320,35 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
+        Block_scoped_variable_0_used_before_its_declaration: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+            isEarly: boolean;
+        };
+        The_operand_of_an_increment_or_decrement_operator_cannot_be_a_constant: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+            isEarly: boolean;
+        };
+        Left_hand_side_of_assignment_expression_cannot_be_a_constant: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+            isEarly: boolean;
+        };
+        Cannot_redeclare_block_scoped_variable_0: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+            isEarly: boolean;
+        };
+        An_enum_member_cannot_have_a_numeric_name: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
         Import_declaration_0_is_using_private_name_1: {
             code: number;
             category: DiagnosticCategory;
@@ -1765,7 +1819,7 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
-        Specify_ECMAScript_target_version_Colon_ES3_default_or_ES5: {
+        Specify_ECMAScript_target_version_Colon_ES3_default_ES5_or_ES6_experimental: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -1875,7 +1929,7 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
-        Argument_for_target_option_must_be_es3_or_es5: {
+        Argument_for_target_option_must_be_es3_es5_or_es6: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -2186,60 +2240,61 @@ declare module ts {
         ArrayType = 130,
         TupleType = 131,
         UnionType = 132,
-        ArrayLiteral = 133,
-        ObjectLiteral = 134,
-        PropertyAssignment = 135,
-        PropertyAccess = 136,
-        IndexedAccess = 137,
-        CallExpression = 138,
-        NewExpression = 139,
-        TypeAssertion = 140,
-        ParenExpression = 141,
-        FunctionExpression = 142,
-        ArrowFunction = 143,
-        PrefixOperator = 144,
-        PostfixOperator = 145,
-        BinaryExpression = 146,
-        ConditionalExpression = 147,
-        OmittedExpression = 148,
-        Block = 149,
-        VariableStatement = 150,
-        EmptyStatement = 151,
-        ExpressionStatement = 152,
-        IfStatement = 153,
-        DoStatement = 154,
-        WhileStatement = 155,
-        ForStatement = 156,
-        ForInStatement = 157,
-        ContinueStatement = 158,
-        BreakStatement = 159,
-        ReturnStatement = 160,
-        WithStatement = 161,
-        SwitchStatement = 162,
-        CaseClause = 163,
-        DefaultClause = 164,
-        LabeledStatement = 165,
-        ThrowStatement = 166,
-        TryStatement = 167,
-        TryBlock = 168,
-        CatchBlock = 169,
-        FinallyBlock = 170,
-        DebuggerStatement = 171,
-        VariableDeclaration = 172,
-        FunctionDeclaration = 173,
-        FunctionBlock = 174,
-        ClassDeclaration = 175,
-        InterfaceDeclaration = 176,
-        EnumDeclaration = 177,
-        ModuleDeclaration = 178,
-        ModuleBlock = 179,
-        ImportDeclaration = 180,
-        ExportAssignment = 181,
-        EnumMember = 182,
-        SourceFile = 183,
-        Program = 184,
-        SyntaxList = 185,
-        Count = 186,
+        ParenType = 133,
+        ArrayLiteral = 134,
+        ObjectLiteral = 135,
+        PropertyAssignment = 136,
+        PropertyAccess = 137,
+        IndexedAccess = 138,
+        CallExpression = 139,
+        NewExpression = 140,
+        TypeAssertion = 141,
+        ParenExpression = 142,
+        FunctionExpression = 143,
+        ArrowFunction = 144,
+        PrefixOperator = 145,
+        PostfixOperator = 146,
+        BinaryExpression = 147,
+        ConditionalExpression = 148,
+        OmittedExpression = 149,
+        Block = 150,
+        VariableStatement = 151,
+        EmptyStatement = 152,
+        ExpressionStatement = 153,
+        IfStatement = 154,
+        DoStatement = 155,
+        WhileStatement = 156,
+        ForStatement = 157,
+        ForInStatement = 158,
+        ContinueStatement = 159,
+        BreakStatement = 160,
+        ReturnStatement = 161,
+        WithStatement = 162,
+        SwitchStatement = 163,
+        CaseClause = 164,
+        DefaultClause = 165,
+        LabeledStatement = 166,
+        ThrowStatement = 167,
+        TryStatement = 168,
+        TryBlock = 169,
+        CatchBlock = 170,
+        FinallyBlock = 171,
+        DebuggerStatement = 172,
+        VariableDeclaration = 173,
+        FunctionDeclaration = 174,
+        FunctionBlock = 175,
+        ClassDeclaration = 176,
+        InterfaceDeclaration = 177,
+        EnumDeclaration = 178,
+        ModuleDeclaration = 179,
+        ModuleBlock = 180,
+        ImportDeclaration = 181,
+        ExportAssignment = 182,
+        EnumMember = 183,
+        SourceFile = 184,
+        Program = 185,
+        SyntaxList = 186,
+        Count = 187,
         FirstAssignment,
         LastAssignment,
         FirstReservedWord,
@@ -2269,8 +2324,11 @@ declare module ts {
         MultiLine = 256,
         Synthetic = 512,
         DeclarationFile = 1024,
+        Let = 2048,
+        Const = 4096,
         Modifier,
         AccessibilityModifier,
+        BlockScoped,
     }
     interface Node extends TextRange {
         kind: SyntaxKind;
@@ -2344,6 +2402,9 @@ declare module ts {
     }
     interface UnionTypeNode extends TypeNode {
         types: NodeArray<TypeNode>;
+    }
+    interface ParenTypeNode extends TypeNode {
+        type: TypeNode;
     }
     interface StringLiteralTypeNode extends TypeNode {
         text: string;
@@ -2578,36 +2639,48 @@ declare module ts {
         getParentOfSymbol(symbol: Symbol): Symbol;
         getTypeOfSymbol(symbol: Symbol): Type;
         getPropertiesOfType(type: Type): Symbol[];
-        getPropertyOfType(type: Type, propetyName: string): Symbol;
+        getPropertyOfType(type: Type, propertyName: string): Symbol;
         getSignaturesOfType(type: Type, kind: SignatureKind): Signature[];
         getIndexTypeOfType(type: Type, kind: IndexKind): Type;
         getReturnTypeOfSignature(signature: Signature): Type;
         getSymbolsInScope(location: Node, meaning: SymbolFlags): Symbol[];
         getSymbolInfo(node: Node): Symbol;
         getTypeOfNode(node: Node): Type;
-        getApparentType(type: Type): ApparentType;
         typeToString(type: Type, enclosingDeclaration?: Node, flags?: TypeFormatFlags): string;
-        writeType(type: Type, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
         symbolToString(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): string;
-        writeSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration?: Node, meaning?: SymbolFlags, flags?: SymbolFormatFlags): void;
+        getSymbolDisplayBuilder(): SymbolDisplayBuilder;
         getFullyQualifiedName(symbol: Symbol): string;
-        getAugmentedPropertiesOfApparentType(type: Type): Symbol[];
+        getAugmentedPropertiesOfType(type: Type): Symbol[];
         getRootSymbols(symbol: Symbol): Symbol[];
         getContextualType(node: Node): Type;
         getResolvedSignature(node: CallExpression, candidatesOutArray?: Signature[]): Signature;
         getSignatureFromDeclaration(declaration: SignatureDeclaration): Signature;
-        writeSignature(signatures: Signature, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
-        writeTypeParameter(tp: TypeParameter, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
-        writeTypeParametersOfSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaraiton?: Node, flags?: TypeFormatFlags): void;
         isImplementationOfOverload(node: FunctionDeclaration): boolean;
         isUndefinedSymbol(symbol: Symbol): boolean;
         isArgumentsSymbol(symbol: Symbol): boolean;
+        hasEarlyErrors(sourceFile?: SourceFile): boolean;
         getEnumMemberValue(node: EnumMember): number;
         isValidPropertyAccess(node: PropertyAccess, propertyName: string): boolean;
         getAliasedSymbol(symbol: Symbol): Symbol;
     }
+    interface SymbolDisplayBuilder {
+        buildTypeDisplay(type: Type, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildSymbolDisplay(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration?: Node, meaning?: SymbolFlags, flags?: SymbolFormatFlags): void;
+        buildSignatureDisplay(signatures: Signature, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildParameterDisplay(parameter: Symbol, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildTypeParameterDisplay(tp: TypeParameter, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildTypeParameterDisplayFromSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaraiton?: Node, flags?: TypeFormatFlags): void;
+        buildDisplayForParametersAndDelimiters(parameters: Symbol[], writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildDisplayForTypeParametersAndDelimiters(typeParameters: TypeParameter[], writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildReturnTypeDisplay(signature: Signature, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+    }
     interface SymbolWriter {
-        writeKind(text: string, kind: SymbolDisplayPartKind): void;
+        writeKeyword(text: string): void;
+        writeOperator(text: string): void;
+        writePunctuation(text: string): void;
+        writeSpace(text: string): void;
+        writeStringLiteral(text: string): void;
+        writeParameter(text: string): void;
         writeSymbol(text: string, symbol: Symbol): void;
         writeLine(): void;
         increaseIndent(): void;
@@ -2623,6 +2696,7 @@ declare module ts {
         WriteArrowStyleSignature = 8,
         WriteOwnNameForAnyLike = 16,
         WriteTypeArgumentsOfSignature = 32,
+        InElementType = 64,
     }
     enum SymbolFormatFlags {
         None = 0,
@@ -2657,9 +2731,10 @@ declare module ts {
         isSymbolAccessible(symbol: Symbol, enclosingDeclaration: Node, meaning: SymbolFlags): SymbolAccessiblityResult;
         isImportDeclarationEntityNameReferenceDeclarationVisibile(entityName: EntityName): SymbolAccessiblityResult;
         getConstantValue(node: PropertyAccess): number;
+        hasEarlyErrors(sourceFile?: SourceFile): boolean;
     }
     enum SymbolFlags {
-        Variable = 1,
+        FunctionScopedVariable = 1,
         Property = 2,
         EnumMember = 4,
         Function = 8,
@@ -2678,24 +2753,26 @@ declare module ts {
         ConstructSignature = 65536,
         IndexSignature = 131072,
         TypeParameter = 262144,
-        UnionProperty = 524288,
-        ExportValue = 1048576,
-        ExportType = 2097152,
-        ExportNamespace = 4194304,
-        Import = 8388608,
-        Instantiated = 16777216,
-        Merged = 33554432,
-        Transient = 67108864,
-        Prototype = 134217728,
-        Undefined = 268435456,
+        ExportValue = 524288,
+        ExportType = 1048576,
+        ExportNamespace = 2097152,
+        Import = 4194304,
+        Instantiated = 8388608,
+        Merged = 16777216,
+        Transient = 33554432,
+        Prototype = 67108864,
+        UnionProperty = 134217728,
+        BlockScopedVariable = 268435456,
+        Variable,
         Value,
         Type,
         Namespace,
         Module,
         Accessor,
         Signature,
+        FunctionScopedVariableExcludes,
+        BlockScopedVariableExcludes,
         ParameterExcludes,
-        VariableExcludes,
         PropertyExcludes,
         EnumMemberExcludes,
         FunctionExcludes,
@@ -2787,6 +2864,7 @@ declare module ts {
         StringLike,
         NumberLike,
         ObjectType,
+        Structured,
     }
     interface Type {
         flags: TypeFlags;
@@ -2800,9 +2878,6 @@ declare module ts {
         text: string;
     }
     interface ObjectType extends Type {
-    }
-    interface ApparentType extends Type {
-        _apparentTypeBrand: any;
     }
     interface InterfaceType extends ObjectType {
         typeParameters: TypeParameter[];
@@ -2826,10 +2901,11 @@ declare module ts {
         elementTypes: Type[];
         baseArrayType: TypeReference;
     }
-    interface UnionType extends ObjectType {
+    interface UnionType extends Type {
         types: Type[];
+        resolvedProperties: SymbolTable;
     }
-    interface ResolvedObjectType extends ObjectType {
+    interface ResolvedType extends ObjectType, UnionType {
         members: SymbolTable;
         properties: Symbol[];
         callSignatures: Signature[];
@@ -2869,6 +2945,7 @@ declare module ts {
     }
     interface InferenceContext {
         typeParameters: TypeParameter[];
+        inferUnionTypes: boolean;
         inferenceCount: number;
         inferences: Type[][];
         inferredTypes: Type[];
@@ -2877,6 +2954,7 @@ declare module ts {
         key: string;
         category: DiagnosticCategory;
         code: number;
+        isEarly?: boolean;
     }
     interface DiagnosticMessageChain {
         messageText: string;
@@ -2891,6 +2969,7 @@ declare module ts {
         messageText: string;
         category: DiagnosticCategory;
         code: number;
+        isEarly?: boolean;
     }
     enum DiagnosticCategory {
         Warning = 0,
@@ -2934,6 +3013,8 @@ declare module ts {
     enum ScriptTarget {
         ES3 = 0,
         ES5 = 1,
+        ES6 = 2,
+        Latest,
     }
     interface ParsedCommandLine {
         options: CompilerOptions;
@@ -3072,30 +3153,6 @@ declare module ts {
         tab = 9,
         verticalTab = 11,
     }
-    enum SymbolDisplayPartKind {
-        aliasName = 0,
-        className = 1,
-        enumName = 2,
-        fieldName = 3,
-        interfaceName = 4,
-        keyword = 5,
-        lineBreak = 6,
-        numericLiteral = 7,
-        stringLiteral = 8,
-        localName = 9,
-        methodName = 10,
-        moduleName = 11,
-        operator = 12,
-        parameterName = 13,
-        propertyName = 14,
-        punctuation = 15,
-        space = 16,
-        text = 17,
-        typeParameterName = 18,
-        enumMemberName = 19,
-        functionName = 20,
-        regularExpressionLiteral = 21,
-    }
     interface CancellationToken {
         isCancellationRequested(): boolean;
     }
@@ -3189,6 +3246,7 @@ declare module ts {
     function escapeIdentifier(identifier: string): string;
     function unescapeIdentifier(identifier: string): string;
     function identifierToString(identifier: Identifier): string;
+    function isExpression(node: Node): boolean;
     function createDiagnosticForNode(node: Node, message: DiagnosticMessage, arg0?: any, arg1?: any, arg2?: any): Diagnostic;
     function createDiagnosticForNodeFromMessageChain(node: Node, messageChain: DiagnosticMessageChain, newLine: string): Diagnostic;
     function getErrorSpanForNode(node: Node): Node;
@@ -6190,9 +6248,6 @@ declare module ts {
 declare module ts.NavigationBar {
     function getNavigationBarItems(sourceFile: SourceFile): NavigationBarItem[];
 }
-declare module TypeScript.Services.Breakpoints {
-    function getBreakpointLocation(syntaxTree: SyntaxTree, askedPos: number): TextSpan;
-}
 declare module TypeScript.Indentation {
     function columnForEndOfTokenAtPosition(syntaxTree: SyntaxTree, position: number, options: FormattingOptions): number;
     function columnForStartOfTokenAtPosition(syntaxTree: SyntaxTree, position: number, options: FormattingOptions): number;
@@ -6220,7 +6275,10 @@ declare module ts {
     function findTokenOnLeftOfPosition(file: SourceFile, position: number): Node;
     function findNextToken(previousToken: Node, parent: Node): Node;
     function findPrecedingToken(position: number, sourceFile: SourceFile, startNode?: Node): Node;
+    function getTypeArgumentOrTypeParameterList(node: Node): NodeArray<Node>;
     function isToken(n: Node): boolean;
+    function isComment(n: Node): boolean;
+    function isPunctuation(n: Node): boolean;
 }
 declare module TypeScript.Services.Formatting {
     interface ITextSnapshot {
@@ -6381,9 +6439,7 @@ declare module TypeScript.Services.Formatting {
 declare module TypeScript.Services.Formatting {
     class RuleOperationContext {
         private customContextChecks;
-        constructor(...funcs: {
-            (context: FormattingContext): boolean;
-        }[]);
+        constructor(...funcs: ((context: FormattingContext) => boolean)[]);
         static Any: RuleOperationContext;
         IsAny(): boolean;
         InContext(context: FormattingContext): boolean;
@@ -7024,6 +7080,30 @@ declare module ts {
         containerKind: string;
         containerName: string;
     }
+    enum SymbolDisplayPartKind {
+        aliasName = 0,
+        className = 1,
+        enumName = 2,
+        fieldName = 3,
+        interfaceName = 4,
+        keyword = 5,
+        lineBreak = 6,
+        numericLiteral = 7,
+        stringLiteral = 8,
+        localName = 9,
+        methodName = 10,
+        moduleName = 11,
+        operator = 12,
+        parameterName = 13,
+        propertyName = 14,
+        punctuation = 15,
+        space = 16,
+        text = 17,
+        typeParameterName = 18,
+        enumMemberName = 19,
+        functionName = 20,
+        regularExpressionLiteral = 21,
+    }
     interface SymbolDisplayPart {
         text: string;
         kind: string;
@@ -7153,6 +7233,7 @@ declare module ts {
         static primitiveType: string;
         static label: string;
         static alias: string;
+        static constantElement: string;
     }
     class ScriptElementKindModifier {
         static none: string;
@@ -7180,6 +7261,9 @@ declare module ts {
         static typeParameterName: string;
     }
     function displayPartsToString(displayParts: SymbolDisplayPart[]): string;
+    interface DisplayPartsSymbolWriter extends SymbolWriter {
+        displayParts(): SymbolDisplayPart[];
+    }
     function spacePart(): SymbolDisplayPart;
     function keywordPart(kind: SyntaxKind): SymbolDisplayPart;
     function punctuationPart(kind: SyntaxKind): SymbolDisplayPart;
@@ -7187,6 +7271,7 @@ declare module ts {
     function textPart(text: string): SymbolDisplayPart;
     function lineBreakPart(): SymbolDisplayPart;
     function symbolPart(text: string, symbol: Symbol): SymbolDisplayPart;
+    function mapToDisplayParts(writeDisplayParts: (writer: DisplayPartsSymbolWriter) => void): SymbolDisplayPart[];
     function typeToDisplayParts(typechecker: TypeChecker, type: Type, enclosingDeclaration?: Node, flags?: TypeFormatFlags): SymbolDisplayPart[];
     function symbolToDisplayParts(typeChecker: TypeChecker, symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags, flags?: SymbolFormatFlags): SymbolDisplayPart[];
     function getDefaultCompilerOptions(): CompilerOptions;
@@ -7204,6 +7289,9 @@ declare module ts {
     function getNodeModifiers(node: Node): string;
     function createLanguageService(host: LanguageServiceHost, documentRegistry: DocumentRegistry): LanguageService;
     function createClassifier(host: Logger): Classifier;
+}
+declare module ts.BreakpointResolver {
+    function spanInSourceFileAtLocation(sourceFile: SourceFile, position: number): TypeScript.TextSpan;
 }
 declare module TypeScript {
     interface ILineAndCharacter {
@@ -7295,6 +7383,7 @@ declare module ts {
     enum LanguageVersion {
         EcmaScript3 = 0,
         EcmaScript5 = 1,
+        EcmaScript6 = 2,
     }
     enum ModuleGenTarget {
         Unspecified = 0,
