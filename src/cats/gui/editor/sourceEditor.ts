@@ -12,7 +12,7 @@
 // limitations under the License.
 //
 
-module Cats.Gui {
+module Cats.Gui.Editor {
 
 
     var Range: ace.Range = ace.require( "ace/range" ).Range;
@@ -29,7 +29,7 @@ module Cats.Gui {
         return editor;
     }
 
-    Editor.RegisterEditor( registryEntryName, restoreState );
+    Cats.Editor.RegisterEditor( registryEntryName, restoreState );
 
     interface SourceEditorState {
         fileName: string;
@@ -372,6 +372,9 @@ module Cats.Gui {
                 this.clearSelectedTextMarker();
                 this.informWorld();
             });
+
+            new TSTooltip( this );
+            new TSHelper( this, this.editSession );
 
             editor.commands.on( 'afterExec', ( e ) => { this.liveAutoComplete( e ); });
 

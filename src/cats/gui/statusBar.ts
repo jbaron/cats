@@ -58,7 +58,7 @@ module Cats.Gui {
             this.status = status;
         }
 
-        private register(editor:SourceEditor) {
+        private register(editor:Editor.SourceEditor) {
             if (this.editor) {
                 this.editor.off("status",  this.updateStatus, this);
             }

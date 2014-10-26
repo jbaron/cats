@@ -26,7 +26,7 @@ module Cats.Commands {
             alert("Please open a project first.");
             return;
         }
-        IDE.editorTabView.addEditor(new Gui.SourceEditor(),{row:0, column:0});
+        IDE.editorTabView.addEditor(new Gui.Editor.SourceEditor(),{row:0, column:0});
     }
 
     /**
@@ -65,7 +65,7 @@ module Cats.Commands {
      * Save the active sessions under a different name
      */     
      function saveAs() {
-        var editor = <Gui.SourceEditor>IDE.editorTabView.getActiveEditor(Gui.SourceEditor);
+        var editor = <Gui.Editor.SourceEditor>IDE.editorTabView.getActiveEditor(Gui.Editor.SourceEditor);
         if (editor) {
             var newName = prompt("Enter new name", editor.filePath);
             if (newName) {

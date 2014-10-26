@@ -22,7 +22,7 @@ module Cats.Gui {
      */
     export class OutlineNavigator extends qx.ui.tree.VirtualTree {
 
-        private editor: SourceEditor;
+        private editor: Editor.SourceEditor;
         private page:EditorPage;
         private static MAX_DEFAULT_OPEN = 200;
         private outlineTimer: number;
@@ -55,7 +55,7 @@ module Cats.Gui {
         }
 
 
-        private register(editor:SourceEditor, page) {
+        private register(editor:Editor.SourceEditor, page) {
             if (this.editor) {
                 this.editor.off("outline",  this.updateOutline, this);
             }

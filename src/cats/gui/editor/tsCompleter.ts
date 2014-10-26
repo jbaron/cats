@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-module Cats.Gui {
+module Cats.Gui.Editor {
     
     
     var langTools = ace.require("ace/ext/language_tools");

@@ -30,15 +30,17 @@ module Cats.Gui {
         private pendingUpdates = false;
         
        
-        constructor(private editor:SourceEditor, private editSession: EditSession) {
+        constructor(private editor:Editor.SourceEditor, private editSession: Editor.EditSession) {
             this.init();
         } 
         
         
         private init() {
             
-            this.updateDiagnostics(0);
-            this.updateOutline(0);
+            if (this.editor.isTypeScript()) {
+                this.updateDiagnostics(0);
+                this.updateOutline(0);
+             }
             
             this.editor.getLayoutItem().addListener("appear", () =>{
                 this.updateDiagnostics(0);
@@ -50,15 +52,8 @@ module Cats.Gui {
         }
         
         
-
-
-        private getWidget() {
-            return this.editor.getLayoutItem();
-        }
-
-       
-
-        updateContent(timeout=500) {
+        private updateContent(timeout=500) {
+            if (! this.editor.isTypeScript()) return;
             clearTimeout(this.updateSourceTimer);
             this.pendingUpdates = true;
             this.updateSourceTimer = setTimeout(() => {
@@ -92,8 +87,7 @@ module Cats.Gui {
          * Lets check the worker if something changed in the diagnostic.
          * 
          */
-        updateDiagnostics(timeout=1000) {
-            clearTimeout(this.diagnosticTimer);
+        private updateDiagnostics(timeout=1000) {
             var project = this.editor.project;
             this.diagnosticTimer = setTimeout(() => {
             
@@ -106,9 +100,6 @@ module Cats.Gui {
                 
             }, timeout);    
         }
-
-
-      
 
     }
 

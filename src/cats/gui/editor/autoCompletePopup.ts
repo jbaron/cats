@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-module Cats.Gui {
+module Cats.Gui.Editor {
     
     var HashHandler = ace.require('ace/keyboard/hash_handler').HashHandler;
 

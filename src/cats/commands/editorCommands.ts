@@ -21,7 +21,7 @@ module Cats.Commands {
 
    
     function formatText() {
-        var editor = <Gui.SourceEditor>IDE.editorTabView.getActiveEditor();
+        var editor = IDE.editorTabView.getActiveEditor();
         if (editor) editor.executeCommand( "formatText" );
     }
 

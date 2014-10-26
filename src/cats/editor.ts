@@ -178,8 +178,8 @@ module Cats {
          * of that.
          */ 
         private static CreateEditor(fileName: string): FileEditor {
-            if ( Gui.ImageEditor.SupportsFile(fileName)) return new Gui.ImageEditor(fileName);
-            if (Gui.SourceEditor.SupportsFile(fileName)) return new Gui.SourceEditor(fileName);
+            if ( Gui.Editor.ImageEditor.SupportsFile(fileName)) return new Gui.Editor.ImageEditor(fileName);
+            if (Gui.Editor.SourceEditor.SupportsFile(fileName)) return new Gui.Editor.SourceEditor(fileName);
             return null;
         }
 
@@ -196,13 +196,13 @@ module Cats {
                 if (!editor) {
                     var c = confirm("No suitable editor found for this file type, open with source editor?");
                     if (!c) return;
-                    editor = new Gui.SourceEditor(fileName);
+                    editor = new Gui.Editor.SourceEditor(fileName);
                 }
                 IDE.editorTabView.addEditor(editor, pos);
             } else {
-                editor = <Gui.SourceEditor>pages[0].editor;
+                editor = <FileEditor>pages[0].editor;
                 IDE.editorTabView.setSelection([pages[0]]);
-                editor.moveToPosition(pos);
+                if (editor.moveToPosition) editor.moveToPosition(pos);
             }
 
             return editor;

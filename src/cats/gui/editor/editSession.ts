@@ -14,7 +14,7 @@
 //
 
 
-module Cats.Gui {
+module Cats.Gui.Editor {
 
     var UndoManager: ace.UndoManager = ace.require("ace/undomanager").UndoManager;
     var modelist = ace.require('ace/ext/modelist');

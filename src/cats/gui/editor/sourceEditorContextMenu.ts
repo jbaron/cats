@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-module Cats.Gui {
+module Cats.Gui.Editor {
 
     /**
      * The context menu for the source editor. This menu provides basic 

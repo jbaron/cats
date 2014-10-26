@@ -12,7 +12,7 @@
 // limitations under the License.
 //
 
-module Cats.Gui {
+module Cats.Gui.Editor {
     
     var registryEntryName = "ImageEditor";
     
@@ -22,7 +22,7 @@ module Cats.Gui {
         return editor;
     }
     
-    Editor.RegisterEditor(registryEntryName, restoreState);
+    Cats.Editor.RegisterEditor(registryEntryName, restoreState);
     
     
     /**
