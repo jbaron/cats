@@ -37,10 +37,10 @@ module Cats.Gui {
         
         private init() {
             
-            if (this.editor.isTypeScript()) {
-                this.updateDiagnostics(0);
-                this.updateOutline(0);
-             }
+            
+            this.updateDiagnostics(0);
+            this.updateOutline(0);
+             
             
             this.editor.getLayoutItem().addListener("appear", () =>{
                 this.updateDiagnostics(0);
@@ -72,6 +72,7 @@ module Cats.Gui {
          * 
          */
         private updateOutline(timeout= 5000) {
+            if (! this.editor.isTypeScript()) return;
                 var project = this.editor.project;
                 clearTimeout(this.outlineTimer);
                 this.outlineTimer = setTimeout(() => {
@@ -88,6 +89,7 @@ module Cats.Gui {
          * 
          */
         private updateDiagnostics(timeout=1000) {
+            if (! this.editor.isTypeScript()) return;
             var project = this.editor.project;
             this.diagnosticTimer = setTimeout(() => {
             

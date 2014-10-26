@@ -214,8 +214,8 @@
     
     
     "config_removeComments" : { "message": "Remove comments"},
-    "config_generateDeclarationFiles" : { "message": "Generate declaration files"},
-    "config_mapSourceFiles" : { "message": "Generate map source files"},
+    "config_declaration" : { "message": "Generate declaration files"},
+    "config_sourceMap" : { "message": "Generate map source files"},
     "config_propagateEnumConstants" : { "message": "Propagate enum constants"},
     "config_allowAutomaticSemicolonInsertion" : { "message": "Allow  for automatic semicolon insertion"},
     "config_target" : { "message": "Compile for EcmaScript version"},

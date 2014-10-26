@@ -232,8 +232,8 @@ module Cats.Gui {
             this.addCheckBox2("noLib");
             this.addCheckBox2("removeComments");
             this.addCheckBox2("noImplicitAny");
-            this.addCheckBox2("generateDeclarationFiles");
-            this.addCheckBox2("mapSourceFiles");
+            this.addCheckBox2("declaration");
+            this.addCheckBox2("sourceMap");
             this.addCheckBox2("propagateEnumConstants");
             this.addCheckBox2("allowAutomaticSemicolonInsertion");
             this.addSelectBox("JavaScript target", "target", this.jsTarget);

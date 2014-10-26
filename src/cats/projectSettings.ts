@@ -76,8 +76,8 @@ module Cats {
                     "noLib": false,
                     "removeComments": false,
                     "noImplicitAny": false,
-                    "generateDeclarationFiles": false,
-                    "mapSourceFiles": false,
+                    "declaration": false,
+                    "sourceMap": false,
                     "target": ts.ScriptTarget.ES5,
                 },
                 codingStandards: {
