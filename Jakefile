@@ -61,6 +61,8 @@ var catsOptions = [
     "src/cats/gui/statusBar.ts",
     "src/cats/gui/fileContextMenu.ts",
     "src/cats/gui/configDialog.ts",
+    "src/cats/gui/projectSettingsDialog.ts",
+    "src/cats/gui/idePreferencesDialog.ts",
     "src/cats/gui/processTable.ts",
     "src/cats/gui/busyWindow.ts",
     "src/cats/gui/propertyTable.ts",

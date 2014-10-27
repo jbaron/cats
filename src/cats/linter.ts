@@ -50,9 +50,9 @@ module Cats {
         private getOptions() {
             if (!this.lintOptions) {
                 var fileName;
-
-                if (this.project.config.codingStandards.lintFile) {
-                    fileName = OS.File.join(this.project.projectDir, this.project.config.codingStandards.lintFile);
+                
+                if (this.project.config.tslint.lintFile) {
+                    fileName = OS.File.join(this.project.projectDir, this.project.config.tslint.lintFile);
                 } else {
                     fileName = OS.File.join(IDE.catsHomeDir, "resource/tslint.json");
                 }

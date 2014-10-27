@@ -127,7 +127,7 @@ export class ScriptInfo {
         }
         
         /**
-         * Based on the position within the script, determine the memeber mode
+         * Based on the position within the script, determine if we are in member mode
          * 
          */ 
         determineMemeberMode(pos: number) {
@@ -149,6 +149,9 @@ export class ScriptInfo {
             return result;
         }
         
+        /**
+         * Get a snapshot for this script
+         */ 
         getScriptSnapshot() {
              return  TypeScript.ScriptSnapshot.fromString(this.content);
         }

@@ -43,9 +43,11 @@ module Cats {
                 var content = OS.File.readTextFile( fileName );
                 var result: ProjectConfiguration = JSON.parse( content );
 
-                // Do some basic sanitizing
-                if ( !result.codingStandards ) result.codingStandards = {};
+                // Do some basic sanitizing to avoid checks in the code
+                if ( !result.codeFormat ) result.codeFormat = <any>{};
                 if ( !result.compiler ) result.compiler = {};
+                if ( !result.tslint ) result.tslint = {};
+                
                 this.value = result;
             } catch ( err ) {
                 console.info( "Couldn't find project configuration, loading defaults" );
@@ -80,12 +82,10 @@ module Cats {
                     "sourceMap": false,
                     "target": ts.ScriptTarget.ES5,
                 },
-                codingStandards: {
-                    newLineMode: "unix",
-                    useSoftTabs: true,
-                    tabSize: 4,
-                    useLint: false,
-                    lintFile: null
+                tslint : {
+                    useLint : false  
+                },
+                codeFormat: <any>{
                 },
                 documentation: {
 

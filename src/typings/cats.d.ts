@@ -90,13 +90,11 @@ declare module Cats {
         customBuild?:RunExternal;
         customRun?:RunExternal;
         compiler: ts.CompilerOptions;
-        codingStandards: {
-            newLineMode?: string; // unix, windows. auto
-            useSoftTabs?: boolean; // true by default
-            tabSize?: number; // 4 by default
+        codeFormat: ts.FormatCodeOptions;
+        tslint : {
             useLint?: boolean; // false by default
             lintFile?: string; // <cats>/static/jslint.json by default 
-        };
+        }
         documentation: {
             theme?:string;
             readme?:string;

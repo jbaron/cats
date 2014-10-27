@@ -224,14 +224,14 @@ module Cats.OS.File {
          * @return Return value is either dos or unix
          * 
          */ 
-        function determineNewLIneMode(): string {
+        function determineNewLineChar(): string {
             try {
-                var mode = IDE.project.config.codingStandards.newLineMode;
-                if ((mode === "dos") || (mode ==="unix")) return mode;
+                var char = IDE.project.config.codeFormat.NewLineCharacter;
+                if (char) return char;
             } catch (exp) {}
             
-            if (isWindows()) return "dos";
-            return "unix";
+            if (isWindows()) return "\r\n";
+            return "\n";
             
         }
 
@@ -244,9 +244,9 @@ module Cats.OS.File {
          * 
          */ 
          export function writeTextFile(name: string, value: string, stat=false):any {
-            var newLineMode = determineNewLIneMode();
-            if (newLineMode === "dos") {
-                value = value.replace(/\n/g, "\r\n");
+            var newLineChar = determineNewLineChar();
+            if (newLineChar !== "\n") {
+                value = value.replace(/\n/g, newLineChar);
             }
             
             var fileName = name;

@@ -67,7 +67,7 @@ module Cats.TSWorker {
                 InsertSpaceBeforeAndAfterBinaryOperators: true,
                 InsertSpaceAfterKeywordsInControlFlowStatements: true,
                 InsertSpaceAfterFunctionKeywordForAnonymousFunctions: true,
-                InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: true,
+                InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: false,
                 PlaceOpenBraceOnNewLineForFunctions: false,
                 PlaceOpenBraceOnNewLineForControlBlocks: false
             };
@@ -280,14 +280,7 @@ module Cats.TSWorker {
          * that are set, leave the other ones at the default value.
          */
         setSettings(compilerOptions, editorOptions) {
-            var compOptions = ts.getDefaultCompilerOptions();
- 
-
-            // Do a quick mixin
-            for (var i in compilerOptions) {
-                compOptions[i] = compilerOptions[i];
-            }
-            this.lsHost.setCompilationSettings(compOptions);
+            this.lsHost.setCompilationSettings(compilerOptions);
 
             
             this.formatOptions = this.getDefaultFormatOptions();
@@ -517,7 +510,7 @@ module Cats.TSWorker {
 
 
         /**
-         * Generic method to get referecnes, implementations or occurences of a certain
+         * Generic method to get references, implementations or occurences of a certain
          * element at a position in a source file.
          * 
          *    getReferencesAtPosition

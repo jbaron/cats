@@ -111,9 +111,9 @@ module Cats.Gui.Editor {
         }
 
         private configureAceSession(projectConfig:ProjectConfiguration) {
-            var config = projectConfig.codingStandards;
-            if (config.tabSize) this.setTabSize(config.tabSize);
-            if (config.useSoftTabs != null) this.setUseSoftTabs(config.useSoftTabs);
+            var config = projectConfig.codeFormat;
+            if (config.TabSize) this.setTabSize(config.TabSize);
+            if (config.ConvertTabsToSpaces != null) this.setUseSoftTabs(config.ConvertTabsToSpaces);
         }
         
     

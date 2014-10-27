@@ -49,7 +49,7 @@ module Cats {
             var dir = OS.File.PATH.resolve(projectDir);
             this.projectDir = OS.File.switchToForwardSlashes(dir);
             this.refresh();
-            if (this.config.codingStandards.useLint) this.linter = new Linter(this);
+            if (this.config.tslint.useLint) this.linter = new Linter(this);
             
             // @TODO optimize only refresh in case of changes
             this.refreshInterval = setInterval(()=> {this.refreshTodoList()}, 30000);
@@ -68,9 +68,9 @@ module Cats {
         updateConfig(config:ProjectConfiguration) {
             this.settings.value = config;
             this.emit("config", config);
-            if (this.config.codingStandards.useLint) this.linter = new Linter(this);
+            if (this.config.tslint.useLint) this.linter = new Linter(this);
             this.settings.store();
-            this.iSense.setSettings(this.config.compiler, this.config.codingStandards);
+            this.iSense.setSettings(this.config.compiler, this.config.codeFormat);
         }
         
         refreshTodoList() {
@@ -202,7 +202,7 @@ module Cats {
             this.iSense = new TSWorkerProxy(this);
 
 
-            this.iSense.setSettings(this.config.compiler, this.config.codingStandards);
+            this.iSense.setSettings(this.config.compiler, this.config.codeFormat);
 
             if (!this.config.compiler.noLib) {
                 var fullName = OS.File.join(IDE.catsHomeDir, "resource/typings/lib.d.ts");

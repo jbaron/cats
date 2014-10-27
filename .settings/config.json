@@ -6,8 +6,8 @@
         "noLib": false,
         "removeComments": false,
         "noImplicitAny": false,
-        "generateDeclarationFiles": false,
-        "mapSourceFiles": false,
+        "declaration": false,
+        "sourceMap": false,
         "propagateEnumConstants": false,
         "allowAutomaticSemicolonInsertion": true,
         "target": 1,
@@ -15,12 +15,11 @@
         "outDir": null,
         "out": null
     },
-    "codingStandards": {
-        "newLineMode": "auto",
-        "useSoftTabs": true,
-        "tabSize": 4,
-        "useLint": false,
-        "lintFile": null
+    "codeFormat": {
+        "NewLineCharacter": "\n",
+        "ConvertTabsToSpaces": true,
+        "IndentSize": 1,
+        "TabSize": 4
     },
     "customBuild": {
         "name": "Jake Build Process",
@@ -41,5 +40,9 @@
         "outputDirectory": "api_doc",
         "readme": "README.md",
         "theme": "default"
+    },
+    "tslint": {
+        "useLint": false,
+        "lintFile": null
     }
 }

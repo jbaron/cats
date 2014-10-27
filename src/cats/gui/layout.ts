@@ -15,7 +15,8 @@
 module Cats.Gui {
     
     /**
-     * This class takes care of the layout of the IDE
+     * This class takes care of the layout of the IDE.
+     * @TODO should not instantiate navigators etc, only do the layout.
      */
     export class Layout {
 

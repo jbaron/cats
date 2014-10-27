@@ -29,14 +29,12 @@ module Cats.TSWorker {
     export class LanguageServiceHost implements ts.LanguageServiceHost {
 
         private compilationSettings:ts.CompilerOptions = null;
-
         private scripts:Map<ScriptInfo> = {};
 
-
-        getScript(fileName:string) {
-            return this.scripts[fileName];
+        constructor() {
+            this.setCompilationSettings();
         }
-      
+
         getScriptFileNames():string[] {
             return Object.keys(this.scripts);
         }
@@ -68,9 +66,25 @@ module Cats.TSWorker {
              if (script) return script.getScriptSnapshot();
         }
 
+       public log(s: string): void {
+       }
+    
+         public getCompilationSettings(): ts.CompilerOptions {
+            return this.compilationSettings; 
+        }
+
+
+        public getScriptVersion(fileName: string): string {
+            var script = this.scripts[fileName];            
+            return script.version + "";
+        }
 
         //////////////////////////////////////////////////////////////////////
         // local implementation
+ 
+         getScript(fileName:string) {
+            return this.scripts[fileName];
+        }
         
         public addScript(fileName: string, content: string) {
             var script = new ScriptInfo(fileName, content);
@@ -95,27 +109,17 @@ module Cats.TSWorker {
             }
         }
 
-        //////////////////////////////////////////////////////////////////////
-        // Logger implementation
-       public log(s: string): void {}
-        
-    
-        //////////////////////////////////////////////////////////////////////
-        // ILanguageServiceHost implementation
-        //
-
-        public getCompilationSettings(): ts.CompilerOptions {
-            return this.compilationSettings; 
+        public setCompilationSettings(compilerOptions: ts.CompilerOptions={}) {
+             var options = ts.getDefaultCompilerOptions();
+ 
+            // Do a quick mixin
+            for (var i in compilerOptions) {
+                options[i] = compilerOptions[i];
+            }
+            options.emitBOM = false;
+            this.compilationSettings = options;
         }
 
-        public setCompilationSettings(value: ts.CompilerOptions) {
-            this.compilationSettings = value;
-        }
-
-        public getScriptVersion(fileName: string): string {
-            var script = this.scripts[fileName];            
-            return script.version + "";
-        }
 
     }
 

@@ -140,7 +140,7 @@ module Cats.Gui.Editor {
             var delegate = {};
             delegate["filter"] = (data) => {
                 var value = data.getCaption().toLowerCase();
-                var result = matchFunction(text, value); // TODO hwo to deal with this
+                var result = matchFunction(text, value); 
                 if (result) this.filtered.push(data);
                 if (data === lastItem) {
                     // IDE.console.log("filtered items: " + this.filtered.length);
@@ -262,7 +262,6 @@ module Cats.Gui.Editor {
 
         /**
          * Hide the popup and remove all keybindings
-         * 
          */
         private hidePopup() {
             this.editor.keyBinding.removeKeyboardHandler(this.handler);

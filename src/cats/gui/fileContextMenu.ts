@@ -26,9 +26,7 @@ export class FileContextMenu extends qx.ui.menu.Menu {
     constructor(private fileNavigator:FileNavigator) {
         super();
         this.init();
-        
     }
-
 
     private openInApp() {
         var osPath = OS.File.join(this.getFullPath(),"", true);
