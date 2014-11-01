@@ -81,7 +81,7 @@ module Cats.Gui {
             this.setLayout(new qx.ui.layout.Canvas());
         }
 
-        addCheckBox(model: string) {
+        protected addCheckBox(model: string) {
             var cb = new qx.ui.form.CheckBox();
             var label = this.getLabelString(model);
             this.form.add(cb, label, null, model);
@@ -96,24 +96,22 @@ module Cats.Gui {
             return model.split(/(?=[A-Z])/).join(" ");
         }
         
-        
-       
 
-        addSpinner(model: string, min: number, max: number) {
+        protected addSpinner(model: string, min: number, max: number) {
             var s = new qx.ui.form.Spinner();
             s.set({ minimum: min, maximum: max });
             var label = this.getLabelString(model);
             this.form.add(s, label, null, model);
         }
 
-        addTextField(model: string) {
+        protected addTextField(model: string) {
             var t = new qx.ui.form.TextField();
             t.setWidth(200);
             var label = this.getLabelString(model);
             this.form.add(t, label, null, model);
         }
 
-        addSelectBox(model: string, items: Array<any>) {
+        protected addSelectBox(model: string, items: Array<any>) {
             var s = new qx.ui.form.SelectBox();
             items.forEach((item) => {
                 var listItem = new qx.ui.form.ListItem(item.label, null, item.model);
@@ -139,7 +137,7 @@ module Cats.Gui {
             return result;
         }
 
-        finalStep() {
+        protected finalStep() {
             var controller = new qx.data.controller.Form(null, this.form);
             this.model = controller.createModel();
             var renderer = new qx.ui.form.renderer.Single(this.form);

@@ -1,6 +1,8 @@
 // This file contains the build logic for CATS
 
 var workerOptions = [
+    "resource/typings/lib.webworker.d.ts",
+
     "src/typings/typescriptServices.d.ts",
     "src/typings/cats.d.ts",
     "src/cats/common.ts",
@@ -12,6 +14,9 @@ var workerOptions = [
 
 
 var catsOptions = [
+   
+    "resource/typings/lib.d.ts",
+
     "src/typings/ace.d.ts",
     "src/typings/cats.d.ts",
     "src/typings/jsuml2.d.ts",
@@ -68,6 +73,7 @@ var catsOptions = [
     "src/cats/gui/propertyTable.ts",
     "src/cats/gui/layout.ts",
     "src/cats/gui/searchDialog.ts",
+    "src/cats/gui/renameDialog.ts",
     "src/cats/gui/menubar.ts",
     "src/cats/gui/tsHelper.ts",
     
@@ -83,7 +89,7 @@ var catsOptions = [
  * Compiler task
  */
 task('compile', {async:true}, function(outFile, options) {
-		var cmd = "tsc --target ES5 --out " + outFile + " " + options.join(" ") ;
+		var cmd = "node tsc.js --target ES5 --out " + outFile + " " + options.join(" ") ;
 
 		// console.log(cmd + "\n");
 		var ex = jake.createExec([cmd]);

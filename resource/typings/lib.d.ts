@@ -13975,7 +13975,7 @@ declare function open(url?: string, target?: string, features?: string, replace?
 declare function scrollBy(x?: number, y?: number): void;
 declare function confirm(message?: string): boolean;
 declare function close(): void;
-declare function postMessage(message: any, targetOrigin: string, ports?: any): void;
+declare function postMessage(message: any, targetOrigin?: string, ports?: any): void;
 declare function showModalDialog(url?: string, argument?: any, options?: any): any;
 declare function blur(): void;
 declare function getSelection(): Selection;

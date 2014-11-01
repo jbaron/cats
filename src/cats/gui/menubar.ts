@@ -159,11 +159,30 @@ module Cats.Gui {
             }
         }
 
+
+        private recentProjects() {
+            var menu = new GUI.Menu();
+            IDE.config.projects.reverse().forEach((project) => {
+                if (! project) return;
+                var item = {
+                    label: project,
+                    click: () => { IDE.addProject(project); }
+                };
+                menu.append(new GUI.MenuItem(item));
+            });
+            var entry = new GUI.MenuItem({
+               label: "Recent Projects",
+               submenu : menu
+            });
+            return entry;
+        }
+
         private createProjectMenu() {
             var proj = this.menus.project;
             proj.append( getItem( CMDS.project_open ) );
             proj.append( getItem( CMDS.project_close ) );
             proj.append( getItem( CMDS.project_new ) );
+            proj.append(this.recentProjects());
 
             proj.append( new GUI.MenuItem( { type: "separator" }) );
             proj.append( getItem( CMDS.project_build ) );

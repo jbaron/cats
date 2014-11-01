@@ -2,6 +2,7 @@
     "src": "src/**/*.ts",
     "main": "index.html",
     "buildOnSave": false,
+    "projectType": "standard",
     "compiler": {
         "noLib": false,
         "removeComments": false,
@@ -18,7 +19,7 @@
     "codeFormat": {
         "NewLineCharacter": "\n",
         "ConvertTabsToSpaces": true,
-        "IndentSize": 1,
+        "IndentSize": 4,
         "TabSize": 4
     },
     "customBuild": {

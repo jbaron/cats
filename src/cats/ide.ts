@@ -34,6 +34,8 @@ module Cats {
             simple:qx.theme.Simple
         };
 
+        recentProjects:Array<string>;
+
         resultPane: Gui.TabView;
         toolBar: Gui.ToolBar;
         contextPane: Gui.TabView;
@@ -63,6 +65,8 @@ module Cats {
             this.catsHomeDir = process.cwd();
             this.loadMessages();
             this.config = this.loadPreferences();
+            this.recentProjects = this.config.projects || [];
+            
             this.icons = this.loadIconsMap();
             this.configure();
             
@@ -264,9 +268,8 @@ module Cats {
                 var config = this.config;
                 config.version = "1.1";
                 config.sessions = [];
-                config.projects = [];
+                config.projects = this.recentProjects;
                 if (this.project) {
-                    config.projects.push(this.project.projectDir);
                     this.editorTabView.getEditors().forEach((editor)=>{ 
                         var state = editor.getState();
                         if ((state !== null) && (editor.getType())) {
@@ -292,6 +295,9 @@ module Cats {
          * @param projectDir the directory of the new project
          */
         addProject(projectDir: string) {
+            if (this.recentProjects.indexOf(projectDir) === -1) {
+                this.recentProjects.push(projectDir);
+            }
             if (! this.project) {
                 this.project = new Project(projectDir);
                 this.fileNavigator.setProject(this.project);

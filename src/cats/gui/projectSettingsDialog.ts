@@ -45,7 +45,7 @@ module Cats.Gui {
             
         }
 
-        saveValues() {
+        protected saveValues() {
             var config: Cats.ProjectConfiguration = this.projectSettings.getData();
             config.compiler = this.compilerSettings.getData();
             config.codeFormat = this.codeFormatSettings.getData();
@@ -56,7 +56,7 @@ module Cats.Gui {
             IDE.project.updateConfig(config);
         }
 
-        addTabs() {
+        protected addTabs() {
             var tab = new qx.ui.tabview.TabView();
 
             this.compilerSettings = new ProjectCompilerSettings();
@@ -128,6 +128,16 @@ module Cats.Gui {
      */
     class ProjectGeneric extends ConfigDialogPage {
 
+        private projectType = [
+            { label: "standard", model: "standard" },
+            { label: "webworker", model: "webworker" },
+            { label: "ECMAScript", model: "core" },
+            { label: "scriptHost", model: "scriptHost" },
+           // { label: "IE10", model: "dom" },
+            { label: "none", model: "none" }
+        ];
+
+
         constructor() {
             super("Generic");
             this.createForm();
@@ -138,6 +148,7 @@ module Cats.Gui {
             this.addTextField("src");
             this.addTextField("main");
             this.addCheckBox("buildOnSave");
+            this.addSelectBox("projectType", this.projectType);
         }
     }
 
@@ -170,8 +181,7 @@ module Cats.Gui {
     }
 
     /**
-     * The different settings so all developers checking the same code format and 
-     * standards.
+     * The configuration for TSLint
      */
     class TSLintSettings extends ConfigDialogPage {
 

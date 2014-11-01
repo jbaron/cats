@@ -9,6 +9,7 @@
     }
   ],
   "main": "index.html",
+  "js-flags": "--harmony_scoping",
   "scripts": {
     "start": "nodewebkit --restore"
   },

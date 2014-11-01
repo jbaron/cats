@@ -23,7 +23,6 @@ module Cats.Gui {
         private form = new qx.ui.form.Form();
         private rootDir: string;
 
-
         constructor() {
             super("Rename");
             var layout = new qx.ui.layout.VBox();
@@ -33,63 +32,25 @@ module Cats.Gui {
             this.addListener("resize", this.center);
         }
 
-        /**
-         * Open the search dialog with a root directory
-         */ 
-        search(rootDir) {
-            this.rootDir = rootDir;
-            this.show();
-        }
 
 
-        private getResults(fileName: string, pattern: RegExp, result: Cats.FileRange[]) {
-            try {
-                var content = OS.File.readTextFile(fileName);
-                if (!content.match(pattern)) return;
-
-                var lines = content.split("\n");
-                for (var x = 0; x < lines.length; x++) {
-                    var line = lines[x];
-                    var match = null;
-                    while (match = pattern.exec(line)) {
-                        var columnX = pattern.lastIndex - match[0].length;
-                        var columnY = pattern.lastIndex;
-                        var item: Cats.FileRange = {
-                            range: {
-                                start: { row: x, column: columnX },
-                                end: { row: x, column: columnY }
-                            },
-                            fileName: fileName,
-                            message: line
-                        };
-                        result.push(item);
-                    }
+        run(fileName: string, project: Project, pos: Position) {
+            project.iSense.getRenameInfo(fileName, pos, (err, data) => {
+                if (!data) return;
+                if (!data.canRename) {
+                    alert("Cannot rename the selected element");
+                    return;
                 }
-            } catch (err) {
-                console.error("Got error while handling file " + fileName);
-                console.error(err);
-            }
-        }
 
-        private run(param) {
-            var result: Cats.FileRange[] = [];
-            var mod = param.caseInsensitive ? "i" : "";
-            var searchPattern = new RegExp(param.search, "g" + mod);
-            if (!param.glob) param.glob = "**/*";
-            OS.File.find(param.glob, this.rootDir, (err: Error, files: Array<string>) => {
-                files.forEach((file) => {
-                    if (result.length > param.maxHits) return;
-                    var fullName = OS.File.join(this.rootDir, file);
-                    this.getResults(fullName, searchPattern, result);
+                var newName = prompt("Rename " + data.displayName + " into:");
+                if (!newName) return;
+                project.iSense.findRenameLocations(fileName, pos, false, false, (err, data: Cats.FileRange[]) => {
+                    // renameOccurences(data, newName);
                 });
-                var resultTable = new ResultTable();
-                var toolTipText = "Search results for " + searchPattern + " in " + this.rootDir + "/" + param.glob;
-                var page = IDE.resultPane.addPage("search",  resultTable, toolTipText);
-                page.setShowCloseButton(true);
-                resultTable.setData(result);
-                this.close();
             });
         }
+
+
 
         private addTextField(label: string, model: string) {
             var t = new qx.ui.form.TextField();
@@ -122,7 +83,7 @@ module Cats.Gui {
             var d = this.addCheckBox("Replace in comments", "caseInsensitive");
             d.setValue(false);
 
-   
+
             var searchButton = new qx.ui.form.Button("Refactor");
             var cancelButton = new qx.ui.form.Button("Cancel");
 
@@ -133,7 +94,7 @@ module Cats.Gui {
                         name: s.getValue(),
                         caseInsensitive: c.getValue(),
                     };
-                    this.run(param);
+                   // this.run(param);
                 };
             }, this);
             this.form.addButton(cancelButton);
@@ -144,10 +105,7 @@ module Cats.Gui {
             return renderer;
         }
 
-        private createResultTable() {
-            var r = new ResultTable();
-            return r;
-        }
+       
 
     }
 }

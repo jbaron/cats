@@ -105,6 +105,17 @@ module Cats.Gui {
             { model: "xcode", label: "XCode" },
         ];
 
+
+        private getThemes() {
+            var themelist = ace.require("ace/ext/themelist");
+            var result = [];
+            themelist.themes.forEach((x) => { 
+                var name = OS.File.PATH.basename(x.theme);
+                result.push({model:name, label:name}); 
+            });
+            return result;
+        }
+
         constructor() {
             super("Source Editor");
             this.createForm();
@@ -114,7 +125,7 @@ module Cats.Gui {
         createForm() {
             this.addSpinner("fontSize", 6, 24);
             this.addSpinner( "rightMargin", 40, 240);
-            this.addSelectBox("theme", this.theme);
+            this.addSelectBox("theme", this.getThemes());
             this.addSelectBox("completionMode", this.completionMode);
 
         }

@@ -85,7 +85,6 @@ module Cats {
 
     // Register the main method that once Qooxdoo is loaded is called
     qx.registry.registerMainMethod(main);
-
 }
 
 

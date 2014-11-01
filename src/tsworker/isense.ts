@@ -22,9 +22,9 @@ module Cats.TSWorker {
      * not available in a worker.
      */
     export var console = {
-        log: function(str: string) { postMessage({ method: "console", params: ["log",str] }, null); },
-        error: function(str: string) { postMessage({ method: "console", params: ["error",str] }, null); },
-        info: function(str: string) { postMessage({ method: "console", params: ["info",str] }, null); }
+        log: function(str: string) { postMessage({ method: "console", params: ["log",str] }); },
+        error: function(str: string) { postMessage({ method: "console", params: ["error",str] }); },
+        info: function(str: string) { postMessage({ method: "console", params: ["info",str] }); }
     };
     
     /**
@@ -561,7 +561,7 @@ module Cats.TSWorker {
      * @param value true is busy, false othewise
      */
     function setBusy(value: boolean) {
-        postMessage({ method: "setBusy", params: [value] }, null);
+        postMessage({ method: "setBusy", params: [value] });
     }
 
     /*******************************************************************
@@ -578,14 +578,14 @@ module Cats.TSWorker {
 
         try {
             var result = tsh[msg.method].apply(tsh, msg.params);
-            postMessage({ id: msg.id, result: result }, null);
+            postMessage({ id: msg.id, result: result });
         } catch (err) {
             var error = {
                 description: err.description,
                 stack: err.stack
             };
             console.error("Error during processing message " + msg.method);
-            postMessage({ id: msg.id, error: error }, null);
+            postMessage({ id: msg.id, error: error });
         } finally {
             setBusy(false);
             // console.log("Method " + msg.method + " took " + (Date.now() - startTime) + "ms");

@@ -14,16 +14,15 @@
 
 module Cats.Gui {
 
- 
     /**
      * Generic tab used for all the tabs in CATS except for the edirtor tabs.
      * Takes care of basic look & feel and some simple features
-     */ 
+     */
     export class TabViewPage extends qx.ui.tabview.Page {
-        
+
         // Hints if this tab want to get selected if its content changes 
         autoSelect = false;
-        
+
         constructor(public id: string, widget: qx.ui.core.LayoutItem, tooltipText?: string) {
             super(super.tr(id), IDE.icons.tab[id]);
             this.setLayout(new qx.ui.layout.Canvas());
@@ -37,7 +36,7 @@ module Cats.Gui {
 
             if (widget) {
                 this.add(widget, { edge: 0 });
-                widget.addListener("contentChange",() => {
+                widget.addListener("contentChange", () => {
                     if (this.autoSelect) {
                         var elem = <HTMLElement>document.activeElement;
                         this.select();
@@ -49,18 +48,18 @@ module Cats.Gui {
             }
 
         }
-        
-        
-        
-        
+
+
+
+
         /**
          * Convenience method to select this page in the tab view.
-         */ 
+         */
         private select() {
             var tabView = this.getLayoutParent().getLayoutParent();
-            tabView.setSelection([this]); 
+            tabView.setSelection([this]);
         }
-        
+
     }
 
     /**
@@ -76,7 +75,6 @@ module Cats.Gui {
         }
 
         private createContextMenu() {
-            
             var menu = new qx.ui.menu.Menu();
             var directions = ["top", "left", "right", "bottom"];
             directions.forEach((dir) => {
@@ -85,13 +83,16 @@ module Cats.Gui {
                 menu.add(item);
             });
             var mainmenu = new qx.ui.menu.Menu();
-            var b = new qx.ui.menu.Button("Tab layout", null,null,menu);
+            var b = new qx.ui.menu.Button("Tab layout", null, null, menu);
             mainmenu.add(b);
             this.setContextMenu(mainmenu);
         }
 
-       addPage(id: string, widget: qx.ui.core.LayoutItem, tooltipText?: string): TabViewPage {
-            var tab = new TabViewPage(id,widget, tooltipText);
+        /**
+         * Add a new Page to the tab Viewx
+         */
+        addPage(id: string, widget: qx.ui.core.LayoutItem, tooltipText?: string): TabViewPage {
+            var tab = new TabViewPage(id, widget, tooltipText);
             this.add(tab);
             this.setSelection([tab]);
             return tab;

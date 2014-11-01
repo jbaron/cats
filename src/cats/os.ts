@@ -250,10 +250,7 @@ module Cats.OS.File {
             }
             
             var fileName = name;
-            
-            if (! PATH.isAbsolute(fileName)) {
-                fileName = PATH.join(IDE.project.projectDir, fileName);
-            }
+            fileName = PATH.resolve(IDE.project.projectDir, fileName);
             
             mkdirRecursiveSync(PATH.dirname(fileName));
             fs.writeFileSync(fileName, value, "utf8");

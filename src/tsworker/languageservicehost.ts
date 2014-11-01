@@ -105,7 +105,7 @@ module Cats.TSWorker {
             if (script) {
                 script.editContent(minChar, limChar, newText);
             } else {
-                throw new Error("No script with name '" + name + "'");
+                throw new Error("No script with name '" + fileName + "'");
             }
         }
 
@@ -116,7 +116,12 @@ module Cats.TSWorker {
             for (var i in compilerOptions) {
                 options[i] = compilerOptions[i];
             }
+            
+            // Set values to avoid the compiler trying to load/resolve files
             options.emitBOM = false;
+            options.noLib = true;
+            options.noLibCheck = true;
+            options.noResolve = true;
             this.compilationSettings = options;
         }
 
