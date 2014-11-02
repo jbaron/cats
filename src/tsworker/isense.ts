@@ -99,7 +99,7 @@ module Cats.TSWorker {
                 // TODO handle better
                 return {
                     fileName: info.fileName,
-                    range: infoScript.getRange(info.textSpan.start(), info.textSpan.end())
+                    range: infoScript.getRangeFromSpan(info.textSpan)
                 };
             } else {
                 return null;
@@ -131,7 +131,7 @@ module Cats.TSWorker {
         private convertNavigateTo(item: ts.NavigateToItem): NavigateToItem {
             var script = this.lsHost.getScript(item.fileName);
             var result = {
-                range : script.getRange(item.textSpan.start(), item.textSpan.end()),
+                range : script.getRangeFromSpan(item.textSpan),
                 name : item.name,
                 fileName: item.fileName,
                 kind: item.kind
@@ -501,8 +501,8 @@ module Cats.TSWorker {
                 var refScript = this.lsHost.getScript(ref.fileName);
                 result.push({
                     fileName: ref.fileName,
-                    range: refScript.getRange(ref.textSpan.start(), ref.textSpan.end()),
-                    message: refScript.getLine(ref.textSpan.start(), ref.textSpan.end())
+                    range: refScript.getRangeFromSpan(ref.textSpan),
+                    message: refScript.getLine(ref.textSpan)
                 });
             }
             return result;
@@ -528,8 +528,8 @@ module Cats.TSWorker {
                 var refScript = this.lsHost.getScript(ref.fileName);
                 result.push({
                     fileName: ref.fileName,
-                    range: refScript.getRange(ref.textSpan.start(), ref.textSpan.end()),
-                    message: refScript.getLine(ref.textSpan.start(), ref.textSpan.end())
+                    range: refScript.getRangeFromSpan(ref.textSpan),
+                    message: refScript.getLine(ref.textSpan)
                 });
             }
             return result;
@@ -548,7 +548,7 @@ module Cats.TSWorker {
 
             // Lets find out what autocompletion there is possible		
             var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode) || <ts.CompletionInfo>{};
-            if (!completions.entries) completions.entries = []; // @Bug in TS
+            if (!completions.entries) return []; // @Bug in TS
             completions.entries.sort(caseInsensitiveSort); // Sort case insensitive
             return completions.entries;
         }
@@ -560,8 +560,8 @@ module Cats.TSWorker {
      * 
      * @param value true is busy, false othewise
      */
-    function setBusy(value: boolean) {
-        postMessage({ method: "setBusy", params: [value] });
+    function setBusy(value: boolean, methodName:string) {
+        postMessage({ method: "setBusy", params: [value,methodName] });
     }
 
     /*******************************************************************
@@ -572,23 +572,25 @@ module Cats.TSWorker {
 
     addEventListener('message', function(e) {
         if (!tsh) tsh = new ISense();
-        // var startTime = Date.now();
-        setBusy(true);
-        var msg: Cats.JSONRPCRequest = e["data"];
 
+        var msg: Cats.JSONRPCRequest = e["data"];
+        var methodName = msg.method;
+        var params = msg.params;
+        setBusy(true, methodName);
+        
         try {
-            var result = tsh[msg.method].apply(tsh, msg.params);
+            var result = tsh[methodName].apply(tsh,params);
             postMessage({ id: msg.id, result: result });
         } catch (err) {
             var error = {
                 description: err.description,
-                stack: err.stack
+                stack: err.stack,
+                method: methodName
             };
-            console.error("Error during processing message " + msg.method);
+            console.error("Error during processing message " + methodName);
             postMessage({ id: msg.id, error: error });
         } finally {
-            setBusy(false);
-            // console.log("Method " + msg.method + " took " + (Date.now() - startTime) + "ms");
+            setBusy(false, methodName);
         }
     }, false);
 

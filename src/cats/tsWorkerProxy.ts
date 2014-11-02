@@ -159,12 +159,15 @@ module Cats {
                         handler(msg.error, msg.result);
                     }
                 } else {
-                    if (msg.method && (msg.method === "setBusy")) {
-                        IDE.statusBar.setBusy(msg.params[0]);
+                    var params = msg.params;
+                    var methodName = msg.method;
+                    
+                    if (methodName && (methodName === "setBusy")) {
+                        IDE.statusBar.setBusy(params[0], params[1]);
                     } 
                     
-                    if (msg.method && (msg.method === "console")) {
-                        console[msg.params[0]](msg.params[1]);
+                    if (methodName && (methodName === "console")) {
+                        console[params[0]](params[1]);
                     } 
                 }
             };

@@ -109,10 +109,10 @@ export class ScriptInfo {
          * Retieve the line of code that contains a certain range. Used to provide the 
          * user with contexts of what is found
          */
-        getLine(minChar: number, limChar: number) {
-            var min = this.content.substring(0, minChar).lastIndexOf("\n");
-            var max = this.content.substring(limChar).indexOf("\n");
-            return this.content.substring(min + 1, limChar + max);
+        getLine(span:TypeScript.TextSpan) {
+            var min = this.content.substring(0, span.start()).lastIndexOf("\n");
+            var max = this.content.substring(span.end()).indexOf("\n");
+            return this.content.substring(min + 1, span.end() + max);
         }
         
         /**
@@ -124,6 +124,11 @@ export class ScriptInfo {
                 end: this.positionToLineCol(limChar)
             };
             return result;
+        }
+        
+        
+        getRangeFromSpan(textSpan: TypeScript.TextSpan) {
+            return this.getRange(textSpan.start(), textSpan.end());
         }
         
         /**

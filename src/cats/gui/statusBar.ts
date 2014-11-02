@@ -114,12 +114,13 @@ module Cats.Gui {
          * Indicate if the worker is busy or not
          * 
          */
-        setBusy(busy: boolean) {
+        setBusy(busy: boolean, activity:string) {
             if (busy) {
                 this.busyInfo.setIcon("./resource/cats/loader_anim.gif");
             } else {
                 this.busyInfo.setIcon("./resource/cats/loader.gif");
             }
+            if (IDE.debug && busy && activity) IDE.console.log(activity);
         }
 
     }
