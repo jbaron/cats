@@ -140,6 +140,12 @@ task("clean", function() {
     jake.rmRf("lib/main.js");
 });
 
+desc("Forced build the full CATS application");
+task("build", [], function() {
+   jake.Task.clean.invoke();
+   jake.Task.default.invoke();
+});
+
 desc("Builds the full CATS application");
 task("default", [], function() {
    jake.Task['lib/main.js'].invoke();

@@ -11,7 +11,8 @@
   "main": "index.html",
   "js-flags": "--harmony_scoping",
   "scripts": {
-    "start": "nodewebkit --restore"
+    "start": "nodewebkit --restore",
+    "test" : "jake build"
   },
   "description": "CATS in an integrated development environment for TypeScript developers",
   "keywords": [
@@ -45,4 +46,5 @@
   },
   "devDependencies": {
   }
+
 }
