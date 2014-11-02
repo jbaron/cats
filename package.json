@@ -45,6 +45,7 @@
     "dagre" : "^0.4.6"
   },
   "devDependencies": {
+		"jake" : "latest"
   }
 
 }
