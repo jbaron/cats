@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/jbaron/cats.svg?branch=dev-1-3-a)](https://travis-ci.org/jbaron/cats)
+
 ## CATS
 
 CATS is an IDE for TypeScript and Web developers. CATS is open source software released under the Apache 2.0 license and it runs on Linux, Windows and OS X. 
