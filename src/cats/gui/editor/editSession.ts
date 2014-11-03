@@ -49,6 +49,7 @@ module Cats.Gui.Editor {
             
             super(content, this.mode);
             this.setNewLineMode("unix");
+            this.configureAceSession(IDE.project.config);
             this.setUndoManager(new UndoManager());
 
             IDE.project.on("config", (c) => { this.configureAceSession(c); });
