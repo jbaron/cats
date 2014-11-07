@@ -1,4 +1,1212 @@
 declare module ts {
+    interface TextRange {
+        pos: number;
+        end: number;
+    }
+    const enum SyntaxKind {
+        Unknown = 0,
+        EndOfFileToken = 1,
+        SingleLineCommentTrivia = 2,
+        MultiLineCommentTrivia = 3,
+        NewLineTrivia = 4,
+        WhitespaceTrivia = 5,
+        NumericLiteral = 6,
+        StringLiteral = 7,
+        RegularExpressionLiteral = 8,
+        NoSubstitutionTemplateLiteral = 9,
+        TemplateHead = 10,
+        TemplateMiddle = 11,
+        TemplateTail = 12,
+        OpenBraceToken = 13,
+        CloseBraceToken = 14,
+        OpenParenToken = 15,
+        CloseParenToken = 16,
+        OpenBracketToken = 17,
+        CloseBracketToken = 18,
+        DotToken = 19,
+        DotDotDotToken = 20,
+        SemicolonToken = 21,
+        CommaToken = 22,
+        LessThanToken = 23,
+        GreaterThanToken = 24,
+        LessThanEqualsToken = 25,
+        GreaterThanEqualsToken = 26,
+        EqualsEqualsToken = 27,
+        ExclamationEqualsToken = 28,
+        EqualsEqualsEqualsToken = 29,
+        ExclamationEqualsEqualsToken = 30,
+        EqualsGreaterThanToken = 31,
+        PlusToken = 32,
+        MinusToken = 33,
+        AsteriskToken = 34,
+        SlashToken = 35,
+        PercentToken = 36,
+        PlusPlusToken = 37,
+        MinusMinusToken = 38,
+        LessThanLessThanToken = 39,
+        GreaterThanGreaterThanToken = 40,
+        GreaterThanGreaterThanGreaterThanToken = 41,
+        AmpersandToken = 42,
+        BarToken = 43,
+        CaretToken = 44,
+        ExclamationToken = 45,
+        TildeToken = 46,
+        AmpersandAmpersandToken = 47,
+        BarBarToken = 48,
+        QuestionToken = 49,
+        ColonToken = 50,
+        EqualsToken = 51,
+        PlusEqualsToken = 52,
+        MinusEqualsToken = 53,
+        AsteriskEqualsToken = 54,
+        SlashEqualsToken = 55,
+        PercentEqualsToken = 56,
+        LessThanLessThanEqualsToken = 57,
+        GreaterThanGreaterThanEqualsToken = 58,
+        GreaterThanGreaterThanGreaterThanEqualsToken = 59,
+        AmpersandEqualsToken = 60,
+        BarEqualsToken = 61,
+        CaretEqualsToken = 62,
+        Identifier = 63,
+        BreakKeyword = 64,
+        CaseKeyword = 65,
+        CatchKeyword = 66,
+        ClassKeyword = 67,
+        ConstKeyword = 68,
+        ContinueKeyword = 69,
+        DebuggerKeyword = 70,
+        DefaultKeyword = 71,
+        DeleteKeyword = 72,
+        DoKeyword = 73,
+        ElseKeyword = 74,
+        EnumKeyword = 75,
+        ExportKeyword = 76,
+        ExtendsKeyword = 77,
+        FalseKeyword = 78,
+        FinallyKeyword = 79,
+        ForKeyword = 80,
+        FunctionKeyword = 81,
+        IfKeyword = 82,
+        ImportKeyword = 83,
+        InKeyword = 84,
+        InstanceOfKeyword = 85,
+        NewKeyword = 86,
+        NullKeyword = 87,
+        ReturnKeyword = 88,
+        SuperKeyword = 89,
+        SwitchKeyword = 90,
+        ThisKeyword = 91,
+        ThrowKeyword = 92,
+        TrueKeyword = 93,
+        TryKeyword = 94,
+        TypeOfKeyword = 95,
+        VarKeyword = 96,
+        VoidKeyword = 97,
+        WhileKeyword = 98,
+        WithKeyword = 99,
+        ImplementsKeyword = 100,
+        InterfaceKeyword = 101,
+        LetKeyword = 102,
+        PackageKeyword = 103,
+        PrivateKeyword = 104,
+        ProtectedKeyword = 105,
+        PublicKeyword = 106,
+        StaticKeyword = 107,
+        YieldKeyword = 108,
+        AnyKeyword = 109,
+        BooleanKeyword = 110,
+        ConstructorKeyword = 111,
+        DeclareKeyword = 112,
+        GetKeyword = 113,
+        ModuleKeyword = 114,
+        RequireKeyword = 115,
+        NumberKeyword = 116,
+        SetKeyword = 117,
+        StringKeyword = 118,
+        TypeKeyword = 119,
+        Missing = 120,
+        QualifiedName = 121,
+        TypeParameter = 122,
+        Parameter = 123,
+        Property = 124,
+        Method = 125,
+        Constructor = 126,
+        GetAccessor = 127,
+        SetAccessor = 128,
+        CallSignature = 129,
+        ConstructSignature = 130,
+        IndexSignature = 131,
+        TypeReference = 132,
+        TypeQuery = 133,
+        TypeLiteral = 134,
+        ArrayType = 135,
+        TupleType = 136,
+        UnionType = 137,
+        ParenType = 138,
+        ArrayLiteral = 139,
+        ObjectLiteral = 140,
+        PropertyAssignment = 141,
+        PropertyAccess = 142,
+        IndexedAccess = 143,
+        CallExpression = 144,
+        NewExpression = 145,
+        TaggedTemplateExpression = 146,
+        TypeAssertion = 147,
+        ParenExpression = 148,
+        FunctionExpression = 149,
+        ArrowFunction = 150,
+        PrefixOperator = 151,
+        PostfixOperator = 152,
+        BinaryExpression = 153,
+        ConditionalExpression = 154,
+        TemplateExpression = 155,
+        TemplateSpan = 156,
+        OmittedExpression = 157,
+        Block = 158,
+        VariableStatement = 159,
+        EmptyStatement = 160,
+        ExpressionStatement = 161,
+        IfStatement = 162,
+        DoStatement = 163,
+        WhileStatement = 164,
+        ForStatement = 165,
+        ForInStatement = 166,
+        ContinueStatement = 167,
+        BreakStatement = 168,
+        ReturnStatement = 169,
+        WithStatement = 170,
+        SwitchStatement = 171,
+        CaseClause = 172,
+        DefaultClause = 173,
+        LabeledStatement = 174,
+        ThrowStatement = 175,
+        TryStatement = 176,
+        TryBlock = 177,
+        CatchBlock = 178,
+        FinallyBlock = 179,
+        DebuggerStatement = 180,
+        VariableDeclaration = 181,
+        FunctionDeclaration = 182,
+        FunctionBlock = 183,
+        ClassDeclaration = 184,
+        InterfaceDeclaration = 185,
+        TypeAliasDeclaration = 186,
+        EnumDeclaration = 187,
+        ModuleDeclaration = 188,
+        ModuleBlock = 189,
+        ImportDeclaration = 190,
+        ExportAssignment = 191,
+        EnumMember = 192,
+        SourceFile = 193,
+        Program = 194,
+        SyntaxList = 195,
+        Count = 196,
+        FirstAssignment = 51,
+        LastAssignment = 62,
+        FirstReservedWord = 64,
+        LastReservedWord = 99,
+        FirstKeyword = 64,
+        LastKeyword = 119,
+        FirstFutureReservedWord = 100,
+        LastFutureReservedWord = 108,
+        FirstTypeNode = 132,
+        LastTypeNode = 138,
+        FirstPunctuation = 13,
+        LastPunctuation = 62,
+        FirstToken = 1,
+        LastToken = 119,
+        FirstTriviaToken = 2,
+        LastTriviaToken = 5,
+        FirstLiteralToken = 6,
+        LastLiteralToken = 9,
+        FirstTemplateToken = 9,
+        LastTemplateToken = 12,
+    }
+    const enum NodeFlags {
+        Export = 1,
+        Ambient = 2,
+        QuestionMark = 4,
+        Rest = 8,
+        Public = 16,
+        Private = 32,
+        Protected = 64,
+        Static = 128,
+        MultiLine = 256,
+        Synthetic = 512,
+        DeclarationFile = 1024,
+        Let = 2048,
+        Const = 4096,
+        Modifier = 243,
+        AccessibilityModifier = 112,
+        BlockScoped = 6144,
+    }
+    interface Node extends TextRange {
+        kind: SyntaxKind;
+        flags: NodeFlags;
+        id?: number;
+        parent?: Node;
+        symbol?: Symbol;
+        locals?: SymbolTable;
+        nextContainer?: Node;
+        localSymbol?: Symbol;
+    }
+    interface NodeArray<T> extends Array<T>, TextRange {
+        hasTrailingComma?: boolean;
+    }
+    interface Identifier extends Node {
+        text: string;
+    }
+    interface QualifiedName extends Node {
+        left: Identifier | QualifiedName;
+        right: Identifier;
+    }
+    type EntityName = Identifier | QualifiedName;
+    interface ParsedSignature {
+        typeParameters?: NodeArray<TypeParameterDeclaration>;
+        parameters: NodeArray<ParameterDeclaration>;
+        type?: TypeNode;
+    }
+    type DeclarationName = Identifier | LiteralExpression | ComputedPropertyName;
+    interface Declaration extends Node {
+        name?: Identifier | LiteralExpression | ComputedPropertyName;
+    }
+    interface ComputedPropertyName extends Node {
+        expression: Expression;
+    }
+    interface TypeParameterDeclaration extends Declaration {
+        name: Identifier;
+        constraint?: TypeNode;
+    }
+    interface SignatureDeclaration extends Declaration, ParsedSignature {
+    }
+    interface VariableDeclaration extends Declaration {
+        name: Identifier;
+        type?: TypeNode;
+        initializer?: Expression;
+    }
+    interface PropertyDeclaration extends Declaration {
+        type?: TypeNode;
+        initializer?: Expression;
+    }
+    interface ParameterDeclaration extends VariableDeclaration {
+    }
+    interface FunctionLikeDeclaration extends Declaration, ParsedSignature {
+        body?: Expression | Block;
+    }
+    interface FunctionDeclaration extends FunctionLikeDeclaration {
+        name: Identifier;
+        body?: Block;
+    }
+    interface MethodDeclaration extends FunctionLikeDeclaration {
+        body?: Block;
+    }
+    interface ConstructorDeclaration extends FunctionLikeDeclaration {
+        body?: Block;
+    }
+    interface AccessorDeclaration extends FunctionLikeDeclaration {
+        body?: Block;
+    }
+    interface TypeNode extends Node {
+    }
+    interface TypeReferenceNode extends TypeNode {
+        typeName: Identifier | QualifiedName;
+        typeArguments?: NodeArray<TypeNode>;
+    }
+    interface TypeQueryNode extends TypeNode {
+        exprName: Identifier | QualifiedName;
+    }
+    interface TypeLiteralNode extends TypeNode {
+        members: NodeArray<Node>;
+    }
+    interface ArrayTypeNode extends TypeNode {
+        elementType: TypeNode;
+    }
+    interface TupleTypeNode extends TypeNode {
+        elementTypes: NodeArray<TypeNode>;
+    }
+    interface UnionTypeNode extends TypeNode {
+        types: NodeArray<TypeNode>;
+    }
+    interface ParenTypeNode extends TypeNode {
+        type: TypeNode;
+    }
+    interface StringLiteralTypeNode extends TypeNode {
+        text: string;
+    }
+    interface Expression extends Node {
+        contextualType?: Type;
+    }
+    interface UnaryExpression extends Expression {
+        operator: SyntaxKind;
+        operand: Expression;
+    }
+    interface BinaryExpression extends Expression {
+        left: Expression;
+        operator: SyntaxKind;
+        right: Expression;
+    }
+    interface ConditionalExpression extends Expression {
+        condition: Expression;
+        whenTrue: Expression;
+        whenFalse: Expression;
+    }
+    interface FunctionExpression extends Expression, FunctionLikeDeclaration {
+        name?: Identifier;
+        body: Expression | Block;
+    }
+    interface LiteralExpression extends Expression {
+        text: string;
+    }
+    interface TemplateExpression extends Expression {
+        head: LiteralExpression;
+        templateSpans: NodeArray<TemplateSpan>;
+    }
+    interface TemplateSpan extends Node {
+        expression: Expression;
+        literal: LiteralExpression;
+    }
+    interface ParenExpression extends Expression {
+        expression: Expression;
+    }
+    interface ArrayLiteral extends Expression {
+        elements: NodeArray<Expression>;
+    }
+    interface ObjectLiteral extends Expression {
+        properties: NodeArray<Node>;
+    }
+    interface PropertyAccess extends Expression {
+        left: Expression;
+        right: Identifier;
+    }
+    interface IndexedAccess extends Expression {
+        object: Expression;
+        index: Expression;
+    }
+    interface CallExpression extends Expression {
+        func: Expression;
+        typeArguments?: NodeArray<TypeNode>;
+        arguments: NodeArray<Expression>;
+    }
+    interface NewExpression extends CallExpression {
+    }
+    interface TaggedTemplateExpression extends Expression {
+        tag: Expression;
+        template: LiteralExpression | TemplateExpression;
+    }
+    interface TypeAssertion extends Expression {
+        type: TypeNode;
+        operand: Expression;
+    }
+    interface Statement extends Node {
+    }
+    interface Block extends Statement {
+        statements: NodeArray<Statement>;
+    }
+    interface VariableStatement extends Statement {
+        declarations: NodeArray<VariableDeclaration>;
+    }
+    interface ExpressionStatement extends Statement {
+        expression: Expression;
+    }
+    interface IfStatement extends Statement {
+        expression: Expression;
+        thenStatement: Statement;
+        elseStatement?: Statement;
+    }
+    interface IterationStatement extends Statement {
+        statement: Statement;
+    }
+    interface DoStatement extends IterationStatement {
+        expression: Expression;
+    }
+    interface WhileStatement extends IterationStatement {
+        expression: Expression;
+    }
+    interface ForStatement extends IterationStatement {
+        declarations?: NodeArray<VariableDeclaration>;
+        initializer?: Expression;
+        condition?: Expression;
+        iterator?: Expression;
+    }
+    interface ForInStatement extends IterationStatement {
+        declaration?: VariableDeclaration;
+        variable?: Expression;
+        expression: Expression;
+    }
+    interface BreakOrContinueStatement extends Statement {
+        label?: Identifier;
+    }
+    interface ReturnStatement extends Statement {
+        expression?: Expression;
+    }
+    interface WithStatement extends Statement {
+        expression: Expression;
+        statement: Statement;
+    }
+    interface SwitchStatement extends Statement {
+        expression: Expression;
+        clauses: NodeArray<CaseOrDefaultClause>;
+    }
+    interface CaseOrDefaultClause extends Node {
+        expression?: Expression;
+        statements: NodeArray<Statement>;
+    }
+    interface LabeledStatement extends Statement {
+        label: Identifier;
+        statement: Statement;
+    }
+    interface ThrowStatement extends Statement {
+        expression: Expression;
+    }
+    interface TryStatement extends Statement {
+        tryBlock: Block;
+        catchBlock?: CatchBlock;
+        finallyBlock?: Block;
+    }
+    interface CatchBlock extends Block {
+        variable: Identifier;
+    }
+    interface ClassDeclaration extends Declaration {
+        name: Identifier;
+        typeParameters?: NodeArray<TypeParameterDeclaration>;
+        baseType?: TypeReferenceNode;
+        implementedTypes?: NodeArray<TypeReferenceNode>;
+        members: NodeArray<Node>;
+    }
+    interface InterfaceDeclaration extends Declaration {
+        name: Identifier;
+        typeParameters?: NodeArray<TypeParameterDeclaration>;
+        baseTypes?: NodeArray<TypeReferenceNode>;
+        members: NodeArray<Node>;
+    }
+    interface TypeAliasDeclaration extends Declaration {
+        name: Identifier;
+        type: TypeNode;
+    }
+    interface EnumMember extends Declaration {
+        name: Identifier | LiteralExpression;
+        initializer?: Expression;
+    }
+    interface EnumDeclaration extends Declaration {
+        name: Identifier;
+        members: NodeArray<EnumMember>;
+    }
+    interface ModuleDeclaration extends Declaration {
+        name: Identifier | LiteralExpression;
+        body: Block | ModuleDeclaration;
+    }
+    interface ImportDeclaration extends Declaration {
+        name: Identifier;
+        entityName?: Identifier | QualifiedName;
+        externalModuleName?: LiteralExpression;
+    }
+    interface ExportAssignment extends Statement {
+        exportName: Identifier;
+    }
+    interface FileReference extends TextRange {
+        filename: string;
+    }
+    interface CommentRange extends TextRange {
+        hasTrailingNewLine?: boolean;
+    }
+    interface SourceFile extends Block {
+        filename: string;
+        text: string;
+        getLineAndCharacterFromPosition(position: number): {
+            line: number;
+            character: number;
+        };
+        getPositionFromLineAndCharacter(line: number, character: number): number;
+        amdDependencies: string[];
+        referencedFiles: FileReference[];
+        syntacticErrors: Diagnostic[];
+        semanticErrors: Diagnostic[];
+        hasNoDefaultLib: boolean;
+        externalModuleIndicator: Node;
+        nodeCount: number;
+        identifierCount: number;
+        symbolCount: number;
+        isOpen: boolean;
+        version: string;
+        languageVersion: ScriptTarget;
+        identifiers: Map<string>;
+    }
+    interface Program {
+        getSourceFile(filename: string): SourceFile;
+        getSourceFiles(): SourceFile[];
+        getCompilerOptions(): CompilerOptions;
+        getCompilerHost(): CompilerHost;
+        getDiagnostics(sourceFile?: SourceFile): Diagnostic[];
+        getGlobalDiagnostics(): Diagnostic[];
+        getTypeChecker(fullTypeCheckMode: boolean): TypeChecker;
+        getCommonSourceDirectory(): string;
+    }
+    interface SourceMapSpan {
+        emittedLine: number;
+        emittedColumn: number;
+        sourceLine: number;
+        sourceColumn: number;
+        nameIndex?: number;
+        sourceIndex: number;
+    }
+    interface SourceMapData {
+        sourceMapFilePath: string;
+        jsSourceMappingURL: string;
+        sourceMapFile: string;
+        sourceMapSourceRoot: string;
+        sourceMapSources: string[];
+        inputSourceFileNames: string[];
+        sourceMapNames?: string[];
+        sourceMapMappings: string;
+        sourceMapDecodedMappings: SourceMapSpan[];
+    }
+    enum EmitReturnStatus {
+        Succeeded = 0,
+        AllOutputGenerationSkipped = 1,
+        JSGeneratedWithSemanticErrors = 2,
+        DeclarationGenerationSkipped = 3,
+        EmitErrorsEncountered = 4,
+        CompilerOptionsErrors = 5,
+    }
+    interface EmitResult {
+        emitResultStatus: EmitReturnStatus;
+        errors: Diagnostic[];
+        sourceMaps: SourceMapData[];
+    }
+    interface TypeChecker {
+        getProgram(): Program;
+        getDiagnostics(sourceFile?: SourceFile): Diagnostic[];
+        getGlobalDiagnostics(): Diagnostic[];
+        getNodeCount(): number;
+        getIdentifierCount(): number;
+        getSymbolCount(): number;
+        getTypeCount(): number;
+        checkProgram(): void;
+        emitFiles(targetSourceFile?: SourceFile): EmitResult;
+        getParentOfSymbol(symbol: Symbol): Symbol;
+        getNarrowedTypeOfSymbol(symbol: Symbol, node: Node): Type;
+        getDeclaredTypeOfSymbol(symbol: Symbol): Type;
+        getPropertiesOfType(type: Type): Symbol[];
+        getPropertyOfType(type: Type, propertyName: string): Symbol;
+        getSignaturesOfType(type: Type, kind: SignatureKind): Signature[];
+        getIndexTypeOfType(type: Type, kind: IndexKind): Type;
+        getReturnTypeOfSignature(signature: Signature): Type;
+        getSymbolsInScope(location: Node, meaning: SymbolFlags): Symbol[];
+        getSymbolInfo(node: Node): Symbol;
+        getTypeOfNode(node: Node): Type;
+        typeToString(type: Type, enclosingDeclaration?: Node, flags?: TypeFormatFlags): string;
+        symbolToString(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): string;
+        getSymbolDisplayBuilder(): SymbolDisplayBuilder;
+        getFullyQualifiedName(symbol: Symbol): string;
+        getAugmentedPropertiesOfType(type: Type): Symbol[];
+        getRootSymbols(symbol: Symbol): Symbol[];
+        getContextualType(node: Node): Type;
+        getResolvedSignature(node: CallExpression, candidatesOutArray?: Signature[]): Signature;
+        getSignatureFromDeclaration(declaration: SignatureDeclaration): Signature;
+        isImplementationOfOverload(node: FunctionLikeDeclaration): boolean;
+        isUndefinedSymbol(symbol: Symbol): boolean;
+        isArgumentsSymbol(symbol: Symbol): boolean;
+        hasEarlyErrors(sourceFile?: SourceFile): boolean;
+        getEnumMemberValue(node: EnumMember): number;
+        isValidPropertyAccess(node: PropertyAccess, propertyName: string): boolean;
+        getAliasedSymbol(symbol: Symbol): Symbol;
+    }
+    interface SymbolDisplayBuilder {
+        buildTypeDisplay(type: Type, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildSymbolDisplay(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration?: Node, meaning?: SymbolFlags, flags?: SymbolFormatFlags): void;
+        buildSignatureDisplay(signatures: Signature, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildParameterDisplay(parameter: Symbol, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildTypeParameterDisplay(tp: TypeParameter, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildTypeParameterDisplayFromSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaraiton?: Node, flags?: TypeFormatFlags): void;
+        buildDisplayForParametersAndDelimiters(parameters: Symbol[], writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildDisplayForTypeParametersAndDelimiters(typeParameters: TypeParameter[], writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+        buildReturnTypeDisplay(signature: Signature, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
+    }
+    interface SymbolWriter {
+        writeKeyword(text: string): void;
+        writeOperator(text: string): void;
+        writePunctuation(text: string): void;
+        writeSpace(text: string): void;
+        writeStringLiteral(text: string): void;
+        writeParameter(text: string): void;
+        writeSymbol(text: string, symbol: Symbol): void;
+        writeLine(): void;
+        increaseIndent(): void;
+        decreaseIndent(): void;
+        clear(): void;
+        trackSymbol(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): void;
+    }
+    const enum TypeFormatFlags {
+        None = 0,
+        WriteArrayAsGenericType = 1,
+        UseTypeOfFunction = 2,
+        NoTruncation = 4,
+        WriteArrowStyleSignature = 8,
+        WriteOwnNameForAnyLike = 16,
+        WriteTypeArgumentsOfSignature = 32,
+        InElementType = 64,
+    }
+    const enum SymbolFormatFlags {
+        None = 0,
+        WriteTypeParametersOrArguments = 1,
+        UseOnlyExternalAliasing = 2,
+    }
+    const enum SymbolAccessibility {
+        Accessible = 0,
+        NotAccessible = 1,
+        CannotBeNamed = 2,
+    }
+    interface SymbolAccessiblityResult {
+        accessibility: SymbolAccessibility;
+        errorSymbolName?: string;
+        errorModuleName?: string;
+        aliasesToMakeVisible?: ImportDeclaration[];
+    }
+    interface EmitResolver {
+        getProgram(): Program;
+        getLocalNameOfContainer(container: EnumDeclaration | ModuleDeclaration): string;
+        getExpressionNamePrefix(node: Identifier): string;
+        getExportAssignmentName(node: SourceFile): string;
+        isReferencedImportDeclaration(node: ImportDeclaration): boolean;
+        isTopLevelValueImportWithEntityName(node: ImportDeclaration): boolean;
+        getNodeCheckFlags(node: Node): NodeCheckFlags;
+        getEnumMemberValue(node: EnumMember): number;
+        hasSemanticErrors(): boolean;
+        isDeclarationVisible(node: Declaration): boolean;
+        isImplementationOfOverload(node: FunctionLikeDeclaration): boolean;
+        writeTypeAtLocation(location: Node, enclosingDeclaration: Node, flags: TypeFormatFlags, writer: SymbolWriter): void;
+        writeReturnTypeOfSignatureDeclaration(signatureDeclaration: SignatureDeclaration, enclosingDeclaration: Node, flags: TypeFormatFlags, writer: SymbolWriter): void;
+        isSymbolAccessible(symbol: Symbol, enclosingDeclaration: Node, meaning: SymbolFlags): SymbolAccessiblityResult;
+        isImportDeclarationEntityNameReferenceDeclarationVisibile(entityName: Identifier | QualifiedName): SymbolAccessiblityResult;
+        getConstantValue(node: PropertyAccess | IndexedAccess): number;
+        hasEarlyErrors(sourceFile?: SourceFile): boolean;
+    }
+    const enum SymbolFlags {
+        FunctionScopedVariable = 1,
+        BlockScopedVariable = 2,
+        Property = 4,
+        EnumMember = 8,
+        Function = 16,
+        Class = 32,
+        Interface = 64,
+        ConstEnum = 128,
+        RegularEnum = 256,
+        ValueModule = 512,
+        NamespaceModule = 1024,
+        TypeLiteral = 2048,
+        ObjectLiteral = 4096,
+        Method = 8192,
+        Constructor = 16384,
+        GetAccessor = 32768,
+        SetAccessor = 65536,
+        CallSignature = 131072,
+        ConstructSignature = 262144,
+        IndexSignature = 524288,
+        TypeParameter = 1048576,
+        TypeAlias = 2097152,
+        ExportValue = 4194304,
+        ExportType = 8388608,
+        ExportNamespace = 16777216,
+        Import = 33554432,
+        Instantiated = 67108864,
+        Merged = 134217728,
+        Transient = 268435456,
+        Prototype = 536870912,
+        UnionProperty = 1073741824,
+        Enum = 384,
+        Variable = 3,
+        Value = 107455,
+        Type = 3152352,
+        Namespace = 1536,
+        Module = 1536,
+        Accessor = 98304,
+        Signature = 917504,
+        FunctionScopedVariableExcludes = 107454,
+        BlockScopedVariableExcludes = 107455,
+        ParameterExcludes = 107455,
+        PropertyExcludes = 107455,
+        EnumMemberExcludes = 107455,
+        FunctionExcludes = 106927,
+        ClassExcludes = 3258879,
+        InterfaceExcludes = 3152288,
+        RegularEnumExcludes = 3258623,
+        ConstEnumExcludes = 3259263,
+        ValueModuleExcludes = 106639,
+        NamespaceModuleExcludes = 0,
+        MethodExcludes = 99263,
+        GetAccessorExcludes = 41919,
+        SetAccessorExcludes = 74687,
+        TypeParameterExcludes = 2103776,
+        TypeAliasExcludes = 3152352,
+        ImportExcludes = 33554432,
+        ModuleMember = 35653619,
+        ExportHasLocal = 944,
+        HasLocals = 1041936,
+        HasExports = 1952,
+        HasMembers = 6240,
+        IsContainer = 1048560,
+        PropertyOrAccessor = 98308,
+        Export = 29360128,
+    }
+    interface Symbol {
+        flags: SymbolFlags;
+        name: string;
+        id?: number;
+        mergeId?: number;
+        declarations?: Declaration[];
+        parent?: Symbol;
+        members?: SymbolTable;
+        exports?: SymbolTable;
+        exportSymbol?: Symbol;
+        valueDeclaration?: Declaration;
+        constEnumOnlyModule?: boolean;
+    }
+    interface SymbolLinks {
+        target?: Symbol;
+        type?: Type;
+        declaredType?: Type;
+        mapper?: TypeMapper;
+        referenced?: boolean;
+        exportAssignSymbol?: Symbol;
+        unionType?: UnionType;
+    }
+    interface TransientSymbol extends Symbol, SymbolLinks {
+    }
+    interface SymbolTable {
+        [index: string]: Symbol;
+    }
+    const enum NodeCheckFlags {
+        TypeChecked = 1,
+        LexicalThis = 2,
+        CaptureThis = 4,
+        EmitExtends = 8,
+        SuperInstance = 16,
+        SuperStatic = 32,
+        ContextChecked = 64,
+        EnumValuesComputed = 128,
+    }
+    interface NodeLinks {
+        resolvedType?: Type;
+        resolvedSignature?: Signature;
+        resolvedSymbol?: Symbol;
+        flags?: NodeCheckFlags;
+        enumMemberValue?: number;
+        isIllegalTypeReferenceInConstraint?: boolean;
+        isVisible?: boolean;
+        localModuleName?: string;
+        assignmentChecks?: Map<boolean>;
+    }
+    const enum TypeFlags {
+        Any = 1,
+        String = 2,
+        Number = 4,
+        Boolean = 8,
+        Void = 16,
+        Undefined = 32,
+        Null = 64,
+        Enum = 128,
+        StringLiteral = 256,
+        TypeParameter = 512,
+        Class = 1024,
+        Interface = 2048,
+        Reference = 4096,
+        Tuple = 8192,
+        Union = 16384,
+        Anonymous = 32768,
+        FromSignature = 65536,
+        Intrinsic = 127,
+        StringLike = 258,
+        NumberLike = 132,
+        ObjectType = 48128,
+        Structured = 65025,
+    }
+    interface Type {
+        flags: TypeFlags;
+        id: number;
+        symbol?: Symbol;
+    }
+    interface IntrinsicType extends Type {
+        intrinsicName: string;
+    }
+    interface StringLiteralType extends Type {
+        text: string;
+    }
+    interface ObjectType extends Type {
+    }
+    interface InterfaceType extends ObjectType {
+        typeParameters: TypeParameter[];
+        baseTypes: ObjectType[];
+        declaredProperties: Symbol[];
+        declaredCallSignatures: Signature[];
+        declaredConstructSignatures: Signature[];
+        declaredStringIndexType: Type;
+        declaredNumberIndexType: Type;
+    }
+    interface TypeReference extends ObjectType {
+        target: GenericType;
+        typeArguments: Type[];
+    }
+    interface GenericType extends InterfaceType, TypeReference {
+        instantiations: Map<TypeReference>;
+        openReferenceTargets: GenericType[];
+        openReferenceChecks: Map<boolean>;
+    }
+    interface TupleType extends ObjectType {
+        elementTypes: Type[];
+        baseArrayType: TypeReference;
+    }
+    interface UnionType extends Type {
+        types: Type[];
+        resolvedProperties: SymbolTable;
+    }
+    interface ResolvedType extends ObjectType, UnionType {
+        members: SymbolTable;
+        properties: Symbol[];
+        callSignatures: Signature[];
+        constructSignatures: Signature[];
+        stringIndexType: Type;
+        numberIndexType: Type;
+    }
+    interface TypeParameter extends Type {
+        constraint: Type;
+        target?: TypeParameter;
+        mapper?: TypeMapper;
+    }
+    const enum SignatureKind {
+        Call = 0,
+        Construct = 1,
+    }
+    interface Signature {
+        declaration: SignatureDeclaration;
+        typeParameters: TypeParameter[];
+        parameters: Symbol[];
+        resolvedReturnType: Type;
+        minArgumentCount: number;
+        hasRestParameter: boolean;
+        hasStringLiterals: boolean;
+        target?: Signature;
+        mapper?: TypeMapper;
+        unionSignatures?: Signature[];
+        erasedSignatureCache?: Signature;
+        isolatedSignatureType?: ObjectType;
+    }
+    const enum IndexKind {
+        String = 0,
+        Number = 1,
+    }
+    interface TypeMapper {
+        (t: Type): Type;
+    }
+    interface TypeInferences {
+        primary: Type[];
+        secondary: Type[];
+    }
+    interface InferenceContext {
+        typeParameters: TypeParameter[];
+        inferUnionTypes: boolean;
+        inferences: TypeInferences[];
+        inferredTypes: Type[];
+        failedTypeParameterIndex?: number;
+    }
+    interface DiagnosticMessage {
+        key: string;
+        category: DiagnosticCategory;
+        code: number;
+        isEarly?: boolean;
+    }
+    interface DiagnosticMessageChain {
+        messageText: string;
+        category: DiagnosticCategory;
+        code: number;
+        next?: DiagnosticMessageChain;
+    }
+    interface Diagnostic {
+        file: SourceFile;
+        start: number;
+        length: number;
+        messageText: string;
+        category: DiagnosticCategory;
+        code: number;
+        isEarly?: boolean;
+    }
+    enum DiagnosticCategory {
+        Warning = 0,
+        Error = 1,
+        Message = 2,
+    }
+    interface CompilerOptions {
+        charset?: string;
+        codepage?: number;
+        declaration?: boolean;
+        diagnostics?: boolean;
+        emitBOM?: boolean;
+        help?: boolean;
+        locale?: string;
+        mapRoot?: string;
+        module?: ModuleKind;
+        noErrorTruncation?: boolean;
+        noImplicitAny?: boolean;
+        noLib?: boolean;
+        noLibCheck?: boolean;
+        noResolve?: boolean;
+        out?: string;
+        outDir?: string;
+        removeComments?: boolean;
+        sourceMap?: boolean;
+        sourceRoot?: string;
+        target?: ScriptTarget;
+        version?: boolean;
+        watch?: boolean;
+        preserveConstEnums?: boolean;
+        [option: string]: string | number | boolean;
+    }
+    const enum ModuleKind {
+        None = 0,
+        CommonJS = 1,
+        AMD = 2,
+    }
+    interface LineAndCharacter {
+        line: number;
+        character: number;
+    }
+    const enum ScriptTarget {
+        ES3 = 0,
+        ES5 = 1,
+        ES6 = 2,
+        Latest = 2,
+    }
+    interface ParsedCommandLine {
+        options: CompilerOptions;
+        filenames: string[];
+        errors: Diagnostic[];
+    }
+    interface CommandLineOption {
+        name: string;
+        type: string | Map<number>;
+        shortName?: string;
+        description?: DiagnosticMessage;
+        paramName?: DiagnosticMessage;
+        error?: DiagnosticMessage;
+    }
+    const enum CharacterCodes {
+        nullCharacter = 0,
+        maxAsciiCharacter = 127,
+        lineFeed = 10,
+        carriageReturn = 13,
+        lineSeparator = 8232,
+        paragraphSeparator = 8233,
+        nextLine = 133,
+        space = 32,
+        nonBreakingSpace = 160,
+        enQuad = 8192,
+        emQuad = 8193,
+        enSpace = 8194,
+        emSpace = 8195,
+        threePerEmSpace = 8196,
+        fourPerEmSpace = 8197,
+        sixPerEmSpace = 8198,
+        figureSpace = 8199,
+        punctuationSpace = 8200,
+        thinSpace = 8201,
+        hairSpace = 8202,
+        zeroWidthSpace = 8203,
+        narrowNoBreakSpace = 8239,
+        ideographicSpace = 12288,
+        mathematicalSpace = 8287,
+        ogham = 5760,
+        _ = 95,
+        $ = 36,
+        _0 = 48,
+        _1 = 49,
+        _2 = 50,
+        _3 = 51,
+        _4 = 52,
+        _5 = 53,
+        _6 = 54,
+        _7 = 55,
+        _8 = 56,
+        _9 = 57,
+        a = 97,
+        b = 98,
+        c = 99,
+        d = 100,
+        e = 101,
+        f = 102,
+        g = 103,
+        h = 104,
+        i = 105,
+        j = 106,
+        k = 107,
+        l = 108,
+        m = 109,
+        n = 110,
+        o = 111,
+        p = 112,
+        q = 113,
+        r = 114,
+        s = 115,
+        t = 116,
+        u = 117,
+        v = 118,
+        w = 119,
+        x = 120,
+        y = 121,
+        z = 122,
+        A = 65,
+        B = 66,
+        C = 67,
+        D = 68,
+        E = 69,
+        F = 70,
+        G = 71,
+        H = 72,
+        I = 73,
+        J = 74,
+        K = 75,
+        L = 76,
+        M = 77,
+        N = 78,
+        O = 79,
+        P = 80,
+        Q = 81,
+        R = 82,
+        S = 83,
+        T = 84,
+        U = 85,
+        V = 86,
+        W = 87,
+        X = 88,
+        Y = 89,
+        Z = 90,
+        ampersand = 38,
+        asterisk = 42,
+        at = 64,
+        backslash = 92,
+        backtick = 96,
+        bar = 124,
+        caret = 94,
+        closeBrace = 125,
+        closeBracket = 93,
+        closeParen = 41,
+        colon = 58,
+        comma = 44,
+        dot = 46,
+        doubleQuote = 34,
+        equals = 61,
+        exclamation = 33,
+        greaterThan = 62,
+        lessThan = 60,
+        minus = 45,
+        openBrace = 123,
+        openBracket = 91,
+        openParen = 40,
+        percent = 37,
+        plus = 43,
+        question = 63,
+        semicolon = 59,
+        singleQuote = 39,
+        slash = 47,
+        tilde = 126,
+        backspace = 8,
+        formFeed = 12,
+        byteOrderMark = 65279,
+        tab = 9,
+        verticalTab = 11,
+    }
+    interface CancellationToken {
+        isCancellationRequested(): boolean;
+    }
+    interface CompilerHost {
+        getSourceFile(filename: string, languageVersion: ScriptTarget, onError?: (message: string) => void): SourceFile;
+        getDefaultLibFilename(): string;
+        getCancellationToken?(): CancellationToken;
+        writeFile(filename: string, data: string, writeByteOrderMark: boolean, onError?: (message: string) => void): void;
+        getCurrentDirectory(): string;
+        getCanonicalFileName(fileName: string): string;
+        useCaseSensitiveFileNames(): boolean;
+        getNewLine(): string;
+    }
+}
+declare module ts {
+    const enum Ternary {
+        False = 0,
+        Maybe = 1,
+        True = -1,
+    }
+    interface Map<T> {
+        [index: string]: T;
+    }
+    const enum Comparison {
+        LessThan = -1,
+        EqualTo = 0,
+        GreaterThan = 1,
+    }
+    interface StringSet extends Map<any> {
+    }
+    function forEach<T, U>(array: T[], callback: (element: T) => U): U;
+    function contains<T>(array: T[], value: T): boolean;
+    function indexOf<T>(array: T[], value: T): number;
+    function countWhere<T>(array: T[], predicate: (x: T) => boolean): number;
+    function filter<T>(array: T[], f: (x: T) => boolean): T[];
+    function map<T, U>(array: T[], f: (x: T) => U): U[];
+    function concatenate<T>(array1: T[], array2: T[]): T[];
+    function deduplicate<T>(array: T[]): T[];
+    function sum(array: any[], prop: string): number;
+    function binarySearch(array: number[], value: number): number;
+    function hasProperty<T>(map: Map<T>, key: string): boolean;
+    function getProperty<T>(map: Map<T>, key: string): T;
+    function isEmpty<T>(map: Map<T>): boolean;
+    function clone<T>(object: T): T;
+    function forEachValue<T, U>(map: Map<T>, callback: (value: T) => U): U;
+    function forEachKey<T, U>(map: Map<T>, callback: (key: string) => U): U;
+    function lookUp<T>(map: Map<T>, key: string): T;
+    function mapToArray<T>(map: Map<T>): T[];
+    function arrayToMap<T>(array: T[], makeKey: (value: T) => string): Map<T>;
+    var localizedDiagnosticMessages: Map<string>;
+    function getLocaleSpecificMessage(message: string): string;
+    function createFileDiagnostic(file: SourceFile, start: number, length: number, message: DiagnosticMessage, ...args: any[]): Diagnostic;
+    function createCompilerDiagnostic(message: DiagnosticMessage, ...args: any[]): Diagnostic;
+    function chainDiagnosticMessages(details: DiagnosticMessageChain, message: DiagnosticMessage, ...args: any[]): DiagnosticMessageChain;
+    function concatenateDiagnosticMessageChains(headChain: DiagnosticMessageChain, tailChain: DiagnosticMessageChain): DiagnosticMessageChain;
+    function flattenDiagnosticChain(file: SourceFile, start: number, length: number, diagnosticChain: DiagnosticMessageChain, newLine: string): Diagnostic;
+    function compareValues<T>(a: T, b: T): Comparison;
+    function compareDiagnostics(d1: Diagnostic, d2: Diagnostic): number;
+    function deduplicateSortedDiagnostics(diagnostics: Diagnostic[]): Diagnostic[];
+    function normalizeSlashes(path: string): string;
+    function getRootLength(path: string): number;
+    var directorySeparator: string;
+    function normalizePath(path: string): string;
+    function getDirectoryPath(path: string): string;
+    function isUrl(path: string): boolean;
+    function isRootedDiskPath(path: string): boolean;
+    function getNormalizedPathComponents(path: string, currentDirectory: string): string[];
+    function getNormalizedPathFromPathComponents(pathComponents: string[]): string;
+    function getRelativePathToDirectoryOrUrl(directoryPathOrUrl: string, relativeOrAbsolutePath: string, currentDirectory: string, getCanonicalFileName: (fileName: string) => string, isAbsolutePathAnUrl: boolean): string;
+    function getBaseFilename(path: string): string;
+    function combinePaths(path1: string, path2: string): string;
+    function fileExtensionIs(path: string, extension: string): boolean;
+    function removeFileExtension(path: string): string;
+    function escapeString(s: string): string;
+    interface ObjectAllocator {
+        getNodeConstructor(kind: SyntaxKind): new () => Node;
+        getSymbolConstructor(): new (flags: SymbolFlags, name: string) => Symbol;
+        getTypeConstructor(): new (checker: TypeChecker, flags: TypeFlags) => Type;
+        getSignatureConstructor(): new (checker: TypeChecker) => Signature;
+    }
+    var objectAllocator: ObjectAllocator;
+    const enum AssertionLevel {
+        None = 0,
+        Normal = 1,
+        Aggressive = 2,
+        VeryAggressive = 3,
+    }
+    module Debug {
+        function shouldAssert(level: AssertionLevel): boolean;
+        function assert(expression: boolean, message?: string, verboseDebugInfo?: () => string): void;
+        function fail(message?: string): void;
+    }
+}
+declare module ts {
     var Diagnostics: {
         Unterminated_string_literal: {
             code: number;
@@ -590,6 +1798,16 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
+        Invalid_template_literal_expected: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        Tagged_templates_are_only_available_when_targeting_ECMAScript_6_and_higher: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
         Duplicate_identifier_0: {
             code: number;
             category: DiagnosticCategory;
@@ -690,17 +1908,12 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
-        Interface_0_cannot_simultaneously_extend_types_1_and_2_Colon: {
+        Interface_0_cannot_simultaneously_extend_types_1_and_2: {
             code: number;
             category: DiagnosticCategory;
             key: string;
         };
         Excessive_stack_depth_comparing_types_0_and_1: {
-            code: number;
-            category: DiagnosticCategory;
-            key: string;
-        };
-        Type_0_is_not_assignable_to_type_1_Colon: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -720,7 +1933,7 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
-        Types_of_property_0_are_incompatible_Colon: {
+        Types_of_property_0_are_incompatible: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -730,7 +1943,7 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
-        Types_of_parameters_0_and_1_are_incompatible_Colon: {
+        Types_of_parameters_0_and_1_are_incompatible: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -740,7 +1953,7 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
-        Index_signatures_are_incompatible_Colon: {
+        Index_signatures_are_incompatible: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -805,11 +2018,6 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
-        Type_0_does_not_satisfy_the_constraint_1_Colon: {
-            code: number;
-            category: DiagnosticCategory;
-            key: string;
-        };
         Type_0_does_not_satisfy_the_constraint_1: {
             code: number;
             category: DiagnosticCategory;
@@ -851,11 +2059,6 @@ declare module ts {
             key: string;
         };
         Neither_type_0_nor_type_1_is_assignable_to_the_other: {
-            code: number;
-            category: DiagnosticCategory;
-            key: string;
-        };
-        Neither_type_0_nor_type_1_is_assignable_to_the_other_Colon: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -1160,17 +2363,7 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
-        Class_0_incorrectly_extends_base_class_1_Colon: {
-            code: number;
-            category: DiagnosticCategory;
-            key: string;
-        };
         Class_static_side_0_incorrectly_extends_base_class_static_side_1: {
-            code: number;
-            category: DiagnosticCategory;
-            key: string;
-        };
-        Class_static_side_0_incorrectly_extends_base_class_static_side_1_Colon: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -1181,11 +2374,6 @@ declare module ts {
             key: string;
         };
         Class_0_incorrectly_implements_interface_1: {
-            code: number;
-            category: DiagnosticCategory;
-            key: string;
-        };
-        Class_0_incorrectly_implements_interface_1_Colon: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -1221,11 +2409,6 @@ declare module ts {
             key: string;
         };
         All_declarations_of_an_interface_must_have_identical_type_parameters: {
-            code: number;
-            category: DiagnosticCategory;
-            key: string;
-        };
-        Interface_0_incorrectly_extends_interface_1_Colon: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -1345,6 +2528,26 @@ declare module ts {
             isEarly: boolean;
         };
         An_enum_member_cannot_have_a_numeric_name: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        The_type_argument_for_type_parameter_0_cannot_be_inferred_from_the_usage_Consider_specifying_the_type_arguments_explicitly: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        Type_argument_candidate_1_is_not_a_valid_type_argument_because_it_is_not_a_supertype_of_candidate_0: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        Type_alias_0_circularly_references_itself: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        Type_alias_name_cannot_be_0: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -1744,6 +2947,52 @@ declare module ts {
             category: DiagnosticCategory;
             key: string;
         };
+        Exported_type_alias_0_has_or_is_using_name_1_from_external_module_2_but_cannot_be_named: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        Exported_type_alias_0_has_or_is_using_name_1_from_private_module_2: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        Exported_type_alias_0_has_or_is_using_private_name_1: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        Enum_declarations_must_all_be_const_or_non_const: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        In_const_enum_declarations_member_initializer_must_be_constant_expression: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+            isEarly: boolean;
+        };
+        const_enums_can_only_be_used_in_property_or_index_access_expressions_or_the_right_hand_side_of_an_import_declaration_or_export_assignment: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        Index_expression_arguments_in_const_enums_must_be_of_type_string: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        const_enum_member_initializer_was_evaluated_to_a_non_finite_value: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        const_enum_member_initializer_was_evaluated_to_disallowed_value_NaN: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
         The_current_host_does_not_support_the_0_option: {
             code: number;
             category: DiagnosticCategory;
@@ -1810,6 +3059,11 @@ declare module ts {
             key: string;
         };
         Redirect_output_structure_to_the_directory: {
+            code: number;
+            category: DiagnosticCategory;
+            key: string;
+        };
+        Do_not_erase_const_enum_declarations_in_generated_code: {
             code: number;
             category: DiagnosticCategory;
             key: string;
@@ -2075,6 +3329,7 @@ declare module ts {
         isReservedWord(): boolean;
         reScanGreaterToken(): SyntaxKind;
         reScanSlashToken(): SyntaxKind;
+        reScanTemplateToken(): SyntaxKind;
         scan(): SyntaxKind;
         setText(text: string): void;
         setTextPos(textPos: number): void;
@@ -2102,1140 +3357,6 @@ declare module ts {
     function createScanner(languageVersion: ScriptTarget, skipTrivia: boolean, text?: string, onError?: ErrorCallback, onComment?: CommentCallback): Scanner;
 }
 declare module ts {
-    interface TextRange {
-        pos: number;
-        end: number;
-    }
-    enum SyntaxKind {
-        Unknown = 0,
-        EndOfFileToken = 1,
-        SingleLineCommentTrivia = 2,
-        MultiLineCommentTrivia = 3,
-        NewLineTrivia = 4,
-        WhitespaceTrivia = 5,
-        NumericLiteral = 6,
-        StringLiteral = 7,
-        RegularExpressionLiteral = 8,
-        OpenBraceToken = 9,
-        CloseBraceToken = 10,
-        OpenParenToken = 11,
-        CloseParenToken = 12,
-        OpenBracketToken = 13,
-        CloseBracketToken = 14,
-        DotToken = 15,
-        DotDotDotToken = 16,
-        SemicolonToken = 17,
-        CommaToken = 18,
-        LessThanToken = 19,
-        GreaterThanToken = 20,
-        LessThanEqualsToken = 21,
-        GreaterThanEqualsToken = 22,
-        EqualsEqualsToken = 23,
-        ExclamationEqualsToken = 24,
-        EqualsEqualsEqualsToken = 25,
-        ExclamationEqualsEqualsToken = 26,
-        EqualsGreaterThanToken = 27,
-        PlusToken = 28,
-        MinusToken = 29,
-        AsteriskToken = 30,
-        SlashToken = 31,
-        PercentToken = 32,
-        PlusPlusToken = 33,
-        MinusMinusToken = 34,
-        LessThanLessThanToken = 35,
-        GreaterThanGreaterThanToken = 36,
-        GreaterThanGreaterThanGreaterThanToken = 37,
-        AmpersandToken = 38,
-        BarToken = 39,
-        CaretToken = 40,
-        ExclamationToken = 41,
-        TildeToken = 42,
-        AmpersandAmpersandToken = 43,
-        BarBarToken = 44,
-        QuestionToken = 45,
-        ColonToken = 46,
-        EqualsToken = 47,
-        PlusEqualsToken = 48,
-        MinusEqualsToken = 49,
-        AsteriskEqualsToken = 50,
-        SlashEqualsToken = 51,
-        PercentEqualsToken = 52,
-        LessThanLessThanEqualsToken = 53,
-        GreaterThanGreaterThanEqualsToken = 54,
-        GreaterThanGreaterThanGreaterThanEqualsToken = 55,
-        AmpersandEqualsToken = 56,
-        BarEqualsToken = 57,
-        CaretEqualsToken = 58,
-        Identifier = 59,
-        BreakKeyword = 60,
-        CaseKeyword = 61,
-        CatchKeyword = 62,
-        ClassKeyword = 63,
-        ConstKeyword = 64,
-        ContinueKeyword = 65,
-        DebuggerKeyword = 66,
-        DefaultKeyword = 67,
-        DeleteKeyword = 68,
-        DoKeyword = 69,
-        ElseKeyword = 70,
-        EnumKeyword = 71,
-        ExportKeyword = 72,
-        ExtendsKeyword = 73,
-        FalseKeyword = 74,
-        FinallyKeyword = 75,
-        ForKeyword = 76,
-        FunctionKeyword = 77,
-        IfKeyword = 78,
-        ImportKeyword = 79,
-        InKeyword = 80,
-        InstanceOfKeyword = 81,
-        NewKeyword = 82,
-        NullKeyword = 83,
-        ReturnKeyword = 84,
-        SuperKeyword = 85,
-        SwitchKeyword = 86,
-        ThisKeyword = 87,
-        ThrowKeyword = 88,
-        TrueKeyword = 89,
-        TryKeyword = 90,
-        TypeOfKeyword = 91,
-        VarKeyword = 92,
-        VoidKeyword = 93,
-        WhileKeyword = 94,
-        WithKeyword = 95,
-        ImplementsKeyword = 96,
-        InterfaceKeyword = 97,
-        LetKeyword = 98,
-        PackageKeyword = 99,
-        PrivateKeyword = 100,
-        ProtectedKeyword = 101,
-        PublicKeyword = 102,
-        StaticKeyword = 103,
-        YieldKeyword = 104,
-        AnyKeyword = 105,
-        BooleanKeyword = 106,
-        ConstructorKeyword = 107,
-        DeclareKeyword = 108,
-        GetKeyword = 109,
-        ModuleKeyword = 110,
-        RequireKeyword = 111,
-        NumberKeyword = 112,
-        SetKeyword = 113,
-        StringKeyword = 114,
-        Missing = 115,
-        QualifiedName = 116,
-        TypeParameter = 117,
-        Parameter = 118,
-        Property = 119,
-        Method = 120,
-        Constructor = 121,
-        GetAccessor = 122,
-        SetAccessor = 123,
-        CallSignature = 124,
-        ConstructSignature = 125,
-        IndexSignature = 126,
-        TypeReference = 127,
-        TypeQuery = 128,
-        TypeLiteral = 129,
-        ArrayType = 130,
-        TupleType = 131,
-        UnionType = 132,
-        ParenType = 133,
-        ArrayLiteral = 134,
-        ObjectLiteral = 135,
-        PropertyAssignment = 136,
-        PropertyAccess = 137,
-        IndexedAccess = 138,
-        CallExpression = 139,
-        NewExpression = 140,
-        TypeAssertion = 141,
-        ParenExpression = 142,
-        FunctionExpression = 143,
-        ArrowFunction = 144,
-        PrefixOperator = 145,
-        PostfixOperator = 146,
-        BinaryExpression = 147,
-        ConditionalExpression = 148,
-        OmittedExpression = 149,
-        Block = 150,
-        VariableStatement = 151,
-        EmptyStatement = 152,
-        ExpressionStatement = 153,
-        IfStatement = 154,
-        DoStatement = 155,
-        WhileStatement = 156,
-        ForStatement = 157,
-        ForInStatement = 158,
-        ContinueStatement = 159,
-        BreakStatement = 160,
-        ReturnStatement = 161,
-        WithStatement = 162,
-        SwitchStatement = 163,
-        CaseClause = 164,
-        DefaultClause = 165,
-        LabeledStatement = 166,
-        ThrowStatement = 167,
-        TryStatement = 168,
-        TryBlock = 169,
-        CatchBlock = 170,
-        FinallyBlock = 171,
-        DebuggerStatement = 172,
-        VariableDeclaration = 173,
-        FunctionDeclaration = 174,
-        FunctionBlock = 175,
-        ClassDeclaration = 176,
-        InterfaceDeclaration = 177,
-        EnumDeclaration = 178,
-        ModuleDeclaration = 179,
-        ModuleBlock = 180,
-        ImportDeclaration = 181,
-        ExportAssignment = 182,
-        EnumMember = 183,
-        SourceFile = 184,
-        Program = 185,
-        SyntaxList = 186,
-        Count = 187,
-        FirstAssignment,
-        LastAssignment,
-        FirstReservedWord,
-        LastReservedWord,
-        FirstKeyword,
-        LastKeyword,
-        FirstFutureReservedWord,
-        LastFutureReservedWord,
-        FirstTypeNode,
-        LastTypeNode,
-        FirstPunctuation,
-        LastPunctuation,
-        FirstToken,
-        LastToken,
-        FirstTriviaToken,
-        LastTriviaToken,
-    }
-    enum NodeFlags {
-        Export = 1,
-        Ambient = 2,
-        QuestionMark = 4,
-        Rest = 8,
-        Public = 16,
-        Private = 32,
-        Protected = 64,
-        Static = 128,
-        MultiLine = 256,
-        Synthetic = 512,
-        DeclarationFile = 1024,
-        Let = 2048,
-        Const = 4096,
-        Modifier,
-        AccessibilityModifier,
-        BlockScoped,
-    }
-    interface Node extends TextRange {
-        kind: SyntaxKind;
-        flags: NodeFlags;
-        id?: number;
-        parent?: Node;
-        symbol?: Symbol;
-        locals?: SymbolTable;
-        nextContainer?: Node;
-        localSymbol?: Symbol;
-    }
-    interface NodeArray<T> extends Array<T>, TextRange {
-        hasTrailingComma?: boolean;
-    }
-    interface Identifier extends Node {
-        text: string;
-    }
-    interface QualifiedName extends Node {
-        left: EntityName;
-        right: Identifier;
-    }
-    interface EntityName extends Node {
-    }
-    interface ParsedSignature {
-        typeParameters?: NodeArray<TypeParameterDeclaration>;
-        parameters: NodeArray<ParameterDeclaration>;
-        type?: TypeNode;
-    }
-    interface Declaration extends Node {
-        name?: Identifier;
-    }
-    interface TypeParameterDeclaration extends Declaration {
-        constraint?: TypeNode;
-    }
-    interface SignatureDeclaration extends Declaration, ParsedSignature {
-    }
-    interface VariableDeclaration extends Declaration {
-        type?: TypeNode;
-        initializer?: Expression;
-    }
-    interface PropertyDeclaration extends VariableDeclaration {
-    }
-    interface ParameterDeclaration extends VariableDeclaration {
-    }
-    interface FunctionDeclaration extends Declaration, ParsedSignature {
-        body?: Node;
-    }
-    interface MethodDeclaration extends FunctionDeclaration {
-    }
-    interface ConstructorDeclaration extends FunctionDeclaration {
-    }
-    interface AccessorDeclaration extends FunctionDeclaration {
-    }
-    interface TypeNode extends Node {
-    }
-    interface TypeReferenceNode extends TypeNode {
-        typeName: EntityName;
-        typeArguments?: NodeArray<TypeNode>;
-    }
-    interface TypeQueryNode extends TypeNode {
-        exprName: EntityName;
-    }
-    interface TypeLiteralNode extends TypeNode {
-        members: NodeArray<Node>;
-    }
-    interface ArrayTypeNode extends TypeNode {
-        elementType: TypeNode;
-    }
-    interface TupleTypeNode extends TypeNode {
-        elementTypes: NodeArray<TypeNode>;
-    }
-    interface UnionTypeNode extends TypeNode {
-        types: NodeArray<TypeNode>;
-    }
-    interface ParenTypeNode extends TypeNode {
-        type: TypeNode;
-    }
-    interface StringLiteralTypeNode extends TypeNode {
-        text: string;
-    }
-    interface Expression extends Node {
-        contextualType?: Type;
-    }
-    interface UnaryExpression extends Expression {
-        operator: SyntaxKind;
-        operand: Expression;
-    }
-    interface BinaryExpression extends Expression {
-        left: Expression;
-        operator: SyntaxKind;
-        right: Expression;
-    }
-    interface ConditionalExpression extends Expression {
-        condition: Expression;
-        whenTrue: Expression;
-        whenFalse: Expression;
-    }
-    interface FunctionExpression extends Expression, FunctionDeclaration {
-        body: Node;
-    }
-    interface LiteralExpression extends Expression {
-        text: string;
-    }
-    interface ParenExpression extends Expression {
-        expression: Expression;
-    }
-    interface ArrayLiteral extends Expression {
-        elements: NodeArray<Expression>;
-    }
-    interface ObjectLiteral extends Expression {
-        properties: NodeArray<Node>;
-    }
-    interface PropertyAccess extends Expression {
-        left: Expression;
-        right: Identifier;
-    }
-    interface IndexedAccess extends Expression {
-        object: Expression;
-        index: Expression;
-    }
-    interface CallExpression extends Expression {
-        func: Expression;
-        typeArguments?: NodeArray<TypeNode>;
-        arguments: NodeArray<Expression>;
-    }
-    interface NewExpression extends CallExpression {
-    }
-    interface TypeAssertion extends Expression {
-        type: TypeNode;
-        operand: Expression;
-    }
-    interface Statement extends Node {
-    }
-    interface Block extends Statement {
-        statements: NodeArray<Statement>;
-    }
-    interface VariableStatement extends Statement {
-        declarations: NodeArray<VariableDeclaration>;
-    }
-    interface ExpressionStatement extends Statement {
-        expression: Expression;
-    }
-    interface IfStatement extends Statement {
-        expression: Expression;
-        thenStatement: Statement;
-        elseStatement?: Statement;
-    }
-    interface IterationStatement extends Statement {
-        statement: Statement;
-    }
-    interface DoStatement extends IterationStatement {
-        expression: Expression;
-    }
-    interface WhileStatement extends IterationStatement {
-        expression: Expression;
-    }
-    interface ForStatement extends IterationStatement {
-        declarations?: NodeArray<VariableDeclaration>;
-        initializer?: Expression;
-        condition?: Expression;
-        iterator?: Expression;
-    }
-    interface ForInStatement extends IterationStatement {
-        declaration?: VariableDeclaration;
-        variable?: Expression;
-        expression: Expression;
-    }
-    interface BreakOrContinueStatement extends Statement {
-        label?: Identifier;
-    }
-    interface ReturnStatement extends Statement {
-        expression?: Expression;
-    }
-    interface WithStatement extends Statement {
-        expression: Expression;
-        statement: Statement;
-    }
-    interface SwitchStatement extends Statement {
-        expression: Expression;
-        clauses: NodeArray<CaseOrDefaultClause>;
-    }
-    interface CaseOrDefaultClause extends Node {
-        expression?: Expression;
-        statements: NodeArray<Statement>;
-    }
-    interface LabeledStatement extends Statement {
-        label: Identifier;
-        statement: Statement;
-    }
-    interface ThrowStatement extends Statement {
-        expression: Expression;
-    }
-    interface TryStatement extends Statement {
-        tryBlock: Block;
-        catchBlock?: CatchBlock;
-        finallyBlock?: Block;
-    }
-    interface CatchBlock extends Block {
-        variable: Identifier;
-    }
-    interface ClassDeclaration extends Declaration {
-        typeParameters?: NodeArray<TypeParameterDeclaration>;
-        baseType?: TypeReferenceNode;
-        implementedTypes?: NodeArray<TypeReferenceNode>;
-        members: NodeArray<Node>;
-    }
-    interface InterfaceDeclaration extends Declaration {
-        typeParameters?: NodeArray<TypeParameterDeclaration>;
-        baseTypes?: NodeArray<TypeReferenceNode>;
-        members: NodeArray<Node>;
-    }
-    interface EnumMember extends Declaration {
-        initializer?: Expression;
-    }
-    interface EnumDeclaration extends Declaration {
-        members: NodeArray<EnumMember>;
-    }
-    interface ModuleDeclaration extends Declaration {
-        body: Node;
-    }
-    interface ImportDeclaration extends Declaration {
-        entityName?: EntityName;
-        externalModuleName?: LiteralExpression;
-    }
-    interface ExportAssignment extends Statement {
-        exportName: Identifier;
-    }
-    interface FileReference extends TextRange {
-        filename: string;
-    }
-    interface CommentRange extends TextRange {
-        hasTrailingNewLine?: boolean;
-    }
-    interface SourceFile extends Block {
-        filename: string;
-        text: string;
-        getLineAndCharacterFromPosition(position: number): {
-            line: number;
-            character: number;
-        };
-        getPositionFromLineAndCharacter(line: number, character: number): number;
-        amdDependencies: string[];
-        referencedFiles: FileReference[];
-        syntacticErrors: Diagnostic[];
-        semanticErrors: Diagnostic[];
-        hasNoDefaultLib: boolean;
-        externalModuleIndicator: Node;
-        nodeCount: number;
-        identifierCount: number;
-        symbolCount: number;
-        isOpen: boolean;
-        version: string;
-        languageVersion: ScriptTarget;
-        identifiers: Map<string>;
-    }
-    interface Program {
-        getSourceFile(filename: string): SourceFile;
-        getSourceFiles(): SourceFile[];
-        getCompilerOptions(): CompilerOptions;
-        getCompilerHost(): CompilerHost;
-        getDiagnostics(sourceFile?: SourceFile): Diagnostic[];
-        getGlobalDiagnostics(): Diagnostic[];
-        getTypeChecker(fullTypeCheckMode: boolean): TypeChecker;
-        getCommonSourceDirectory(): string;
-    }
-    interface SourceMapSpan {
-        emittedLine: number;
-        emittedColumn: number;
-        sourceLine: number;
-        sourceColumn: number;
-        nameIndex?: number;
-        sourceIndex: number;
-    }
-    interface SourceMapData {
-        sourceMapFilePath: string;
-        jsSourceMappingURL: string;
-        sourceMapFile: string;
-        sourceMapSourceRoot: string;
-        sourceMapSources: string[];
-        inputSourceFileNames: string[];
-        sourceMapNames?: string[];
-        sourceMapMappings: string;
-        sourceMapDecodedMappings: SourceMapSpan[];
-    }
-    enum EmitReturnStatus {
-        Succeeded = 0,
-        AllOutputGenerationSkipped = 1,
-        JSGeneratedWithSemanticErrors = 2,
-        DeclarationGenerationSkipped = 3,
-        EmitErrorsEncountered = 4,
-        CompilerOptionsErrors = 5,
-    }
-    interface EmitResult {
-        emitResultStatus: EmitReturnStatus;
-        errors: Diagnostic[];
-        sourceMaps: SourceMapData[];
-    }
-    interface TypeChecker {
-        getProgram(): Program;
-        getDiagnostics(sourceFile?: SourceFile): Diagnostic[];
-        getGlobalDiagnostics(): Diagnostic[];
-        getNodeCount(): number;
-        getIdentifierCount(): number;
-        getSymbolCount(): number;
-        getTypeCount(): number;
-        checkProgram(): void;
-        emitFiles(targetSourceFile?: SourceFile): EmitResult;
-        getParentOfSymbol(symbol: Symbol): Symbol;
-        getTypeOfSymbol(symbol: Symbol): Type;
-        getPropertiesOfType(type: Type): Symbol[];
-        getPropertyOfType(type: Type, propertyName: string): Symbol;
-        getSignaturesOfType(type: Type, kind: SignatureKind): Signature[];
-        getIndexTypeOfType(type: Type, kind: IndexKind): Type;
-        getReturnTypeOfSignature(signature: Signature): Type;
-        getSymbolsInScope(location: Node, meaning: SymbolFlags): Symbol[];
-        getSymbolInfo(node: Node): Symbol;
-        getTypeOfNode(node: Node): Type;
-        typeToString(type: Type, enclosingDeclaration?: Node, flags?: TypeFormatFlags): string;
-        symbolToString(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): string;
-        getSymbolDisplayBuilder(): SymbolDisplayBuilder;
-        getFullyQualifiedName(symbol: Symbol): string;
-        getAugmentedPropertiesOfType(type: Type): Symbol[];
-        getRootSymbols(symbol: Symbol): Symbol[];
-        getContextualType(node: Node): Type;
-        getResolvedSignature(node: CallExpression, candidatesOutArray?: Signature[]): Signature;
-        getSignatureFromDeclaration(declaration: SignatureDeclaration): Signature;
-        isImplementationOfOverload(node: FunctionDeclaration): boolean;
-        isUndefinedSymbol(symbol: Symbol): boolean;
-        isArgumentsSymbol(symbol: Symbol): boolean;
-        hasEarlyErrors(sourceFile?: SourceFile): boolean;
-        getEnumMemberValue(node: EnumMember): number;
-        isValidPropertyAccess(node: PropertyAccess, propertyName: string): boolean;
-        getAliasedSymbol(symbol: Symbol): Symbol;
-    }
-    interface SymbolDisplayBuilder {
-        buildTypeDisplay(type: Type, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
-        buildSymbolDisplay(symbol: Symbol, writer: SymbolWriter, enclosingDeclaration?: Node, meaning?: SymbolFlags, flags?: SymbolFormatFlags): void;
-        buildSignatureDisplay(signatures: Signature, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
-        buildParameterDisplay(parameter: Symbol, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
-        buildTypeParameterDisplay(tp: TypeParameter, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
-        buildTypeParameterDisplayFromSymbol(symbol: Symbol, writer: SymbolWriter, enclosingDeclaraiton?: Node, flags?: TypeFormatFlags): void;
-        buildDisplayForParametersAndDelimiters(parameters: Symbol[], writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
-        buildDisplayForTypeParametersAndDelimiters(typeParameters: TypeParameter[], writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
-        buildReturnTypeDisplay(signature: Signature, writer: SymbolWriter, enclosingDeclaration?: Node, flags?: TypeFormatFlags): void;
-    }
-    interface SymbolWriter {
-        writeKeyword(text: string): void;
-        writeOperator(text: string): void;
-        writePunctuation(text: string): void;
-        writeSpace(text: string): void;
-        writeStringLiteral(text: string): void;
-        writeParameter(text: string): void;
-        writeSymbol(text: string, symbol: Symbol): void;
-        writeLine(): void;
-        increaseIndent(): void;
-        decreaseIndent(): void;
-        clear(): void;
-        trackSymbol(symbol: Symbol, enclosingDeclaration?: Node, meaning?: SymbolFlags): void;
-    }
-    enum TypeFormatFlags {
-        None = 0,
-        WriteArrayAsGenericType = 1,
-        UseTypeOfFunction = 2,
-        NoTruncation = 4,
-        WriteArrowStyleSignature = 8,
-        WriteOwnNameForAnyLike = 16,
-        WriteTypeArgumentsOfSignature = 32,
-        InElementType = 64,
-    }
-    enum SymbolFormatFlags {
-        None = 0,
-        WriteTypeParametersOrArguments = 1,
-        UseOnlyExternalAliasing = 2,
-    }
-    enum SymbolAccessibility {
-        Accessible = 0,
-        NotAccessible = 1,
-        CannotBeNamed = 2,
-    }
-    interface SymbolAccessiblityResult {
-        accessibility: SymbolAccessibility;
-        errorSymbolName?: string;
-        errorModuleName?: string;
-        aliasesToMakeVisible?: ImportDeclaration[];
-    }
-    interface EmitResolver {
-        getProgram(): Program;
-        getLocalNameOfContainer(container: Declaration): string;
-        getExpressionNamePrefix(node: Identifier): string;
-        getExportAssignmentName(node: SourceFile): string;
-        isReferencedImportDeclaration(node: ImportDeclaration): boolean;
-        isTopLevelValueImportedViaEntityName(node: ImportDeclaration): boolean;
-        getNodeCheckFlags(node: Node): NodeCheckFlags;
-        getEnumMemberValue(node: EnumMember): number;
-        hasSemanticErrors(): boolean;
-        isDeclarationVisible(node: Declaration): boolean;
-        isImplementationOfOverload(node: FunctionDeclaration): boolean;
-        writeTypeAtLocation(location: Node, enclosingDeclaration: Node, flags: TypeFormatFlags, writer: SymbolWriter): void;
-        writeReturnTypeOfSignatureDeclaration(signatureDeclaration: SignatureDeclaration, enclosingDeclaration: Node, flags: TypeFormatFlags, writer: SymbolWriter): void;
-        isSymbolAccessible(symbol: Symbol, enclosingDeclaration: Node, meaning: SymbolFlags): SymbolAccessiblityResult;
-        isImportDeclarationEntityNameReferenceDeclarationVisibile(entityName: EntityName): SymbolAccessiblityResult;
-        getConstantValue(node: PropertyAccess): number;
-        hasEarlyErrors(sourceFile?: SourceFile): boolean;
-    }
-    enum SymbolFlags {
-        FunctionScopedVariable = 1,
-        Property = 2,
-        EnumMember = 4,
-        Function = 8,
-        Class = 16,
-        Interface = 32,
-        Enum = 64,
-        ValueModule = 128,
-        NamespaceModule = 256,
-        TypeLiteral = 512,
-        ObjectLiteral = 1024,
-        Method = 2048,
-        Constructor = 4096,
-        GetAccessor = 8192,
-        SetAccessor = 16384,
-        CallSignature = 32768,
-        ConstructSignature = 65536,
-        IndexSignature = 131072,
-        TypeParameter = 262144,
-        ExportValue = 524288,
-        ExportType = 1048576,
-        ExportNamespace = 2097152,
-        Import = 4194304,
-        Instantiated = 8388608,
-        Merged = 16777216,
-        Transient = 33554432,
-        Prototype = 67108864,
-        UnionProperty = 134217728,
-        BlockScopedVariable = 268435456,
-        Variable,
-        Value,
-        Type,
-        Namespace,
-        Module,
-        Accessor,
-        Signature,
-        FunctionScopedVariableExcludes,
-        BlockScopedVariableExcludes,
-        ParameterExcludes,
-        PropertyExcludes,
-        EnumMemberExcludes,
-        FunctionExcludes,
-        ClassExcludes,
-        InterfaceExcludes,
-        EnumExcludes,
-        ValueModuleExcludes,
-        NamespaceModuleExcludes = 0,
-        MethodExcludes,
-        GetAccessorExcludes,
-        SetAccessorExcludes,
-        TypeParameterExcludes,
-        ImportExcludes,
-        ModuleMember,
-        ExportHasLocal,
-        HasLocals,
-        HasExports,
-        HasMembers,
-        IsContainer,
-        PropertyOrAccessor,
-        Export,
-    }
-    interface Symbol {
-        flags: SymbolFlags;
-        name: string;
-        id?: number;
-        mergeId?: number;
-        declarations?: Declaration[];
-        parent?: Symbol;
-        members?: SymbolTable;
-        exports?: SymbolTable;
-        exportSymbol?: Symbol;
-        valueDeclaration?: Declaration;
-    }
-    interface SymbolLinks {
-        target?: Symbol;
-        type?: Type;
-        declaredType?: Type;
-        mapper?: TypeMapper;
-        referenced?: boolean;
-        exportAssignSymbol?: Symbol;
-        unionType?: UnionType;
-    }
-    interface TransientSymbol extends Symbol, SymbolLinks {
-    }
-    interface SymbolTable {
-        [index: string]: Symbol;
-    }
-    enum NodeCheckFlags {
-        TypeChecked = 1,
-        LexicalThis = 2,
-        CaptureThis = 4,
-        EmitExtends = 8,
-        SuperInstance = 16,
-        SuperStatic = 32,
-        ContextChecked = 64,
-        EnumValuesComputed = 128,
-    }
-    interface NodeLinks {
-        resolvedType?: Type;
-        resolvedSignature?: Signature;
-        resolvedSymbol?: Symbol;
-        flags?: NodeCheckFlags;
-        enumMemberValue?: number;
-        isIllegalTypeReferenceInConstraint?: boolean;
-        isVisible?: boolean;
-        localModuleName?: string;
-        assignmentChecks?: Map<boolean>;
-    }
-    enum TypeFlags {
-        Any = 1,
-        String = 2,
-        Number = 4,
-        Boolean = 8,
-        Void = 16,
-        Undefined = 32,
-        Null = 64,
-        Enum = 128,
-        StringLiteral = 256,
-        TypeParameter = 512,
-        Class = 1024,
-        Interface = 2048,
-        Reference = 4096,
-        Tuple = 8192,
-        Union = 16384,
-        Anonymous = 32768,
-        FromSignature = 65536,
-        Intrinsic,
-        StringLike,
-        NumberLike,
-        ObjectType,
-        Structured,
-    }
-    interface Type {
-        flags: TypeFlags;
-        id: number;
-        symbol?: Symbol;
-    }
-    interface IntrinsicType extends Type {
-        intrinsicName: string;
-    }
-    interface StringLiteralType extends Type {
-        text: string;
-    }
-    interface ObjectType extends Type {
-    }
-    interface InterfaceType extends ObjectType {
-        typeParameters: TypeParameter[];
-        baseTypes: ObjectType[];
-        declaredProperties: Symbol[];
-        declaredCallSignatures: Signature[];
-        declaredConstructSignatures: Signature[];
-        declaredStringIndexType: Type;
-        declaredNumberIndexType: Type;
-    }
-    interface TypeReference extends ObjectType {
-        target: GenericType;
-        typeArguments: Type[];
-    }
-    interface GenericType extends InterfaceType, TypeReference {
-        instantiations: Map<TypeReference>;
-        openReferenceTargets: GenericType[];
-        openReferenceChecks: Map<boolean>;
-    }
-    interface TupleType extends ObjectType {
-        elementTypes: Type[];
-        baseArrayType: TypeReference;
-    }
-    interface UnionType extends Type {
-        types: Type[];
-        resolvedProperties: SymbolTable;
-    }
-    interface ResolvedType extends ObjectType, UnionType {
-        members: SymbolTable;
-        properties: Symbol[];
-        callSignatures: Signature[];
-        constructSignatures: Signature[];
-        stringIndexType: Type;
-        numberIndexType: Type;
-    }
-    interface TypeParameter extends Type {
-        constraint: Type;
-        target?: TypeParameter;
-        mapper?: TypeMapper;
-    }
-    enum SignatureKind {
-        Call = 0,
-        Construct = 1,
-    }
-    interface Signature {
-        declaration: SignatureDeclaration;
-        typeParameters: TypeParameter[];
-        parameters: Symbol[];
-        resolvedReturnType: Type;
-        minArgumentCount: number;
-        hasRestParameter: boolean;
-        hasStringLiterals: boolean;
-        target?: Signature;
-        mapper?: TypeMapper;
-        unionSignatures?: Signature[];
-        erasedSignatureCache?: Signature;
-        isolatedSignatureType?: ObjectType;
-    }
-    enum IndexKind {
-        String = 0,
-        Number = 1,
-    }
-    interface TypeMapper {
-        (t: Type): Type;
-    }
-    interface InferenceContext {
-        typeParameters: TypeParameter[];
-        inferUnionTypes: boolean;
-        inferenceCount: number;
-        inferences: Type[][];
-        inferredTypes: Type[];
-    }
-    interface DiagnosticMessage {
-        key: string;
-        category: DiagnosticCategory;
-        code: number;
-        isEarly?: boolean;
-    }
-    interface DiagnosticMessageChain {
-        messageText: string;
-        category: DiagnosticCategory;
-        code: number;
-        next?: DiagnosticMessageChain;
-    }
-    interface Diagnostic {
-        file: SourceFile;
-        start: number;
-        length: number;
-        messageText: string;
-        category: DiagnosticCategory;
-        code: number;
-        isEarly?: boolean;
-    }
-    enum DiagnosticCategory {
-        Warning = 0,
-        Error = 1,
-        Message = 2,
-    }
-    interface CompilerOptions {
-        charset?: string;
-        codepage?: number;
-        declaration?: boolean;
-        diagnostics?: boolean;
-        emitBOM?: boolean;
-        help?: boolean;
-        locale?: string;
-        mapRoot?: string;
-        module?: ModuleKind;
-        noErrorTruncation?: boolean;
-        noImplicitAny?: boolean;
-        noLib?: boolean;
-        noLibCheck?: boolean;
-        noResolve?: boolean;
-        out?: string;
-        outDir?: string;
-        removeComments?: boolean;
-        sourceMap?: boolean;
-        sourceRoot?: string;
-        target?: ScriptTarget;
-        version?: boolean;
-        watch?: boolean;
-        [option: string]: any;
-    }
-    enum ModuleKind {
-        None = 0,
-        CommonJS = 1,
-        AMD = 2,
-    }
-    interface LineAndCharacter {
-        line: number;
-        character: number;
-    }
-    enum ScriptTarget {
-        ES3 = 0,
-        ES5 = 1,
-        ES6 = 2,
-        Latest,
-    }
-    interface ParsedCommandLine {
-        options: CompilerOptions;
-        filenames: string[];
-        errors: Diagnostic[];
-    }
-    interface CommandLineOption {
-        name: string;
-        type: any;
-        shortName?: string;
-        description?: DiagnosticMessage;
-        paramName?: DiagnosticMessage;
-        error?: DiagnosticMessage;
-    }
-    enum CharacterCodes {
-        nullCharacter = 0,
-        maxAsciiCharacter = 127,
-        lineFeed = 10,
-        carriageReturn = 13,
-        lineSeparator = 8232,
-        paragraphSeparator = 8233,
-        nextLine = 133,
-        space = 32,
-        nonBreakingSpace = 160,
-        enQuad = 8192,
-        emQuad = 8193,
-        enSpace = 8194,
-        emSpace = 8195,
-        threePerEmSpace = 8196,
-        fourPerEmSpace = 8197,
-        sixPerEmSpace = 8198,
-        figureSpace = 8199,
-        punctuationSpace = 8200,
-        thinSpace = 8201,
-        hairSpace = 8202,
-        zeroWidthSpace = 8203,
-        narrowNoBreakSpace = 8239,
-        ideographicSpace = 12288,
-        mathematicalSpace = 8287,
-        ogham = 5760,
-        _ = 95,
-        $ = 36,
-        _0 = 48,
-        _1 = 49,
-        _2 = 50,
-        _3 = 51,
-        _4 = 52,
-        _5 = 53,
-        _6 = 54,
-        _7 = 55,
-        _8 = 56,
-        _9 = 57,
-        a = 97,
-        b = 98,
-        c = 99,
-        d = 100,
-        e = 101,
-        f = 102,
-        g = 103,
-        h = 104,
-        i = 105,
-        j = 106,
-        k = 107,
-        l = 108,
-        m = 109,
-        n = 110,
-        o = 111,
-        p = 112,
-        q = 113,
-        r = 114,
-        s = 115,
-        t = 116,
-        u = 117,
-        v = 118,
-        w = 119,
-        x = 120,
-        y = 121,
-        z = 122,
-        A = 65,
-        B = 66,
-        C = 67,
-        D = 68,
-        E = 69,
-        F = 70,
-        G = 71,
-        H = 72,
-        I = 73,
-        J = 74,
-        K = 75,
-        L = 76,
-        M = 77,
-        N = 78,
-        O = 79,
-        P = 80,
-        Q = 81,
-        R = 82,
-        S = 83,
-        T = 84,
-        U = 85,
-        V = 86,
-        W = 87,
-        X = 88,
-        Y = 89,
-        Z = 90,
-        ampersand = 38,
-        asterisk = 42,
-        at = 64,
-        backslash = 92,
-        bar = 124,
-        caret = 94,
-        closeBrace = 125,
-        closeBracket = 93,
-        closeParen = 41,
-        colon = 58,
-        comma = 44,
-        dot = 46,
-        doubleQuote = 34,
-        equals = 61,
-        exclamation = 33,
-        greaterThan = 62,
-        lessThan = 60,
-        minus = 45,
-        openBrace = 123,
-        openBracket = 91,
-        openParen = 40,
-        percent = 37,
-        plus = 43,
-        question = 63,
-        semicolon = 59,
-        singleQuote = 39,
-        slash = 47,
-        tilde = 126,
-        backspace = 8,
-        formFeed = 12,
-        byteOrderMark = 65279,
-        tab = 9,
-        verticalTab = 11,
-    }
-    interface CancellationToken {
-        isCancellationRequested(): boolean;
-    }
-    interface CompilerHost {
-        getSourceFile(filename: string, languageVersion: ScriptTarget, onError?: (message: string) => void): SourceFile;
-        getDefaultLibFilename(): string;
-        getCancellationToken?(): CancellationToken;
-        writeFile(filename: string, data: string, writeByteOrderMark: boolean, onError?: (message: string) => void): void;
-        getCurrentDirectory(): string;
-        getCanonicalFileName(fileName: string): string;
-        useCaseSensitiveFileNames(): boolean;
-        getNewLine(): string;
-    }
-}
-declare module ts {
-    interface Map<T> {
-        [index: string]: T;
-    }
-    interface StringSet extends Map<any> {
-    }
-    function forEach<T, U>(array: T[], callback: (element: T) => U): U;
-    function contains<T>(array: T[], value: T): boolean;
-    function indexOf<T>(array: T[], value: T): number;
-    function countWhere<T>(array: T[], predicate: (x: T) => boolean): number;
-    function filter<T>(array: T[], f: (x: T) => boolean): T[];
-    function map<T, U>(array: T[], f: (x: T) => U): U[];
-    function concatenate<T>(array1: T[], array2: T[]): T[];
-    function deduplicate<T>(array: T[]): T[];
-    function sum(array: any[], prop: string): number;
-    function binarySearch(array: number[], value: number): number;
-    function hasProperty<T>(map: Map<T>, key: string): boolean;
-    function getProperty<T>(map: Map<T>, key: string): T;
-    function isEmpty<T>(map: Map<T>): boolean;
-    function clone<T>(object: T): T;
-    function forEachValue<T, U>(map: Map<T>, callback: (value: T) => U): U;
-    function forEachKey<T, U>(map: Map<T>, callback: (key: string) => U): U;
-    function lookUp<T>(map: Map<T>, key: string): T;
-    function mapToArray<T>(map: Map<T>): T[];
-    function arrayToMap<T>(array: T[], makeKey: (value: T) => string): Map<T>;
-    var localizedDiagnosticMessages: Map<string>;
-    function getLocaleSpecificMessage(message: string): string;
-    function createFileDiagnostic(file: SourceFile, start: number, length: number, message: DiagnosticMessage, ...args: any[]): Diagnostic;
-    function createCompilerDiagnostic(message: DiagnosticMessage, ...args: any[]): Diagnostic;
-    function chainDiagnosticMessages(details: DiagnosticMessageChain, message: DiagnosticMessage, ...args: any[]): DiagnosticMessageChain;
-    function flattenDiagnosticChain(file: SourceFile, start: number, length: number, diagnosticChain: DiagnosticMessageChain, newLine: string): Diagnostic;
-    function compareValues<T>(a: T, b: T): number;
-    function compareDiagnostics(d1: Diagnostic, d2: Diagnostic): number;
-    function deduplicateSortedDiagnostics(diagnostics: Diagnostic[]): Diagnostic[];
-    function normalizeSlashes(path: string): string;
-    function getRootLength(path: string): number;
-    var directorySeparator: string;
-    function normalizePath(path: string): string;
-    function getDirectoryPath(path: string): string;
-    function isUrl(path: string): boolean;
-    function isRootedDiskPath(path: string): boolean;
-    function getNormalizedPathComponents(path: string, currentDirectory: string): string[];
-    function getNormalizedPathFromPathComponents(pathComponents: string[]): string;
-    function getRelativePathToDirectoryOrUrl(directoryPathOrUrl: string, relativeOrAbsolutePath: string, currentDirectory: string, getCanonicalFileName: (fileName: string) => string, isAbsolutePathAnUrl: boolean): string;
-    function getBaseFilename(path: string): string;
-    function combinePaths(path1: string, path2: string): string;
-    function fileExtensionIs(path: string, extension: string): boolean;
-    function removeFileExtension(path: string): string;
-    function escapeString(s: string): string;
-    interface ObjectAllocator {
-        getNodeConstructor(kind: SyntaxKind): new () => Node;
-        getSymbolConstructor(): new (flags: SymbolFlags, name: string) => Symbol;
-        getTypeConstructor(): new (checker: TypeChecker, flags: TypeFlags) => Type;
-        getSignatureConstructor(): new (checker: TypeChecker) => Signature;
-    }
-    var objectAllocator: ObjectAllocator;
-    enum AssertionLevel {
-        None = 0,
-        Normal = 1,
-        Aggressive = 2,
-        VeryAggressive = 3,
-    }
-    module Debug {
-        function shouldAssert(level: AssertionLevel): boolean;
-        function assert(expression: any, message?: string, verboseDebugInfo?: () => string): void;
-        function fail(message?: string): void;
-    }
-}
-declare module ts {
     function getNodeConstructor(kind: SyntaxKind): new () => Node;
     function getSourceFileOfNode(node: Node): SourceFile;
     function nodePosToString(node: Node): string;
@@ -3245,13 +3366,13 @@ declare module ts {
     function getTextOfNode(node: Node): string;
     function escapeIdentifier(identifier: string): string;
     function unescapeIdentifier(identifier: string): string;
-    function identifierToString(identifier: Identifier): string;
-    function isExpression(node: Node): boolean;
+    function declarationNameToString(name: Identifier | LiteralExpression | ComputedPropertyName): string;
     function createDiagnosticForNode(node: Node, message: DiagnosticMessage, arg0?: any, arg1?: any, arg2?: any): Diagnostic;
     function createDiagnosticForNodeFromMessageChain(node: Node, messageChain: DiagnosticMessageChain, newLine: string): Diagnostic;
     function getErrorSpanForNode(node: Node): Node;
     function isExternalModule(file: SourceFile): boolean;
     function isDeclarationFile(file: SourceFile): boolean;
+    function isConstEnumDeclaration(node: EnumDeclaration): boolean;
     function isPrologueDirective(node: Node): boolean;
     function getLeadingCommentRangesOfNode(node: Node, sourceFileOfNode?: SourceFile): CommentRange[];
     function getJsDocComments(node: Declaration, sourceFileOfNode: SourceFile): CommentRange[];
@@ -3262,7 +3383,11 @@ declare module ts {
     function getContainingFunction(node: Node): SignatureDeclaration;
     function getThisContainer(node: Node, includeArrowFunctions: boolean): Node;
     function getSuperContainer(node: Node): Node;
+    function isExpression(node: Node): boolean;
     function hasRestParameters(s: SignatureDeclaration): boolean;
+    function isLiteralKind(kind: SyntaxKind): boolean;
+    function isTextualLiteralKind(kind: SyntaxKind): boolean;
+    function isTemplateLiteralKind(kind: SyntaxKind): boolean;
     function isInAmbientContext(node: Node): boolean;
     function isDeclaration(node: Node): boolean;
     function isStatement(n: Node): boolean;
@@ -3275,7 +3400,12 @@ declare module ts {
     function createProgram(rootNames: string[], options: CompilerOptions, host: CompilerHost): Program;
 }
 declare module ts {
-    function isInstantiated(node: Node): boolean;
+    const enum ModuleInstanceState {
+        NonInstantiated = 0,
+        Instantiated = 1,
+        ConstEnumOnly = 2,
+    }
+    function getModuleInstanceState(node: Node): ModuleInstanceState;
     function bindSourceFile(file: SourceFile): void;
 }
 declare module ts {
@@ -3306,7 +3436,6 @@ declare module TypeScript {
         Automatic_semicolon_insertion_not_allowed: string;
         Unexpected_token_0_expected: string;
         Trailing_comma_not_allowed: string;
-        AsteriskSlash_expected: string;
         public_or_private_modifier_must_precede_static: string;
         Unexpected_token: string;
         Catch_clause_parameter_cannot_have_a_type_annotation: string;
@@ -3388,6 +3517,8 @@ declare module TypeScript {
         return_statement_must_be_contained_within_a_function_body: string;
         Expression_expected: string;
         Type_expected: string;
+        Template_literal_cannot_be_used_as_an_element_name: string;
+        Computed_property_names_cannot_be_used_here: string;
         Duplicate_identifier_0: string;
         The_name_0_does_not_exist_in_the_current_scope: string;
         The_name_0_does_not_refer_to_a_value: string;
@@ -3971,6 +4102,7 @@ declare module TypeScript {
         asterisk = 42,
         at = 64,
         backslash = 92,
+        backtick = 96,
         bar = 124,
         caret = 94,
         closeBrace = 125,
@@ -4115,252 +4247,218 @@ declare module TypeScript {
     enum SyntaxKind {
         None = 0,
         List = 1,
-        SeparatedList = 2,
-        TriviaList = 3,
-        WhitespaceTrivia = 4,
-        NewLineTrivia = 5,
-        MultiLineCommentTrivia = 6,
-        SingleLineCommentTrivia = 7,
-        SkippedTokenTrivia = 8,
-        ErrorToken = 9,
-        EndOfFileToken = 10,
-        IdentifierName = 11,
-        RegularExpressionLiteral = 12,
-        NumericLiteral = 13,
-        StringLiteral = 14,
-        BreakKeyword = 15,
-        CaseKeyword = 16,
-        CatchKeyword = 17,
-        ContinueKeyword = 18,
-        DebuggerKeyword = 19,
-        DefaultKeyword = 20,
-        DeleteKeyword = 21,
-        DoKeyword = 22,
-        ElseKeyword = 23,
-        FalseKeyword = 24,
-        FinallyKeyword = 25,
-        ForKeyword = 26,
-        FunctionKeyword = 27,
-        IfKeyword = 28,
-        InKeyword = 29,
-        InstanceOfKeyword = 30,
-        NewKeyword = 31,
-        NullKeyword = 32,
-        ReturnKeyword = 33,
-        SwitchKeyword = 34,
-        ThisKeyword = 35,
-        ThrowKeyword = 36,
-        TrueKeyword = 37,
-        TryKeyword = 38,
-        TypeOfKeyword = 39,
-        VarKeyword = 40,
-        VoidKeyword = 41,
-        WhileKeyword = 42,
-        WithKeyword = 43,
-        ClassKeyword = 44,
-        ConstKeyword = 45,
-        EnumKeyword = 46,
-        ExportKeyword = 47,
-        ExtendsKeyword = 48,
-        ImportKeyword = 49,
-        SuperKeyword = 50,
-        ImplementsKeyword = 51,
-        InterfaceKeyword = 52,
-        LetKeyword = 53,
-        PackageKeyword = 54,
-        PrivateKeyword = 55,
-        ProtectedKeyword = 56,
-        PublicKeyword = 57,
-        StaticKeyword = 58,
-        YieldKeyword = 59,
-        AnyKeyword = 60,
-        BooleanKeyword = 61,
-        ConstructorKeyword = 62,
-        DeclareKeyword = 63,
-        GetKeyword = 64,
-        ModuleKeyword = 65,
-        RequireKeyword = 66,
-        NumberKeyword = 67,
-        SetKeyword = 68,
-        StringKeyword = 69,
-        OpenBraceToken = 70,
-        CloseBraceToken = 71,
-        OpenParenToken = 72,
-        CloseParenToken = 73,
-        OpenBracketToken = 74,
-        CloseBracketToken = 75,
-        DotToken = 76,
-        DotDotDotToken = 77,
-        SemicolonToken = 78,
-        CommaToken = 79,
-        LessThanToken = 80,
-        GreaterThanToken = 81,
-        LessThanEqualsToken = 82,
-        GreaterThanEqualsToken = 83,
-        EqualsEqualsToken = 84,
-        EqualsGreaterThanToken = 85,
-        ExclamationEqualsToken = 86,
-        EqualsEqualsEqualsToken = 87,
-        ExclamationEqualsEqualsToken = 88,
-        PlusToken = 89,
-        MinusToken = 90,
-        AsteriskToken = 91,
-        PercentToken = 92,
-        PlusPlusToken = 93,
-        MinusMinusToken = 94,
-        LessThanLessThanToken = 95,
-        GreaterThanGreaterThanToken = 96,
-        GreaterThanGreaterThanGreaterThanToken = 97,
-        AmpersandToken = 98,
-        BarToken = 99,
-        CaretToken = 100,
-        ExclamationToken = 101,
-        TildeToken = 102,
-        AmpersandAmpersandToken = 103,
-        BarBarToken = 104,
-        QuestionToken = 105,
-        ColonToken = 106,
-        EqualsToken = 107,
-        PlusEqualsToken = 108,
-        MinusEqualsToken = 109,
-        AsteriskEqualsToken = 110,
-        PercentEqualsToken = 111,
-        LessThanLessThanEqualsToken = 112,
-        GreaterThanGreaterThanEqualsToken = 113,
-        GreaterThanGreaterThanGreaterThanEqualsToken = 114,
-        AmpersandEqualsToken = 115,
-        BarEqualsToken = 116,
-        CaretEqualsToken = 117,
-        SlashToken = 118,
-        SlashEqualsToken = 119,
-        SourceUnit = 120,
-        QualifiedName = 121,
-        ObjectType = 122,
-        FunctionType = 123,
-        ArrayType = 124,
-        ConstructorType = 125,
-        GenericType = 126,
-        TypeQuery = 127,
-        TupleType = 128,
-        InterfaceDeclaration = 129,
-        FunctionDeclaration = 130,
-        ModuleDeclaration = 131,
-        ClassDeclaration = 132,
-        EnumDeclaration = 133,
-        ImportDeclaration = 134,
-        ExportAssignment = 135,
-        MemberFunctionDeclaration = 136,
-        MemberVariableDeclaration = 137,
-        ConstructorDeclaration = 138,
-        IndexMemberDeclaration = 139,
-        GetAccessor = 140,
-        SetAccessor = 141,
-        PropertySignature = 142,
-        CallSignature = 143,
-        ConstructSignature = 144,
-        IndexSignature = 145,
-        MethodSignature = 146,
-        Block = 147,
-        IfStatement = 148,
-        VariableStatement = 149,
-        ExpressionStatement = 150,
-        ReturnStatement = 151,
-        SwitchStatement = 152,
-        BreakStatement = 153,
-        ContinueStatement = 154,
-        ForStatement = 155,
-        ForInStatement = 156,
-        EmptyStatement = 157,
-        ThrowStatement = 158,
-        WhileStatement = 159,
-        TryStatement = 160,
-        LabeledStatement = 161,
-        DoStatement = 162,
-        DebuggerStatement = 163,
-        WithStatement = 164,
-        PlusExpression = 165,
-        NegateExpression = 166,
-        BitwiseNotExpression = 167,
-        LogicalNotExpression = 168,
-        PreIncrementExpression = 169,
-        PreDecrementExpression = 170,
-        DeleteExpression = 171,
-        TypeOfExpression = 172,
-        VoidExpression = 173,
-        CommaExpression = 174,
-        AssignmentExpression = 175,
-        AddAssignmentExpression = 176,
-        SubtractAssignmentExpression = 177,
-        MultiplyAssignmentExpression = 178,
-        DivideAssignmentExpression = 179,
-        ModuloAssignmentExpression = 180,
-        AndAssignmentExpression = 181,
-        ExclusiveOrAssignmentExpression = 182,
-        OrAssignmentExpression = 183,
-        LeftShiftAssignmentExpression = 184,
-        SignedRightShiftAssignmentExpression = 185,
-        UnsignedRightShiftAssignmentExpression = 186,
-        ConditionalExpression = 187,
-        LogicalOrExpression = 188,
-        LogicalAndExpression = 189,
-        BitwiseOrExpression = 190,
-        BitwiseExclusiveOrExpression = 191,
-        BitwiseAndExpression = 192,
-        EqualsWithTypeConversionExpression = 193,
-        NotEqualsWithTypeConversionExpression = 194,
-        EqualsExpression = 195,
-        NotEqualsExpression = 196,
-        LessThanExpression = 197,
-        GreaterThanExpression = 198,
-        LessThanOrEqualExpression = 199,
-        GreaterThanOrEqualExpression = 200,
-        InstanceOfExpression = 201,
-        InExpression = 202,
-        LeftShiftExpression = 203,
-        SignedRightShiftExpression = 204,
-        UnsignedRightShiftExpression = 205,
-        MultiplyExpression = 206,
-        DivideExpression = 207,
-        ModuloExpression = 208,
-        AddExpression = 209,
-        SubtractExpression = 210,
-        PostIncrementExpression = 211,
-        PostDecrementExpression = 212,
-        MemberAccessExpression = 213,
-        InvocationExpression = 214,
-        ArrayLiteralExpression = 215,
-        ObjectLiteralExpression = 216,
-        ObjectCreationExpression = 217,
-        ParenthesizedExpression = 218,
-        ParenthesizedArrowFunctionExpression = 219,
-        SimpleArrowFunctionExpression = 220,
-        CastExpression = 221,
-        ElementAccessExpression = 222,
-        FunctionExpression = 223,
-        OmittedExpression = 224,
-        VariableDeclaration = 225,
-        VariableDeclarator = 226,
-        ArgumentList = 227,
-        ParameterList = 228,
-        TypeArgumentList = 229,
-        TypeParameterList = 230,
-        ExtendsHeritageClause = 231,
-        ImplementsHeritageClause = 232,
-        EqualsValueClause = 233,
-        CaseSwitchClause = 234,
-        DefaultSwitchClause = 235,
-        ElseClause = 236,
-        CatchClause = 237,
-        FinallyClause = 238,
-        TypeParameter = 239,
-        Constraint = 240,
-        SimplePropertyAssignment = 241,
-        FunctionPropertyAssignment = 242,
-        Parameter = 243,
-        EnumElement = 244,
-        TypeAnnotation = 245,
-        ExternalModuleReference = 246,
-        ModuleNameModuleReference = 247,
+        WhitespaceTrivia = 2,
+        NewLineTrivia = 3,
+        MultiLineCommentTrivia = 4,
+        SingleLineCommentTrivia = 5,
+        SkippedTokenTrivia = 6,
+        ErrorToken = 7,
+        EndOfFileToken = 8,
+        IdentifierName = 9,
+        RegularExpressionLiteral = 10,
+        NumericLiteral = 11,
+        StringLiteral = 12,
+        NoSubstitutionTemplateToken = 13,
+        TemplateStartToken = 14,
+        TemplateMiddleToken = 15,
+        TemplateEndToken = 16,
+        BreakKeyword = 17,
+        CaseKeyword = 18,
+        CatchKeyword = 19,
+        ContinueKeyword = 20,
+        DebuggerKeyword = 21,
+        DefaultKeyword = 22,
+        DeleteKeyword = 23,
+        DoKeyword = 24,
+        ElseKeyword = 25,
+        FalseKeyword = 26,
+        FinallyKeyword = 27,
+        ForKeyword = 28,
+        FunctionKeyword = 29,
+        IfKeyword = 30,
+        InKeyword = 31,
+        InstanceOfKeyword = 32,
+        NewKeyword = 33,
+        NullKeyword = 34,
+        ReturnKeyword = 35,
+        SwitchKeyword = 36,
+        ThisKeyword = 37,
+        ThrowKeyword = 38,
+        TrueKeyword = 39,
+        TryKeyword = 40,
+        TypeOfKeyword = 41,
+        VarKeyword = 42,
+        VoidKeyword = 43,
+        WhileKeyword = 44,
+        WithKeyword = 45,
+        ClassKeyword = 46,
+        ConstKeyword = 47,
+        EnumKeyword = 48,
+        ExportKeyword = 49,
+        ExtendsKeyword = 50,
+        ImportKeyword = 51,
+        SuperKeyword = 52,
+        ImplementsKeyword = 53,
+        InterfaceKeyword = 54,
+        LetKeyword = 55,
+        PackageKeyword = 56,
+        PrivateKeyword = 57,
+        ProtectedKeyword = 58,
+        PublicKeyword = 59,
+        StaticKeyword = 60,
+        YieldKeyword = 61,
+        AnyKeyword = 62,
+        BooleanKeyword = 63,
+        ConstructorKeyword = 64,
+        DeclareKeyword = 65,
+        GetKeyword = 66,
+        ModuleKeyword = 67,
+        RequireKeyword = 68,
+        NumberKeyword = 69,
+        SetKeyword = 70,
+        StringKeyword = 71,
+        OpenBraceToken = 72,
+        CloseBraceToken = 73,
+        OpenParenToken = 74,
+        CloseParenToken = 75,
+        OpenBracketToken = 76,
+        CloseBracketToken = 77,
+        DotToken = 78,
+        DotDotDotToken = 79,
+        SemicolonToken = 80,
+        CommaToken = 81,
+        LessThanToken = 82,
+        GreaterThanToken = 83,
+        LessThanEqualsToken = 84,
+        GreaterThanEqualsToken = 85,
+        EqualsEqualsToken = 86,
+        EqualsGreaterThanToken = 87,
+        ExclamationEqualsToken = 88,
+        EqualsEqualsEqualsToken = 89,
+        ExclamationEqualsEqualsToken = 90,
+        PlusToken = 91,
+        MinusToken = 92,
+        AsteriskToken = 93,
+        PercentToken = 94,
+        PlusPlusToken = 95,
+        MinusMinusToken = 96,
+        LessThanLessThanToken = 97,
+        GreaterThanGreaterThanToken = 98,
+        GreaterThanGreaterThanGreaterThanToken = 99,
+        AmpersandToken = 100,
+        BarToken = 101,
+        CaretToken = 102,
+        ExclamationToken = 103,
+        TildeToken = 104,
+        AmpersandAmpersandToken = 105,
+        BarBarToken = 106,
+        QuestionToken = 107,
+        ColonToken = 108,
+        EqualsToken = 109,
+        PlusEqualsToken = 110,
+        MinusEqualsToken = 111,
+        AsteriskEqualsToken = 112,
+        PercentEqualsToken = 113,
+        LessThanLessThanEqualsToken = 114,
+        GreaterThanGreaterThanEqualsToken = 115,
+        GreaterThanGreaterThanGreaterThanEqualsToken = 116,
+        AmpersandEqualsToken = 117,
+        BarEqualsToken = 118,
+        CaretEqualsToken = 119,
+        SlashToken = 120,
+        SlashEqualsToken = 121,
+        SourceUnit = 122,
+        QualifiedName = 123,
+        ObjectType = 124,
+        FunctionType = 125,
+        ArrayType = 126,
+        ConstructorType = 127,
+        GenericType = 128,
+        TypeQuery = 129,
+        TupleType = 130,
+        UnionType = 131,
+        ParenthesizedType = 132,
+        InterfaceDeclaration = 133,
+        FunctionDeclaration = 134,
+        ModuleDeclaration = 135,
+        ClassDeclaration = 136,
+        EnumDeclaration = 137,
+        ImportDeclaration = 138,
+        ExportAssignment = 139,
+        MemberFunctionDeclaration = 140,
+        MemberVariableDeclaration = 141,
+        ConstructorDeclaration = 142,
+        IndexMemberDeclaration = 143,
+        GetAccessor = 144,
+        SetAccessor = 145,
+        PropertySignature = 146,
+        CallSignature = 147,
+        ConstructSignature = 148,
+        IndexSignature = 149,
+        MethodSignature = 150,
+        Block = 151,
+        IfStatement = 152,
+        VariableStatement = 153,
+        ExpressionStatement = 154,
+        ReturnStatement = 155,
+        SwitchStatement = 156,
+        BreakStatement = 157,
+        ContinueStatement = 158,
+        ForStatement = 159,
+        ForInStatement = 160,
+        EmptyStatement = 161,
+        ThrowStatement = 162,
+        WhileStatement = 163,
+        TryStatement = 164,
+        LabeledStatement = 165,
+        DoStatement = 166,
+        DebuggerStatement = 167,
+        WithStatement = 168,
+        PrefixUnaryExpression = 169,
+        DeleteExpression = 170,
+        TypeOfExpression = 171,
+        VoidExpression = 172,
+        ConditionalExpression = 173,
+        BinaryExpression = 174,
+        PostfixUnaryExpression = 175,
+        MemberAccessExpression = 176,
+        InvocationExpression = 177,
+        ArrayLiteralExpression = 178,
+        ObjectLiteralExpression = 179,
+        ObjectCreationExpression = 180,
+        ParenthesizedExpression = 181,
+        ParenthesizedArrowFunctionExpression = 182,
+        SimpleArrowFunctionExpression = 183,
+        CastExpression = 184,
+        ElementAccessExpression = 185,
+        FunctionExpression = 186,
+        OmittedExpression = 187,
+        TemplateExpression = 188,
+        TemplateAccessExpression = 189,
+        VariableDeclaration = 190,
+        VariableDeclarator = 191,
+        ArgumentList = 192,
+        ParameterList = 193,
+        TypeArgumentList = 194,
+        TypeParameterList = 195,
+        HeritageClause = 196,
+        EqualsValueClause = 197,
+        CaseSwitchClause = 198,
+        DefaultSwitchClause = 199,
+        ElseClause = 200,
+        CatchClause = 201,
+        FinallyClause = 202,
+        TemplateClause = 203,
+        TypeParameter = 204,
+        Constraint = 205,
+        SimplePropertyAssignment = 206,
+        FunctionPropertyAssignment = 207,
+        Parameter = 208,
+        EnumElement = 209,
+        TypeAnnotation = 210,
+        ComputedPropertyName = 211,
+        ExternalModuleReference = 212,
+        ModuleNameModuleReference = 213,
         FirstStandardKeyword,
         LastStandardKeyword,
         FirstFutureReservedKeyword,
@@ -4390,10 +4488,6 @@ declare module TypeScript.SyntaxFacts {
     function isAnyPunctuation(kind: SyntaxKind): boolean;
     function isPrefixUnaryExpressionOperatorToken(tokenKind: SyntaxKind): boolean;
     function isBinaryExpressionOperatorToken(tokenKind: SyntaxKind): boolean;
-    function getPrefixUnaryExpressionFromOperatorToken(tokenKind: SyntaxKind): SyntaxKind;
-    function getPostfixUnaryExpressionFromOperatorToken(tokenKind: SyntaxKind): SyntaxKind;
-    function getBinaryExpressionFromOperatorToken(tokenKind: SyntaxKind): SyntaxKind;
-    function getOperatorTokenFromBinaryExpression(tokenKind: SyntaxKind): SyntaxKind;
     function isAssignmentOperatorToken(tokenKind: SyntaxKind): boolean;
     function isType(kind: SyntaxKind): boolean;
 }
@@ -4415,8 +4509,8 @@ declare module TypeScript.Scanner {
     function createParserSource(fileName: string, text: ISimpleText, languageVersion: ts.ScriptTarget): IScannerParserSource;
 }
 declare module TypeScript {
-    class ScannerUtilities {
-        static identifierKind(str: string, start: number, length: number): SyntaxKind;
+    module ScannerUtilities {
+        function identifierKind(str: string, start: number, length: number): SyntaxKind;
     }
 }
 declare module TypeScript {
@@ -4449,38 +4543,32 @@ declare module TypeScript {
 }
 declare module TypeScript.Syntax {
     var _nextSyntaxID: number;
-    function childIndex(parent: ISyntaxElement, child: ISyntaxElement): number;
     function nodeHasSkippedOrMissingTokens(node: ISyntaxNode): boolean;
     function isUnterminatedStringLiteral(token: ISyntaxToken): boolean;
     function isUnterminatedMultilineCommentTrivia(trivia: ISyntaxTrivia): boolean;
     function isEntirelyInsideCommentTrivia(trivia: ISyntaxTrivia, fullStart: number, position: number): boolean;
     function isEntirelyInsideComment(sourceUnit: SourceUnitSyntax, position: number): boolean;
     function isEntirelyInStringOrRegularExpressionLiteral(sourceUnit: SourceUnitSyntax, position: number): boolean;
-    function findSkippedTokenOnLeft(positionedToken: ISyntaxToken, position: number): ISyntaxToken;
     function getAncestorOfKind(positionedToken: ISyntaxElement, kind: SyntaxKind): ISyntaxElement;
     function hasAncestorOfKind(positionedToken: ISyntaxElement, kind: SyntaxKind): boolean;
     function isIntegerLiteral(expression: IExpressionSyntax): boolean;
     function containingNode(element: ISyntaxElement): ISyntaxNode;
-    function findTokenOnLeft(element: ISyntaxElement, position: number, includeSkippedTokens?: boolean): ISyntaxToken;
-    function findCompleteTokenOnLeft(element: ISyntaxElement, position: number, includeSkippedTokens?: boolean): ISyntaxToken;
+    function findTokenOnLeft(sourceUnit: SourceUnitSyntax, position: number): ISyntaxToken;
+    function findCompleteTokenOnLeft(sourceUnit: SourceUnitSyntax, position: number): ISyntaxToken;
     function firstTokenInLineContainingPosition(syntaxTree: SyntaxTree, position: number): ISyntaxToken;
 }
 declare module TypeScript {
-    function isShared(element: ISyntaxElement): boolean;
-    function childCount(element: ISyntaxElement): number;
-    function childAt(element: ISyntaxElement, index: number): ISyntaxElement;
     function syntaxTree(element: ISyntaxElement): SyntaxTree;
     function parsedInStrictMode(node: ISyntaxNode): boolean;
-    function previousToken(token: ISyntaxToken, includeSkippedTokens?: boolean): ISyntaxToken;
-    function findToken(element: ISyntaxElement, position: number, includeSkippedTokens?: boolean): ISyntaxToken;
+    function previousToken(token: ISyntaxToken): ISyntaxToken;
+    function findToken(sourceUnit: SourceUnitSyntax, position: number): ISyntaxToken;
     function findSkippedTokenInPositionedToken(positionedToken: ISyntaxToken, position: number): ISyntaxToken;
     function findSkippedTokenInLeadingTriviaList(positionedToken: ISyntaxToken, position: number): ISyntaxToken;
     function findSkippedTokenInTrailingTriviaList(positionedToken: ISyntaxToken, position: number): ISyntaxToken;
-    function nextToken(token: ISyntaxToken, text?: ISimpleText, includeSkippedTokens?: boolean): ISyntaxToken;
+    function nextToken(token: ISyntaxToken, text?: ISimpleText): ISyntaxToken;
     function isNode(element: ISyntaxElement): boolean;
     function isToken(element: ISyntaxElement): boolean;
     function isList(element: ISyntaxElement): boolean;
-    function isSeparatedList(element: ISyntaxElement): boolean;
     function syntaxID(element: ISyntaxElement): number;
     function fullText(element: ISyntaxElement, text?: ISimpleText): string;
     function leadingTriviaWidth(element: ISyntaxElement, text?: ISimpleText): number;
@@ -4496,27 +4584,40 @@ declare module TypeScript {
     function fullEnd(element: ISyntaxElement): number;
     function existsNewLineBetweenTokens(token1: ISyntaxToken, token2: ISyntaxToken, text: ISimpleText): boolean;
     interface ISyntaxElement {
-        kind(): SyntaxKind;
-        parent?: ISyntaxElement;
+        kind: SyntaxKind;
+        parent: ISyntaxElement;
     }
     interface ISyntaxNode extends ISyntaxNodeOrToken {
-        data: number;
+        __data: number;
+        __cachedTokens: ISyntaxToken[];
     }
     interface IModuleReferenceSyntax extends ISyntaxNode {
         _moduleReferenceBrand: any;
     }
     interface IModuleElementSyntax extends ISyntaxNode {
+        _moduleElementBrand: any;
     }
     interface IStatementSyntax extends IModuleElementSyntax {
         _statementBrand: any;
     }
     interface ITypeMemberSyntax extends ISyntaxNode {
+        _typeMemberBrand: any;
     }
     interface IClassElementSyntax extends ISyntaxNode {
+        _classElementBrand: any;
     }
     interface IMemberDeclarationSyntax extends IClassElementSyntax {
+        _memberDeclarationBrand: any;
     }
-    interface IPropertyAssignmentSyntax extends IClassElementSyntax {
+    interface IPropertyAssignmentSyntax extends ISyntaxNodeOrToken {
+        _propertyAssignmentBrand: any;
+    }
+    interface IAccessorSyntax extends IPropertyAssignmentSyntax, IMemberDeclarationSyntax {
+        _accessorBrand: any;
+        modifiers: ISyntaxToken[];
+        propertyName: IPropertyNameSyntax;
+        callSignature: CallSignatureSyntax;
+        block: BlockSyntax;
     }
     interface ISwitchClauseSyntax extends ISyntaxNode {
         _switchClauseBrand: any;
@@ -4548,6 +4649,10 @@ declare module TypeScript {
         _typeBrand: any;
     }
     interface INameSyntax extends ITypeSyntax {
+        _nameBrand: any;
+    }
+    interface IPropertyNameSyntax extends ISyntaxNodeOrToken {
+        _propertyNameBrand: any;
     }
 }
 declare module TypeScript.SyntaxFacts {
@@ -4557,610 +4662,32 @@ declare module TypeScript.SyntaxFacts {
     function isAccessibilityModifier(kind: SyntaxKind): boolean;
 }
 interface Array<T> {
-    data: number;
-    separators?: TypeScript.ISyntaxToken[];
-    kind(): TypeScript.SyntaxKind;
+    __data: number;
+    kind: TypeScript.SyntaxKind;
     parent: TypeScript.ISyntaxElement;
-    separatorCount(): number;
-    separatorAt(index: number): TypeScript.ISyntaxToken;
-}
-declare module TypeScript.Syntax {
-    function emptyList<T extends ISyntaxNodeOrToken>(): T[];
-    function emptySeparatedList<T extends ISyntaxNodeOrToken>(): T[];
-    function list<T extends ISyntaxNodeOrToken>(nodes: T[]): T[];
-    function separatedList<T extends ISyntaxNodeOrToken>(nodes: T[], separators: ISyntaxToken[]): T[];
-    function nonSeparatorIndexOf<T extends ISyntaxNodeOrToken>(list: T[], ast: ISyntaxNodeOrToken): number;
 }
 declare module TypeScript {
-    class SyntaxNode implements ISyntaxNodeOrToken {
-        private __kind;
-        data: number;
-        parent: ISyntaxElement;
-        constructor(data: number);
-        kind(): SyntaxKind;
+    interface ISeparatedSyntaxList<T extends ISyntaxNodeOrToken> extends Array<ISyntaxNodeOrToken> {
     }
+}
+declare module TypeScript {
+    function separatorCount(list: ISeparatedSyntaxList<ISyntaxNodeOrToken>): number;
+    function nonSeparatorCount(list: ISeparatedSyntaxList<ISyntaxNodeOrToken>): number;
+    function separatorAt(list: ISeparatedSyntaxList<ISyntaxNodeOrToken>, index: number): ISyntaxToken;
+    function nonSeparatorAt<T extends ISyntaxNodeOrToken>(list: ISeparatedSyntaxList<T>, index: number): T;
+}
+declare module TypeScript.Syntax {
+    function list<T extends ISyntaxNodeOrToken>(nodes: T[]): T[];
+    function separatedList<T extends ISyntaxNodeOrToken>(nodesAndTokens: ISyntaxNodeOrToken[]): ISeparatedSyntaxList<T>;
 }
 declare module TypeScript {
     interface ISyntaxNodeOrToken extends ISyntaxElement {
+        childCount: number;
+        childAt(index: number): ISyntaxElement;
     }
 }
 declare module TypeScript {
-    interface SourceUnitSyntax extends ISyntaxNode {
-        syntaxTree: SyntaxTree;
-        moduleElements: IModuleElementSyntax[];
-        endOfFileToken: ISyntaxToken;
-    }
-    interface QualifiedNameSyntax extends ISyntaxNode, INameSyntax {
-        left: INameSyntax;
-        dotToken: ISyntaxToken;
-        right: ISyntaxToken;
-    }
-    interface ObjectTypeSyntax extends ISyntaxNode, ITypeSyntax {
-        openBraceToken: ISyntaxToken;
-        typeMembers: ITypeMemberSyntax[];
-        closeBraceToken: ISyntaxToken;
-    }
-    interface FunctionTypeSyntax extends ISyntaxNode, ITypeSyntax {
-        typeParameterList: TypeParameterListSyntax;
-        parameterList: ParameterListSyntax;
-        equalsGreaterThanToken: ISyntaxToken;
-        type: ITypeSyntax;
-    }
-    interface ArrayTypeSyntax extends ISyntaxNode, ITypeSyntax {
-        type: ITypeSyntax;
-        openBracketToken: ISyntaxToken;
-        closeBracketToken: ISyntaxToken;
-    }
-    interface ConstructorTypeSyntax extends ISyntaxNode, ITypeSyntax {
-        newKeyword: ISyntaxToken;
-        typeParameterList: TypeParameterListSyntax;
-        parameterList: ParameterListSyntax;
-        equalsGreaterThanToken: ISyntaxToken;
-        type: ITypeSyntax;
-    }
-    interface GenericTypeSyntax extends ISyntaxNode, ITypeSyntax {
-        name: INameSyntax;
-        typeArgumentList: TypeArgumentListSyntax;
-    }
-    interface TypeQuerySyntax extends ISyntaxNode, ITypeSyntax {
-        typeOfKeyword: ISyntaxToken;
-        name: INameSyntax;
-    }
-    interface TupleTypeSyntax extends ISyntaxNode, ITypeSyntax {
-        openBracketToken: ISyntaxToken;
-        types: ITypeSyntax[];
-        closeBracketToken: ISyntaxToken;
-    }
-    interface InterfaceDeclarationSyntax extends ISyntaxNode, IModuleElementSyntax {
-        modifiers: ISyntaxToken[];
-        interfaceKeyword: ISyntaxToken;
-        identifier: ISyntaxToken;
-        typeParameterList: TypeParameterListSyntax;
-        heritageClauses: HeritageClauseSyntax[];
-        body: ObjectTypeSyntax;
-    }
-    interface FunctionDeclarationSyntax extends ISyntaxNode, IStatementSyntax {
-        modifiers: ISyntaxToken[];
-        functionKeyword: ISyntaxToken;
-        identifier: ISyntaxToken;
-        callSignature: CallSignatureSyntax;
-        block: BlockSyntax;
-        semicolonToken: ISyntaxToken;
-    }
-    interface ModuleDeclarationSyntax extends ISyntaxNode, IModuleElementSyntax {
-        modifiers: ISyntaxToken[];
-        moduleKeyword: ISyntaxToken;
-        name: INameSyntax;
-        stringLiteral: ISyntaxToken;
-        openBraceToken: ISyntaxToken;
-        moduleElements: IModuleElementSyntax[];
-        closeBraceToken: ISyntaxToken;
-    }
-    interface ClassDeclarationSyntax extends ISyntaxNode, IModuleElementSyntax {
-        modifiers: ISyntaxToken[];
-        classKeyword: ISyntaxToken;
-        identifier: ISyntaxToken;
-        typeParameterList: TypeParameterListSyntax;
-        heritageClauses: HeritageClauseSyntax[];
-        openBraceToken: ISyntaxToken;
-        classElements: IClassElementSyntax[];
-        closeBraceToken: ISyntaxToken;
-    }
-    interface EnumDeclarationSyntax extends ISyntaxNode, IModuleElementSyntax {
-        modifiers: ISyntaxToken[];
-        enumKeyword: ISyntaxToken;
-        identifier: ISyntaxToken;
-        openBraceToken: ISyntaxToken;
-        enumElements: EnumElementSyntax[];
-        closeBraceToken: ISyntaxToken;
-    }
-    interface ImportDeclarationSyntax extends ISyntaxNode, IModuleElementSyntax {
-        modifiers: ISyntaxToken[];
-        importKeyword: ISyntaxToken;
-        identifier: ISyntaxToken;
-        equalsToken: ISyntaxToken;
-        moduleReference: IModuleReferenceSyntax;
-        semicolonToken: ISyntaxToken;
-    }
-    interface ExportAssignmentSyntax extends ISyntaxNode, IModuleElementSyntax {
-        exportKeyword: ISyntaxToken;
-        equalsToken: ISyntaxToken;
-        identifier: ISyntaxToken;
-        semicolonToken: ISyntaxToken;
-    }
-    interface MemberFunctionDeclarationSyntax extends ISyntaxNode, IMemberDeclarationSyntax {
-        modifiers: ISyntaxToken[];
-        propertyName: ISyntaxToken;
-        callSignature: CallSignatureSyntax;
-        block: BlockSyntax;
-        semicolonToken: ISyntaxToken;
-    }
-    interface MemberVariableDeclarationSyntax extends ISyntaxNode, IMemberDeclarationSyntax {
-        modifiers: ISyntaxToken[];
-        variableDeclarator: VariableDeclaratorSyntax;
-        semicolonToken: ISyntaxToken;
-    }
-    interface ConstructorDeclarationSyntax extends ISyntaxNode, IClassElementSyntax {
-        modifiers: ISyntaxToken[];
-        constructorKeyword: ISyntaxToken;
-        callSignature: CallSignatureSyntax;
-        block: BlockSyntax;
-        semicolonToken: ISyntaxToken;
-    }
-    interface IndexMemberDeclarationSyntax extends ISyntaxNode, IClassElementSyntax {
-        modifiers: ISyntaxToken[];
-        indexSignature: IndexSignatureSyntax;
-        semicolonToken: ISyntaxToken;
-    }
-    interface GetAccessorSyntax extends ISyntaxNode, IMemberDeclarationSyntax, IPropertyAssignmentSyntax {
-        modifiers: ISyntaxToken[];
-        getKeyword: ISyntaxToken;
-        propertyName: ISyntaxToken;
-        callSignature: CallSignatureSyntax;
-        block: BlockSyntax;
-    }
-    interface SetAccessorSyntax extends ISyntaxNode, IMemberDeclarationSyntax, IPropertyAssignmentSyntax {
-        modifiers: ISyntaxToken[];
-        setKeyword: ISyntaxToken;
-        propertyName: ISyntaxToken;
-        callSignature: CallSignatureSyntax;
-        block: BlockSyntax;
-    }
-    interface PropertySignatureSyntax extends ISyntaxNode, ITypeMemberSyntax {
-        propertyName: ISyntaxToken;
-        questionToken: ISyntaxToken;
-        typeAnnotation: TypeAnnotationSyntax;
-    }
-    interface CallSignatureSyntax extends ISyntaxNode, ITypeMemberSyntax {
-        typeParameterList: TypeParameterListSyntax;
-        parameterList: ParameterListSyntax;
-        typeAnnotation: TypeAnnotationSyntax;
-    }
-    interface ConstructSignatureSyntax extends ISyntaxNode, ITypeMemberSyntax {
-        newKeyword: ISyntaxToken;
-        callSignature: CallSignatureSyntax;
-    }
-    interface IndexSignatureSyntax extends ISyntaxNode, ITypeMemberSyntax {
-        openBracketToken: ISyntaxToken;
-        parameters: ParameterSyntax[];
-        closeBracketToken: ISyntaxToken;
-        typeAnnotation: TypeAnnotationSyntax;
-    }
-    interface MethodSignatureSyntax extends ISyntaxNode, ITypeMemberSyntax {
-        propertyName: ISyntaxToken;
-        questionToken: ISyntaxToken;
-        callSignature: CallSignatureSyntax;
-    }
-    interface BlockSyntax extends ISyntaxNode, IStatementSyntax {
-        openBraceToken: ISyntaxToken;
-        statements: IStatementSyntax[];
-        closeBraceToken: ISyntaxToken;
-    }
-    interface IfStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        ifKeyword: ISyntaxToken;
-        openParenToken: ISyntaxToken;
-        condition: IExpressionSyntax;
-        closeParenToken: ISyntaxToken;
-        statement: IStatementSyntax;
-        elseClause: ElseClauseSyntax;
-    }
-    interface VariableStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        modifiers: ISyntaxToken[];
-        variableDeclaration: VariableDeclarationSyntax;
-        semicolonToken: ISyntaxToken;
-    }
-    interface ExpressionStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        expression: IExpressionSyntax;
-        semicolonToken: ISyntaxToken;
-    }
-    interface ReturnStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        returnKeyword: ISyntaxToken;
-        expression: IExpressionSyntax;
-        semicolonToken: ISyntaxToken;
-    }
-    interface SwitchStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        switchKeyword: ISyntaxToken;
-        openParenToken: ISyntaxToken;
-        expression: IExpressionSyntax;
-        closeParenToken: ISyntaxToken;
-        openBraceToken: ISyntaxToken;
-        switchClauses: ISwitchClauseSyntax[];
-        closeBraceToken: ISyntaxToken;
-    }
-    interface BreakStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        breakKeyword: ISyntaxToken;
-        identifier: ISyntaxToken;
-        semicolonToken: ISyntaxToken;
-    }
-    interface ContinueStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        continueKeyword: ISyntaxToken;
-        identifier: ISyntaxToken;
-        semicolonToken: ISyntaxToken;
-    }
-    interface ForStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        forKeyword: ISyntaxToken;
-        openParenToken: ISyntaxToken;
-        variableDeclaration: VariableDeclarationSyntax;
-        initializer: IExpressionSyntax;
-        firstSemicolonToken: ISyntaxToken;
-        condition: IExpressionSyntax;
-        secondSemicolonToken: ISyntaxToken;
-        incrementor: IExpressionSyntax;
-        closeParenToken: ISyntaxToken;
-        statement: IStatementSyntax;
-    }
-    interface ForInStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        forKeyword: ISyntaxToken;
-        openParenToken: ISyntaxToken;
-        variableDeclaration: VariableDeclarationSyntax;
-        left: IExpressionSyntax;
-        inKeyword: ISyntaxToken;
-        expression: IExpressionSyntax;
-        closeParenToken: ISyntaxToken;
-        statement: IStatementSyntax;
-    }
-    interface EmptyStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        semicolonToken: ISyntaxToken;
-    }
-    interface ThrowStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        throwKeyword: ISyntaxToken;
-        expression: IExpressionSyntax;
-        semicolonToken: ISyntaxToken;
-    }
-    interface WhileStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        whileKeyword: ISyntaxToken;
-        openParenToken: ISyntaxToken;
-        condition: IExpressionSyntax;
-        closeParenToken: ISyntaxToken;
-        statement: IStatementSyntax;
-    }
-    interface TryStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        tryKeyword: ISyntaxToken;
-        block: BlockSyntax;
-        catchClause: CatchClauseSyntax;
-        finallyClause: FinallyClauseSyntax;
-    }
-    interface LabeledStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        identifier: ISyntaxToken;
-        colonToken: ISyntaxToken;
-        statement: IStatementSyntax;
-    }
-    interface DoStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        doKeyword: ISyntaxToken;
-        statement: IStatementSyntax;
-        whileKeyword: ISyntaxToken;
-        openParenToken: ISyntaxToken;
-        condition: IExpressionSyntax;
-        closeParenToken: ISyntaxToken;
-        semicolonToken: ISyntaxToken;
-    }
-    interface DebuggerStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        debuggerKeyword: ISyntaxToken;
-        semicolonToken: ISyntaxToken;
-    }
-    interface WithStatementSyntax extends ISyntaxNode, IStatementSyntax {
-        withKeyword: ISyntaxToken;
-        openParenToken: ISyntaxToken;
-        condition: IExpressionSyntax;
-        closeParenToken: ISyntaxToken;
-        statement: IStatementSyntax;
-    }
-    interface PrefixUnaryExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
-        operatorToken: ISyntaxToken;
-        operand: IUnaryExpressionSyntax;
-    }
-    interface DeleteExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
-        deleteKeyword: ISyntaxToken;
-        expression: IUnaryExpressionSyntax;
-    }
-    interface TypeOfExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
-        typeOfKeyword: ISyntaxToken;
-        expression: IUnaryExpressionSyntax;
-    }
-    interface VoidExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
-        voidKeyword: ISyntaxToken;
-        expression: IUnaryExpressionSyntax;
-    }
-    interface ConditionalExpressionSyntax extends ISyntaxNode, IExpressionSyntax {
-        condition: IExpressionSyntax;
-        questionToken: ISyntaxToken;
-        whenTrue: IExpressionSyntax;
-        colonToken: ISyntaxToken;
-        whenFalse: IExpressionSyntax;
-    }
-    interface BinaryExpressionSyntax extends ISyntaxNode, IExpressionSyntax {
-        left: IExpressionSyntax;
-        operatorToken: ISyntaxToken;
-        right: IExpressionSyntax;
-    }
-    interface PostfixUnaryExpressionSyntax extends ISyntaxNode, IPostfixExpressionSyntax {
-        operand: ILeftHandSideExpressionSyntax;
-        operatorToken: ISyntaxToken;
-    }
-    interface MemberAccessExpressionSyntax extends ISyntaxNode, IMemberExpressionSyntax, ICallExpressionSyntax {
-        expression: ILeftHandSideExpressionSyntax;
-        dotToken: ISyntaxToken;
-        name: ISyntaxToken;
-    }
-    interface InvocationExpressionSyntax extends ISyntaxNode, ICallExpressionSyntax {
-        expression: ILeftHandSideExpressionSyntax;
-        argumentList: ArgumentListSyntax;
-    }
-    interface ArrayLiteralExpressionSyntax extends ISyntaxNode, IPrimaryExpressionSyntax {
-        openBracketToken: ISyntaxToken;
-        expressions: IExpressionSyntax[];
-        closeBracketToken: ISyntaxToken;
-    }
-    interface ObjectLiteralExpressionSyntax extends ISyntaxNode, IPrimaryExpressionSyntax {
-        openBraceToken: ISyntaxToken;
-        propertyAssignments: IPropertyAssignmentSyntax[];
-        closeBraceToken: ISyntaxToken;
-    }
-    interface ObjectCreationExpressionSyntax extends ISyntaxNode, IPrimaryExpressionSyntax {
-        newKeyword: ISyntaxToken;
-        expression: IMemberExpressionSyntax;
-        argumentList: ArgumentListSyntax;
-    }
-    interface ParenthesizedExpressionSyntax extends ISyntaxNode, IPrimaryExpressionSyntax {
-        openParenToken: ISyntaxToken;
-        expression: IExpressionSyntax;
-        closeParenToken: ISyntaxToken;
-    }
-    interface ParenthesizedArrowFunctionExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
-        callSignature: CallSignatureSyntax;
-        equalsGreaterThanToken: ISyntaxToken;
-        block: BlockSyntax;
-        expression: IExpressionSyntax;
-    }
-    interface SimpleArrowFunctionExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
-        parameter: ParameterSyntax;
-        equalsGreaterThanToken: ISyntaxToken;
-        block: BlockSyntax;
-        expression: IExpressionSyntax;
-    }
-    interface CastExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
-        lessThanToken: ISyntaxToken;
-        type: ITypeSyntax;
-        greaterThanToken: ISyntaxToken;
-        expression: IUnaryExpressionSyntax;
-    }
-    interface ElementAccessExpressionSyntax extends ISyntaxNode, IMemberExpressionSyntax, ICallExpressionSyntax {
-        expression: ILeftHandSideExpressionSyntax;
-        openBracketToken: ISyntaxToken;
-        argumentExpression: IExpressionSyntax;
-        closeBracketToken: ISyntaxToken;
-    }
-    interface FunctionExpressionSyntax extends ISyntaxNode, IPrimaryExpressionSyntax {
-        functionKeyword: ISyntaxToken;
-        identifier: ISyntaxToken;
-        callSignature: CallSignatureSyntax;
-        block: BlockSyntax;
-    }
-    interface OmittedExpressionSyntax extends ISyntaxNode, IExpressionSyntax {
-    }
-    interface VariableDeclarationSyntax extends ISyntaxNode {
-        varKeyword: ISyntaxToken;
-        variableDeclarators: VariableDeclaratorSyntax[];
-    }
-    interface VariableDeclaratorSyntax extends ISyntaxNode {
-        propertyName: ISyntaxToken;
-        typeAnnotation: TypeAnnotationSyntax;
-        equalsValueClause: EqualsValueClauseSyntax;
-    }
-    interface ArgumentListSyntax extends ISyntaxNode {
-        typeArgumentList: TypeArgumentListSyntax;
-        openParenToken: ISyntaxToken;
-        arguments: IExpressionSyntax[];
-        closeParenToken: ISyntaxToken;
-    }
-    interface ParameterListSyntax extends ISyntaxNode {
-        openParenToken: ISyntaxToken;
-        parameters: ParameterSyntax[];
-        closeParenToken: ISyntaxToken;
-    }
-    interface TypeArgumentListSyntax extends ISyntaxNode {
-        lessThanToken: ISyntaxToken;
-        typeArguments: ITypeSyntax[];
-        greaterThanToken: ISyntaxToken;
-    }
-    interface TypeParameterListSyntax extends ISyntaxNode {
-        lessThanToken: ISyntaxToken;
-        typeParameters: TypeParameterSyntax[];
-        greaterThanToken: ISyntaxToken;
-    }
-    interface HeritageClauseSyntax extends ISyntaxNode {
-        extendsOrImplementsKeyword: ISyntaxToken;
-        typeNames: INameSyntax[];
-    }
-    interface EqualsValueClauseSyntax extends ISyntaxNode {
-        equalsToken: ISyntaxToken;
-        value: IExpressionSyntax;
-    }
-    interface CaseSwitchClauseSyntax extends ISyntaxNode, ISwitchClauseSyntax {
-        caseKeyword: ISyntaxToken;
-        expression: IExpressionSyntax;
-        colonToken: ISyntaxToken;
-        statements: IStatementSyntax[];
-    }
-    interface DefaultSwitchClauseSyntax extends ISyntaxNode, ISwitchClauseSyntax {
-        defaultKeyword: ISyntaxToken;
-        colonToken: ISyntaxToken;
-        statements: IStatementSyntax[];
-    }
-    interface ElseClauseSyntax extends ISyntaxNode {
-        elseKeyword: ISyntaxToken;
-        statement: IStatementSyntax;
-    }
-    interface CatchClauseSyntax extends ISyntaxNode {
-        catchKeyword: ISyntaxToken;
-        openParenToken: ISyntaxToken;
-        identifier: ISyntaxToken;
-        typeAnnotation: TypeAnnotationSyntax;
-        closeParenToken: ISyntaxToken;
-        block: BlockSyntax;
-    }
-    interface FinallyClauseSyntax extends ISyntaxNode {
-        finallyKeyword: ISyntaxToken;
-        block: BlockSyntax;
-    }
-    interface TypeParameterSyntax extends ISyntaxNode {
-        identifier: ISyntaxToken;
-        constraint: ConstraintSyntax;
-    }
-    interface ConstraintSyntax extends ISyntaxNode {
-        extendsKeyword: ISyntaxToken;
-        typeOrExpression: ISyntaxNodeOrToken;
-    }
-    interface SimplePropertyAssignmentSyntax extends ISyntaxNode, IPropertyAssignmentSyntax {
-        propertyName: ISyntaxToken;
-        colonToken: ISyntaxToken;
-        expression: IExpressionSyntax;
-    }
-    interface FunctionPropertyAssignmentSyntax extends ISyntaxNode, IPropertyAssignmentSyntax {
-        propertyName: ISyntaxToken;
-        callSignature: CallSignatureSyntax;
-        block: BlockSyntax;
-    }
-    interface ParameterSyntax extends ISyntaxNode {
-        dotDotDotToken: ISyntaxToken;
-        modifiers: ISyntaxToken[];
-        identifier: ISyntaxToken;
-        questionToken: ISyntaxToken;
-        typeAnnotation: TypeAnnotationSyntax;
-        equalsValueClause: EqualsValueClauseSyntax;
-    }
-    interface EnumElementSyntax extends ISyntaxNode {
-        propertyName: ISyntaxToken;
-        equalsValueClause: EqualsValueClauseSyntax;
-    }
-    interface TypeAnnotationSyntax extends ISyntaxNode {
-        colonToken: ISyntaxToken;
-        type: ITypeSyntax;
-    }
-    interface ExternalModuleReferenceSyntax extends ISyntaxNode, IModuleReferenceSyntax {
-        requireKeyword: ISyntaxToken;
-        openParenToken: ISyntaxToken;
-        stringLiteral: ISyntaxToken;
-        closeParenToken: ISyntaxToken;
-    }
-    interface ModuleNameModuleReferenceSyntax extends ISyntaxNode, IModuleReferenceSyntax {
-        moduleName: INameSyntax;
-    }
-    var nodeMetadata: string[][];
-    module Syntax {
-        interface ISyntaxFactory {
-            isConcrete: boolean;
-            SourceUnitSyntax: new (data: number, moduleElements: IModuleElementSyntax[], endOfFileToken: ISyntaxToken) => SourceUnitSyntax;
-            QualifiedNameSyntax: new (data: number, left: INameSyntax, dotToken: ISyntaxToken, right: ISyntaxToken) => QualifiedNameSyntax;
-            ObjectTypeSyntax: new (data: number, openBraceToken: ISyntaxToken, typeMembers: ITypeMemberSyntax[], closeBraceToken: ISyntaxToken) => ObjectTypeSyntax;
-            FunctionTypeSyntax: new (data: number, typeParameterList: TypeParameterListSyntax, parameterList: ParameterListSyntax, equalsGreaterThanToken: ISyntaxToken, type: ITypeSyntax) => FunctionTypeSyntax;
-            ArrayTypeSyntax: new (data: number, type: ITypeSyntax, openBracketToken: ISyntaxToken, closeBracketToken: ISyntaxToken) => ArrayTypeSyntax;
-            ConstructorTypeSyntax: new (data: number, newKeyword: ISyntaxToken, typeParameterList: TypeParameterListSyntax, parameterList: ParameterListSyntax, equalsGreaterThanToken: ISyntaxToken, type: ITypeSyntax) => ConstructorTypeSyntax;
-            GenericTypeSyntax: new (data: number, name: INameSyntax, typeArgumentList: TypeArgumentListSyntax) => GenericTypeSyntax;
-            TypeQuerySyntax: new (data: number, typeOfKeyword: ISyntaxToken, name: INameSyntax) => TypeQuerySyntax;
-            TupleTypeSyntax: new (data: number, openBracketToken: ISyntaxToken, types: ITypeSyntax[], closeBracketToken: ISyntaxToken) => TupleTypeSyntax;
-            InterfaceDeclarationSyntax: new (data: number, modifiers: ISyntaxToken[], interfaceKeyword: ISyntaxToken, identifier: ISyntaxToken, typeParameterList: TypeParameterListSyntax, heritageClauses: HeritageClauseSyntax[], body: ObjectTypeSyntax) => InterfaceDeclarationSyntax;
-            FunctionDeclarationSyntax: new (data: number, modifiers: ISyntaxToken[], functionKeyword: ISyntaxToken, identifier: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax, semicolonToken: ISyntaxToken) => FunctionDeclarationSyntax;
-            ModuleDeclarationSyntax: new (data: number, modifiers: ISyntaxToken[], moduleKeyword: ISyntaxToken, name: INameSyntax, stringLiteral: ISyntaxToken, openBraceToken: ISyntaxToken, moduleElements: IModuleElementSyntax[], closeBraceToken: ISyntaxToken) => ModuleDeclarationSyntax;
-            ClassDeclarationSyntax: new (data: number, modifiers: ISyntaxToken[], classKeyword: ISyntaxToken, identifier: ISyntaxToken, typeParameterList: TypeParameterListSyntax, heritageClauses: HeritageClauseSyntax[], openBraceToken: ISyntaxToken, classElements: IClassElementSyntax[], closeBraceToken: ISyntaxToken) => ClassDeclarationSyntax;
-            EnumDeclarationSyntax: new (data: number, modifiers: ISyntaxToken[], enumKeyword: ISyntaxToken, identifier: ISyntaxToken, openBraceToken: ISyntaxToken, enumElements: EnumElementSyntax[], closeBraceToken: ISyntaxToken) => EnumDeclarationSyntax;
-            ImportDeclarationSyntax: new (data: number, modifiers: ISyntaxToken[], importKeyword: ISyntaxToken, identifier: ISyntaxToken, equalsToken: ISyntaxToken, moduleReference: IModuleReferenceSyntax, semicolonToken: ISyntaxToken) => ImportDeclarationSyntax;
-            ExportAssignmentSyntax: new (data: number, exportKeyword: ISyntaxToken, equalsToken: ISyntaxToken, identifier: ISyntaxToken, semicolonToken: ISyntaxToken) => ExportAssignmentSyntax;
-            MemberFunctionDeclarationSyntax: new (data: number, modifiers: ISyntaxToken[], propertyName: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax, semicolonToken: ISyntaxToken) => MemberFunctionDeclarationSyntax;
-            MemberVariableDeclarationSyntax: new (data: number, modifiers: ISyntaxToken[], variableDeclarator: VariableDeclaratorSyntax, semicolonToken: ISyntaxToken) => MemberVariableDeclarationSyntax;
-            ConstructorDeclarationSyntax: new (data: number, modifiers: ISyntaxToken[], constructorKeyword: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax, semicolonToken: ISyntaxToken) => ConstructorDeclarationSyntax;
-            IndexMemberDeclarationSyntax: new (data: number, modifiers: ISyntaxToken[], indexSignature: IndexSignatureSyntax, semicolonToken: ISyntaxToken) => IndexMemberDeclarationSyntax;
-            GetAccessorSyntax: new (data: number, modifiers: ISyntaxToken[], getKeyword: ISyntaxToken, propertyName: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax) => GetAccessorSyntax;
-            SetAccessorSyntax: new (data: number, modifiers: ISyntaxToken[], setKeyword: ISyntaxToken, propertyName: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax) => SetAccessorSyntax;
-            PropertySignatureSyntax: new (data: number, propertyName: ISyntaxToken, questionToken: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax) => PropertySignatureSyntax;
-            CallSignatureSyntax: new (data: number, typeParameterList: TypeParameterListSyntax, parameterList: ParameterListSyntax, typeAnnotation: TypeAnnotationSyntax) => CallSignatureSyntax;
-            ConstructSignatureSyntax: new (data: number, newKeyword: ISyntaxToken, callSignature: CallSignatureSyntax) => ConstructSignatureSyntax;
-            IndexSignatureSyntax: new (data: number, openBracketToken: ISyntaxToken, parameters: ParameterSyntax[], closeBracketToken: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax) => IndexSignatureSyntax;
-            MethodSignatureSyntax: new (data: number, propertyName: ISyntaxToken, questionToken: ISyntaxToken, callSignature: CallSignatureSyntax) => MethodSignatureSyntax;
-            BlockSyntax: new (data: number, openBraceToken: ISyntaxToken, statements: IStatementSyntax[], closeBraceToken: ISyntaxToken) => BlockSyntax;
-            IfStatementSyntax: new (data: number, ifKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax, elseClause: ElseClauseSyntax) => IfStatementSyntax;
-            VariableStatementSyntax: new (data: number, modifiers: ISyntaxToken[], variableDeclaration: VariableDeclarationSyntax, semicolonToken: ISyntaxToken) => VariableStatementSyntax;
-            ExpressionStatementSyntax: new (data: number, expression: IExpressionSyntax, semicolonToken: ISyntaxToken) => ExpressionStatementSyntax;
-            ReturnStatementSyntax: new (data: number, returnKeyword: ISyntaxToken, expression: IExpressionSyntax, semicolonToken: ISyntaxToken) => ReturnStatementSyntax;
-            SwitchStatementSyntax: new (data: number, switchKeyword: ISyntaxToken, openParenToken: ISyntaxToken, expression: IExpressionSyntax, closeParenToken: ISyntaxToken, openBraceToken: ISyntaxToken, switchClauses: ISwitchClauseSyntax[], closeBraceToken: ISyntaxToken) => SwitchStatementSyntax;
-            BreakStatementSyntax: new (data: number, breakKeyword: ISyntaxToken, identifier: ISyntaxToken, semicolonToken: ISyntaxToken) => BreakStatementSyntax;
-            ContinueStatementSyntax: new (data: number, continueKeyword: ISyntaxToken, identifier: ISyntaxToken, semicolonToken: ISyntaxToken) => ContinueStatementSyntax;
-            ForStatementSyntax: new (data: number, forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, variableDeclaration: VariableDeclarationSyntax, initializer: IExpressionSyntax, firstSemicolonToken: ISyntaxToken, condition: IExpressionSyntax, secondSemicolonToken: ISyntaxToken, incrementor: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax) => ForStatementSyntax;
-            ForInStatementSyntax: new (data: number, forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, variableDeclaration: VariableDeclarationSyntax, left: IExpressionSyntax, inKeyword: ISyntaxToken, expression: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax) => ForInStatementSyntax;
-            EmptyStatementSyntax: new (data: number, semicolonToken: ISyntaxToken) => EmptyStatementSyntax;
-            ThrowStatementSyntax: new (data: number, throwKeyword: ISyntaxToken, expression: IExpressionSyntax, semicolonToken: ISyntaxToken) => ThrowStatementSyntax;
-            WhileStatementSyntax: new (data: number, whileKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax) => WhileStatementSyntax;
-            TryStatementSyntax: new (data: number, tryKeyword: ISyntaxToken, block: BlockSyntax, catchClause: CatchClauseSyntax, finallyClause: FinallyClauseSyntax) => TryStatementSyntax;
-            LabeledStatementSyntax: new (data: number, identifier: ISyntaxToken, colonToken: ISyntaxToken, statement: IStatementSyntax) => LabeledStatementSyntax;
-            DoStatementSyntax: new (data: number, doKeyword: ISyntaxToken, statement: IStatementSyntax, whileKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, semicolonToken: ISyntaxToken) => DoStatementSyntax;
-            DebuggerStatementSyntax: new (data: number, debuggerKeyword: ISyntaxToken, semicolonToken: ISyntaxToken) => DebuggerStatementSyntax;
-            WithStatementSyntax: new (data: number, withKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax) => WithStatementSyntax;
-            PrefixUnaryExpressionSyntax: new (data: number, operatorToken: ISyntaxToken, operand: IUnaryExpressionSyntax) => PrefixUnaryExpressionSyntax;
-            DeleteExpressionSyntax: new (data: number, deleteKeyword: ISyntaxToken, expression: IUnaryExpressionSyntax) => DeleteExpressionSyntax;
-            TypeOfExpressionSyntax: new (data: number, typeOfKeyword: ISyntaxToken, expression: IUnaryExpressionSyntax) => TypeOfExpressionSyntax;
-            VoidExpressionSyntax: new (data: number, voidKeyword: ISyntaxToken, expression: IUnaryExpressionSyntax) => VoidExpressionSyntax;
-            ConditionalExpressionSyntax: new (data: number, condition: IExpressionSyntax, questionToken: ISyntaxToken, whenTrue: IExpressionSyntax, colonToken: ISyntaxToken, whenFalse: IExpressionSyntax) => ConditionalExpressionSyntax;
-            BinaryExpressionSyntax: new (data: number, left: IExpressionSyntax, operatorToken: ISyntaxToken, right: IExpressionSyntax) => BinaryExpressionSyntax;
-            PostfixUnaryExpressionSyntax: new (data: number, operand: ILeftHandSideExpressionSyntax, operatorToken: ISyntaxToken) => PostfixUnaryExpressionSyntax;
-            MemberAccessExpressionSyntax: new (data: number, expression: ILeftHandSideExpressionSyntax, dotToken: ISyntaxToken, name: ISyntaxToken) => MemberAccessExpressionSyntax;
-            InvocationExpressionSyntax: new (data: number, expression: ILeftHandSideExpressionSyntax, argumentList: ArgumentListSyntax) => InvocationExpressionSyntax;
-            ArrayLiteralExpressionSyntax: new (data: number, openBracketToken: ISyntaxToken, expressions: IExpressionSyntax[], closeBracketToken: ISyntaxToken) => ArrayLiteralExpressionSyntax;
-            ObjectLiteralExpressionSyntax: new (data: number, openBraceToken: ISyntaxToken, propertyAssignments: IPropertyAssignmentSyntax[], closeBraceToken: ISyntaxToken) => ObjectLiteralExpressionSyntax;
-            ObjectCreationExpressionSyntax: new (data: number, newKeyword: ISyntaxToken, expression: IMemberExpressionSyntax, argumentList: ArgumentListSyntax) => ObjectCreationExpressionSyntax;
-            ParenthesizedExpressionSyntax: new (data: number, openParenToken: ISyntaxToken, expression: IExpressionSyntax, closeParenToken: ISyntaxToken) => ParenthesizedExpressionSyntax;
-            ParenthesizedArrowFunctionExpressionSyntax: new (data: number, callSignature: CallSignatureSyntax, equalsGreaterThanToken: ISyntaxToken, block: BlockSyntax, expression: IExpressionSyntax) => ParenthesizedArrowFunctionExpressionSyntax;
-            SimpleArrowFunctionExpressionSyntax: new (data: number, parameter: ParameterSyntax, equalsGreaterThanToken: ISyntaxToken, block: BlockSyntax, expression: IExpressionSyntax) => SimpleArrowFunctionExpressionSyntax;
-            CastExpressionSyntax: new (data: number, lessThanToken: ISyntaxToken, type: ITypeSyntax, greaterThanToken: ISyntaxToken, expression: IUnaryExpressionSyntax) => CastExpressionSyntax;
-            ElementAccessExpressionSyntax: new (data: number, expression: ILeftHandSideExpressionSyntax, openBracketToken: ISyntaxToken, argumentExpression: IExpressionSyntax, closeBracketToken: ISyntaxToken) => ElementAccessExpressionSyntax;
-            FunctionExpressionSyntax: new (data: number, functionKeyword: ISyntaxToken, identifier: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax) => FunctionExpressionSyntax;
-            OmittedExpressionSyntax: new (data: number) => OmittedExpressionSyntax;
-            VariableDeclarationSyntax: new (data: number, varKeyword: ISyntaxToken, variableDeclarators: VariableDeclaratorSyntax[]) => VariableDeclarationSyntax;
-            VariableDeclaratorSyntax: new (data: number, propertyName: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax, equalsValueClause: EqualsValueClauseSyntax) => VariableDeclaratorSyntax;
-            ArgumentListSyntax: new (data: number, typeArgumentList: TypeArgumentListSyntax, openParenToken: ISyntaxToken, arguments: IExpressionSyntax[], closeParenToken: ISyntaxToken) => ArgumentListSyntax;
-            ParameterListSyntax: new (data: number, openParenToken: ISyntaxToken, parameters: ParameterSyntax[], closeParenToken: ISyntaxToken) => ParameterListSyntax;
-            TypeArgumentListSyntax: new (data: number, lessThanToken: ISyntaxToken, typeArguments: ITypeSyntax[], greaterThanToken: ISyntaxToken) => TypeArgumentListSyntax;
-            TypeParameterListSyntax: new (data: number, lessThanToken: ISyntaxToken, typeParameters: TypeParameterSyntax[], greaterThanToken: ISyntaxToken) => TypeParameterListSyntax;
-            HeritageClauseSyntax: new (data: number, extendsOrImplementsKeyword: ISyntaxToken, typeNames: INameSyntax[]) => HeritageClauseSyntax;
-            EqualsValueClauseSyntax: new (data: number, equalsToken: ISyntaxToken, value: IExpressionSyntax) => EqualsValueClauseSyntax;
-            CaseSwitchClauseSyntax: new (data: number, caseKeyword: ISyntaxToken, expression: IExpressionSyntax, colonToken: ISyntaxToken, statements: IStatementSyntax[]) => CaseSwitchClauseSyntax;
-            DefaultSwitchClauseSyntax: new (data: number, defaultKeyword: ISyntaxToken, colonToken: ISyntaxToken, statements: IStatementSyntax[]) => DefaultSwitchClauseSyntax;
-            ElseClauseSyntax: new (data: number, elseKeyword: ISyntaxToken, statement: IStatementSyntax) => ElseClauseSyntax;
-            CatchClauseSyntax: new (data: number, catchKeyword: ISyntaxToken, openParenToken: ISyntaxToken, identifier: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax, closeParenToken: ISyntaxToken, block: BlockSyntax) => CatchClauseSyntax;
-            FinallyClauseSyntax: new (data: number, finallyKeyword: ISyntaxToken, block: BlockSyntax) => FinallyClauseSyntax;
-            TypeParameterSyntax: new (data: number, identifier: ISyntaxToken, constraint: ConstraintSyntax) => TypeParameterSyntax;
-            ConstraintSyntax: new (data: number, extendsKeyword: ISyntaxToken, typeOrExpression: ISyntaxNodeOrToken) => ConstraintSyntax;
-            SimplePropertyAssignmentSyntax: new (data: number, propertyName: ISyntaxToken, colonToken: ISyntaxToken, expression: IExpressionSyntax) => SimplePropertyAssignmentSyntax;
-            FunctionPropertyAssignmentSyntax: new (data: number, propertyName: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax) => FunctionPropertyAssignmentSyntax;
-            ParameterSyntax: new (data: number, dotDotDotToken: ISyntaxToken, modifiers: ISyntaxToken[], identifier: ISyntaxToken, questionToken: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax, equalsValueClause: EqualsValueClauseSyntax) => ParameterSyntax;
-            EnumElementSyntax: new (data: number, propertyName: ISyntaxToken, equalsValueClause: EqualsValueClauseSyntax) => EnumElementSyntax;
-            TypeAnnotationSyntax: new (data: number, colonToken: ISyntaxToken, type: ITypeSyntax) => TypeAnnotationSyntax;
-            ExternalModuleReferenceSyntax: new (data: number, requireKeyword: ISyntaxToken, openParenToken: ISyntaxToken, stringLiteral: ISyntaxToken, closeParenToken: ISyntaxToken) => ExternalModuleReferenceSyntax;
-            ModuleNameModuleReferenceSyntax: new (data: number, moduleName: INameSyntax) => ModuleNameModuleReferenceSyntax;
-        }
-    }
-}
-declare module TypeScript {
-    interface ISyntaxToken extends ISyntaxNodeOrToken, INameSyntax, IPrimaryExpressionSyntax {
+    interface ISyntaxToken extends ISyntaxNodeOrToken, INameSyntax, IPrimaryExpressionSyntax, IPropertyAssignmentSyntax, IPropertyNameSyntax {
         setFullStart(fullStart: number): void;
         fullStart(): number;
         fullWidth(): number;
@@ -5233,22 +4760,23 @@ declare module TypeScript.Syntax {
     function triviaList(trivia: ISyntaxTrivia[]): ISyntaxTriviaList;
 }
 declare module TypeScript {
-    class SyntaxUtilities {
-        static isAnyFunctionExpressionOrDeclaration(ast: ISyntaxElement): boolean;
-        static isLastTokenOnLine(token: ISyntaxToken, text: ISimpleText): boolean;
-        static isLeftHandSizeExpression(element: ISyntaxElement): boolean;
-        static isExpression(element: ISyntaxElement): boolean;
-        static isSwitchClause(element: ISyntaxElement): boolean;
-        static isTypeMember(element: ISyntaxElement): boolean;
-        static isClassElement(element: ISyntaxElement): boolean;
-        static isModuleElement(element: ISyntaxElement): boolean;
-        static isStatement(element: ISyntaxElement): boolean;
-        static isAngleBracket(positionedElement: ISyntaxElement): boolean;
-        static getToken(list: ISyntaxToken[], kind: SyntaxKind): ISyntaxToken;
-        static containsToken(list: ISyntaxToken[], kind: SyntaxKind): boolean;
-        static hasExportKeyword(moduleElement: IModuleElementSyntax): boolean;
-        static getExportKeyword(moduleElement: IModuleElementSyntax): ISyntaxToken;
-        static isAmbientDeclarationSyntax(positionNode: ISyntaxNode): boolean;
+    function childCount(element: ISyntaxElement): number;
+    function childAt(element: ISyntaxElement, index: number): ISyntaxElement;
+    module SyntaxUtilities {
+        function isAnyFunctionExpressionOrDeclaration(ast: ISyntaxElement): boolean;
+        function isLastTokenOnLine(token: ISyntaxToken, text: ISimpleText): boolean;
+        function isLeftHandSizeExpression(element: ISyntaxElement): boolean;
+        function isSwitchClause(element: ISyntaxElement): boolean;
+        function isTypeMember(element: ISyntaxElement): boolean;
+        function isClassElement(element: ISyntaxElement): boolean;
+        function isModuleElement(element: ISyntaxElement): boolean;
+        function isStatement(element: ISyntaxElement): boolean;
+        function isAngleBracket(positionedElement: ISyntaxElement): boolean;
+        function getToken(list: ISyntaxToken[], kind: SyntaxKind): ISyntaxToken;
+        function containsToken(list: ISyntaxToken[], kind: SyntaxKind): boolean;
+        function hasExportKeyword(moduleElement: IModuleElementSyntax): boolean;
+        function getExportKeyword(moduleElement: IModuleElementSyntax): ISyntaxToken;
+        function isAmbientDeclarationSyntax(positionNode: ISyntaxNode): boolean;
     }
 }
 declare module TypeScript {
@@ -5264,6 +4792,8 @@ declare module TypeScript {
         visitGenericType(node: GenericTypeSyntax): any;
         visitTypeQuery(node: TypeQuerySyntax): any;
         visitTupleType(node: TupleTypeSyntax): any;
+        visitUnionType(node: UnionTypeSyntax): any;
+        visitParenthesizedType(node: ParenthesizedTypeSyntax): any;
         visitInterfaceDeclaration(node: InterfaceDeclarationSyntax): any;
         visitFunctionDeclaration(node: FunctionDeclarationSyntax): any;
         visitModuleDeclaration(node: ModuleDeclarationSyntax): any;
@@ -5319,6 +4849,8 @@ declare module TypeScript {
         visitElementAccessExpression(node: ElementAccessExpressionSyntax): any;
         visitFunctionExpression(node: FunctionExpressionSyntax): any;
         visitOmittedExpression(node: OmittedExpressionSyntax): any;
+        visitTemplateExpression(node: TemplateExpressionSyntax): any;
+        visitTemplateAccessExpression(node: TemplateAccessExpressionSyntax): any;
         visitVariableDeclaration(node: VariableDeclarationSyntax): any;
         visitVariableDeclarator(node: VariableDeclaratorSyntax): any;
         visitArgumentList(node: ArgumentListSyntax): any;
@@ -5332,6 +4864,7 @@ declare module TypeScript {
         visitElseClause(node: ElseClauseSyntax): any;
         visitCatchClause(node: CatchClauseSyntax): any;
         visitFinallyClause(node: FinallyClauseSyntax): any;
+        visitTemplateClause(node: TemplateClauseSyntax): any;
         visitTypeParameter(node: TypeParameterSyntax): any;
         visitConstraint(node: ConstraintSyntax): any;
         visitSimplePropertyAssignment(node: SimplePropertyAssignmentSyntax): any;
@@ -5339,6 +4872,7 @@ declare module TypeScript {
         visitParameter(node: ParameterSyntax): any;
         visitEnumElement(node: EnumElementSyntax): any;
         visitTypeAnnotation(node: TypeAnnotationSyntax): any;
+        visitComputedPropertyName(node: ComputedPropertyNameSyntax): any;
         visitExternalModuleReference(node: ExternalModuleReferenceSyntax): any;
         visitModuleNameModuleReference(node: ModuleNameModuleReferenceSyntax): any;
     }
@@ -5346,13 +4880,8 @@ declare module TypeScript {
 declare module TypeScript {
     class SyntaxWalker implements ISyntaxVisitor {
         visitToken(token: ISyntaxToken): void;
-        visitNode(node: ISyntaxNode): void;
-        visitNodeOrToken(nodeOrToken: ISyntaxNodeOrToken): void;
         private visitOptionalToken(token);
-        visitOptionalNode(node: ISyntaxNode): void;
-        visitOptionalNodeOrToken(nodeOrToken: ISyntaxNodeOrToken): void;
         visitList(list: ISyntaxNodeOrToken[]): void;
-        visitSeparatedList(list: ISyntaxNodeOrToken[]): void;
         visitSourceUnit(node: SourceUnitSyntax): void;
         visitQualifiedName(node: QualifiedNameSyntax): void;
         visitObjectType(node: ObjectTypeSyntax): void;
@@ -5362,6 +4891,8 @@ declare module TypeScript {
         visitGenericType(node: GenericTypeSyntax): void;
         visitTypeQuery(node: TypeQuerySyntax): void;
         visitTupleType(node: TupleTypeSyntax): void;
+        visitUnionType(node: UnionTypeSyntax): void;
+        visitParenthesizedType(node: ParenthesizedTypeSyntax): void;
         visitInterfaceDeclaration(node: InterfaceDeclarationSyntax): void;
         visitFunctionDeclaration(node: FunctionDeclarationSyntax): void;
         visitModuleDeclaration(node: ModuleDeclarationSyntax): void;
@@ -5417,6 +4948,8 @@ declare module TypeScript {
         visitElementAccessExpression(node: ElementAccessExpressionSyntax): void;
         visitFunctionExpression(node: FunctionExpressionSyntax): void;
         visitOmittedExpression(node: OmittedExpressionSyntax): void;
+        visitTemplateExpression(node: TemplateExpressionSyntax): void;
+        visitTemplateAccessExpression(node: TemplateAccessExpressionSyntax): void;
         visitVariableDeclaration(node: VariableDeclarationSyntax): void;
         visitVariableDeclarator(node: VariableDeclaratorSyntax): void;
         visitArgumentList(node: ArgumentListSyntax): void;
@@ -5430,6 +4963,7 @@ declare module TypeScript {
         visitElseClause(node: ElseClauseSyntax): void;
         visitCatchClause(node: CatchClauseSyntax): void;
         visitFinallyClause(node: FinallyClauseSyntax): void;
+        visitTemplateClause(node: TemplateClauseSyntax): void;
         visitTypeParameter(node: TypeParameterSyntax): void;
         visitConstraint(node: ConstraintSyntax): void;
         visitSimplePropertyAssignment(node: SimplePropertyAssignmentSyntax): void;
@@ -5437,20 +4971,12 @@ declare module TypeScript {
         visitParameter(node: ParameterSyntax): void;
         visitEnumElement(node: EnumElementSyntax): void;
         visitTypeAnnotation(node: TypeAnnotationSyntax): void;
+        visitComputedPropertyName(node: ComputedPropertyNameSyntax): void;
         visitExternalModuleReference(node: ExternalModuleReferenceSyntax): void;
         visitModuleNameModuleReference(node: ModuleNameModuleReferenceSyntax): void;
     }
 }
-declare module TypeScript {
-    class DepthLimitedWalker extends SyntaxWalker {
-        private _depth;
-        private _maximumDepth;
-        constructor(maximumDepth: number);
-        visitNode(node: ISyntaxNode): void;
-    }
-}
 declare module TypeScript.Parser {
-    var syntaxFactory: Syntax.ISyntaxFactory;
     interface IParserSource {
         text: ISimpleText;
         fileName: string;
@@ -5472,94 +4998,119 @@ declare module TypeScript.Parser {
     function parse(fileName: string, text: ISimpleText, languageVersion: ts.ScriptTarget, isDeclaration: boolean): SyntaxTree;
     function parseSource(source: IParserSource, isDeclaration: boolean): SyntaxTree;
 }
-declare module TypeScript.Syntax.Concrete {
-    var isConcrete: boolean;
-    class SourceUnitSyntax extends SyntaxNode {
+declare module TypeScript {
+    interface SourceUnitSyntax extends ISyntaxNode {
         syntaxTree: SyntaxTree;
         moduleElements: IModuleElementSyntax[];
         endOfFileToken: ISyntaxToken;
-        constructor(data: number, moduleElements: IModuleElementSyntax[], endOfFileToken: ISyntaxToken);
     }
-    class QualifiedNameSyntax extends SyntaxNode implements INameSyntax {
+    interface SourceUnitConstructor {
+        new (data: number, moduleElements: IModuleElementSyntax[], endOfFileToken: ISyntaxToken): SourceUnitSyntax;
+    }
+    interface QualifiedNameSyntax extends ISyntaxNode, INameSyntax {
         left: INameSyntax;
         dotToken: ISyntaxToken;
         right: ISyntaxToken;
-        _nameBrand: any;
-        _typeBrand: any;
-        constructor(data: number, left: INameSyntax, dotToken: ISyntaxToken, right: ISyntaxToken);
     }
-    class ObjectTypeSyntax extends SyntaxNode implements ITypeSyntax {
+    interface QualifiedNameConstructor {
+        new (data: number, left: INameSyntax, dotToken: ISyntaxToken, right: ISyntaxToken): QualifiedNameSyntax;
+    }
+    interface ObjectTypeSyntax extends ISyntaxNode, ITypeSyntax {
         openBraceToken: ISyntaxToken;
-        typeMembers: ITypeMemberSyntax[];
+        typeMembers: ISeparatedSyntaxList<ITypeMemberSyntax>;
         closeBraceToken: ISyntaxToken;
-        _typeBrand: any;
-        constructor(data: number, openBraceToken: ISyntaxToken, typeMembers: ITypeMemberSyntax[], closeBraceToken: ISyntaxToken);
     }
-    class FunctionTypeSyntax extends SyntaxNode implements ITypeSyntax {
+    interface ObjectTypeConstructor {
+        new (data: number, openBraceToken: ISyntaxToken, typeMembers: ISeparatedSyntaxList<ITypeMemberSyntax>, closeBraceToken: ISyntaxToken): ObjectTypeSyntax;
+    }
+    interface FunctionTypeSyntax extends ISyntaxNode, ITypeSyntax {
         typeParameterList: TypeParameterListSyntax;
         parameterList: ParameterListSyntax;
         equalsGreaterThanToken: ISyntaxToken;
         type: ITypeSyntax;
-        _typeBrand: any;
-        constructor(data: number, typeParameterList: TypeParameterListSyntax, parameterList: ParameterListSyntax, equalsGreaterThanToken: ISyntaxToken, type: ITypeSyntax);
     }
-    class ArrayTypeSyntax extends SyntaxNode implements ITypeSyntax {
+    interface FunctionTypeConstructor {
+        new (data: number, typeParameterList: TypeParameterListSyntax, parameterList: ParameterListSyntax, equalsGreaterThanToken: ISyntaxToken, type: ITypeSyntax): FunctionTypeSyntax;
+    }
+    interface ArrayTypeSyntax extends ISyntaxNode, ITypeSyntax {
         type: ITypeSyntax;
         openBracketToken: ISyntaxToken;
         closeBracketToken: ISyntaxToken;
-        _typeBrand: any;
-        constructor(data: number, type: ITypeSyntax, openBracketToken: ISyntaxToken, closeBracketToken: ISyntaxToken);
     }
-    class ConstructorTypeSyntax extends SyntaxNode implements ITypeSyntax {
+    interface ArrayTypeConstructor {
+        new (data: number, type: ITypeSyntax, openBracketToken: ISyntaxToken, closeBracketToken: ISyntaxToken): ArrayTypeSyntax;
+    }
+    interface ConstructorTypeSyntax extends ISyntaxNode, ITypeSyntax {
         newKeyword: ISyntaxToken;
         typeParameterList: TypeParameterListSyntax;
         parameterList: ParameterListSyntax;
         equalsGreaterThanToken: ISyntaxToken;
         type: ITypeSyntax;
-        _typeBrand: any;
-        constructor(data: number, newKeyword: ISyntaxToken, typeParameterList: TypeParameterListSyntax, parameterList: ParameterListSyntax, equalsGreaterThanToken: ISyntaxToken, type: ITypeSyntax);
     }
-    class GenericTypeSyntax extends SyntaxNode implements ITypeSyntax {
+    interface ConstructorTypeConstructor {
+        new (data: number, newKeyword: ISyntaxToken, typeParameterList: TypeParameterListSyntax, parameterList: ParameterListSyntax, equalsGreaterThanToken: ISyntaxToken, type: ITypeSyntax): ConstructorTypeSyntax;
+    }
+    interface GenericTypeSyntax extends ISyntaxNode, ITypeSyntax {
         name: INameSyntax;
         typeArgumentList: TypeArgumentListSyntax;
-        _typeBrand: any;
-        constructor(data: number, name: INameSyntax, typeArgumentList: TypeArgumentListSyntax);
     }
-    class TypeQuerySyntax extends SyntaxNode implements ITypeSyntax {
+    interface GenericTypeConstructor {
+        new (data: number, name: INameSyntax, typeArgumentList: TypeArgumentListSyntax): GenericTypeSyntax;
+    }
+    interface TypeQuerySyntax extends ISyntaxNode, ITypeSyntax {
         typeOfKeyword: ISyntaxToken;
         name: INameSyntax;
-        _typeBrand: any;
-        constructor(data: number, typeOfKeyword: ISyntaxToken, name: INameSyntax);
     }
-    class TupleTypeSyntax extends SyntaxNode implements ITypeSyntax {
+    interface TypeQueryConstructor {
+        new (data: number, typeOfKeyword: ISyntaxToken, name: INameSyntax): TypeQuerySyntax;
+    }
+    interface TupleTypeSyntax extends ISyntaxNode, ITypeSyntax {
         openBracketToken: ISyntaxToken;
-        types: ITypeSyntax[];
+        types: ISeparatedSyntaxList<ITypeSyntax>;
         closeBracketToken: ISyntaxToken;
-        _typeBrand: any;
-        constructor(data: number, openBracketToken: ISyntaxToken, types: ITypeSyntax[], closeBracketToken: ISyntaxToken);
     }
-    class InterfaceDeclarationSyntax extends SyntaxNode implements IModuleElementSyntax {
+    interface TupleTypeConstructor {
+        new (data: number, openBracketToken: ISyntaxToken, types: ISeparatedSyntaxList<ITypeSyntax>, closeBracketToken: ISyntaxToken): TupleTypeSyntax;
+    }
+    interface UnionTypeSyntax extends ISyntaxNode, ITypeSyntax {
+        left: ITypeSyntax;
+        barToken: ISyntaxToken;
+        right: ITypeSyntax;
+    }
+    interface UnionTypeConstructor {
+        new (data: number, left: ITypeSyntax, barToken: ISyntaxToken, right: ITypeSyntax): UnionTypeSyntax;
+    }
+    interface ParenthesizedTypeSyntax extends ISyntaxNode, ITypeSyntax {
+        openParenToken: ISyntaxToken;
+        type: ITypeSyntax;
+        closeParenToken: ISyntaxToken;
+    }
+    interface ParenthesizedTypeConstructor {
+        new (data: number, openParenToken: ISyntaxToken, type: ITypeSyntax, closeParenToken: ISyntaxToken): ParenthesizedTypeSyntax;
+    }
+    interface InterfaceDeclarationSyntax extends ISyntaxNode, IModuleElementSyntax {
         modifiers: ISyntaxToken[];
         interfaceKeyword: ISyntaxToken;
         identifier: ISyntaxToken;
         typeParameterList: TypeParameterListSyntax;
         heritageClauses: HeritageClauseSyntax[];
         body: ObjectTypeSyntax;
-        _moduleElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], interfaceKeyword: ISyntaxToken, identifier: ISyntaxToken, typeParameterList: TypeParameterListSyntax, heritageClauses: HeritageClauseSyntax[], body: ObjectTypeSyntax);
     }
-    class FunctionDeclarationSyntax extends SyntaxNode implements IStatementSyntax {
+    interface InterfaceDeclarationConstructor {
+        new (data: number, modifiers: ISyntaxToken[], interfaceKeyword: ISyntaxToken, identifier: ISyntaxToken, typeParameterList: TypeParameterListSyntax, heritageClauses: HeritageClauseSyntax[], body: ObjectTypeSyntax): InterfaceDeclarationSyntax;
+    }
+    interface FunctionDeclarationSyntax extends ISyntaxNode, IStatementSyntax {
         modifiers: ISyntaxToken[];
         functionKeyword: ISyntaxToken;
         identifier: ISyntaxToken;
         callSignature: CallSignatureSyntax;
         block: BlockSyntax;
         semicolonToken: ISyntaxToken;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], functionKeyword: ISyntaxToken, identifier: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax, semicolonToken: ISyntaxToken);
     }
-    class ModuleDeclarationSyntax extends SyntaxNode implements IModuleElementSyntax {
+    interface FunctionDeclarationConstructor {
+        new (data: number, modifiers: ISyntaxToken[], functionKeyword: ISyntaxToken, identifier: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax, semicolonToken: ISyntaxToken): FunctionDeclarationSyntax;
+    }
+    interface ModuleDeclarationSyntax extends ISyntaxNode, IModuleElementSyntax {
         modifiers: ISyntaxToken[];
         moduleKeyword: ISyntaxToken;
         name: INameSyntax;
@@ -5567,10 +5118,11 @@ declare module TypeScript.Syntax.Concrete {
         openBraceToken: ISyntaxToken;
         moduleElements: IModuleElementSyntax[];
         closeBraceToken: ISyntaxToken;
-        _moduleElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], moduleKeyword: ISyntaxToken, name: INameSyntax, stringLiteral: ISyntaxToken, openBraceToken: ISyntaxToken, moduleElements: IModuleElementSyntax[], closeBraceToken: ISyntaxToken);
     }
-    class ClassDeclarationSyntax extends SyntaxNode implements IModuleElementSyntax {
+    interface ModuleDeclarationConstructor {
+        new (data: number, modifiers: ISyntaxToken[], moduleKeyword: ISyntaxToken, name: INameSyntax, stringLiteral: ISyntaxToken, openBraceToken: ISyntaxToken, moduleElements: IModuleElementSyntax[], closeBraceToken: ISyntaxToken): ModuleDeclarationSyntax;
+    }
+    interface ClassDeclarationSyntax extends ISyntaxNode, IModuleElementSyntax {
         modifiers: ISyntaxToken[];
         classKeyword: ISyntaxToken;
         identifier: ISyntaxToken;
@@ -5579,171 +5131,180 @@ declare module TypeScript.Syntax.Concrete {
         openBraceToken: ISyntaxToken;
         classElements: IClassElementSyntax[];
         closeBraceToken: ISyntaxToken;
-        _moduleElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], classKeyword: ISyntaxToken, identifier: ISyntaxToken, typeParameterList: TypeParameterListSyntax, heritageClauses: HeritageClauseSyntax[], openBraceToken: ISyntaxToken, classElements: IClassElementSyntax[], closeBraceToken: ISyntaxToken);
     }
-    class EnumDeclarationSyntax extends SyntaxNode implements IModuleElementSyntax {
+    interface ClassDeclarationConstructor {
+        new (data: number, modifiers: ISyntaxToken[], classKeyword: ISyntaxToken, identifier: ISyntaxToken, typeParameterList: TypeParameterListSyntax, heritageClauses: HeritageClauseSyntax[], openBraceToken: ISyntaxToken, classElements: IClassElementSyntax[], closeBraceToken: ISyntaxToken): ClassDeclarationSyntax;
+    }
+    interface EnumDeclarationSyntax extends ISyntaxNode, IModuleElementSyntax {
         modifiers: ISyntaxToken[];
         enumKeyword: ISyntaxToken;
         identifier: ISyntaxToken;
         openBraceToken: ISyntaxToken;
-        enumElements: EnumElementSyntax[];
+        enumElements: ISeparatedSyntaxList<EnumElementSyntax>;
         closeBraceToken: ISyntaxToken;
-        _moduleElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], enumKeyword: ISyntaxToken, identifier: ISyntaxToken, openBraceToken: ISyntaxToken, enumElements: EnumElementSyntax[], closeBraceToken: ISyntaxToken);
     }
-    class ImportDeclarationSyntax extends SyntaxNode implements IModuleElementSyntax {
+    interface EnumDeclarationConstructor {
+        new (data: number, modifiers: ISyntaxToken[], enumKeyword: ISyntaxToken, identifier: ISyntaxToken, openBraceToken: ISyntaxToken, enumElements: ISeparatedSyntaxList<EnumElementSyntax>, closeBraceToken: ISyntaxToken): EnumDeclarationSyntax;
+    }
+    interface ImportDeclarationSyntax extends ISyntaxNode, IModuleElementSyntax {
         modifiers: ISyntaxToken[];
         importKeyword: ISyntaxToken;
         identifier: ISyntaxToken;
         equalsToken: ISyntaxToken;
         moduleReference: IModuleReferenceSyntax;
         semicolonToken: ISyntaxToken;
-        _moduleElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], importKeyword: ISyntaxToken, identifier: ISyntaxToken, equalsToken: ISyntaxToken, moduleReference: IModuleReferenceSyntax, semicolonToken: ISyntaxToken);
     }
-    class ExportAssignmentSyntax extends SyntaxNode implements IModuleElementSyntax {
+    interface ImportDeclarationConstructor {
+        new (data: number, modifiers: ISyntaxToken[], importKeyword: ISyntaxToken, identifier: ISyntaxToken, equalsToken: ISyntaxToken, moduleReference: IModuleReferenceSyntax, semicolonToken: ISyntaxToken): ImportDeclarationSyntax;
+    }
+    interface ExportAssignmentSyntax extends ISyntaxNode, IModuleElementSyntax {
         exportKeyword: ISyntaxToken;
         equalsToken: ISyntaxToken;
         identifier: ISyntaxToken;
         semicolonToken: ISyntaxToken;
-        _moduleElementBrand: any;
-        constructor(data: number, exportKeyword: ISyntaxToken, equalsToken: ISyntaxToken, identifier: ISyntaxToken, semicolonToken: ISyntaxToken);
     }
-    class MemberFunctionDeclarationSyntax extends SyntaxNode implements IMemberDeclarationSyntax {
+    interface ExportAssignmentConstructor {
+        new (data: number, exportKeyword: ISyntaxToken, equalsToken: ISyntaxToken, identifier: ISyntaxToken, semicolonToken: ISyntaxToken): ExportAssignmentSyntax;
+    }
+    interface MemberFunctionDeclarationSyntax extends ISyntaxNode, IMemberDeclarationSyntax {
         modifiers: ISyntaxToken[];
-        propertyName: ISyntaxToken;
+        propertyName: IPropertyNameSyntax;
         callSignature: CallSignatureSyntax;
         block: BlockSyntax;
         semicolonToken: ISyntaxToken;
-        _memberDeclarationBrand: any;
-        _classElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], propertyName: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax, semicolonToken: ISyntaxToken);
     }
-    class MemberVariableDeclarationSyntax extends SyntaxNode implements IMemberDeclarationSyntax {
+    interface MemberFunctionDeclarationConstructor {
+        new (data: number, modifiers: ISyntaxToken[], propertyName: IPropertyNameSyntax, callSignature: CallSignatureSyntax, block: BlockSyntax, semicolonToken: ISyntaxToken): MemberFunctionDeclarationSyntax;
+    }
+    interface MemberVariableDeclarationSyntax extends ISyntaxNode, IMemberDeclarationSyntax {
         modifiers: ISyntaxToken[];
         variableDeclarator: VariableDeclaratorSyntax;
         semicolonToken: ISyntaxToken;
-        _memberDeclarationBrand: any;
-        _classElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], variableDeclarator: VariableDeclaratorSyntax, semicolonToken: ISyntaxToken);
     }
-    class ConstructorDeclarationSyntax extends SyntaxNode implements IClassElementSyntax {
+    interface MemberVariableDeclarationConstructor {
+        new (data: number, modifiers: ISyntaxToken[], variableDeclarator: VariableDeclaratorSyntax, semicolonToken: ISyntaxToken): MemberVariableDeclarationSyntax;
+    }
+    interface ConstructorDeclarationSyntax extends ISyntaxNode, IClassElementSyntax {
         modifiers: ISyntaxToken[];
         constructorKeyword: ISyntaxToken;
         callSignature: CallSignatureSyntax;
         block: BlockSyntax;
         semicolonToken: ISyntaxToken;
-        _classElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], constructorKeyword: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax, semicolonToken: ISyntaxToken);
     }
-    class IndexMemberDeclarationSyntax extends SyntaxNode implements IClassElementSyntax {
+    interface ConstructorDeclarationConstructor {
+        new (data: number, modifiers: ISyntaxToken[], constructorKeyword: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax, semicolonToken: ISyntaxToken): ConstructorDeclarationSyntax;
+    }
+    interface IndexMemberDeclarationSyntax extends ISyntaxNode, IClassElementSyntax {
         modifiers: ISyntaxToken[];
         indexSignature: IndexSignatureSyntax;
         semicolonToken: ISyntaxToken;
-        _classElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], indexSignature: IndexSignatureSyntax, semicolonToken: ISyntaxToken);
     }
-    class GetAccessorSyntax extends SyntaxNode implements IMemberDeclarationSyntax, IPropertyAssignmentSyntax {
+    interface IndexMemberDeclarationConstructor {
+        new (data: number, modifiers: ISyntaxToken[], indexSignature: IndexSignatureSyntax, semicolonToken: ISyntaxToken): IndexMemberDeclarationSyntax;
+    }
+    interface GetAccessorSyntax extends ISyntaxNode, IAccessorSyntax {
         modifiers: ISyntaxToken[];
         getKeyword: ISyntaxToken;
-        propertyName: ISyntaxToken;
+        propertyName: IPropertyNameSyntax;
         callSignature: CallSignatureSyntax;
         block: BlockSyntax;
-        _memberDeclarationBrand: any;
-        _propertyAssignmentBrand: any;
-        _classElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], getKeyword: ISyntaxToken, propertyName: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax);
     }
-    class SetAccessorSyntax extends SyntaxNode implements IMemberDeclarationSyntax, IPropertyAssignmentSyntax {
+    interface GetAccessorConstructor {
+        new (data: number, modifiers: ISyntaxToken[], getKeyword: ISyntaxToken, propertyName: IPropertyNameSyntax, callSignature: CallSignatureSyntax, block: BlockSyntax): GetAccessorSyntax;
+    }
+    interface SetAccessorSyntax extends ISyntaxNode, IAccessorSyntax {
         modifiers: ISyntaxToken[];
         setKeyword: ISyntaxToken;
-        propertyName: ISyntaxToken;
+        propertyName: IPropertyNameSyntax;
         callSignature: CallSignatureSyntax;
         block: BlockSyntax;
-        _memberDeclarationBrand: any;
-        _propertyAssignmentBrand: any;
-        _classElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], setKeyword: ISyntaxToken, propertyName: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax);
     }
-    class PropertySignatureSyntax extends SyntaxNode implements ITypeMemberSyntax {
-        propertyName: ISyntaxToken;
+    interface SetAccessorConstructor {
+        new (data: number, modifiers: ISyntaxToken[], setKeyword: ISyntaxToken, propertyName: IPropertyNameSyntax, callSignature: CallSignatureSyntax, block: BlockSyntax): SetAccessorSyntax;
+    }
+    interface PropertySignatureSyntax extends ISyntaxNode, ITypeMemberSyntax {
+        propertyName: IPropertyNameSyntax;
         questionToken: ISyntaxToken;
         typeAnnotation: TypeAnnotationSyntax;
-        _typeMemberBrand: any;
-        constructor(data: number, propertyName: ISyntaxToken, questionToken: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax);
     }
-    class CallSignatureSyntax extends SyntaxNode implements ITypeMemberSyntax {
+    interface PropertySignatureConstructor {
+        new (data: number, propertyName: IPropertyNameSyntax, questionToken: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax): PropertySignatureSyntax;
+    }
+    interface CallSignatureSyntax extends ISyntaxNode, ITypeMemberSyntax {
         typeParameterList: TypeParameterListSyntax;
         parameterList: ParameterListSyntax;
         typeAnnotation: TypeAnnotationSyntax;
-        _typeMemberBrand: any;
-        constructor(data: number, typeParameterList: TypeParameterListSyntax, parameterList: ParameterListSyntax, typeAnnotation: TypeAnnotationSyntax);
     }
-    class ConstructSignatureSyntax extends SyntaxNode implements ITypeMemberSyntax {
+    interface CallSignatureConstructor {
+        new (data: number, typeParameterList: TypeParameterListSyntax, parameterList: ParameterListSyntax, typeAnnotation: TypeAnnotationSyntax): CallSignatureSyntax;
+    }
+    interface ConstructSignatureSyntax extends ISyntaxNode, ITypeMemberSyntax {
         newKeyword: ISyntaxToken;
         callSignature: CallSignatureSyntax;
-        _typeMemberBrand: any;
-        constructor(data: number, newKeyword: ISyntaxToken, callSignature: CallSignatureSyntax);
     }
-    class IndexSignatureSyntax extends SyntaxNode implements ITypeMemberSyntax {
+    interface ConstructSignatureConstructor {
+        new (data: number, newKeyword: ISyntaxToken, callSignature: CallSignatureSyntax): ConstructSignatureSyntax;
+    }
+    interface IndexSignatureSyntax extends ISyntaxNode, ITypeMemberSyntax {
         openBracketToken: ISyntaxToken;
-        parameters: ParameterSyntax[];
+        parameters: ISeparatedSyntaxList<ParameterSyntax>;
         closeBracketToken: ISyntaxToken;
         typeAnnotation: TypeAnnotationSyntax;
-        _typeMemberBrand: any;
-        constructor(data: number, openBracketToken: ISyntaxToken, parameters: ParameterSyntax[], closeBracketToken: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax);
     }
-    class MethodSignatureSyntax extends SyntaxNode implements ITypeMemberSyntax {
-        propertyName: ISyntaxToken;
+    interface IndexSignatureConstructor {
+        new (data: number, openBracketToken: ISyntaxToken, parameters: ISeparatedSyntaxList<ParameterSyntax>, closeBracketToken: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax): IndexSignatureSyntax;
+    }
+    interface MethodSignatureSyntax extends ISyntaxNode, ITypeMemberSyntax {
+        propertyName: IPropertyNameSyntax;
         questionToken: ISyntaxToken;
         callSignature: CallSignatureSyntax;
-        _typeMemberBrand: any;
-        constructor(data: number, propertyName: ISyntaxToken, questionToken: ISyntaxToken, callSignature: CallSignatureSyntax);
     }
-    class BlockSyntax extends SyntaxNode implements IStatementSyntax {
+    interface MethodSignatureConstructor {
+        new (data: number, propertyName: IPropertyNameSyntax, questionToken: ISyntaxToken, callSignature: CallSignatureSyntax): MethodSignatureSyntax;
+    }
+    interface BlockSyntax extends ISyntaxNode, IStatementSyntax {
         openBraceToken: ISyntaxToken;
         statements: IStatementSyntax[];
         closeBraceToken: ISyntaxToken;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, openBraceToken: ISyntaxToken, statements: IStatementSyntax[], closeBraceToken: ISyntaxToken);
     }
-    class IfStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface BlockConstructor {
+        new (data: number, openBraceToken: ISyntaxToken, statements: IStatementSyntax[], closeBraceToken: ISyntaxToken): BlockSyntax;
+    }
+    interface IfStatementSyntax extends ISyntaxNode, IStatementSyntax {
         ifKeyword: ISyntaxToken;
         openParenToken: ISyntaxToken;
         condition: IExpressionSyntax;
         closeParenToken: ISyntaxToken;
         statement: IStatementSyntax;
         elseClause: ElseClauseSyntax;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, ifKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax, elseClause: ElseClauseSyntax);
     }
-    class VariableStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface IfStatementConstructor {
+        new (data: number, ifKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax, elseClause: ElseClauseSyntax): IfStatementSyntax;
+    }
+    interface VariableStatementSyntax extends ISyntaxNode, IStatementSyntax {
         modifiers: ISyntaxToken[];
         variableDeclaration: VariableDeclarationSyntax;
         semicolonToken: ISyntaxToken;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, modifiers: ISyntaxToken[], variableDeclaration: VariableDeclarationSyntax, semicolonToken: ISyntaxToken);
     }
-    class ExpressionStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface VariableStatementConstructor {
+        new (data: number, modifiers: ISyntaxToken[], variableDeclaration: VariableDeclarationSyntax, semicolonToken: ISyntaxToken): VariableStatementSyntax;
+    }
+    interface ExpressionStatementSyntax extends ISyntaxNode, IStatementSyntax {
         expression: IExpressionSyntax;
         semicolonToken: ISyntaxToken;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, expression: IExpressionSyntax, semicolonToken: ISyntaxToken);
     }
-    class ReturnStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface ExpressionStatementConstructor {
+        new (data: number, expression: IExpressionSyntax, semicolonToken: ISyntaxToken): ExpressionStatementSyntax;
+    }
+    interface ReturnStatementSyntax extends ISyntaxNode, IStatementSyntax {
         returnKeyword: ISyntaxToken;
         expression: IExpressionSyntax;
         semicolonToken: ISyntaxToken;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, returnKeyword: ISyntaxToken, expression: IExpressionSyntax, semicolonToken: ISyntaxToken);
     }
-    class SwitchStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface ReturnStatementConstructor {
+        new (data: number, returnKeyword: ISyntaxToken, expression: IExpressionSyntax, semicolonToken: ISyntaxToken): ReturnStatementSyntax;
+    }
+    interface SwitchStatementSyntax extends ISyntaxNode, IStatementSyntax {
         switchKeyword: ISyntaxToken;
         openParenToken: ISyntaxToken;
         expression: IExpressionSyntax;
@@ -5751,27 +5312,27 @@ declare module TypeScript.Syntax.Concrete {
         openBraceToken: ISyntaxToken;
         switchClauses: ISwitchClauseSyntax[];
         closeBraceToken: ISyntaxToken;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, switchKeyword: ISyntaxToken, openParenToken: ISyntaxToken, expression: IExpressionSyntax, closeParenToken: ISyntaxToken, openBraceToken: ISyntaxToken, switchClauses: ISwitchClauseSyntax[], closeBraceToken: ISyntaxToken);
     }
-    class BreakStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface SwitchStatementConstructor {
+        new (data: number, switchKeyword: ISyntaxToken, openParenToken: ISyntaxToken, expression: IExpressionSyntax, closeParenToken: ISyntaxToken, openBraceToken: ISyntaxToken, switchClauses: ISwitchClauseSyntax[], closeBraceToken: ISyntaxToken): SwitchStatementSyntax;
+    }
+    interface BreakStatementSyntax extends ISyntaxNode, IStatementSyntax {
         breakKeyword: ISyntaxToken;
         identifier: ISyntaxToken;
         semicolonToken: ISyntaxToken;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, breakKeyword: ISyntaxToken, identifier: ISyntaxToken, semicolonToken: ISyntaxToken);
     }
-    class ContinueStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface BreakStatementConstructor {
+        new (data: number, breakKeyword: ISyntaxToken, identifier: ISyntaxToken, semicolonToken: ISyntaxToken): BreakStatementSyntax;
+    }
+    interface ContinueStatementSyntax extends ISyntaxNode, IStatementSyntax {
         continueKeyword: ISyntaxToken;
         identifier: ISyntaxToken;
         semicolonToken: ISyntaxToken;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, continueKeyword: ISyntaxToken, identifier: ISyntaxToken, semicolonToken: ISyntaxToken);
     }
-    class ForStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface ContinueStatementConstructor {
+        new (data: number, continueKeyword: ISyntaxToken, identifier: ISyntaxToken, semicolonToken: ISyntaxToken): ContinueStatementSyntax;
+    }
+    interface ForStatementSyntax extends ISyntaxNode, IStatementSyntax {
         forKeyword: ISyntaxToken;
         openParenToken: ISyntaxToken;
         variableDeclaration: VariableDeclarationSyntax;
@@ -5782,11 +5343,11 @@ declare module TypeScript.Syntax.Concrete {
         incrementor: IExpressionSyntax;
         closeParenToken: ISyntaxToken;
         statement: IStatementSyntax;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, variableDeclaration: VariableDeclarationSyntax, initializer: IExpressionSyntax, firstSemicolonToken: ISyntaxToken, condition: IExpressionSyntax, secondSemicolonToken: ISyntaxToken, incrementor: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax);
     }
-    class ForInStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface ForStatementConstructor {
+        new (data: number, forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, variableDeclaration: VariableDeclarationSyntax, initializer: IExpressionSyntax, firstSemicolonToken: ISyntaxToken, condition: IExpressionSyntax, secondSemicolonToken: ISyntaxToken, incrementor: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax): ForStatementSyntax;
+    }
+    interface ForInStatementSyntax extends ISyntaxNode, IStatementSyntax {
         forKeyword: ISyntaxToken;
         openParenToken: ISyntaxToken;
         variableDeclaration: VariableDeclarationSyntax;
@@ -5795,52 +5356,52 @@ declare module TypeScript.Syntax.Concrete {
         expression: IExpressionSyntax;
         closeParenToken: ISyntaxToken;
         statement: IStatementSyntax;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, variableDeclaration: VariableDeclarationSyntax, left: IExpressionSyntax, inKeyword: ISyntaxToken, expression: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax);
     }
-    class EmptyStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface ForInStatementConstructor {
+        new (data: number, forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, variableDeclaration: VariableDeclarationSyntax, left: IExpressionSyntax, inKeyword: ISyntaxToken, expression: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax): ForInStatementSyntax;
+    }
+    interface EmptyStatementSyntax extends ISyntaxNode, IStatementSyntax {
         semicolonToken: ISyntaxToken;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, semicolonToken: ISyntaxToken);
     }
-    class ThrowStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface EmptyStatementConstructor {
+        new (data: number, semicolonToken: ISyntaxToken): EmptyStatementSyntax;
+    }
+    interface ThrowStatementSyntax extends ISyntaxNode, IStatementSyntax {
         throwKeyword: ISyntaxToken;
         expression: IExpressionSyntax;
         semicolonToken: ISyntaxToken;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, throwKeyword: ISyntaxToken, expression: IExpressionSyntax, semicolonToken: ISyntaxToken);
     }
-    class WhileStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface ThrowStatementConstructor {
+        new (data: number, throwKeyword: ISyntaxToken, expression: IExpressionSyntax, semicolonToken: ISyntaxToken): ThrowStatementSyntax;
+    }
+    interface WhileStatementSyntax extends ISyntaxNode, IStatementSyntax {
         whileKeyword: ISyntaxToken;
         openParenToken: ISyntaxToken;
         condition: IExpressionSyntax;
         closeParenToken: ISyntaxToken;
         statement: IStatementSyntax;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, whileKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax);
     }
-    class TryStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface WhileStatementConstructor {
+        new (data: number, whileKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax): WhileStatementSyntax;
+    }
+    interface TryStatementSyntax extends ISyntaxNode, IStatementSyntax {
         tryKeyword: ISyntaxToken;
         block: BlockSyntax;
         catchClause: CatchClauseSyntax;
         finallyClause: FinallyClauseSyntax;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, tryKeyword: ISyntaxToken, block: BlockSyntax, catchClause: CatchClauseSyntax, finallyClause: FinallyClauseSyntax);
     }
-    class LabeledStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface TryStatementConstructor {
+        new (data: number, tryKeyword: ISyntaxToken, block: BlockSyntax, catchClause: CatchClauseSyntax, finallyClause: FinallyClauseSyntax): TryStatementSyntax;
+    }
+    interface LabeledStatementSyntax extends ISyntaxNode, IStatementSyntax {
         identifier: ISyntaxToken;
         colonToken: ISyntaxToken;
         statement: IStatementSyntax;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, identifier: ISyntaxToken, colonToken: ISyntaxToken, statement: IStatementSyntax);
     }
-    class DoStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface LabeledStatementConstructor {
+        new (data: number, identifier: ISyntaxToken, colonToken: ISyntaxToken, statement: IStatementSyntax): LabeledStatementSyntax;
+    }
+    interface DoStatementSyntax extends ISyntaxNode, IStatementSyntax {
         doKeyword: ISyntaxToken;
         statement: IStatementSyntax;
         whileKeyword: ISyntaxToken;
@@ -5848,352 +5409,479 @@ declare module TypeScript.Syntax.Concrete {
         condition: IExpressionSyntax;
         closeParenToken: ISyntaxToken;
         semicolonToken: ISyntaxToken;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, doKeyword: ISyntaxToken, statement: IStatementSyntax, whileKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, semicolonToken: ISyntaxToken);
     }
-    class DebuggerStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface DoStatementConstructor {
+        new (data: number, doKeyword: ISyntaxToken, statement: IStatementSyntax, whileKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, semicolonToken: ISyntaxToken): DoStatementSyntax;
+    }
+    interface DebuggerStatementSyntax extends ISyntaxNode, IStatementSyntax {
         debuggerKeyword: ISyntaxToken;
         semicolonToken: ISyntaxToken;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, debuggerKeyword: ISyntaxToken, semicolonToken: ISyntaxToken);
     }
-    class WithStatementSyntax extends SyntaxNode implements IStatementSyntax {
+    interface DebuggerStatementConstructor {
+        new (data: number, debuggerKeyword: ISyntaxToken, semicolonToken: ISyntaxToken): DebuggerStatementSyntax;
+    }
+    interface WithStatementSyntax extends ISyntaxNode, IStatementSyntax {
         withKeyword: ISyntaxToken;
         openParenToken: ISyntaxToken;
         condition: IExpressionSyntax;
         closeParenToken: ISyntaxToken;
         statement: IStatementSyntax;
-        _statementBrand: any;
-        _moduleElementBrand: any;
-        constructor(data: number, withKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax);
     }
-    class PrefixUnaryExpressionSyntax extends SyntaxNode implements IUnaryExpressionSyntax {
+    interface WithStatementConstructor {
+        new (data: number, withKeyword: ISyntaxToken, openParenToken: ISyntaxToken, condition: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax): WithStatementSyntax;
+    }
+    interface PrefixUnaryExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
         operatorToken: ISyntaxToken;
         operand: IUnaryExpressionSyntax;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, operatorToken: ISyntaxToken, operand: IUnaryExpressionSyntax);
-        kind(): SyntaxKind;
     }
-    class DeleteExpressionSyntax extends SyntaxNode implements IUnaryExpressionSyntax {
+    interface PrefixUnaryExpressionConstructor {
+        new (data: number, operatorToken: ISyntaxToken, operand: IUnaryExpressionSyntax): PrefixUnaryExpressionSyntax;
+    }
+    interface DeleteExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
         deleteKeyword: ISyntaxToken;
         expression: IUnaryExpressionSyntax;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, deleteKeyword: ISyntaxToken, expression: IUnaryExpressionSyntax);
     }
-    class TypeOfExpressionSyntax extends SyntaxNode implements IUnaryExpressionSyntax {
+    interface DeleteExpressionConstructor {
+        new (data: number, deleteKeyword: ISyntaxToken, expression: IUnaryExpressionSyntax): DeleteExpressionSyntax;
+    }
+    interface TypeOfExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
         typeOfKeyword: ISyntaxToken;
         expression: IUnaryExpressionSyntax;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, typeOfKeyword: ISyntaxToken, expression: IUnaryExpressionSyntax);
     }
-    class VoidExpressionSyntax extends SyntaxNode implements IUnaryExpressionSyntax {
+    interface TypeOfExpressionConstructor {
+        new (data: number, typeOfKeyword: ISyntaxToken, expression: IUnaryExpressionSyntax): TypeOfExpressionSyntax;
+    }
+    interface VoidExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
         voidKeyword: ISyntaxToken;
         expression: IUnaryExpressionSyntax;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, voidKeyword: ISyntaxToken, expression: IUnaryExpressionSyntax);
     }
-    class ConditionalExpressionSyntax extends SyntaxNode implements IExpressionSyntax {
+    interface VoidExpressionConstructor {
+        new (data: number, voidKeyword: ISyntaxToken, expression: IUnaryExpressionSyntax): VoidExpressionSyntax;
+    }
+    interface ConditionalExpressionSyntax extends ISyntaxNode, IExpressionSyntax {
         condition: IExpressionSyntax;
         questionToken: ISyntaxToken;
         whenTrue: IExpressionSyntax;
         colonToken: ISyntaxToken;
         whenFalse: IExpressionSyntax;
-        _expressionBrand: any;
-        constructor(data: number, condition: IExpressionSyntax, questionToken: ISyntaxToken, whenTrue: IExpressionSyntax, colonToken: ISyntaxToken, whenFalse: IExpressionSyntax);
     }
-    class BinaryExpressionSyntax extends SyntaxNode implements IExpressionSyntax {
+    interface ConditionalExpressionConstructor {
+        new (data: number, condition: IExpressionSyntax, questionToken: ISyntaxToken, whenTrue: IExpressionSyntax, colonToken: ISyntaxToken, whenFalse: IExpressionSyntax): ConditionalExpressionSyntax;
+    }
+    interface BinaryExpressionSyntax extends ISyntaxNode, IExpressionSyntax {
         left: IExpressionSyntax;
         operatorToken: ISyntaxToken;
         right: IExpressionSyntax;
-        _expressionBrand: any;
-        constructor(data: number, left: IExpressionSyntax, operatorToken: ISyntaxToken, right: IExpressionSyntax);
-        kind(): SyntaxKind;
     }
-    class PostfixUnaryExpressionSyntax extends SyntaxNode implements IPostfixExpressionSyntax {
+    interface BinaryExpressionConstructor {
+        new (data: number, left: IExpressionSyntax, operatorToken: ISyntaxToken, right: IExpressionSyntax): BinaryExpressionSyntax;
+    }
+    interface PostfixUnaryExpressionSyntax extends ISyntaxNode, IPostfixExpressionSyntax {
         operand: ILeftHandSideExpressionSyntax;
         operatorToken: ISyntaxToken;
-        _postfixExpressionBrand: any;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, operand: ILeftHandSideExpressionSyntax, operatorToken: ISyntaxToken);
-        kind(): SyntaxKind;
     }
-    class MemberAccessExpressionSyntax extends SyntaxNode implements IMemberExpressionSyntax, ICallExpressionSyntax {
+    interface PostfixUnaryExpressionConstructor {
+        new (data: number, operand: ILeftHandSideExpressionSyntax, operatorToken: ISyntaxToken): PostfixUnaryExpressionSyntax;
+    }
+    interface MemberAccessExpressionSyntax extends ISyntaxNode, IMemberExpressionSyntax, ICallExpressionSyntax {
         expression: ILeftHandSideExpressionSyntax;
         dotToken: ISyntaxToken;
         name: ISyntaxToken;
-        _memberExpressionBrand: any;
-        _callExpressionBrand: any;
-        _leftHandSideExpressionBrand: any;
-        _postfixExpressionBrand: any;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, expression: ILeftHandSideExpressionSyntax, dotToken: ISyntaxToken, name: ISyntaxToken);
     }
-    class InvocationExpressionSyntax extends SyntaxNode implements ICallExpressionSyntax {
+    interface MemberAccessExpressionConstructor {
+        new (data: number, expression: ILeftHandSideExpressionSyntax, dotToken: ISyntaxToken, name: ISyntaxToken): MemberAccessExpressionSyntax;
+    }
+    interface InvocationExpressionSyntax extends ISyntaxNode, ICallExpressionSyntax {
         expression: ILeftHandSideExpressionSyntax;
         argumentList: ArgumentListSyntax;
-        _callExpressionBrand: any;
-        _leftHandSideExpressionBrand: any;
-        _postfixExpressionBrand: any;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, expression: ILeftHandSideExpressionSyntax, argumentList: ArgumentListSyntax);
     }
-    class ArrayLiteralExpressionSyntax extends SyntaxNode implements IPrimaryExpressionSyntax {
+    interface InvocationExpressionConstructor {
+        new (data: number, expression: ILeftHandSideExpressionSyntax, argumentList: ArgumentListSyntax): InvocationExpressionSyntax;
+    }
+    interface ArrayLiteralExpressionSyntax extends ISyntaxNode, IPrimaryExpressionSyntax {
         openBracketToken: ISyntaxToken;
-        expressions: IExpressionSyntax[];
+        expressions: ISeparatedSyntaxList<IExpressionSyntax>;
         closeBracketToken: ISyntaxToken;
-        _primaryExpressionBrand: any;
-        _memberExpressionBrand: any;
-        _leftHandSideExpressionBrand: any;
-        _postfixExpressionBrand: any;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, openBracketToken: ISyntaxToken, expressions: IExpressionSyntax[], closeBracketToken: ISyntaxToken);
     }
-    class ObjectLiteralExpressionSyntax extends SyntaxNode implements IPrimaryExpressionSyntax {
+    interface ArrayLiteralExpressionConstructor {
+        new (data: number, openBracketToken: ISyntaxToken, expressions: ISeparatedSyntaxList<IExpressionSyntax>, closeBracketToken: ISyntaxToken): ArrayLiteralExpressionSyntax;
+    }
+    interface ObjectLiteralExpressionSyntax extends ISyntaxNode, IPrimaryExpressionSyntax {
         openBraceToken: ISyntaxToken;
-        propertyAssignments: IPropertyAssignmentSyntax[];
+        propertyAssignments: ISeparatedSyntaxList<IPropertyAssignmentSyntax>;
         closeBraceToken: ISyntaxToken;
-        _primaryExpressionBrand: any;
-        _memberExpressionBrand: any;
-        _leftHandSideExpressionBrand: any;
-        _postfixExpressionBrand: any;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, openBraceToken: ISyntaxToken, propertyAssignments: IPropertyAssignmentSyntax[], closeBraceToken: ISyntaxToken);
     }
-    class ObjectCreationExpressionSyntax extends SyntaxNode implements IPrimaryExpressionSyntax {
+    interface ObjectLiteralExpressionConstructor {
+        new (data: number, openBraceToken: ISyntaxToken, propertyAssignments: ISeparatedSyntaxList<IPropertyAssignmentSyntax>, closeBraceToken: ISyntaxToken): ObjectLiteralExpressionSyntax;
+    }
+    interface ObjectCreationExpressionSyntax extends ISyntaxNode, IPrimaryExpressionSyntax {
         newKeyword: ISyntaxToken;
         expression: IMemberExpressionSyntax;
         argumentList: ArgumentListSyntax;
-        _primaryExpressionBrand: any;
-        _memberExpressionBrand: any;
-        _leftHandSideExpressionBrand: any;
-        _postfixExpressionBrand: any;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, newKeyword: ISyntaxToken, expression: IMemberExpressionSyntax, argumentList: ArgumentListSyntax);
     }
-    class ParenthesizedExpressionSyntax extends SyntaxNode implements IPrimaryExpressionSyntax {
+    interface ObjectCreationExpressionConstructor {
+        new (data: number, newKeyword: ISyntaxToken, expression: IMemberExpressionSyntax, argumentList: ArgumentListSyntax): ObjectCreationExpressionSyntax;
+    }
+    interface ParenthesizedExpressionSyntax extends ISyntaxNode, IPrimaryExpressionSyntax {
         openParenToken: ISyntaxToken;
         expression: IExpressionSyntax;
         closeParenToken: ISyntaxToken;
-        _primaryExpressionBrand: any;
-        _memberExpressionBrand: any;
-        _leftHandSideExpressionBrand: any;
-        _postfixExpressionBrand: any;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, openParenToken: ISyntaxToken, expression: IExpressionSyntax, closeParenToken: ISyntaxToken);
     }
-    class ParenthesizedArrowFunctionExpressionSyntax extends SyntaxNode implements IUnaryExpressionSyntax {
+    interface ParenthesizedExpressionConstructor {
+        new (data: number, openParenToken: ISyntaxToken, expression: IExpressionSyntax, closeParenToken: ISyntaxToken): ParenthesizedExpressionSyntax;
+    }
+    interface ParenthesizedArrowFunctionExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
         callSignature: CallSignatureSyntax;
         equalsGreaterThanToken: ISyntaxToken;
         block: BlockSyntax;
         expression: IExpressionSyntax;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, callSignature: CallSignatureSyntax, equalsGreaterThanToken: ISyntaxToken, block: BlockSyntax, expression: IExpressionSyntax);
     }
-    class SimpleArrowFunctionExpressionSyntax extends SyntaxNode implements IUnaryExpressionSyntax {
+    interface ParenthesizedArrowFunctionExpressionConstructor {
+        new (data: number, callSignature: CallSignatureSyntax, equalsGreaterThanToken: ISyntaxToken, block: BlockSyntax, expression: IExpressionSyntax): ParenthesizedArrowFunctionExpressionSyntax;
+    }
+    interface SimpleArrowFunctionExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
         parameter: ParameterSyntax;
         equalsGreaterThanToken: ISyntaxToken;
         block: BlockSyntax;
         expression: IExpressionSyntax;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, parameter: ParameterSyntax, equalsGreaterThanToken: ISyntaxToken, block: BlockSyntax, expression: IExpressionSyntax);
     }
-    class CastExpressionSyntax extends SyntaxNode implements IUnaryExpressionSyntax {
+    interface SimpleArrowFunctionExpressionConstructor {
+        new (data: number, parameter: ParameterSyntax, equalsGreaterThanToken: ISyntaxToken, block: BlockSyntax, expression: IExpressionSyntax): SimpleArrowFunctionExpressionSyntax;
+    }
+    interface CastExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
         lessThanToken: ISyntaxToken;
         type: ITypeSyntax;
         greaterThanToken: ISyntaxToken;
         expression: IUnaryExpressionSyntax;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, lessThanToken: ISyntaxToken, type: ITypeSyntax, greaterThanToken: ISyntaxToken, expression: IUnaryExpressionSyntax);
     }
-    class ElementAccessExpressionSyntax extends SyntaxNode implements IMemberExpressionSyntax, ICallExpressionSyntax {
+    interface CastExpressionConstructor {
+        new (data: number, lessThanToken: ISyntaxToken, type: ITypeSyntax, greaterThanToken: ISyntaxToken, expression: IUnaryExpressionSyntax): CastExpressionSyntax;
+    }
+    interface ElementAccessExpressionSyntax extends ISyntaxNode, IMemberExpressionSyntax, ICallExpressionSyntax {
         expression: ILeftHandSideExpressionSyntax;
         openBracketToken: ISyntaxToken;
         argumentExpression: IExpressionSyntax;
         closeBracketToken: ISyntaxToken;
-        _memberExpressionBrand: any;
-        _callExpressionBrand: any;
-        _leftHandSideExpressionBrand: any;
-        _postfixExpressionBrand: any;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, expression: ILeftHandSideExpressionSyntax, openBracketToken: ISyntaxToken, argumentExpression: IExpressionSyntax, closeBracketToken: ISyntaxToken);
     }
-    class FunctionExpressionSyntax extends SyntaxNode implements IPrimaryExpressionSyntax {
+    interface ElementAccessExpressionConstructor {
+        new (data: number, expression: ILeftHandSideExpressionSyntax, openBracketToken: ISyntaxToken, argumentExpression: IExpressionSyntax, closeBracketToken: ISyntaxToken): ElementAccessExpressionSyntax;
+    }
+    interface FunctionExpressionSyntax extends ISyntaxNode, IPrimaryExpressionSyntax {
         functionKeyword: ISyntaxToken;
         identifier: ISyntaxToken;
         callSignature: CallSignatureSyntax;
         block: BlockSyntax;
-        _primaryExpressionBrand: any;
-        _memberExpressionBrand: any;
-        _leftHandSideExpressionBrand: any;
-        _postfixExpressionBrand: any;
-        _unaryExpressionBrand: any;
-        _expressionBrand: any;
-        constructor(data: number, functionKeyword: ISyntaxToken, identifier: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax);
     }
-    class OmittedExpressionSyntax extends SyntaxNode implements IExpressionSyntax {
-        _expressionBrand: any;
-        constructor(data: number);
+    interface FunctionExpressionConstructor {
+        new (data: number, functionKeyword: ISyntaxToken, identifier: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax): FunctionExpressionSyntax;
     }
-    class VariableDeclarationSyntax extends SyntaxNode {
+    interface OmittedExpressionSyntax extends ISyntaxNode, IExpressionSyntax {
+    }
+    interface OmittedExpressionConstructor {
+        new (data: number): OmittedExpressionSyntax;
+    }
+    interface TemplateExpressionSyntax extends ISyntaxNode, IPrimaryExpressionSyntax {
+        templateStartToken: ISyntaxToken;
+        templateClauses: TemplateClauseSyntax[];
+    }
+    interface TemplateExpressionConstructor {
+        new (data: number, templateStartToken: ISyntaxToken, templateClauses: TemplateClauseSyntax[]): TemplateExpressionSyntax;
+    }
+    interface TemplateAccessExpressionSyntax extends ISyntaxNode, IMemberExpressionSyntax, ICallExpressionSyntax {
+        expression: ILeftHandSideExpressionSyntax;
+        templateExpression: IPrimaryExpressionSyntax;
+    }
+    interface TemplateAccessExpressionConstructor {
+        new (data: number, expression: ILeftHandSideExpressionSyntax, templateExpression: IPrimaryExpressionSyntax): TemplateAccessExpressionSyntax;
+    }
+    interface VariableDeclarationSyntax extends ISyntaxNode {
         varKeyword: ISyntaxToken;
-        variableDeclarators: VariableDeclaratorSyntax[];
-        constructor(data: number, varKeyword: ISyntaxToken, variableDeclarators: VariableDeclaratorSyntax[]);
+        variableDeclarators: ISeparatedSyntaxList<VariableDeclaratorSyntax>;
     }
-    class VariableDeclaratorSyntax extends SyntaxNode {
-        propertyName: ISyntaxToken;
+    interface VariableDeclarationConstructor {
+        new (data: number, varKeyword: ISyntaxToken, variableDeclarators: ISeparatedSyntaxList<VariableDeclaratorSyntax>): VariableDeclarationSyntax;
+    }
+    interface VariableDeclaratorSyntax extends ISyntaxNode {
+        propertyName: IPropertyNameSyntax;
         typeAnnotation: TypeAnnotationSyntax;
         equalsValueClause: EqualsValueClauseSyntax;
-        constructor(data: number, propertyName: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax, equalsValueClause: EqualsValueClauseSyntax);
     }
-    class ArgumentListSyntax extends SyntaxNode {
+    interface VariableDeclaratorConstructor {
+        new (data: number, propertyName: IPropertyNameSyntax, typeAnnotation: TypeAnnotationSyntax, equalsValueClause: EqualsValueClauseSyntax): VariableDeclaratorSyntax;
+    }
+    interface ArgumentListSyntax extends ISyntaxNode {
         typeArgumentList: TypeArgumentListSyntax;
         openParenToken: ISyntaxToken;
-        arguments: IExpressionSyntax[];
+        arguments: ISeparatedSyntaxList<IExpressionSyntax>;
         closeParenToken: ISyntaxToken;
-        constructor(data: number, typeArgumentList: TypeArgumentListSyntax, openParenToken: ISyntaxToken, _arguments: IExpressionSyntax[], closeParenToken: ISyntaxToken);
     }
-    class ParameterListSyntax extends SyntaxNode {
+    interface ArgumentListConstructor {
+        new (data: number, typeArgumentList: TypeArgumentListSyntax, openParenToken: ISyntaxToken, _arguments: ISeparatedSyntaxList<IExpressionSyntax>, closeParenToken: ISyntaxToken): ArgumentListSyntax;
+    }
+    interface ParameterListSyntax extends ISyntaxNode {
         openParenToken: ISyntaxToken;
-        parameters: ParameterSyntax[];
+        parameters: ISeparatedSyntaxList<ParameterSyntax>;
         closeParenToken: ISyntaxToken;
-        constructor(data: number, openParenToken: ISyntaxToken, parameters: ParameterSyntax[], closeParenToken: ISyntaxToken);
     }
-    class TypeArgumentListSyntax extends SyntaxNode {
+    interface ParameterListConstructor {
+        new (data: number, openParenToken: ISyntaxToken, parameters: ISeparatedSyntaxList<ParameterSyntax>, closeParenToken: ISyntaxToken): ParameterListSyntax;
+    }
+    interface TypeArgumentListSyntax extends ISyntaxNode {
         lessThanToken: ISyntaxToken;
-        typeArguments: ITypeSyntax[];
+        typeArguments: ISeparatedSyntaxList<ITypeSyntax>;
         greaterThanToken: ISyntaxToken;
-        constructor(data: number, lessThanToken: ISyntaxToken, typeArguments: ITypeSyntax[], greaterThanToken: ISyntaxToken);
     }
-    class TypeParameterListSyntax extends SyntaxNode {
+    interface TypeArgumentListConstructor {
+        new (data: number, lessThanToken: ISyntaxToken, typeArguments: ISeparatedSyntaxList<ITypeSyntax>, greaterThanToken: ISyntaxToken): TypeArgumentListSyntax;
+    }
+    interface TypeParameterListSyntax extends ISyntaxNode {
         lessThanToken: ISyntaxToken;
-        typeParameters: TypeParameterSyntax[];
+        typeParameters: ISeparatedSyntaxList<TypeParameterSyntax>;
         greaterThanToken: ISyntaxToken;
-        constructor(data: number, lessThanToken: ISyntaxToken, typeParameters: TypeParameterSyntax[], greaterThanToken: ISyntaxToken);
     }
-    class HeritageClauseSyntax extends SyntaxNode {
+    interface TypeParameterListConstructor {
+        new (data: number, lessThanToken: ISyntaxToken, typeParameters: ISeparatedSyntaxList<TypeParameterSyntax>, greaterThanToken: ISyntaxToken): TypeParameterListSyntax;
+    }
+    interface HeritageClauseSyntax extends ISyntaxNode {
         extendsOrImplementsKeyword: ISyntaxToken;
-        typeNames: INameSyntax[];
-        constructor(data: number, extendsOrImplementsKeyword: ISyntaxToken, typeNames: INameSyntax[]);
-        kind(): SyntaxKind;
+        typeNames: ISeparatedSyntaxList<INameSyntax>;
     }
-    class EqualsValueClauseSyntax extends SyntaxNode {
+    interface HeritageClauseConstructor {
+        new (data: number, extendsOrImplementsKeyword: ISyntaxToken, typeNames: ISeparatedSyntaxList<INameSyntax>): HeritageClauseSyntax;
+    }
+    interface EqualsValueClauseSyntax extends ISyntaxNode {
         equalsToken: ISyntaxToken;
         value: IExpressionSyntax;
-        constructor(data: number, equalsToken: ISyntaxToken, value: IExpressionSyntax);
     }
-    class CaseSwitchClauseSyntax extends SyntaxNode implements ISwitchClauseSyntax {
+    interface EqualsValueClauseConstructor {
+        new (data: number, equalsToken: ISyntaxToken, value: IExpressionSyntax): EqualsValueClauseSyntax;
+    }
+    interface CaseSwitchClauseSyntax extends ISyntaxNode, ISwitchClauseSyntax {
         caseKeyword: ISyntaxToken;
         expression: IExpressionSyntax;
         colonToken: ISyntaxToken;
         statements: IStatementSyntax[];
-        _switchClauseBrand: any;
-        constructor(data: number, caseKeyword: ISyntaxToken, expression: IExpressionSyntax, colonToken: ISyntaxToken, statements: IStatementSyntax[]);
     }
-    class DefaultSwitchClauseSyntax extends SyntaxNode implements ISwitchClauseSyntax {
+    interface CaseSwitchClauseConstructor {
+        new (data: number, caseKeyword: ISyntaxToken, expression: IExpressionSyntax, colonToken: ISyntaxToken, statements: IStatementSyntax[]): CaseSwitchClauseSyntax;
+    }
+    interface DefaultSwitchClauseSyntax extends ISyntaxNode, ISwitchClauseSyntax {
         defaultKeyword: ISyntaxToken;
         colonToken: ISyntaxToken;
         statements: IStatementSyntax[];
-        _switchClauseBrand: any;
-        constructor(data: number, defaultKeyword: ISyntaxToken, colonToken: ISyntaxToken, statements: IStatementSyntax[]);
     }
-    class ElseClauseSyntax extends SyntaxNode {
+    interface DefaultSwitchClauseConstructor {
+        new (data: number, defaultKeyword: ISyntaxToken, colonToken: ISyntaxToken, statements: IStatementSyntax[]): DefaultSwitchClauseSyntax;
+    }
+    interface ElseClauseSyntax extends ISyntaxNode {
         elseKeyword: ISyntaxToken;
         statement: IStatementSyntax;
-        constructor(data: number, elseKeyword: ISyntaxToken, statement: IStatementSyntax);
     }
-    class CatchClauseSyntax extends SyntaxNode {
+    interface ElseClauseConstructor {
+        new (data: number, elseKeyword: ISyntaxToken, statement: IStatementSyntax): ElseClauseSyntax;
+    }
+    interface CatchClauseSyntax extends ISyntaxNode {
         catchKeyword: ISyntaxToken;
         openParenToken: ISyntaxToken;
         identifier: ISyntaxToken;
         typeAnnotation: TypeAnnotationSyntax;
         closeParenToken: ISyntaxToken;
         block: BlockSyntax;
-        constructor(data: number, catchKeyword: ISyntaxToken, openParenToken: ISyntaxToken, identifier: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax, closeParenToken: ISyntaxToken, block: BlockSyntax);
     }
-    class FinallyClauseSyntax extends SyntaxNode {
+    interface CatchClauseConstructor {
+        new (data: number, catchKeyword: ISyntaxToken, openParenToken: ISyntaxToken, identifier: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax, closeParenToken: ISyntaxToken, block: BlockSyntax): CatchClauseSyntax;
+    }
+    interface FinallyClauseSyntax extends ISyntaxNode {
         finallyKeyword: ISyntaxToken;
         block: BlockSyntax;
-        constructor(data: number, finallyKeyword: ISyntaxToken, block: BlockSyntax);
     }
-    class TypeParameterSyntax extends SyntaxNode {
+    interface FinallyClauseConstructor {
+        new (data: number, finallyKeyword: ISyntaxToken, block: BlockSyntax): FinallyClauseSyntax;
+    }
+    interface TemplateClauseSyntax extends ISyntaxNode {
+        expression: IExpressionSyntax;
+        templateMiddleOrEndToken: ISyntaxToken;
+    }
+    interface TemplateClauseConstructor {
+        new (data: number, expression: IExpressionSyntax, templateMiddleOrEndToken: ISyntaxToken): TemplateClauseSyntax;
+    }
+    interface TypeParameterSyntax extends ISyntaxNode {
         identifier: ISyntaxToken;
         constraint: ConstraintSyntax;
-        constructor(data: number, identifier: ISyntaxToken, constraint: ConstraintSyntax);
     }
-    class ConstraintSyntax extends SyntaxNode {
+    interface TypeParameterConstructor {
+        new (data: number, identifier: ISyntaxToken, constraint: ConstraintSyntax): TypeParameterSyntax;
+    }
+    interface ConstraintSyntax extends ISyntaxNode {
         extendsKeyword: ISyntaxToken;
         typeOrExpression: ISyntaxNodeOrToken;
-        constructor(data: number, extendsKeyword: ISyntaxToken, typeOrExpression: ISyntaxNodeOrToken);
     }
-    class SimplePropertyAssignmentSyntax extends SyntaxNode implements IPropertyAssignmentSyntax {
-        propertyName: ISyntaxToken;
+    interface ConstraintConstructor {
+        new (data: number, extendsKeyword: ISyntaxToken, typeOrExpression: ISyntaxNodeOrToken): ConstraintSyntax;
+    }
+    interface SimplePropertyAssignmentSyntax extends ISyntaxNode, IPropertyAssignmentSyntax {
+        propertyName: IPropertyNameSyntax;
         colonToken: ISyntaxToken;
         expression: IExpressionSyntax;
-        _propertyAssignmentBrand: any;
-        constructor(data: number, propertyName: ISyntaxToken, colonToken: ISyntaxToken, expression: IExpressionSyntax);
     }
-    class FunctionPropertyAssignmentSyntax extends SyntaxNode implements IPropertyAssignmentSyntax {
-        propertyName: ISyntaxToken;
+    interface SimplePropertyAssignmentConstructor {
+        new (data: number, propertyName: IPropertyNameSyntax, colonToken: ISyntaxToken, expression: IExpressionSyntax): SimplePropertyAssignmentSyntax;
+    }
+    interface FunctionPropertyAssignmentSyntax extends ISyntaxNode, IPropertyAssignmentSyntax {
+        propertyName: IPropertyNameSyntax;
         callSignature: CallSignatureSyntax;
         block: BlockSyntax;
-        _propertyAssignmentBrand: any;
-        constructor(data: number, propertyName: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax);
     }
-    class ParameterSyntax extends SyntaxNode {
+    interface FunctionPropertyAssignmentConstructor {
+        new (data: number, propertyName: IPropertyNameSyntax, callSignature: CallSignatureSyntax, block: BlockSyntax): FunctionPropertyAssignmentSyntax;
+    }
+    interface ParameterSyntax extends ISyntaxNode {
         dotDotDotToken: ISyntaxToken;
         modifiers: ISyntaxToken[];
         identifier: ISyntaxToken;
         questionToken: ISyntaxToken;
         typeAnnotation: TypeAnnotationSyntax;
         equalsValueClause: EqualsValueClauseSyntax;
-        constructor(data: number, dotDotDotToken: ISyntaxToken, modifiers: ISyntaxToken[], identifier: ISyntaxToken, questionToken: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax, equalsValueClause: EqualsValueClauseSyntax);
     }
-    class EnumElementSyntax extends SyntaxNode {
-        propertyName: ISyntaxToken;
+    interface ParameterConstructor {
+        new (data: number, dotDotDotToken: ISyntaxToken, modifiers: ISyntaxToken[], identifier: ISyntaxToken, questionToken: ISyntaxToken, typeAnnotation: TypeAnnotationSyntax, equalsValueClause: EqualsValueClauseSyntax): ParameterSyntax;
+    }
+    interface EnumElementSyntax extends ISyntaxNode {
+        propertyName: IPropertyNameSyntax;
         equalsValueClause: EqualsValueClauseSyntax;
-        constructor(data: number, propertyName: ISyntaxToken, equalsValueClause: EqualsValueClauseSyntax);
     }
-    class TypeAnnotationSyntax extends SyntaxNode {
+    interface EnumElementConstructor {
+        new (data: number, propertyName: IPropertyNameSyntax, equalsValueClause: EqualsValueClauseSyntax): EnumElementSyntax;
+    }
+    interface TypeAnnotationSyntax extends ISyntaxNode {
         colonToken: ISyntaxToken;
         type: ITypeSyntax;
-        constructor(data: number, colonToken: ISyntaxToken, type: ITypeSyntax);
     }
-    class ExternalModuleReferenceSyntax extends SyntaxNode implements IModuleReferenceSyntax {
+    interface TypeAnnotationConstructor {
+        new (data: number, colonToken: ISyntaxToken, type: ITypeSyntax): TypeAnnotationSyntax;
+    }
+    interface ComputedPropertyNameSyntax extends ISyntaxNode, IPropertyNameSyntax {
+        openBracketToken: ISyntaxToken;
+        expression: IExpressionSyntax;
+        closeBracketToken: ISyntaxToken;
+    }
+    interface ComputedPropertyNameConstructor {
+        new (data: number, openBracketToken: ISyntaxToken, expression: IExpressionSyntax, closeBracketToken: ISyntaxToken): ComputedPropertyNameSyntax;
+    }
+    interface ExternalModuleReferenceSyntax extends ISyntaxNode, IModuleReferenceSyntax {
         requireKeyword: ISyntaxToken;
         openParenToken: ISyntaxToken;
         stringLiteral: ISyntaxToken;
         closeParenToken: ISyntaxToken;
-        _moduleReferenceBrand: any;
-        constructor(data: number, requireKeyword: ISyntaxToken, openParenToken: ISyntaxToken, stringLiteral: ISyntaxToken, closeParenToken: ISyntaxToken);
     }
-    class ModuleNameModuleReferenceSyntax extends SyntaxNode implements IModuleReferenceSyntax {
+    interface ExternalModuleReferenceConstructor {
+        new (data: number, requireKeyword: ISyntaxToken, openParenToken: ISyntaxToken, stringLiteral: ISyntaxToken, closeParenToken: ISyntaxToken): ExternalModuleReferenceSyntax;
+    }
+    interface ModuleNameModuleReferenceSyntax extends ISyntaxNode, IModuleReferenceSyntax {
         moduleName: INameSyntax;
-        _moduleReferenceBrand: any;
-        constructor(data: number, moduleName: INameSyntax);
     }
+    interface ModuleNameModuleReferenceConstructor {
+        new (data: number, moduleName: INameSyntax): ModuleNameModuleReferenceSyntax;
+    }
+}
+declare module TypeScript {
+    var SourceUnitSyntax: SourceUnitConstructor;
+    var QualifiedNameSyntax: QualifiedNameConstructor;
+    var ObjectTypeSyntax: ObjectTypeConstructor;
+    var FunctionTypeSyntax: FunctionTypeConstructor;
+    var ArrayTypeSyntax: ArrayTypeConstructor;
+    var ConstructorTypeSyntax: ConstructorTypeConstructor;
+    var GenericTypeSyntax: GenericTypeConstructor;
+    var TypeQuerySyntax: TypeQueryConstructor;
+    var TupleTypeSyntax: TupleTypeConstructor;
+    var UnionTypeSyntax: UnionTypeConstructor;
+    var ParenthesizedTypeSyntax: ParenthesizedTypeConstructor;
+    var InterfaceDeclarationSyntax: InterfaceDeclarationConstructor;
+    var FunctionDeclarationSyntax: FunctionDeclarationConstructor;
+    var ModuleDeclarationSyntax: ModuleDeclarationConstructor;
+    var ClassDeclarationSyntax: ClassDeclarationConstructor;
+    var EnumDeclarationSyntax: EnumDeclarationConstructor;
+    var ImportDeclarationSyntax: ImportDeclarationConstructor;
+    var ExportAssignmentSyntax: ExportAssignmentConstructor;
+    var MemberFunctionDeclarationSyntax: MemberFunctionDeclarationConstructor;
+    var MemberVariableDeclarationSyntax: MemberVariableDeclarationConstructor;
+    var ConstructorDeclarationSyntax: ConstructorDeclarationConstructor;
+    var IndexMemberDeclarationSyntax: IndexMemberDeclarationConstructor;
+    var GetAccessorSyntax: GetAccessorConstructor;
+    var SetAccessorSyntax: SetAccessorConstructor;
+    var PropertySignatureSyntax: PropertySignatureConstructor;
+    var CallSignatureSyntax: CallSignatureConstructor;
+    var ConstructSignatureSyntax: ConstructSignatureConstructor;
+    var IndexSignatureSyntax: IndexSignatureConstructor;
+    var MethodSignatureSyntax: MethodSignatureConstructor;
+    var BlockSyntax: BlockConstructor;
+    var IfStatementSyntax: IfStatementConstructor;
+    var VariableStatementSyntax: VariableStatementConstructor;
+    var ExpressionStatementSyntax: ExpressionStatementConstructor;
+    var ReturnStatementSyntax: ReturnStatementConstructor;
+    var SwitchStatementSyntax: SwitchStatementConstructor;
+    var BreakStatementSyntax: BreakStatementConstructor;
+    var ContinueStatementSyntax: ContinueStatementConstructor;
+    var ForStatementSyntax: ForStatementConstructor;
+    var ForInStatementSyntax: ForInStatementConstructor;
+    var EmptyStatementSyntax: EmptyStatementConstructor;
+    var ThrowStatementSyntax: ThrowStatementConstructor;
+    var WhileStatementSyntax: WhileStatementConstructor;
+    var TryStatementSyntax: TryStatementConstructor;
+    var LabeledStatementSyntax: LabeledStatementConstructor;
+    var DoStatementSyntax: DoStatementConstructor;
+    var DebuggerStatementSyntax: DebuggerStatementConstructor;
+    var WithStatementSyntax: WithStatementConstructor;
+    var PrefixUnaryExpressionSyntax: PrefixUnaryExpressionConstructor;
+    var DeleteExpressionSyntax: DeleteExpressionConstructor;
+    var TypeOfExpressionSyntax: TypeOfExpressionConstructor;
+    var VoidExpressionSyntax: VoidExpressionConstructor;
+    var ConditionalExpressionSyntax: ConditionalExpressionConstructor;
+    var BinaryExpressionSyntax: BinaryExpressionConstructor;
+    var PostfixUnaryExpressionSyntax: PostfixUnaryExpressionConstructor;
+    var MemberAccessExpressionSyntax: MemberAccessExpressionConstructor;
+    var InvocationExpressionSyntax: InvocationExpressionConstructor;
+    var ArrayLiteralExpressionSyntax: ArrayLiteralExpressionConstructor;
+    var ObjectLiteralExpressionSyntax: ObjectLiteralExpressionConstructor;
+    var ObjectCreationExpressionSyntax: ObjectCreationExpressionConstructor;
+    var ParenthesizedExpressionSyntax: ParenthesizedExpressionConstructor;
+    var ParenthesizedArrowFunctionExpressionSyntax: ParenthesizedArrowFunctionExpressionConstructor;
+    var SimpleArrowFunctionExpressionSyntax: SimpleArrowFunctionExpressionConstructor;
+    var CastExpressionSyntax: CastExpressionConstructor;
+    var ElementAccessExpressionSyntax: ElementAccessExpressionConstructor;
+    var FunctionExpressionSyntax: FunctionExpressionConstructor;
+    var OmittedExpressionSyntax: OmittedExpressionConstructor;
+    var TemplateExpressionSyntax: TemplateExpressionConstructor;
+    var TemplateAccessExpressionSyntax: TemplateAccessExpressionConstructor;
+    var VariableDeclarationSyntax: VariableDeclarationConstructor;
+    var VariableDeclaratorSyntax: VariableDeclaratorConstructor;
+    var ArgumentListSyntax: ArgumentListConstructor;
+    var ParameterListSyntax: ParameterListConstructor;
+    var TypeArgumentListSyntax: TypeArgumentListConstructor;
+    var TypeParameterListSyntax: TypeParameterListConstructor;
+    var HeritageClauseSyntax: HeritageClauseConstructor;
+    var EqualsValueClauseSyntax: EqualsValueClauseConstructor;
+    var CaseSwitchClauseSyntax: CaseSwitchClauseConstructor;
+    var DefaultSwitchClauseSyntax: DefaultSwitchClauseConstructor;
+    var ElseClauseSyntax: ElseClauseConstructor;
+    var CatchClauseSyntax: CatchClauseConstructor;
+    var FinallyClauseSyntax: FinallyClauseConstructor;
+    var TemplateClauseSyntax: TemplateClauseConstructor;
+    var TypeParameterSyntax: TypeParameterConstructor;
+    var ConstraintSyntax: ConstraintConstructor;
+    var SimplePropertyAssignmentSyntax: SimplePropertyAssignmentConstructor;
+    var FunctionPropertyAssignmentSyntax: FunctionPropertyAssignmentConstructor;
+    var ParameterSyntax: ParameterConstructor;
+    var EnumElementSyntax: EnumElementConstructor;
+    var TypeAnnotationSyntax: TypeAnnotationConstructor;
+    var ComputedPropertyNameSyntax: ComputedPropertyNameConstructor;
+    var ExternalModuleReferenceSyntax: ExternalModuleReferenceConstructor;
+    var ModuleNameModuleReferenceSyntax: ModuleNameModuleReferenceConstructor;
 }
 declare module TypeScript {
     var syntaxDiagnosticsTime: number;
     class SyntaxTree {
         text: ISimpleText;
-        private _isConcrete;
         private _sourceUnit;
         private _isDeclaration;
         private _parserDiagnostics;
@@ -6203,8 +5891,7 @@ declare module TypeScript {
         private _languageVersion;
         private _amdDependencies;
         private _isExternalModule;
-        constructor(isConcrete: boolean, sourceUnit: SourceUnitSyntax, isDeclaration: boolean, diagnostics: Diagnostic[], fileName: string, text: ISimpleText, languageVersion: ts.ScriptTarget);
-        isConcrete(): boolean;
+        constructor(sourceUnit: SourceUnitSyntax, isDeclaration: boolean, diagnostics: Diagnostic[], fileName: string, text: ISimpleText, languageVersion: ts.ScriptTarget);
         sourceUnit(): SourceUnitSyntax;
         isDeclaration(): boolean;
         private computeDiagnostics();
@@ -6722,7 +6409,7 @@ declare module TypeScript.Services.Formatting {
     }
 }
 declare module TypeScript.Services.Formatting {
-    class IndentationTrackingWalker extends SyntaxWalker {
+    class IndentationTrackingWalker {
         options: FormattingOptions;
         private _position;
         private _parent;
@@ -6742,7 +6429,8 @@ declare module TypeScript.Services.Formatting {
         indentToken(token: ISyntaxToken, indentationAmount: number, commentIndentationAmount: number): void;
         visitTokenInSpan(token: ISyntaxToken): void;
         visitToken(token: ISyntaxToken): void;
-        visitNode(node: ISyntaxNode): void;
+        walk(element: ISyntaxElement): void;
+        private visitNode(node);
         private getTokenIndentationAmount(token);
         private getCommentIndentationAmount(token);
         private getNodeIndentation(node, newLineInsertedByFormatting?);
@@ -6802,89 +6490,10 @@ declare module TypeScript {
     function createIntrinsicsObject<T>(): ts.Map<T>;
 }
 declare module TypeScript {
-    class Comment {
-        private _trivia;
-        endsLine: boolean;
-        _start: number;
-        _end: number;
-        constructor(_trivia: ISyntaxTrivia, endsLine: boolean, _start: number, _end: number);
-        start(): number;
-        end(): number;
-        fullText(): string;
-        kind(): SyntaxKind;
-        structuralEquals(ast: Comment, includingPosition: boolean): boolean;
-    }
-}
-declare module TypeScript {
-    class AstWalkOptions {
-        goChildren: boolean;
-        stopWalking: boolean;
-    }
-    interface IAstWalker {
-        options: AstWalkOptions;
-        state: any;
-    }
-    class AstWalkerFactory {
-        walk(ast: ISyntaxElement, pre: (ast: ISyntaxElement, walker: IAstWalker) => void, post?: (ast: ISyntaxElement, walker: IAstWalker) => void, state?: any): void;
-        simpleWalk(ast: ISyntaxElement, pre: (ast: ISyntaxElement, state: any) => void, post?: (ast: ISyntaxElement, state: any) => void, state?: any): void;
-    }
-    function getAstWalkerFactory(): AstWalkerFactory;
-}
-declare module TypeScript.ASTHelpers {
-    function isValidAstNode(ast: ISyntaxElement): boolean;
-    function isValidSpan(ast: ISpan): boolean;
-    function getAstAtPosition(script: ISyntaxElement, pos: number, useTrailingTriviaAsLimChar?: boolean, forceInclusive?: boolean): ISyntaxElement;
-    function getExtendsHeritageClause(clauses: HeritageClauseSyntax[]): HeritageClauseSyntax;
-    function getImplementsHeritageClause(clauses: HeritageClauseSyntax[]): HeritageClauseSyntax;
-    function isCallExpression(ast: ISyntaxElement): boolean;
-    function isCallExpressionTarget(ast: ISyntaxElement): boolean;
-    function getCallExpressionTarget(ast: ISyntaxElement): ISyntaxElement;
-    function isDeclarationASTOrDeclarationNameAST(ast: ISyntaxElement): boolean;
-    function getEnclosingParameterForInitializer(ast: ISyntaxElement): ParameterSyntax;
-    function getEnclosingMemberDeclaration(ast: ISyntaxElement): ISyntaxElement;
-    function isNameOfFunction(ast: ISyntaxElement): boolean;
-    function isNameOfMemberFunction(ast: ISyntaxElement): boolean;
-    function isNameOfMemberAccessExpression(ast: ISyntaxElement): boolean;
-    function isRightSideOfQualifiedName(ast: ISyntaxElement): boolean;
-    function parentIsModuleDeclaration(ast: ISyntaxElement): boolean;
-    function isDeclarationAST(ast: ISyntaxElement): boolean;
-    function preComments(element: ISyntaxElement, text: ISimpleText): Comment[];
-    function postComments(element: ISyntaxElement, text: ISimpleText): Comment[];
-    function convertTokenLeadingComments(token: ISyntaxToken, text: ISimpleText): Comment[];
-    function convertTokenTrailingComments(token: ISyntaxToken, text: ISimpleText): Comment[];
-    function docComments(ast: ISyntaxElement, text: ISimpleText): Comment[];
-    function isDocComment(comment: Comment): boolean;
-    function getParameterList(ast: ISyntaxElement): ParameterListSyntax;
-    function getType(ast: ISyntaxElement): ITypeSyntax;
-    function getVariableDeclaratorModifiers(variableDeclarator: VariableDeclaratorSyntax): ISyntaxToken[];
-    function isIntegerLiteralAST(expression: ISyntaxElement): boolean;
-    function getEnclosingModuleDeclaration(ast: ISyntaxElement): ModuleDeclarationSyntax;
-    function getModuleDeclarationFromNameAST(ast: ISyntaxElement): ModuleDeclarationSyntax;
-    function isLastNameOfModule(ast: ModuleDeclarationSyntax, astName: ISyntaxElement): boolean;
-    function getNameOfIdentifierOrQualifiedName(name: ISyntaxElement): string;
-    function getModuleNames(name: ISyntaxElement, result?: ISyntaxToken[]): ISyntaxToken[];
-}
-declare module TypeScript {
     function stripStartAndEndQuotes(str: string): string;
-    function isSingleQuoted(str: string): boolean;
-    function isDoubleQuoted(str: string): boolean;
-    function isQuoted(str: string): boolean;
-    function quoteStr(str: string): string;
     function switchToForwardSlashes(path: string): string;
-    function trimModName(modName: string): string;
-    function getDeclareFilePath(fname: string): string;
-    function isTSFile(fname: string): boolean;
     function isDTSFile(fname: string): boolean;
-    function getPrettyName(modPath: string, quote?: boolean, treatAsFileName?: boolean): any;
     function getPathComponents(path: string): string[];
-    function getRelativePathToFixedPath(fixedModFilePath: string, absoluteModPath: string, isAbsoultePathURL?: boolean): string;
-    function changePathToDTS(modPath: string): string;
-    function isRelative(path: string): boolean;
-    function isRooted(path: string): boolean;
-    function getRootFilePath(outFname: string): string;
-    function filePathComponents(fullPath: string): string[];
-    function filePath(fullPath: string): string;
-    function convertToDirectoryPath(dirPath: string): string;
     function normalizePath(path: string): string;
 }
 declare module ts {
@@ -6900,6 +6509,7 @@ declare module ts {
         getFullWidth(): number;
         getLeadingTriviaWidth(sourceFile?: SourceFile): number;
         getFullText(sourceFile?: SourceFile): string;
+        getText(sourceFile?: SourceFile): string;
         getFirstToken(sourceFile?: SourceFile): Node;
         getLastToken(sourceFile?: SourceFile): Node;
     }
@@ -6928,8 +6538,6 @@ declare module ts {
         getDocumentationComment(): SymbolDisplayPart[];
     }
     interface SourceFile {
-        getSourceUnit(): TypeScript.SourceUnitSyntax;
-        getSyntaxTree(): TypeScript.SyntaxTree;
         getScriptSnapshot(): TypeScript.IScriptSnapshot;
         getNamedDeclarations(): Declaration[];
         update(scriptSnapshot: TypeScript.IScriptSnapshot, version: string, isOpen: boolean, textChangeRange: TypeScript.TextChangeRange): SourceFile;
@@ -7165,7 +6773,7 @@ declare module ts {
         outputFiles: OutputFile[];
         emitOutputStatus: EmitReturnStatus;
     }
-    enum OutputFileType {
+    const enum OutputFileType {
         JavaScript = 0,
         SourceMap = 1,
         Declaration = 2,
@@ -7175,7 +6783,7 @@ declare module ts {
         writeByteOrderMark: boolean;
         text: string;
     }
-    enum EndOfLineState {
+    const enum EndOfLineState {
         Start = 0,
         InMultiLineCommentTrivia = 1,
         InSingleQuoteStringLiteral = 2,
@@ -7215,6 +6823,7 @@ declare module ts {
         static moduleElement: string;
         static classElement: string;
         static interfaceElement: string;
+        static typeElement: string;
         static enumElement: string;
         static variableElement: string;
         static localVariableElement: string;
@@ -7380,12 +6989,12 @@ declare module ts {
         getPreProcessedFileInfo(fileName: string, sourceText: TypeScript.IScriptSnapshot): string;
         getDefaultCompilationSettings(): string;
     }
-    enum LanguageVersion {
+    const enum LanguageVersion {
         EcmaScript3 = 0,
         EcmaScript5 = 1,
         EcmaScript6 = 2,
     }
-    enum ModuleGenTarget {
+    const enum ModuleGenTarget {
         Unspecified = 0,
         Synchronous = 1,
         Asynchronous = 2,
