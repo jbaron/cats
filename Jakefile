@@ -89,7 +89,7 @@ var catsOptions = [
  * Compiler task
  */
 task('compile', {async:true}, function(outFile, options) {
-		var cmd = "node tsc.js --target ES5 --out " + outFile + " " + options.join(" ") ;
+		var cmd = "node tsc.js --target ES6 --out " + outFile + " " + options.join(" ") ;
 
 		// console.log(cmd + "\n");
 		var ex = jake.createExec([cmd]);

@@ -295,6 +295,7 @@ module Cats {
          * @param projectDir the directory of the new project
          */
         addProject(projectDir: string) {
+            projectDir = OS.File.PATH.resolve(this.catsHomeDir,projectDir);
             if (this.recentProjects.indexOf(projectDir) === -1) {
                 this.recentProjects.push(projectDir);
             }
