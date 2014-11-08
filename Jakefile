@@ -1,16 +1,22 @@
 // This file contains the build logic for CATS
 
 var workerOptions = [
+    "resource/typings/lib.webworker.d.ts",
+
     "src/typings/typescriptServices.d.ts",
     "src/typings/cats.d.ts",
     "src/cats/common.ts",
     "src/tsworker/languageservicehost.ts",
+    "src/tsworker/scriptInfo.ts",
     "src/tsworker/isense.ts",
-    "src/tsworker/objectModel.ts"
+    "src/tsworker/modelCreator.ts"
 ];
 
 
 var catsOptions = [
+   
+    "resource/typings/lib.d.ts",
+
     "src/typings/ace.d.ts",
     "src/typings/cats.d.ts",
     "src/typings/jsuml2.d.ts",
@@ -27,7 +33,7 @@ var catsOptions = [
     "src/cats/common.ts",
     "src/cats/os.ts",
     "src/cats/ide.ts",
-    "src/cats/projectConfig.ts",
+    "src/cats/projectSettings.ts",
     "src/cats/tsWorkerProxy.ts",
     "src/cats/project.ts",
     "src/cats/refactor.ts",
@@ -60,11 +66,14 @@ var catsOptions = [
     "src/cats/gui/statusBar.ts",
     "src/cats/gui/fileContextMenu.ts",
     "src/cats/gui/configDialog.ts",
+    "src/cats/gui/projectSettingsDialog.ts",
+    "src/cats/gui/idePreferencesDialog.ts",
     "src/cats/gui/processTable.ts",
     "src/cats/gui/busyWindow.ts",
     "src/cats/gui/propertyTable.ts",
     "src/cats/gui/layout.ts",
     "src/cats/gui/searchDialog.ts",
+    "src/cats/gui/renameDialog.ts",
     "src/cats/gui/menubar.ts",
     "src/cats/gui/tsHelper.ts",
     
@@ -80,7 +89,7 @@ var catsOptions = [
  * Compiler task
  */
 task('compile', {async:true}, function(outFile, options) {
-		var cmd = "tsc --target ES5 --out " + outFile + " " + options.join(" ") ;
+		var cmd = "node tsc.js --target ES6 --out " + outFile + " " + options.join(" ") ;
 
 		// console.log(cmd + "\n");
 		var ex = jake.createExec([cmd]);
@@ -102,6 +111,18 @@ task('compile', {async:true}, function(outFile, options) {
 		ex.run();	
 });
 
+desc("Build the cats.nw distrubution file. Works only on OSX/Linux for now");
+task('dist', {async: true}, function () {
+    var getNr = "`git log lib/*.js | grep '^commit ' | wc -l | tr -d ' '`";  
+  
+    var cmd = "zip -r ../cats-1.3." + getNr +  ".nw lib/* resource/* node_modules/* CopyrightNotice.txt LICENSE.txt index.html package.json";
+    
+    jake.exec([cmd], {printStdout: true}, function () {
+        console.log('Created cats distribution');
+        complete();
+    });
+});
+
 
 desc("Builds the main frontend for CATS");
 file("lib/main.js" , catsOptions, {async:true}, function() {
@@ -117,6 +138,12 @@ desc("Cleans the compiler output, declare files, and tests");
 task("clean", function() {
     jake.rmRf("lib/tsworker.js");
     jake.rmRf("lib/main.js");
+});
+
+desc("Forced build the full CATS application");
+task("build", [], function() {
+   jake.Task.clean.invoke();
+   jake.Task.default.invoke();
 });
 
 desc("Builds the full CATS application");

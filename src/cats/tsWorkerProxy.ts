@@ -18,7 +18,8 @@ module Cats {
     /** 
      * Load the TSWorker and handles the communication with the web worker
      * This implementation uses internally a JSON-RPC style message format 
-     * for the communication.
+     * for the communication. However it exposes a typed interface to towards
+     * the outside world.
      */
     export class TSWorkerProxy {
 
@@ -36,6 +37,9 @@ module Cats {
             this.worker.terminate();
         }
 
+        /**
+         * Get the diagnostic messages for a file
+         */ 
         getErrors(fileName: string, cb: (err, result: FileRange[]) => void) {
             this.perform("getErrors", fileName, cb);
         }
@@ -48,6 +52,10 @@ module Cats {
             this.perform("getAllDiagnostics", cb);
         }
 
+        getTodoItems(cb: (err, result: NavigateToItem[]) => void) {
+            this.perform("getTodoItems", cb);
+        }
+
         getFormattedTextForRange(sessionName: string, range: Range, cb: Function) {
             this.perform("getFormattedTextForRange", sessionName, range, cb);
         }
@@ -56,25 +64,31 @@ module Cats {
             this.perform("getDefinitionAtPosition", sessionName, cursor, cb);
         }
 
-        getInfoAtPosition(type: string, sessionName: string, cursor: Cats.Position, cb: (err: any, data: Cats.FileRange[]) => void) {
-            this.perform("getInfoAtPosition", type, sessionName, cursor, cb);
+
+        findRenameLocations(fileName: string, position: Position, findInStrings: boolean, findInComments: boolean, cb: (err: any, data: Cats.FileRange[]) => void) {
+            this.perform("findRenameLocations", fileName, position, findInStrings, findInComments, cb);
+        }
+ 
+        getCrossReference(type: string, sessionName: string, cursor: Cats.Position, cb: (err: any, data: Cats.FileRange[]) => void) {
+            this.perform("getCrossReference", type, sessionName, cursor, cb);
         }
 
         compile(cb: (err, data: Cats.CompileResults) => void) {
             this.perform("compile", cb);
         }
 
-        getScriptLexicalStructure(sessionName: string, cb: (err: any, data: NavigateToItem[]) => void) {
-            this.perform("getScriptLexicalStructure", sessionName, cb);
+        getScriptOutline(sessionName: string, cb: (err: any, data: NavigateToItem[]) => void) {
+            this.perform("getScriptOutline", sessionName, cb);
         }
 
-        getTypeAtPosition(name: string, docPos: ace.Position, cb: (err: any, data: TypeInfo) => void) {
-            this.perform("getTypeAtPosition", name, docPos, cb);
+        getInfoAtPosition(name: string, docPos: ace.Position, cb: (err: any, data: TypeInfo) => void) {
+            this.perform("getInfoAtPosition", name, docPos, cb);
         }
 
-        getDependencyGraph(cb) {
-            this.perform("getDependencyGraph", cb);
+        getRenameInfo(name: string, docPos: ace.Position, cb: (err: any, data: ts.RenameInfo) => void) {
+            this.perform("getRenameInfo", name, docPos, cb);
         }
+
 
         getObjectModel(cb) {
             this.perform("getObjectModel", cb);
@@ -92,7 +106,7 @@ module Cats {
             this.perform("updateScript", fileName, content, null);
         }
 
-        getCompletions(fileName: string, cursor: ace.Position, cb: (err, completes: TypeScript.Services.CompletionEntry[]) => void) {
+        getCompletions(fileName: string, cursor: ace.Position, cb: (err, completes: ts.CompletionEntry[]) => void) {
             this.perform("getCompletions", fileName, cursor, cb);
         }
 
@@ -145,12 +159,15 @@ module Cats {
                         handler(msg.error, msg.result);
                     }
                 } else {
-                    if (msg.method && (msg.method === "setBusy")) {
-                        IDE.statusBar.setBusy(msg.params[0]);
+                    var params = msg.params;
+                    var methodName = msg.method;
+                    
+                    if (methodName && (methodName === "setBusy")) {
+                        IDE.statusBar.setBusy(params[0], params[1]);
                     } 
                     
-                    if (msg.method && (msg.method === "console")) {
-                        console[msg.params[0]](msg.params[1]);
+                    if (methodName && (methodName === "console")) {
+                        console[params[0]](params[1]);
                     } 
                 }
             };

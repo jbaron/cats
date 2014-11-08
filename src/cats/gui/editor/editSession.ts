@@ -14,40 +14,60 @@
 //
 
 
-module Cats.Gui {
+module Cats.Gui.Editor {
 
     var UndoManager: ace.UndoManager = ace.require("ace/undomanager").UndoManager;
+    var modelist = ace.require('ace/ext/modelist');
 
+
+    /**
+     * Wrapper class around the Ace EditSession that takes care of the common
+     * features for all edit sessions.
+     * 
+     */ 
     export class EditSession extends ace.EditSession {
 
+        private editor;
+        mode: string;
+        private version:number;
 
-        unsavedChanges = false;
+        constructor(editor:SourceEditor) {
+            var content = "";
+            this.version = 0;
+            this.editor = editor;
+            this.mode = this.calculateMode();
+            
+            if (editor.filePath) {
+                content = OS.File.readTextFile(editor.filePath) ;
 
-        constructor(content: string, mode: string, private editor: SourceEditor) {
-            super(content, mode);
+                if ( this.isTypeScript() && (!IDE.project.hasScriptFile( editor.filePath )) ) {
+                    var isProjectFile = confirm( "Not yet part of project, add it now?" );
+                    if ( isProjectFile ) IDE.project.addScript( editor.filePath, content );
+                }
+            
+            }
+            
+            super(content, this.mode);
             this.setNewLineMode("unix");
+            this.configureAceSession(IDE.project.config);
             this.setUndoManager(new UndoManager());
 
-            this.on("changeAnnotation", () => {
-                var a = this.getAnnotations();
-                this.editor.emit("errors", this.getMaxAnnotation(a));
-            });
-
-            this.on("changeOverwrite", (a) => {
-                this.editor.informWorld();
-            });
-
-            this.on("change", () => {
-                if (!this.unsavedChanges) this.setHasUnsavedChanges(true);
-            });
-            
-            IDE.project.on("config", () => { this.configureAceSession(); });
+            IDE.project.on("config", (c) => { this.configureAceSession(c); });
+            this.on("change", () => {this.version++});
         }
 
+ 
+        private calculateMode() {
+            if (! this.editor.filePath) return "ace/mode/text";
+            var mode = modelist.getModeForPath(this.editor.filePath).mode
+            return mode;    
+        }
+ 
         /**
          * Check if there are any errors for this session and show them.    
          */
         showAnnotations(result: Cats.FileRange[]) {
+            if (! result) return;
             var annotations: ace.Annotation[] = [];
             result.forEach((error: Cats.FileRange) => {
                 annotations.push({
@@ -61,10 +81,27 @@ module Cats.Gui {
         }
 
 
+       /**
+         * Is the editor currently containing TypeScript content. This determines wehther all kind 
+         * of features are enabled or not.
+         */ 
+        isTypeScript() {
+            return this.mode === "ace/mode/typescript";
+        }
+
+        setMode(mode:string) {
+            this.mode=mode;
+            super.setMode(mode);
+        }
+
+
         /**
-         * Determine the maximum level of warnings within a set of annotations.
+         * Determine the maximum level of severity within a set of annotations.
+         * 
+         * @return Possible return values are info, warning or error
          */
-        private getMaxAnnotation(annotations: ace.Annotation[]) {
+        getMaxAnnotationLevel() {
+            var annotations = this.getAnnotations();
             if ((!annotations) || (annotations.length === 0)) return "";
             var result = "info";
             annotations.forEach((annotation) => {
@@ -74,16 +111,47 @@ module Cats.Gui {
             return result;
         }
 
-        private configureAceSession() {
-            var config = this.editor.project.config.codingStandards;
-            if (config.tabSize) this.setTabSize(config.tabSize);
-            if (config.useSoftTabs != null) this.setUseSoftTabs(config.useSoftTabs);
+        private configureAceSession(projectConfig:ProjectConfiguration) {
+            var config = projectConfig.codeFormat;
+            if (config.TabSize) this.setTabSize(config.TabSize);
+            if (config.ConvertTabsToSpaces != null) this.setUseSoftTabs(config.ConvertTabsToSpaces);
         }
+        
+    
+        /**
+         * Persist this session to the file system. This overrides the NOP in the base class
+         */
+        save() {
+            var filePath = this.editor.filePath;
+            var content = this.getValue();
+            if (filePath == null) {
+                var dir = OS.File.join(IDE.project.projectDir, "/");
+                filePath = prompt("Please enter the file name", dir);
+                if (! filePath) return;
+                filePath = OS.File.switchToForwardSlashes(filePath);
+                this.editor.setFilePath(filePath);
+                
+                this.mode = this.calculateMode();
+                this.setMode(this.mode); 
+                
+                if ( this.isTypeScript() && (!IDE.project.hasScriptFile(filePath)) ) {
+                    var isProjectFile = confirm( "Not yet part of project, add it now?" );
+                    if (isProjectFile) IDE.project.addScript(filePath, content );
+                }
+                
+            }
 
-        setHasUnsavedChanges(value: boolean) {
-            this.unsavedChanges = value;
-            this.editor.emit("changed", value);
+            OS.File.writeTextFile(filePath, content);
+            this.editor.setHasUnsavedChanges(false);
+            this.editor.updateFileInfo();
+            IDE.console.log("Saved file " + filePath);
+            if (this.isTypeScript()) {
+                IDE.project.iSense.updateScript(filePath, content);
+                IDE.project.validate(false);
+                if (IDE.project.config.buildOnSave) Commands.CMDS.project_build.command();
+            }
         }
+        
 
     }
 

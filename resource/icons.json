@@ -1,0 +1,86 @@
+{
+    "kind" : {
+        "method": "icon/16/types/method.png",
+        "constructor": "icon/16/types/constructor.png",
+        "module": "icon/16/types/module.png",
+        "interface": "icon/16/types/interface.png",
+        "enum": "icon/16/types/enum.png",
+        "class": "icon/16/types/class.png",
+        "property":"icon/16/types/property.png",
+        "var": "icon/16/types/property.png",
+        "snippet" : "icon/16/types/snippet.png",
+        "default": "icon/16/types/method.png"
+    },
+    
+    "tab" : {
+        "search_tab": "icon/16/actions/edit-find.png",
+        "todo_tab": "icon/16/actions/view-task.png",
+        "console_tab":  "icon/16/apps/utilities-terminal.png",
+        "process_tab":  "icon/16/actions/view-process-all.png",
+        "files_tab": "icon/16/actions/view-list-tree.png",
+        "outline_tab":  "icon/16/actions/code-class.png",
+        "bookmarks_tab": "icon/16/actions/bookmarks-organize.png",
+        "properties_tab":  "icon/16/actions/document-properties.png",
+        "problems_tab":  "icon/16/status/task-attention.png",
+        "info_tab":  "icon/16/status/dialog-information.png"
+    },
+    
+    "annotation" : {
+        "error" :"icon/16/status/dialog-error.png",
+        "warning":"icon/16/status/dialog-warning.png",
+        "info":"icon/16/status/dialog-information.png"
+    },
+    
+    
+    "mimetype" : {
+        "text/css" : "icon/16/mimetypes/text-css.png",
+        "text/csv" : "icon/16/mimetypes/text-csv.png",
+        "text/plain" : "icon/16/mimetypes/text-plain.png",
+        "text/html" : "icon/16/mimetypes/text-html.png",
+        "application/xhtml+xml" : "icon/16/mimetypes/text-html.png",
+        "application/octet-stream" : "icon/16/mimetypes/application-octet-stream.png",
+        "application/javascript": "icon/16/mimetypes/application-javascript.png",
+        "application/json": "icon/16/mimetypes/application-json.png",
+        "application/x-typescript": "icon/16/mimetypes/application-x-typescript.png",
+        "application/pdf" : "icon/16/mimetypes/application-pdf.png",
+        "application/x-shockwave-flash" : "icon/16/mimetypes/application-x-shockwave-flash.png",
+        "inode/directory" : "icon/16/mimetypes/inode-directory.png",
+        "image/png" : "icon/16/mimetypes/image-x-generic.png",
+        "image/tiff" : "icon/16/mimetypes/image-x-generic.png",
+        "image/bmp" : "icon/16/mimetypes/image-x-generic.png",
+        "image/gif" : "icon/16/mimetypes/image-x-generic.png",
+        "image/jpeg" : "icon/16/mimetypes/image-x-generic.png",
+        "image/svg+xml" : "icon/16/mimetypes/image-svg+xml.png",
+        "application/zip" : "icon/16/mimetypes/application-x-archive.png",
+        "application/x-gzip" : "icon/16/mimetypes/application-x-archive.png",
+        "application/xml" : "icon/16/mimetypes/application-xml.png"
+    },
+    
+    "toolbar" : {
+        "edit_undo": "icon/22/actions/edit-undo.png",
+        "edit_redo": "icon/22/actions/edit-redo.png",
+        "edit_indent":"icon/22/actions/format-indent-more.png",
+        "edit_outdent": "icon/22/actions/format-indent-less.png",
+        "edit_find": "icon/22/actions/edit-find.png",
+        "edit_replace": "icon/22/actions/edit-find-replace.png",
+        "edit_toggleRecording" : "icon/22/actions/media-record.png" ,
+        "edit_replayMacro" : "icon/22/actions/media-playback-start.png",
+        
+        "file_new": "icon/22/actions/document-new.png",
+        "file_close":  "icon/22/actions/project-development-close.png",
+        "file_closeAll": "icon/22/actions/project-development-close-all.png",
+        "file_save": "icon/22/actions/document-save.png",
+        "file_saveAll": "icon/22/actions/document-save-all.png",
+        "file_saveAs": "icon/22/actions/document-save-as.png",
+        
+        "ide_history_next": "icon/22/actions/go-next.png",
+        "ide_history_prev": "icon/22/actions/go-previous.png",
+        
+        "project_open": "icon/22/actions/project-open.png",
+        "project_close": "icon/22/actions/project-development-close.png",
+        "project_build": "icon/22/categories/applications-development.png",
+        "project_refresh": "icon/22/actions/view-refresh.png",
+        "project_run": "icon/22/actions/arrow-right.png"
+    } 
+    
+}

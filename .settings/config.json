@@ -1,26 +1,26 @@
 {
     "src": "src/**/*.ts",
-    "main": "static/index.html",
+    "main": "index.html",
     "buildOnSave": false,
+    "projectType": "standard",
     "compiler": {
         "noLib": false,
         "removeComments": false,
         "noImplicitAny": false,
-        "generateDeclarationFiles": false,
-        "mapSourceFiles": false,
+        "declaration": false,
+        "sourceMap": false,
         "propagateEnumConstants": false,
         "allowAutomaticSemicolonInsertion": true,
-        "codeGenTarget": 1,
-        "moduleGenTarget": 0,
-        "outDirOption": null,
-        "outFileOption": null
+        "target": 1,
+        "module": 0,
+        "outDir": null,
+        "out": null
     },
-    "codingStandards": {
-        "newLineMode": "auto",
-        "useSoftTabs": true,
-        "tabSize": 4,
-        "useLint": false,
-        "lintFile": null
+    "codeFormat": {
+        "NewLineCharacter": "\n",
+        "ConvertTabsToSpaces": true,
+        "IndentSize": 4,
+        "TabSize": 4
     },
     "customBuild": {
         "name": "Jake Build Process",
@@ -41,5 +41,9 @@
         "outputDirectory": "api_doc",
         "readme": "README.md",
         "theme": "default"
+    },
+    "tslint": {
+        "useLint": false,
+        "lintFile": null
     }
 }

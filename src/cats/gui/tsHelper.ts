@@ -17,12 +17,11 @@
 module Cats.Gui {
 
     /**
-     * Thsi class assists the SourceEditor for TypeScript files. It takes care of
+     * This class assists the SourceEditor for TypeScript files. It takes care of
      * diagnostics and outline updates.
      */ 
     export class TSHelper {
         
-        private errors: Cats.FileRange[] = [];
         outline: NavigateToItem[];
      
         private diagnosticTimer : number;
@@ -31,15 +30,17 @@ module Cats.Gui {
         private pendingUpdates = false;
         
        
-        constructor(private editor:SourceEditor, private editSession: ace.EditSession) {
+        constructor(private editor:Editor.SourceEditor, private editSession: Editor.EditSession) {
             this.init();
         } 
         
         
         private init() {
             
+            
             this.updateDiagnostics(0);
             this.updateOutline(0);
+             
             
             this.editor.getLayoutItem().addListener("appear", () =>{
                 this.updateDiagnostics(0);
@@ -51,29 +52,16 @@ module Cats.Gui {
         }
         
         
-        setErrors(errors: Cats.FileRange[] = []) {
-            if ((this.errors.length === 0) && (errors.length === 0)) return;
-            this.errors = errors;
-            this.editor.showAnnotations(this.errors);
-        }
-
-        
-
-        private getWidget() {
-            return this.editor.getLayoutItem();
-        }
-
-       
-
-        updateContent(timeout=500) {
+        private updateContent(timeout=500) {
+            if (! this.editor.isTypeScript()) return;
             clearTimeout(this.updateSourceTimer);
             this.pendingUpdates = true;
             this.updateSourceTimer = setTimeout(() => {
                 if (this.pendingUpdates) {
-                    this.editor.project.iSense.updateScript(this.editor.filePath, this.editor.getContent());
+                    this.editor.project.iSense.updateScript(this.editor.filePath, this.editSession.getValue());
                     this.pendingUpdates = false;
-                     this.updateDiagnostics();
-                     this.updateOutline();
+                    this.updateDiagnostics();
+                    this.updateOutline();
                 }
             }, timeout);
         }
@@ -84,12 +72,15 @@ module Cats.Gui {
          * 
          */
         private updateOutline(timeout= 5000) {
+            if (! this.editor.isTypeScript()) return;
                 var project = this.editor.project;
                 clearTimeout(this.outlineTimer);
                 this.outlineTimer = setTimeout(() => {
-                    project.iSense.getScriptLexicalStructure(this.editor.filePath, (err: Error, data: NavigateToItem[]) => {
+                    project.iSense.getScriptOutline(this.editor.filePath, (err: Error, data: NavigateToItem[]) => {
                         this.editor.set("outline",data);
                     });
+                    
+                    
                 }, timeout);
         }
 
@@ -97,23 +88,20 @@ module Cats.Gui {
          * Lets check the worker if something changed in the diagnostic.
          * 
          */
-        updateDiagnostics(timeout=1000) {
-            clearTimeout(this.diagnosticTimer);
+        private updateDiagnostics(timeout=1000) {
+            if (! this.editor.isTypeScript()) return;
             var project = this.editor.project;
             this.diagnosticTimer = setTimeout(() => {
             
                     project.iSense.getErrors(this.editor.filePath, (err: Error, result: Cats.FileRange[]) => {
-                        if (project.config.codingStandards.useLint) {
+                        if (project.config.tslint.useLint) {
                             result = result.concat(project.linter.lint(this.editor.filePath, this.editor.getContent()));
                         }
-                        this.setErrors(result);
+                        this.editSession.showAnnotations(result);
                     });
                 
             }, timeout);    
         }
-
-
-      
 
     }
 

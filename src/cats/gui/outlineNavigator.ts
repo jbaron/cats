@@ -15,17 +15,20 @@
 module Cats.Gui {
 
     /**      
-     * Provide an outline view of the source code.      
+     * Provide an outline view of the source code.
+     * 
+     * When you click on an entry wihin the outline, the corresponding source file will be opened 
+     * at the righ position.
      */
     export class OutlineNavigator extends qx.ui.tree.VirtualTree {
 
-        private editor: SourceEditor;
+        private editor: Editor.SourceEditor;
         private page:EditorPage;
-        private static MAX = 200;
+        private static MAX_DEFAULT_OPEN = 200;
         private outlineTimer: number;
 
         constructor() {
-            super(null, "label", "children");
+            super(null, "label", "kids");
             this.setDecorator(null);
             this.setPadding(0, 0, 0, 0);
             this.setHideRoot(true);
@@ -33,15 +36,16 @@ module Cats.Gui {
             this.setDecorator(null);
             this.addListener("click", (data) => {
                 var item = <any>this.getSelectedItem();
-                if (item && item.getPosition) {
-                    var position = JSON.parse(qx.util.Serializer.toJson(item.getPosition())); 
+                if (item && item.getPos) {
+                    var position = JSON.parse(qx.util.Serializer.toJson(item.getPos())); 
                     IDE.editorTabView.navigateToPage(this.page,position);
                 }
             });
             this.setIconPath("kind");
             this.setIconOptions({
-                converter: (value, model) => {
-                    return this.getIconForKind(value);
+                converter: (value) => {
+                    var icon = IDE.icons.kind[value] || IDE.icons.kind["default"];
+                    return icon;
                 }
             });
             
@@ -51,7 +55,7 @@ module Cats.Gui {
         }
 
 
-        private register(editor:SourceEditor, page) {
+        private register(editor:Editor.SourceEditor, page) {
             if (this.editor) {
                 this.editor.off("outline",  this.updateOutline, this);
             }
@@ -73,52 +77,39 @@ module Cats.Gui {
         }
 
 
-        private getIconForKind(name: string) {
-            var iconPath = "icon/16/types/";
-            switch (name) {
-                case "function":
-                case "keyword":
-                case "method": return iconPath + "method.png";
-                case "constructor": return iconPath + "constructor.png";
-                case "module": return iconPath + "module.png";
-                case "interface": return iconPath + "interface.png";
-                case "enum": return iconPath + "enum.png";
-                case "class": return iconPath + "class.png";
-                case "property":
-                case "var": return iconPath + "variable.png";
-                default: return iconPath + "method.png";
-            }
-        }
-
-
         clear() {
             this.setModel(null);
         }
 
 
         private expandAll(root,count=0) {
-            if (root && root.getChildren) {
+            if (root && root.getKids) {
                 this.openNode(root);
-                var children = root.getChildren();
+                var children = root.getKids();
                 count += children.length;
-                if (count > OutlineNavigator.MAX) return count;
+                if (count > OutlineNavigator.MAX_DEFAULT_OPEN) return count;
                 for (var i=0;i<children.length;i++) {
                     var child = children.getItem(i);
                     count = this.expandAll(child, count);
-                    if (count > OutlineNavigator.MAX) return count;
+                    if (count > OutlineNavigator.MAX_DEFAULT_OPEN) return count;
                 }
             }
             return count;
         }
 
 
-
         /**
          * Lets check the worker if something changed in the outline of the source.
          * But lets not call this too often.
          */
-        private updateOutline(data={}) {
-            this.setModel(qx.data.marshal.Json.createModel(data, false));
+        private updateOutline(data=[]) {
+            // IDE.console.log("Received outline info:" + data.length);
+            var root = {
+                label : "root",
+                kids: data, 
+                kind : ""
+            };
+            this.setModel(qx.data.marshal.Json.createModel(root, false));
             this.expandAll(this.getModel());
         }
 

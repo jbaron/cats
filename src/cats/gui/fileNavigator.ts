@@ -32,12 +32,7 @@ module Cats.Gui {
             loaded: false
         };
 
-
-
-        static COUNT = 0;
-
         private directoryModels = {};
-        private iconsForMime = {};
         private watcher: OS.File.Watcher;
         private parents = {};
         private projectDir: string;
@@ -47,7 +42,6 @@ module Cats.Gui {
             super(null, "label", "children");
             this.setDecorator(null);
             this.setPadding(0, 0, 0, 0);
-            this.loadAvailableIcons();
             var contextMenu = new FileContextMenu(this);
             this.setContextMenu(contextMenu);
         }
@@ -63,7 +57,7 @@ module Cats.Gui {
 
             var directory = project.projectDir;
             this.rootTop.fullPath = directory;
-            this.rootTop.label = PATH.basename(directory);
+            this.rootTop.label = OS.File.PATH.basename(directory);
             var root = qx.data.marshal.Json.createModel(this.rootTop, true);
             this.setModel(root);
 
@@ -104,31 +98,13 @@ module Cats.Gui {
             return null;
         }
 
-        /**
-         * Get all available icons for mime-types
-         */
-        private loadAvailableIcons() {
-            var iconFolder = "resource/qx/icon/Oxygen/16/mimetypes";
-            var files = OS.File.readDir(iconFolder);
-            files.forEach((file) => {
-                if (file.isFile) {
-                    var mimetype = PATH.basename(file.name, ".png");
-                    this.iconsForMime[mimetype] = file.name;
-                }
-            });
-
-        }
+      
 
         /**
          * Get an icon for a file based on its mimetype
          */
-        private getIconForFile(fileName: string) {
-            var mimetype: string = Util.MimeTypeFinder.lookup(fileName).replace("/", "-");
-
-            var icon = this.iconsForMime[mimetype];
-            if (!icon) icon = this.iconsForMime["text-plain"];
-            icon = "icon/16/mimetypes/" + icon;
-            // IDE.console.log("Icon: " + icon);
+        private getIconForMimeType(mimetype: string) {
+            var icon = IDE.icons.mimetype[mimetype] || IDE.icons.mimetype["text/plain"];
             return icon;
         }
 
@@ -138,9 +114,10 @@ module Cats.Gui {
             this.setIconOptions({
                 converter: (value, model) => {
                     if (value.getDirectory()) {
-                        return "icon/16/places/folder.png";
+                        return this.getIconForMimeType("inode/directory");
                     }
-                    return this.getIconForFile(value.getLabel());
+                    var mimetype: string = Util.MimeTypeFinder.lookup(value.getLabel());
+                    return this.getIconForMimeType(mimetype);
                 }
             });
 

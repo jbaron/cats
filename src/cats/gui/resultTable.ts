@@ -22,10 +22,12 @@ module Cats.Gui {
 
         private data: Cats.FileRange[];
         
-        constructor(headers = ["Message", "File", "Position"]) {
+        constructor(headers = ["tableheader_message", "tableheader_file", "tableheader_position"]) {
 
             var tableModel = new qx.ui.table.model.Simple();
-            tableModel.setColumns(headers);
+            var columns = [];
+            headers.forEach((header) => columns.push(this.tr(header)));
+            tableModel.setColumns(columns);
             tableModel.setData([]);
             this.setStatusBarVisible(false); 
 
@@ -97,7 +99,7 @@ module Cats.Gui {
                 });
             }
             this.getTableModel().setData(rows);
-            this.getSelectionModel().resetSelection();
+            // this.getSelectionModel().resetSelection();
         }
 
         /**

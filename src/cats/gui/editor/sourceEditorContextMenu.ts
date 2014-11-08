@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-module Cats.Gui {
+module Cats.Gui.Editor {
 
     /**
      * The context menu for the source editor. This menu provides basic 
@@ -51,13 +51,12 @@ module Cats.Gui {
 
         private getInfoAt(type: string) {
 
-            this.getIsense().getInfoAtPosition(type, this.editor.filePath, this.getPos(), (err, data: Cats.FileRange[]) => {
+            this.getIsense().getCrossReference(type, this.editor.filePath, this.getPos(), (err, data: Cats.FileRange[]) => {
                 if (!data) return;
                 var resultTable = new ResultTable();
-                var page = IDE.problemPane.addPage("info", null, resultTable);
+                var page = IDE.resultPane.addPage("info_tab", resultTable);
                 page.setShowCloseButton(true);
                 resultTable.setData(data);
-                page.select();
             });
         }
 
@@ -97,6 +96,19 @@ module Cats.Gui {
         }
 
 
+        private createModeMenu() {
+            var menu = new qx.ui.menu.Menu();
+             var modes = ace.require( 'ace/ext/modelist' ).modes;
+             modes.forEach((entry) => {
+                  var button = new qx.ui.menu.Button(entry.caption);
+                  button.addListener("execute", ()=> {
+                      this.editor.setMode(entry.mode)
+                  });
+                  menu.add(button);
+             });
+             return menu;
+        }
+
 
         private init() {
 
@@ -110,6 +122,10 @@ module Cats.Gui {
                 this.addSeparator();
             }
             this.add(this.createContextMenuItem("Bookmark", this.bookmark, this));
+            var modeMenu = this.createModeMenu();
+            
+            var b = new qx.ui.menu.Button("Modes", null,null,modeMenu);
+            this.add(b);
         }
 
 

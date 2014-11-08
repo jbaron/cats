@@ -14,7 +14,7 @@
 //
 
 /**
- * This module holds all the refactoring logic for CATS
+ * This module holds the refactoring logic for CATS
  *
  */ 
 module Cats.Refactor {
@@ -24,7 +24,7 @@ module Cats.Refactor {
     function renameOccurences(edits:FileRange[],name:string) {
         for (var i = edits.length - 1; i >= 0; i--) {
             var data = edits[i];
-            var editor = <Gui.SourceEditor>FileEditor.OpenEditor(data.fileName);
+            var editor = <Gui.Editor.SourceEditor>FileEditor.OpenEditor(data.fileName);
             var r = data.range;
             var range: ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
             editor.replace(range,name);
@@ -36,10 +36,16 @@ module Cats.Refactor {
      * and then replaces the macthed text with the new name. 
      */ 
     export function rename(fileName:string, project:Project, pos:Position) {
-        project.iSense.getTypeAtPosition(fileName, pos, (err,data) => {
-            var newName = prompt("Rename " + data.fullSymbolName +  " into:");
+        project.iSense.getRenameInfo(fileName, pos, (err,data) => {
+            if (! data) return;
+            if (! data.canRename) {
+                alert("Cannot rename the selected element");
+                return;
+            }
+            
+            var newName = prompt("Rename " + data.displayName +  " into:");
             if (!newName) return;
-            project.iSense.getInfoAtPosition("getReferencesAtPosition", fileName, pos, (err, data: Cats.FileRange[]) => {
+            project.iSense.findRenameLocations(fileName, pos, false, false, (err, data: Cats.FileRange[]) => {
                 renameOccurences(data, newName);
             });
         });

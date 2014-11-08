@@ -1,0 +1,228 @@
+{
+    "edit_undo": {
+        "message": "Undo",
+        "description": "Menu item for Undo"
+    },
+    "edit_redo": {
+        "message": "Redo",
+        "description": "Menu item for Redo"
+    },
+    "edit_indent": {
+        "message": "Indent",
+        "description": "Menu item for Indent"
+    },
+    "edit_outdent": {
+        "message": "Outdent",
+        "description": "Menu item for Outdent"
+    },
+    "edit_find": {
+        "message": "Find",
+        "description": "Menu item for Find"
+    },
+    "edit_findNext": {
+        "message": "Find Next",
+        "description": "Menu item for Find Next"
+    },
+    "edit_findPrev": {
+        "message": "Find Previous",
+        "description": "Menu item for Find Previous"
+    },
+    "edit_replace": {
+        "message": "Find/Replace",
+        "description": "Menu item for Find/Replace"
+    },
+    "edit_replaceAll": {
+        "message": "Replace All",
+        "description": "Menu item for Replace All"
+    },
+    "edit_toggleComment": {
+        "message": "Toggle Comment",
+        "description": "Menu item for Toggle Comment"
+    },
+    "edit_toggleRecording": {
+        "message": "Start/Stop Recording",
+        "description": "Menu item for Start/Stop Recording"
+    },
+    "edit_replayMacro": {
+        "message": "Playback Macro",
+        "description": "Menu item for Playback Macro"
+    },
+    "edit_gotoLine": {
+        "message": "Goto Line",
+        "description": "Menu item for Goto Line"
+    },
+    "edit_toggleInvisibles": {
+        "message": "Toggle Invisible Characters",
+        "description": "Menu item for Toggle Invisible Characters"
+    },
+    "source_format": {
+        "message": "Format Code",
+        "description": "Menu item for Format Code"
+    },
+    "edit_cut": {
+        "message": "Cut",
+        "description": "Menu item for Cut"
+    },
+    "edit_copy": {
+        "message": "Copy",
+        "description": "Menu item for Copy"
+    },
+    "edit_paste": {
+        "message": "Paste",
+        "description": "Menu item for Paste"
+    },
+    "file_new": {
+        "message": "New File",
+        "description": "Menu item for New File"
+    },
+    "file_close": {
+        "message": "Close File",
+        "description": "Menu item for Close File"
+    },
+    "file_closeOther": {
+        "message": "Close Other Files",
+        "description": "Menu item for Close Other Files"
+    },
+    "file_closeAll": {
+        "message": "Close All Files",
+        "description": "Menu item for Close All Files"
+    },
+    "file_save": {
+        "message": "Save File",
+        "description": "Menu item for Save File"
+    },
+    "file_saveAll": {
+        "message": "Save All",
+        "description": "Menu item for Save All"
+    },
+    "file_saveAs": {
+        "message": "Save As....",
+        "description": "Menu item for Save As...."
+    },
+    "help_about": {
+        "message": "About",
+        "description": "Menu item for About"
+    },
+    "help_devTools": {
+        "message": "Developer Tools",
+        "description": "Menu item for Developer Tools"
+    },
+    "help_shortcuts": {
+        "message": "Shortcuts",
+        "description": "Menu item for Shortcuts"
+    },
+    "help_processInfo": {
+        "message": "Process Info",
+        "description": "Menu item for Process Info"
+    },
+    "project_open": {
+        "message": "Open Project....",
+        "description": "Menu item for Open Project...."
+    },
+       "project_new": {
+        "message": "New Project....",
+        "description": "Menu item for New Project...."
+    },
+    "project_close": {
+        "message": "Close project",
+        "description": "Menu item for Close project"
+    },
+    "project_build": {
+        "message": "Build Project",
+        "description": "Menu item for Build Project"
+    },
+    "project_validate": {
+        "message": "Validate Project",
+        "description": "Menu item for Validate Project"
+    },
+    "project_refresh": {
+        "message": "Refresh Project",
+        "description": "Menu item for Refresh Project"
+    },
+    "project_run": {
+        "message": "Run Project",
+        "description": "Menu item for Run Project"
+    },
+    "project_classDiagram": {
+        "message": "Class Diagram",
+        "description": "Menu item for Class Diagram"
+    },
+    "project_configure": {
+        "message": "Settings....",
+        "description": "Menu item for Settings...."
+    },
+    "project_document": {
+        "message": "Generate Documentation",
+        "description": "Menu item for Generate Documentation"
+    },
+    "ide_quit": {
+        "message": "Quit CATS",
+        "description": "Menu item for Quit CATS"
+    },
+    
+    "ide_toggle_toolbar" : { "message": "Toggle Tool Bar"},
+    "ide_toggle_statusbar" : { "message": "Toggle Status Bar"},
+    "ide_toggle_context" : { "message": "Toggle Context Pane"},
+    "ide_toggle_result" : { "message": "Toggle Result Pane"},
+    
+   
+    "ide_configure": {
+        "message": "Preferences....",
+        "description": "Menu item for Preferences...."
+    },
+    "ide_history_next": {
+        "message": "Next",
+        "description": "Menu item for Next"
+    },
+    "ide_history_prev": {
+        "message": "Previous",
+        "description": "Menu item for Previous"
+    },
+    
+    
+    "project_settings" : {
+        "message": "Project Settings",
+        "description" : "Dialogue Window Title for Project Settings" 
+    },       
+
+    "file_menu_name" : { "message": "File" },       
+    "edit_menu_name" : { "message": "Edit" },       
+    "view_menu_name" : { "message": "View" },       
+    "project_menu_name" : { "message": "Project" },       
+    "source_menu_name" : { "message": "Source" },       
+    "window_menu_name" : { "message": "Window" },       
+    "help_menu_name" : { "message": "Help" },
+    
+    "files_tab" : { "message": "Files" },  
+    "bookmarks_tab" : { "message": "Bookmarks" }, 
+    "problems_tab" : { "message": "Problems" }, 
+    "console_tab" : { "message": "Console" }, 
+    "process_tab" : { "message": "Process" }, 
+    "todo_tab" : { "message": "Todo" }, 
+    "outline_tab" : { "message": "Outline" }, 
+    "properties_tab" : { "message": "Properties" },
+    "info_tab" : { "message": "Info" },
+    
+    "tableheader_message" : { "message": "Message" },
+    "tableheader_file" : { "message": "File" },
+    "tableheader_position" : { "message": "Position" },
+    "tableheader_bookmark" : { "message": "Bookmark" },
+    "tableheader_pid" : { "message": "PID" },
+    "tableheader_command" : { "message": "Command" },
+    "tableheader_name" : { "message": "Name" },
+    "tableheader_value" : { "message": "Value" },
+    
+    
+    "config_removeComments" : { "message": "Remove comments"},
+    "config_declaration" : { "message": "Generate declaration files"},
+    "config_sourceMap" : { "message": "Generate map source files"},
+    "config_propagateEnumConstants" : { "message": "Propagate enum constants"},
+    "config_allowAutomaticSemicolonInsertion" : { "message": "Allow  for automatic semicolon insertion"},
+    "config_target" : { "message": "Compile for EcmaScript version"},
+    "config_module" : { "message": "Compile for module"},
+    "config_noLib" : { "message": "Don't include lib.d.ts"},
+    "config_outDir" : { "message": "Output to directory"},
+    "config_out" : { "message": "Output to single file"}
+    
+    
+}

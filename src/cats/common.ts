@@ -13,16 +13,21 @@
 // limitations under the License.
 //
 
-/**
- * This section contain the common interfaces and enumerations that are being used to 
- * transfer data between the worker and the main thread. 
- */
+
 module Cats {
 
     export class Attribute {
         name: string;
         modifiers: string[];
         type: string;
+    }
+
+    export interface IconMap {
+        kind: Map<string>;
+        tab: Map<string>;
+        annotation: Map<string>;
+        mimetype: Map<string>;
+        toolbar: Map<string>;
     }
 
    export interface ModelEntry {

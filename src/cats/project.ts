@@ -16,6 +16,7 @@
 
 module Cats {
     
+    var GUI = require('nw.gui');
     var typedoc;
     
     /**
@@ -28,39 +29,56 @@ module Cats {
         projectDir: string;
         name: string;
 
-        private tsfiles: Array<string> = [];
+        private tsfiles:Map<boolean> = {};
 
         // The singleton TSWorker handler instance
         iSense: TSWorkerProxy;
 
-        // Stores the project configuration paramters
-        config: ProjectConfiguration;
+        private settings: ProjectSettings;
 
         linter:Linter;
+        
+        private refreshInterval:number;
 
         /**    
          * Create a new project.
          */
         constructor(projectDir: string) {
             super();
-            IDE.project = this;
-            var dir = PATH.resolve(projectDir);
+            // IDE.project = this;
+            var dir = OS.File.PATH.resolve(projectDir);
             this.projectDir = OS.File.switchToForwardSlashes(dir);
             this.refresh();
-            if (this.config.codingStandards.useLint) this.linter = new Linter(this);
+            if (this.config.tslint.useLint) this.linter = new Linter(this);
+            
+            // @TODO optimize only refresh in case of changes
+            this.refreshInterval = setInterval(()=> {this.refreshTodoList()}, 30000);
+        }
+
+        /**
+         * Get the project settings
+         */ 
+        get config() {
+            return this.settings.value;
         }
 
         /**
          * Save the project configuration
          */     
-        updateConfig(config) {
-            this.config = config;
+        updateConfig(config:ProjectConfiguration) {
+            this.settings.value = config;
             this.emit("config", config);
-            var pc = new ProjectConfig(this.projectDir);
-            if (this.config.codingStandards.useLint) this.linter = new Linter(this);
-            pc.store(this.config);
+            if (this.config.tslint.useLint) this.linter = new Linter(this);
+            this.settings.store();
+            this.iSense.setSettings(this.config.compiler, this.config.codeFormat);
         }
         
+        refreshTodoList() {
+            this.iSense.getTodoItems((err,data) => {
+                        IDE.todoList.setData(data);
+            });
+        }
+    
     
         /**
          * Close the project
@@ -75,6 +93,7 @@ module Cats {
             IDE.outlineNavigator.clear();
             IDE.problemResult.clear();
             if (this.iSense) this.iSense.stop();
+            clearInterval(this.refreshInterval);
         }
 
         /**
@@ -104,7 +123,7 @@ module Cats {
             if (this.config.customBuild && this.config.customBuild.command) {
                 // IDE.resultbar.selectOption(2);
                 var cmd = this.config.customBuild.command;
-                var options = this.config.customBuild.options || {};
+                var options = this.config.customBuild.options || {cwd:null};
 
                 if (!options.cwd) {
                     options.cwd = this.projectDir;
@@ -162,7 +181,7 @@ module Cats {
                     settings.theme = this.config.documentation.theme || "default";
                     var app = new typedoc.Application(settings);
                     var dest = OS.File.join(this.projectDir, outputDir);
-                    app.generate(this.tsfiles, dest);
+                    app.generate(Object.keys(this.tsfiles), dest);
                 } finally {
                     win.hide();
                 }
@@ -174,26 +193,19 @@ module Cats {
          *  again from the filesystem to be fully in sync
          */
         refresh() {
-            var projectConfig = new ProjectConfig(this.projectDir);
-            this.config = projectConfig.load();
-            this.name = this.config.name || PATH.basename(this.projectDir);
+            this.settings = new ProjectSettings(this.projectDir);
+            this.settings.load();
+            this.name = this.config.name || OS.File.PATH.basename(this.projectDir);
             document.title = "CATS | " + this.name;
 
-            // this.initJSSense();
             if (this.iSense) this.iSense.stop();
             this.iSense = new TSWorkerProxy(this);
 
-            /*
-            if (this.config.compiler.outFileOption) {
-                this.config.compiler.outFileOption = OS.File.join(this.projectDir, this.config.compiler.outFileOption);
-                console.info("Compiler output: " + this.config.compiler.outFileOption);
-            }
-            */
 
-            this.iSense.setSettings(this.config.compiler, this.config.codingStandards);
+            this.iSense.setSettings(this.config.compiler, this.config.codeFormat);
 
             if (!this.config.compiler.noLib) {
-                var fullName = OS.File.join(IDE.catsHomeDir, "typings/lib.d.ts");
+                var fullName = OS.File.join(IDE.catsHomeDir, "resource/typings/lib.d.ts");
                 var libdts = OS.File.readTextFile(fullName);
                 this.addScript(fullName, libdts);
             }
@@ -202,11 +214,13 @@ module Cats {
             srcs.forEach((src: string) => {
                 this.loadTypeScriptFiles(src);
             });
+            
+            this.refreshTodoList();
 
         }
 
         /**
-         * Compile without actually saving the result
+         * Compile without actually saving the resulting files
          */
         trialCompile() {
             this.iSense.compile((err: Error, data: Cats.CompileResults) => {
@@ -215,7 +229,6 @@ module Cats {
         }
 
         private showCompilationResults(data: Cats.CompileResults) {
-
             if (data.errors && (data.errors.length > 0)) {
                 IDE.problemResult.setData(data.errors);
                 return;
@@ -233,7 +246,7 @@ module Cats {
             if (this.config.customRun && this.config.customRun.command) {
 
                 var cmd = this.config.customRun.command;
-                var options = this.config.customRun.options || {};
+                var options = this.config.customRun.options || {cwd:null};
                 if (!options.cwd) {
                     options.cwd = this.projectDir;
                 }
@@ -249,6 +262,8 @@ module Cats {
                 console.info("Opening file: " + startPage);
                 var win2 = GUI.Window.open(startPage, {
                     toolbar: true,
+                    // nodejs: true,
+                    // "new-instance": true,
                     webkit: {
                         "page-cache": false
                     }
@@ -264,11 +279,13 @@ module Cats {
             return "file://" + url;
         }
 
-       
-       
+        hasScriptFile(fileName:string) {
+            return this.tsfiles[fileName];
+        }
+        
         addScript(fullName: string, content: string) {
             this.iSense.addScript(fullName, content);
-            if (this.tsfiles.indexOf(fullName) < 0) this.tsfiles.push(fullName);
+            if (! this.hasScriptFile(fullName)) this.tsfiles[fullName] = true;
         }
 
         /**

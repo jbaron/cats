@@ -62,8 +62,8 @@ declare module Cats {
         locale?:string;
         projects: string[];
         sessions: {
-            path: string;
-            state?: any;
+            state: string;
+            type: string;
         }[];
     }
 
@@ -89,24 +89,12 @@ declare module Cats {
         buildOnSave?: boolean;
         customBuild?:RunExternal;
         customRun?:RunExternal;
-        compiler:  {
-            noLib?: boolean;  // undefined by default
-            outFileOption?: string; // undefined by default
-            outDirOption?: string; // undefined by default 
-            removeComments?: boolean; // undefined by default
-            generateDeclarationFiles?: boolean; // undefined by default
-            mapSourceFiles?: boolean; // undefined by default
-            codeGenTarget?: number; // undefined by default
-            moduleGenTarget?: number; // undefined by default
-            allowAutomaticSemicolonInsertion?: boolean; // undefined by default
-        }; 
-        codingStandards: {
-            newLineMode?: string; // unix, windows. auto
-            useSoftTabs?: boolean; // true by default
-            tabSize?: number; // 4 by default
+        compiler: ts.CompilerOptions;
+        codeFormat: ts.FormatCodeOptions;
+        tslint : {
             useLint?: boolean; // false by default
             lintFile?: string; // <cats>/static/jslint.json by default 
-        };
+        }
         documentation: {
             theme?:string;
             readme?:string;
@@ -121,8 +109,9 @@ declare module Cats {
         column: number;
     }
 
-    class TypeInfo extends TypeScript.Services.TypeInfo {
-        description: string;
+    interface TypeInfo  {
+        description?: string;
+        docComment?: string;
     }
 
     interface CompileResults {
@@ -130,8 +119,11 @@ declare module Cats {
         errors: FileRange[];
     }
 
-    class NavigateToItem extends TypeScript.Services.NavigateToItem {
+    interface NavigateToItem  {
         range: Range;
+        name: string;
+        kind: string;
+        fileName: string;
     }
     
      

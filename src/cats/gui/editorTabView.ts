@@ -20,13 +20,7 @@ module Cats.Gui {
      */
     export class EditorPage extends qx.ui.tabview.Page {
 
-        private static ICONS = {
-            "error" :"icon/16/status/dialog-error.png",
-            "warning":"icon/16/status/dialog-warning.png",
-            "info":"icon/16/status/dialog-information.png"
-        };
-        
-
+    
         constructor(public editor:Editor) {
             super(editor.label);
             this.add(editor.getLayoutItem(), { edge: 0 });
@@ -87,7 +81,7 @@ module Cats.Gui {
          */
         setHasErrors(level:string) {
             if (level) {
-                var icon = EditorPage.ICONS[level];
+                var icon = IDE.icons.annotation[level];
                 this.setIcon(icon);
             } else {
                 this.resetIcon();

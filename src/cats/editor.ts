@@ -19,20 +19,28 @@ module Cats {
      * dependent on this small subset of methods and properties.
      */
     export class Editor extends qx.event.Emitter {
-
-        label = "Untitled"; // Labe to be used on the tab page
-        editorClass = null; // The editor type
-
-
+        
+        private static Registry = {}; 
+        
+        label = "Untitled"; // Label to be used on the tab page
+ 
+        // The project this editor belongs to
         project = IDE.project;
-        properties = [];
-        outline = {};
+        
+        protected properties = {};
 
-
+        /**
+         * Does the Editor have any unsaved changes
+         */ 
         hasUnsavedChanges() {
             return false;
         }
 
+
+        static RegisterEditor(name:string,restoreFn:(state:any)=>Editor) {
+            console.info("Registered editor for type " + name);
+            Editor.Registry[name] = restoreFn;
+        }
         /**
          * Save the content of the editor. Not all editors imeplement this method.
          */
@@ -47,53 +55,72 @@ module Cats {
             IDE.addHistory(this, pos);
         }
 
+        /**
+         * Return the type of the editor
+         */ 
+        getType():string {
+            return null;
+        }
 
+       
         /**
          * Based on the state previously returned by getState, create a new editor with identical state
          * Used during startup of CATS to restore same editors as before CATS was closed.
          */
-        static RestoreState(state: string): Editor {
-            return null;
+        static Restore(type:string, state: any): Editor {
+            var restoreFn = Editor.Registry[type];
+            if (! restoreFn) {
+                console.error("No restore function found for " + type);
+                return null;
+            }
+            var editor = restoreFn(state);
+            return editor;
         }
+
 
         /**
          * Get the state of this editor so it can be at a later session revived. For example for 
          * a source file editor this would be the fileName and current position.
          */
-        getState(): string {
-            return null; // means doesn't support it;
+        getState(): any {
+            return null; // means doesn't support persisting;
         }
 
-        get(property: string) {
-            return this[property];
+        /**
+         * Get a certin property from the editor
+         */ 
+        get(propertyName: string) {
+            return this.properties[propertyName];
         }
 
+        /**
+         * Provide an additional description for the content used in in the editor.
+         */ 
         getDescription() {
             return this.label;
         }
 
-        set(property: string, value) {
-            if (!property) return;
-            this[property] = value;
-            this.emit(property, value);
-        }
-
-        has(property: string) {
-            return this.get(property) != null;
+        /**
+         * Set a property on the editor
+         */ 
+        set(propertyName: string, value) {
+            if (!propertyName) return;
+            this.properties[propertyName] = value;
+            this.emit(propertyName, value);
         }
 
         /**
-         * Which type of files does this editor supports for editing.
-         */
-        static SupportsFile(fileName: string) {
-            return false;
+         * Does the editor support a certain property
+         */ 
+        has(property: string) {
+            return this.get(property) != null;
         }
 
 
         /**
          * Command pattern implementation
          */
-        executeCommand(commandName: string, ...args): boolean { return false; }
+        executeCommand(commandName: string, ...args): any { /* NOP */ }
 
 
         /**
@@ -107,58 +134,75 @@ module Cats {
 
     /**
      * Base class that contains some common features for editors that work on resouces on the 
-     * file system.
+     * file system. 
      */
     export class FileEditor extends Editor {
+        
+        filePath:string;
 
-        constructor(public filePath: string) {
+        constructor(filePath: string) {
             super();
-            if (this.filePath) {
-                this.label = PATH.basename(this.filePath);
-            }
-            this.updateProperties();
+            if (filePath) this.setFilePath(filePath);
         }
 
-        updateProperties() {
+        protected updateFileInfo() {
             if (this.filePath) {
                 try {
-                    this.set("properties", OS.File.getProperties(this.filePath));
+                    this.set("info", OS.File.getProperties(this.filePath));
                 } catch (err) { /* NOP */ }
             }
         }
 
+        setFilePath(filePath:string) {
+            this.filePath = filePath;
+            this.label = OS.File.PATH.basename(this.filePath);
+            this.updateFileInfo();
+        } 
 
+        /**
+         * Which type of files does this editor supports for editing.
+         */
+        protected static SupportsFile(fileName: string) {
+            return false;
+        }
+
+        /**
+         * @override 
+         */ 
         getDescription() {
             return this.filePath || this.label;
         }
 
-
+        /**
+         * Check for a given file which default editor should be opened and return an instance
+         * of that.
+         */ 
         private static CreateEditor(fileName: string): FileEditor {
-            if (Gui.ImageEditor.SupportsFile(fileName)) return new Gui.ImageEditor(fileName);
-            if (Gui.SourceEditor.SupportsFile(fileName)) return new Gui.SourceEditor(fileName);
+            if ( Gui.Editor.ImageEditor.SupportsFile(fileName)) return new Gui.Editor.ImageEditor(fileName);
+            if (Gui.Editor.SourceEditor.SupportsFile(fileName)) return new Gui.Editor.SourceEditor(fileName);
             return null;
         }
 
         /**
-         * Open an existing editor or if it doesn't exist yet create
-         * a new FileEditor.
+         * Open an existing file editor or if it doesn't exist yet create
+         * a new FileEditor suitable for the file selected.
          */
-        static OpenEditor(name: string, pos: ace.Position = { row: 0, column: 0 }): FileEditor {
+        static OpenEditor(fileName: string, pos: ace.Position = { row: 0, column: 0 }): FileEditor {
             var editor: FileEditor;
             var pages: Gui.EditorPage[] = [];
-            pages = IDE.editorTabView.getPagesForFile(name);
+            pages = IDE.editorTabView.getPagesForFile(fileName);
             if (!pages.length) {
-                editor = this.CreateEditor(name);
+                editor = this.CreateEditor(fileName);
                 if (!editor) {
                     var c = confirm("No suitable editor found for this file type, open with source editor?");
                     if (!c) return;
-                    editor = new Gui.SourceEditor(name);
+                    editor = new Gui.Editor.SourceEditor(fileName);
                 }
                 IDE.editorTabView.addEditor(editor, pos);
             } else {
-                editor = <Gui.SourceEditor>pages[0].editor;
+                editor = <FileEditor>pages[0].editor;
                 IDE.editorTabView.setSelection([pages[0]]);
-                editor.moveToPosition(pos);
+                if (editor.moveToPosition) editor.moveToPosition(pos);
             }
 
             return editor;

@@ -12,14 +12,29 @@
 // limitations under the License.
 //
 
-module Cats.Gui {
+module Cats.Gui.Editor {
 
-    
-    var Range: ace.Range = ace.require("ace/range").Range;
-    var modelist = ace.require('ace/ext/modelist');
+
+    var Range: ace.Range = ace.require( "ace/range" ).Range;
+    var modelist = ace.require( 'ace/ext/modelist' );
+
 
     var autoCompletePopup = new AutoCompletePopup();
-    
+    var registryEntryName = "SourceEditor";
+
+
+    function restoreState( state: SourceEditorState ) {
+        var editor = new SourceEditor( state.fileName );
+        editor.moveToPosition( state.pos );
+        return editor;
+    }
+
+    Cats.Editor.RegisterEditor( registryEntryName, restoreState );
+
+    interface SourceEditorState {
+        fileName: string;
+        pos: Position;
+    }
 
     /**
      * Wrapper around the ACE editor. The rest of the code base should not use
@@ -28,118 +43,162 @@ module Cats.Gui {
     export class SourceEditor extends FileEditor {
 
         private status = {};
-        private mode:string;
+        private unsavedChanges = false;
         private aceEditor: ace.Editor;
         private mouseMoveTimer: number;
         private outlineTimer: number
         private updateSourceTimer: number;
         private pendingWorkerUpdate = false;
         private editSession: EditSession;
-        private pendingPosition:ace.Position;
-        private selectedTextMarker:any;
-        private widget:qx.ui.core.Widget;
-        private contextMenu:SourceEditorContextMenu;
-        
-        constructor(fileName?:string) {
-            super(fileName);
-            
+        private pendingPosition: ace.Position;
+        private selectedTextMarker: any;
+        private widget: qx.ui.core.Widget;
+        private contextMenu: SourceEditorContextMenu;
+
+        constructor( fileName?: string ) {
+            super( fileName );
+            this.createEditSession();
+            this.createWidget();
+            this.contextMenu = new SourceEditorContextMenu( this );
+            this.widget.setContextMenu(this.contextMenu)
+            IDE.on( "config", () => { this.configureEditor(); });
+        }
+
+
+        private createWidget() {
             var widget = new qx.ui.core.Widget();
-            widget.setDecorator(null);
-            widget.setFont(null);
-            widget.setAppearance(null);
-            this.widget = widget;
+            widget.setDecorator( null );
+            widget.setFont( null );
+            widget.setAppearance( null );
             
-            var content = "";
-            this.mode = "ace/mode/text";
-            
-            if (fileName) {
-                content = OS.File.readTextFile(fileName) ;
-                this.mode = modelist.getModeForPath(fileName).mode
-            }
-            
-            this.editSession = new EditSession(content, this.mode, this);
-            
-            widget.addListenerOnce("appear", () => {
+            widget.addListenerOnce( "appear", () => {
                 var container = widget.getContentElement().getDomElement();
                 container.style.lineHeight = "normal";
-                this.aceEditor = this.createAceEditor(container);
-                
-
-                this.aceEditor.setSession(this.editSession);
-
-                if (this.mode === "binary") {
-                    this.aceEditor.setReadOnly(true);
-                } else {
-                    this.aceEditor.setReadOnly(false);
-                }
-
-                this.contextMenu = new SourceEditorContextMenu(this);
-                this.widget.setContextMenu(this.contextMenu);
-
-                this.aceEditor.on("changeSelection", () => {
-                    this.clearSelectedTextMarker();
-                    this.informWorld();
-                });
+                this.aceEditor = this.createAceEditor( container );
 
                 this.configureEditor();
+           
+                if ( this.pendingPosition ) this.moveToPosition( this.pendingPosition );
 
-                if (this.pendingPosition) this.moveToPosition(this.pendingPosition);
+            }, this );
 
-
-            }, this);
-
-            widget.addListener("appear", () => {
+            widget.addListener( "appear", () => {
                 // this.session.activate();
                 this.informWorld();
+                if ( this.aceEditor ) this.aceEditor.focus();
             });
 
             // session.on("errors", this.showErrors, this);
-            this.widget.addListener("resize", () => { this.resizeHandler(); });
+            widget.addListener( "resize", () => { this.resizeHandler(); });
 
-          
-            IDE.on("config", () => { this.configureEditor(); });
+            this.widget = widget;
         }
 
-       
-        executeCommand(name, ...args): boolean {
-            return false;
+        private createEditSession() {
+            this.editSession = new EditSession( this );
+
+            this.editSession.on( "changeAnnotation", () => {
+                this.emit( "errors", this.editSession.getMaxAnnotationLevel() );
+            });
+
+            this.editSession.on( "changeOverwrite", ( a ) => {
+                this.informWorld();
+            });
+
+            this.editSession.on( "change", () => {
+                this.setHasUnsavedChanges( true );
+            });
+
         }
 
-        static SupportsFile(fileName:string) {
-            var name = PATH.basename(fileName);
-            var mode = modelist.getModeForPath(name);
-            
-            if (mode && mode.supportsFile(name)) return true;
+
+        private setHasUnsavedChanges( value: boolean ) {
+            if ( value === this.unsavedChanges ) return;
+            this.unsavedChanges = value;
+            this.emit( "changed", value );
+        }
+
+        getState(): SourceEditorState {
+            return {
+                fileName: this.filePath,
+                pos: this.getPosition()
+            };
+        }
+
+        static RestoreState( state: SourceEditorState ) {
+            var editor = new SourceEditor( state.fileName );
+            editor.moveToPosition( state.pos );
+            return editor;
+        }
+
+        executeCommand( name, ...args ): any {
+            switch ( name ) {
+                case 'toggleInvisibles':
+                    this.aceEditor.setShowInvisibles( !this.aceEditor.getShowInvisibles() );
+                    break;
+
+                case 'formatText':
+                    this.formatText();
+                    break;
+
+                default:
+                    this.aceEditor.execCommand( name );
+                    break;
+            }
+        }
+
+        isTypeScript() {
+            return this.editSession.isTypeScript() && this.project.hasScriptFile(this.filePath);
+        }
+
+        getType() {
+            return registryEntryName;
+        }
+
+        static SupportsFile( fileName: string ) {
+            var name = OS.File.PATH.basename( fileName );
+            var mode = modelist.getModeForPath( name );
+
+            if ( mode && mode.supportsFile( name ) ) return true;
             return false;
         }
 
         /**
          * Get the Qooxdoo Widget that can be added to the parent
-         */ 
+         */
         getLayoutItem() {
             return this.widget;
         }
 
 
-        /**
-         * Is the editor currently containing TypeScript content. This determines wehther all kind 
-         * of features are enabled or not.
-         */ 
-        isTypeScript() {
-            return this.mode === "ace/mode/typescript";
+        private formatText() {
+            var r:Range = null;
+            if ( this.isTypeScript() ) {
+                var range: ace.Range = this.aceEditor.selection.getRange();
+                if ( !range.isEmpty() ) r = { start: range.start, end: range.end };
+                IDE.project.iSense.getFormattedTextForRange( this.filePath, r, ( err: Error, result: string ) => {
+                    if ( !err ) this.setContent( result );
+                });
+            }
+
         }
 
+
+        setMode(mode:string) {
+            this.editSession.setMode(mode);
+            this.informWorld();
+        }
 
         /**
          * Replace the current content of this editor with new content and indicate
          * wether the cursor should stay on the same position
          * 
-         */ 
-        setContent(content, keepPosition= true) {
+         */
+        setContent( content, keepPosition= true ) {
             var pos: ace.Position;
-            if (keepPosition) pos = this.getPosition();
-            this.aceEditor.getSession().setValue(content);
-            if (pos) this.moveToPosition(pos);
+            if ( keepPosition ) pos = this.getPosition();
+            this.aceEditor.getSession().setValue( content );
+            if ( pos ) this.moveToPosition( pos );
         }
 
 
@@ -149,109 +208,109 @@ module Cats.Gui {
          */
         private configureEditor() {
             var config = IDE.config.editor;
-            if (config.fontSize) this.aceEditor.setFontSize(config.fontSize + "px");
-            if (config.rightMargin) this.aceEditor.setPrintMarginColumn(config.rightMargin);
-            if (config.theme) this.aceEditor.setTheme("ace/theme/" + config.theme);
+            if ( config.fontSize ) this.aceEditor.setFontSize( config.fontSize + "px" );
+            if ( config.rightMargin ) this.aceEditor.setPrintMarginColumn( config.rightMargin );
+            if ( config.theme ) this.aceEditor.setTheme( "ace/theme/" + config.theme );
         }
 
-  
+
 
         /**
          * Inform the world about current status of the editor
          * 
-         */ 
+         */
         informWorld() {
-            
-            var value = this.getPosition();    
-            var label = (value.row + 1) + ":" + (value.column + 1);
-            
+
+            var value = this.getPosition();
+            var label = ( value.row + 1 ) + ":" + ( value.column + 1 );
+
             this.status = {
-                overwrite : this.editSession.getOverwrite(),
-                mode : PATH.basename(this.mode).toUpperCase(),
+                overwrite: this.editSession.getOverwrite(),
+                mode: OS.File.PATH.basename( this.editSession.mode ).toUpperCase(),
                 position: label
             };
-            
-            this.emit("status", this.status);
+
+            this.emit( "status", this.status );
         }
 
-        replace(range: ace.Range, content: string) {
-            this.editSession.replace(range, content);
+        replace( range: ace.Range, content: string ) {
+            this.editSession.replace( range, content );
         }
 
 
-        getLine(row = this.getPosition().row) {
-            return this.editSession.getLine(row);   
+        getLine( row = this.getPosition().row ) {
+            return this.editSession.getLine( row );
         }
 
         /**
          * Get the content of the editor
          * 
-         */ 
+         */
         getContent() {
             return this.editSession.getValue();
         }
 
-    
+
         /**
          * Make sure the ace editor is resized when the Qooxdoo container is resized.
          * 
-         */ 
+         */
         private resizeHandler() {
-            if (!this.widget.isSeeable()) {
-                this.addListenerOnce("appear", () => { this.resizeEditor(); });
+            if ( !this.widget.isSeeable() ) {
+                this.addListenerOnce( "appear", () => { this.resizeEditor(); });
             } else {
                 this.resizeEditor();
             }
         }
 
         private resizeEditor() {
-            setTimeout(() => {
+            setTimeout( () => {
                 this.aceEditor.resize();
-            }, 100);
+            }, 100 );
         }
 
-    
+
 
         private clearSelectedTextMarker() {
-            if (this.selectedTextMarker) {
-                this.editSession.removeMarker(this.selectedTextMarker);
+            if ( this.selectedTextMarker ) {
+                this.editSession.removeMarker( this.selectedTextMarker );
                 this.selectedTextMarker = null;
             }
         }
 
-        private addTempMarker(r: Cats.Range) {
+        private addTempMarker( r: Cats.Range ) {
             this.clearSelectedTextMarker();
-            var range: ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
-            this.selectedTextMarker = this.editSession.addMarker(range,"ace_selected-word", "text");
+            var range: ace.Range = new Range( r.start.row, r.start.column, r.end.row, r.end.column );
+            this.selectedTextMarker = this.editSession.addMarker( range, "ace_selected-word", "text" );
         }
 
-        moveToPosition(pos: Cats.Range);
-        moveToPosition(pos: ace.Position);
-        moveToPosition(pos: any) {
-            if (! this.aceEditor) {
+        moveToPosition( pos: Cats.Range );
+        moveToPosition( pos: ace.Position );
+        moveToPosition( pos: any ) {
+            if ( !this.aceEditor ) {
                 this.pendingPosition = pos;
             } else {
                 this.aceEditor.clearSelection();
-                super.moveToPosition(pos);
-                if (pos) { 
-                    if (pos.start) {
-                        this.aceEditor.moveCursorToPosition(pos.start);
+                super.moveToPosition( pos );
+                if ( pos ) {
+                    if ( pos.start ) {
+                        this.aceEditor.moveCursorToPosition( pos.start );
                     } else {
-                        this.aceEditor.moveCursorToPosition(pos);
-                    }    
-                    
+                        this.aceEditor.moveCursorToPosition( pos );
+                    }
+
                 }
-                setTimeout(()=>{
+                setTimeout( () => {
                     this.aceEditor.centerSelection();
-                    if (pos && pos.start) this.addTempMarker(pos);
-                },100);
+                    if ( pos && pos.start ) this.addTempMarker( pos );
+                }, 100 );
             }
         }
 
         /**
          * Get the position of the cursor within the content.
          * 
-         */ 
+         */
         getPosition() {
             return this.aceEditor.getCursorPosition();
         }
@@ -259,66 +318,72 @@ module Cats.Gui {
         /**
           * Get the Position based on mouse x,y coordinates
           */
-        getPositionFromScreenOffset(x: number, y: number): ace.Position {
+        getPositionFromScreenOffset( ev: MouseEvent ): ace.Position {
+            var x = ev.offsetX;
+            var y = ev.offsetY;
+            // var cursor = this.aceEditor.renderer.pixelToScreenCoordinates(x, y);
+            // IDE.console.log(JSON.stringify(cursor));
+            // var docPos2 = this.aceEditor.getSession().screenToDocumentPosition(cursor.row, cursor.col);
+            // IDE.console.log(JSON.stringify(docPos2));
+
             var r = this.aceEditor.renderer;
             // var offset = (x + r.scrollLeft - r.$padding) / r.characterWidth;
-            var offset = (x - r.$padding) / r.characterWidth;
+            var offset = ( x - r.$padding ) / r.characterWidth;
 
             // @BUG: Quickfix for strange issue with top
-            var correction = 0; // r.scrollTop ? 7 : 0;
+            var correction = r.scrollTop ? 7 : 0;
 
-            var row = Math.floor((y + r.scrollTop - correction) / r.lineHeight);
-            var col = Math.round(offset);
+            var row = Math.floor( ( y + r.scrollTop - correction ) / r.lineHeight );
+            var col = Math.round( offset );
 
-            var docPos = this.aceEditor.getSession().screenToDocumentPosition(row, col);
+            var docPos = this.aceEditor.getSession().screenToDocumentPosition( row, col );
+            // IDE.console.log(JSON.stringify(docPos));
             return docPos;
         }
 
         /**
          * Perform code autocompletion.
          */
-        showAutoComplete(memberCompletionOnly = false) {
-             // Any pending changes that are not yet send to the worker?
-            this.project.iSense.updateScript(this.filePath, this.getContent());
-            autoCompletePopup.complete(memberCompletionOnly, this, this.aceEditor);
+        showAutoComplete( memberCompletionOnly = false ) {
+            // Any pending changes that are not yet send to the worker?
+            if (this.isTypeScript()) {
+                this.project.iSense.updateScript( this.filePath, this.getContent() );
+            }
+            autoCompletePopup.complete( memberCompletionOnly, this, this.aceEditor );
         }
 
-
-        /**
-         * Check if there are any errors for this session and show them.    
-         */
-        showAnnotations(result: Cats.FileRange[]) {
-            this.editSession.showAnnotations(result);
-        }
-
-
-         private liveAutoComplete(e) {
+        private liveAutoComplete( e ) {
+            if (! this.isTypeScript()) return;
             var text = e.args || "";
-            if ((e.command.name === "insertstring") && (text === ".")) {
-                this.showAutoComplete(true);
+            if ( ( e.command.name === "insertstring" ) && ( text === "." ) ) {
+                this.showAutoComplete( true );
             }
         }
 
+    
         /**
          * Create a new isntance of the ACE editor and append is to a dom element
          * 
-         */ 
-        private createAceEditor(rootElement: HTMLElement): ace.Editor {
-            var editor: ace.Editor = ace.edit(rootElement);
-            if (this.isTypeScript()) {
-                editor.completers =  [new TSCompleter(this), snippetCompleter];
-                editor.commands.on('afterExec', (e) => { this.liveAutoComplete(e);});
-                new TSTooltip(this);
-                new TSHelper(this, this.editSession);
-            } else {
-                editor.completers =  [keyWordCompleter, snippetCompleter];
-            }
-            editor.setOptions({
+         */
+        private createAceEditor( rootElement: HTMLElement ): ace.Editor {
+            var editor: ace.Editor = ace.edit( rootElement );
+            editor.setSession( this.editSession );
+            editor.on( "changeSelection", () => {
+                this.clearSelectedTextMarker();
+                this.informWorld();
+            });
+
+            new TSTooltip( this );
+            new TSHelper( this, this.editSession );
+
+            editor.commands.on( 'afterExec', ( e ) => { this.liveAutoComplete( e ); });
+
+            editor.setOptions( {
                 enableSnippets: true
             });
-            
-            editor.commands.addCommands([
-                
+
+            editor.commands.addCommands( [
+
                 {
                     name: "autoComplete",
                     bindKey: {
@@ -327,7 +392,7 @@ module Cats.Gui {
                     },
                     exec: () => { this.showAutoComplete(); }
                 },
-                
+
                 {
                     name: "gotoDeclaration",
                     bindKey: {
@@ -346,36 +411,21 @@ module Cats.Gui {
                     },
                     exec: () => { this.save(); }
                 }
-            ]);
-            
-           
+            ] );
+
+
             return editor;
         }
 
         hasUnsavedChanges() {
-            return this.editSession.unsavedChanges;
+            return this.unsavedChanges;
         }
-     
+
         /**
          * Persist this session to the file system. This overrides the NOP in the base class
          */
         save() {
-           
-            if (this.filePath == null) {
-                var dir = PATH.join(this.project.projectDir, "/");
-                this.filePath = prompt("Please enter the file name", dir);
-                if (! this.filePath) return;
-                this.filePath = OS.File.switchToForwardSlashes(this.filePath);
-            }
-
-            OS.File.writeTextFile(this.filePath, this.getContent());
-            this.editSession.setHasUnsavedChanges(false);
-            this.updateProperties();
-            IDE.console.log("Saved file " + this.filePath);
-            if (this.isTypeScript()) {
-                this.project.validate(false);
-                if (this.project.config.buildOnSave) Commands.runCommand(Commands.CMDS.project_build);
-            }
+            this.editSession.save();
         }
 
     }

@@ -12,19 +12,30 @@
 // limitations under the License.
 //
 
-module Cats.Gui {
+module Cats.Gui.Editor {
+    
+    var registryEntryName = "ImageEditor";
+    
+    
+    function restoreState(state) {
+        var editor = new ImageEditor(state.fileName);
+        return editor;
+    }
+    
+    Cats.Editor.RegisterEditor(registryEntryName, restoreState);
+    
+    
     /**
      * Simple image viewer for image files. Uses canvas to render the image.
      */
     export class ImageEditor extends FileEditor {
 
-        private backgroundColors = ["white", "black", "grey"];
-        unsavedChanges= false;
-        status = { mode : "image" };
+        private static BackgroundColors = ["white", "black", "grey"];
         private canvas = new qx.ui.embed.Canvas();
 
         constructor(fileName) {
             super(fileName);
+            this.set("status", { mode : "IMAGE" });
             this.loadImage(fileName);
             this.createContextMenu();
         }
@@ -33,7 +44,7 @@ module Cats.Gui {
             return this.canvas;
         }
 
-        executeCommand(name, ...args): boolean {
+        executeCommand(name, ...args): any {
             return false;
         }
 
@@ -45,6 +56,17 @@ module Cats.Gui {
             image.src = url;
         }
 
+        getState() {
+            return {
+                fileName: this.filePath
+            };
+        }
+       
+        getType() {
+            return registryEntryName;
+        }
+ 
+ 
         private resizeIfRequired(image: HTMLImageElement) {
             if (image.width > this.canvas.getCanvasWidth()) {
                 this.canvas.setCanvasWidth(image.width);
@@ -65,7 +87,7 @@ module Cats.Gui {
 
         private createContextMenu() {
             var menu = new qx.ui.menu.Menu();
-            this.backgroundColors.forEach((color) => {
+            ImageEditor.BackgroundColors.forEach((color) => {
                 var button = new qx.ui.menu.Button("Background " + color);
                 button.addListener("execute", () => {
                     this.canvas.setBackgroundColor(color);
@@ -77,18 +99,11 @@ module Cats.Gui {
 
         static SupportsFile(fileName:string) {
             var supportedExt = [ ".png", ".gif", ".jpg" , ".jpeg"]
-            var ext = PATH.extname(fileName);
+            var ext = OS.File.PATH.extname(fileName);
             return supportedExt.indexOf(ext) > -1;
         }
 
-        replace(range: ace.Range, content: string) { }
-
-        getContent() { return null; }
-
-        setContent(content, keepPosition= true) { }
-
-        updateWorld() { }
-
+  
         moveToPosition(pos: ace.Position) { }
 
     }

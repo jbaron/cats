@@ -26,17 +26,15 @@ export class FileContextMenu extends qx.ui.menu.Menu {
     constructor(private fileNavigator:FileNavigator) {
         super();
         this.init();
-        
     }
 
-
     private openInApp() {
-        var osPath = PATH.join(this.getFullPath(),"");
+        var osPath = OS.File.join(this.getFullPath(),"", true);
         if (osPath) this.gui.Shell.openItem(osPath);
     }
     
     private showInFolder() {
-        var osPath = PATH.join(this.getFullPath(),"");
+        var osPath = OS.File.join(this.getFullPath(),"", true);
         if (osPath) this.gui.Shell.showItemInFolder(osPath);
     }
 
@@ -97,7 +95,7 @@ export class FileContextMenu extends qx.ui.menu.Menu {
 
     private deleteFile() {
         var fullName = this.getFullPath();
-        var basename = PATH.basename(fullName);
+        var basename = OS.File.PATH.basename(fullName);
         var sure = confirm("Delete " + basename + "?");
         if (sure) {
             OS.File.remove(fullName);
@@ -112,7 +110,7 @@ export class FileContextMenu extends qx.ui.menu.Menu {
         if (item.getDirectory()) {
             return fullPath;
         } else { 
-            return PATH.dirname(fullPath);
+            return OS.File.PATH.dirname(fullPath);
         }
     }
 
@@ -136,8 +134,8 @@ export class FileContextMenu extends qx.ui.menu.Menu {
     
     private rename() {
         var fullName = this.getFullPath();
-        var dirname = PATH.dirname(fullName);
-        var basename = PATH.basename(fullName);
+        var dirname = OS.File.PATH.dirname(fullName);
+        var basename = OS.File.PATH.basename(fullName);
         var name = prompt("Enter new name", basename);
         if (name == null) return;
         var c = confirm("Going to rename " + basename + " to " + name);

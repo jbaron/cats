@@ -16,14 +16,13 @@
 module Cats.Gui {
 
     /**      
-     * Overview of started processes. With the controls the processes can be paused,
+     * Overview of started processes. Also provides the controls so these processes can be paused,
      * stopped or killed.
      * 
-     * @TODO provide visualization of the status of a process
+     * @TODO provide feedback of the actuall status of a process
      */
     export class ProcessTable extends qx.ui.container.Composite {
 
-        private static HEADERS = ["PID", "Command"];
         private table: qx.ui.table.Table;
 
         constructor() {
@@ -46,10 +45,13 @@ module Cats.Gui {
         }
 
 
-        private sendSignal(signal?: string) {
+        private sendSignal(signal: string) {
             var table = this.table;
             var selectedRow = table.getSelectionModel().getLeadSelectionIndex();
-            if (selectedRow < 0) { return; }
+            if (selectedRow < 0) { 
+                alert("You have to select a process from the table below first");
+                return;
+            }
             var data = table.getTableModel().getRowData(selectedRow);
             var child = data[2];
             child.kill(signal);
@@ -65,10 +67,11 @@ module Cats.Gui {
 
         private createTable() {
             var tableModel = new qx.ui.table.model.Simple();
-            tableModel.setColumns(ProcessTable.HEADERS);
+            var headers = [super.tr("tableheader_pid"), super.tr("tableheader_command")];
+            tableModel.setColumns(headers);
             tableModel.setData([]);
 
-            var custom: any = {
+            var custom: IMap = {
                 tableColumnModel: function(obj) {
                     return new qx.ui.table.columnmodel.Resize(obj);
                 }

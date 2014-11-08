@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-module Cats.Gui {
+module Cats.Gui.Editor {
 
     var dagre;
     
@@ -24,7 +24,7 @@ module Cats.Gui {
     declare var UMLGeneralization:any;
     declare var UMLRealization:any;
 
-    export class UMLEditor extends Editor {
+    export class UMLEditor extends Cats.Editor {
 
         private backgroundColors = ["white", "black", "grey"];
         properties = [
