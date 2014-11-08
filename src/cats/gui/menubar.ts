@@ -162,7 +162,7 @@ module Cats.Gui {
 
         private recentProjects() {
             var menu = new GUI.Menu();
-            IDE.config.projects.reverse().forEach((project) => {
+            IDE.config.projects.slice().reverse().forEach((project) => {
                 if (! project) return;
                 var item = {
                     label: project,

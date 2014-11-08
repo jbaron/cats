@@ -65,7 +65,7 @@ module Cats {
             this.catsHomeDir = process.cwd();
             this.loadMessages();
             this.config = this.loadPreferences();
-            this.recentProjects = this.config.projects || [];
+            this.recentProjects = Array.isArray(this.config.projects) ?  this.config.projects : [];
             
             this.icons = this.loadIconsMap();
             this.configure();
