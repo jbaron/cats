@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jbaron/cats.svg?branch=dev-1-3-a)](https://travis-ci.org/jbaron/cats)
+[![Build Status](https://travis-ci.org/jbaron/cats.svg?branch=unstable)](https://travis-ci.org/jbaron/cats)
 
 ## CATS
 
@@ -34,24 +34,6 @@ The easiest way to start using CATS it to follow these simple steps:
 
   Alternatively you can download Nodewebkit from the following page: [Nodewebkit downloads](https://github.com/rogerwang/node-webkit). 
 
-<<<<<<< HEAD
-* Download the CATS package (it is a file called cats.nw). There are two versions available, a stable version meant for daily work 
-  and an unstable version if you want to try out the latest and greatest features. Download either one:
-
-  [CATS latest stable version](https://github.com/jbaron/cats/releases/download/latest_stable/cats.nw) 
-  
-  [CATS latest unstable version](https://github.com/jbaron/cats/releases/download/latest_unstable/cats.nw) 
-  
-  
-After you installed Nodewebkit, just go to the directory where you downloaded cats.nw and type:
-
-```shell
-nodewebkit cats.nw
-```
-
-If you already have a directory with TypeScript files, just select that directory from "Open project..." 
-to start editing your files.
-=======
 * Download the CATS binary package (it is a file called cats-x.y.z.nw). There are two versions available, a stable version meant for daily work 
   and an unstable version if you want to try out the latest and greatest features. 
 
@@ -69,16 +51,11 @@ nodewebkit cats-x.y.z.nw
 If you already have a directory with TypeScript files, just select that directory from "Open project..." 
 to start editing your files. Othwewise you can open any directory as a project and start adding the
 different typefiles as you go along with your project.
->>>>>>> dev-1-3-a
 
 There are some commandline paramters you can use. For example to open CATS with a specific project, use:
 
 ```shell        
-<<<<<<< HEAD
-nodewebkit cats.nw --project </path/projectDirectory>
-=======
 nodewebkit cats-x.y.z.nw --project </path/projectDirectory>
->>>>>>> dev-1-3-a
 ```
 
 Please note that you have to specify the full path to the project directory you want to open. 
@@ -86,11 +63,7 @@ Please note that you have to specify the full path to the project directory you 
 To open CATS with the same project as last time you opened it, you can use the --restore option:
 
 ```shell
-<<<<<<< HEAD
-nodewebkit cats.nw --restore
-=======
 nodewebkit cats-x.y.z.nw --restore
->>>>>>> dev-1-3-a
 ```
 
 ## Building
@@ -184,5 +157,4 @@ The todo list items are tracked as enhancement requests on GitHub. You can check
 [Todo List](https://github.com/jbaron/cats/issues?labels=enhancement&page=1&state=open)
 
 There is also a milestone planning in there when some enhancements should be delivered. 
-
 
