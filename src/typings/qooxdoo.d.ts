@@ -10166,7 +10166,7 @@ declare module qx.ui.table.columnmodel {
         trc(hint: string, messageId: string, varargs: any): qx.locale.LocalizedString;
         trn(singularMessageId: string, pluralMessageId: string, count: number, varargs: any): qx.locale.LocalizedString;
         trnc(hint: string, singularMessageId: string, pluralMessageId: string, count: number, varargs: any): qx.locale.LocalizedString;
-        constructor(obj: any);
+        constructor();
         protected _addResetColumnWidthButton(event: qx.event.type.Data): void;
         protected _applyBehavior(value: qx.ui.table.columnmodel.resizebehavior.Abstract, old: qx.ui.table.columnmodel.resizebehavior.Abstract): void;
         protected _onappear(event: qx.event.type.Event): void;

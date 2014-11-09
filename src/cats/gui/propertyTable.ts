@@ -31,7 +31,7 @@ module Cats.Gui {
 
             var custom: any = {
                 tableColumnModel: function(obj) {
-                    return new qx.ui.table.columnmodel.Resize(obj);
+                    return new qx.ui.table.columnmodel.Resize();
                 }
             };
             super(tableModel, custom);
@@ -73,7 +73,8 @@ module Cats.Gui {
                     rows.push([row.key, row.value]);
                 });
             }
-            this.getTableModel().setData(rows);
+            var model = <qx.ui.table.model.Simple>this.getTableModel();
+            model.setData(rows);
             this.getSelectionModel().resetSelection();
         }
 

@@ -56,7 +56,7 @@ module Cats.Gui {
          * Convenience method to select this page in the tab view.
          */
         private select() {
-            var tabView = this.getLayoutParent().getLayoutParent();
+            var tabView = <TabView>this.getLayoutParent().getLayoutParent();
             tabView.setSelection([this]);
         }
 

@@ -33,7 +33,7 @@ module Cats.Gui {
 
             var custom: any = {
                 tableColumnModel: function(obj) {
-                    return new qx.ui.table.columnmodel.Resize(obj);
+                    return new qx.ui.table.columnmodel.Resize();
                 }
             };
             super(tableModel, custom);
@@ -98,7 +98,8 @@ module Cats.Gui {
                     rows.push(this.convert(row));
                 });
             }
-            this.getTableModel().setData(rows);
+            var model = <qx.ui.table.model.Simple>this.getTableModel();
+            model.setData(rows);
             // this.getSelectionModel().resetSelection();
         }
 
@@ -106,7 +107,8 @@ module Cats.Gui {
          * Add a row to the table
          */ 
         addData(row: Cats.FileRange) {
-            this.getTableModel().addRows([this.convert(row)]);
+            var model = <qx.ui.table.model.Simple>this.getTableModel();
+            model.addRows([this.convert(row)]);
         }
 
 

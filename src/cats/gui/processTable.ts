@@ -40,7 +40,8 @@ module Cats.Gui {
             var row = new Array(
                 "" + child.pid, cmd, child
                 );
-            this.table.getTableModel().addRows([row]);
+            var model = <qx.ui.table.model.Simple>this.table.getTableModel();
+            model.addRows([row]);
             this.table.getSelectionModel().resetSelection();
         }
 
@@ -73,7 +74,7 @@ module Cats.Gui {
 
             var custom: IMap = {
                 tableColumnModel: function(obj) {
-                    return new qx.ui.table.columnmodel.Resize(obj);
+                    return new qx.ui.table.columnmodel.Resize();
                 }
             };
 
