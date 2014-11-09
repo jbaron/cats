@@ -135,6 +135,10 @@ module Cats.TSWorker {
             }
         }
 
+        private getName(node:ts.TypeReferenceNode) {
+            return node.getText();
+        }
+
         private createIfNotExist(node: ts.Declaration): ModelEntry {
             var fullName = node.name["text"];
             if (!this.model[fullName]) {
@@ -151,10 +155,10 @@ module Cats.TSWorker {
 
                 if (node.kind === ts.SyntaxKind.ClassDeclaration) {
                     var cd = <ts.ClassDeclaration>node;
-                    if (cd.baseType) entry.extends.push(cd.baseType.symbol.name);
+                    if (cd.baseType) entry.extends.push(this.getName(cd.baseType));
                     
                     if (cd.implementedTypes) cd.implementedTypes.forEach((implType) => {
-                        entry.implements.push(implType.symbol.name);
+                        entry.implements.push(this.getName(implType));
                     });
                 }
                 
@@ -162,7 +166,7 @@ module Cats.TSWorker {
                 if (node.kind === ts.SyntaxKind.InterfaceDeclaration) {
                     var id = <ts.InterfaceDeclaration>node;
                     if (id.baseTypes) id.baseTypes.forEach((type) => {
-                        entry.implements.push(type.symbol.name);
+                        entry.implements.push(this.getName(type));
                     });
                 }
                 
