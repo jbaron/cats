@@ -45,6 +45,7 @@ module Cats.TSWorker {
         private ls: ts.LanguageService;
         private lsHost: LanguageServiceHost;
         private formatOptions: ts.FormatCodeOptions;
+        private documentRegistry: ts.DocumentRegistry;
 
         /**
          * Create a new TypeScript ISense instance.
@@ -52,9 +53,11 @@ module Cats.TSWorker {
          */
         constructor() {
             this.lsHost = new LanguageServiceHost();
-            this.ls = ts.createLanguageService(this.lsHost, ts.createDocumentRegistry());
+            this.documentRegistry = ts.createDocumentRegistry();
+            this.ls = ts.createLanguageService(this.lsHost, this.documentRegistry);
             this.formatOptions = this.getDefaultFormatOptions();
         }
+
 
         private getDefaultFormatOptions() {
             return { 
@@ -113,13 +116,25 @@ module Cats.TSWorker {
         public getObjectModel() {
             //Force all symbols to be created.
             this.getAllDiagnostics();
-            
-            var mc = new ModelCreator();
-            this.lsHost.getScriptFileNames().forEach((script) => {
-                if (script.indexOf("lib.d.ts") > 0) return;
-                // @TODO fix
-                // var doc:TypeScript.Document = this.ls["compiler"].getDocument(script);
-                // mc.parse(doc);
+  
+           var mc = new ModelCreator();
+            this.lsHost.getScriptFileNames().forEach((scriptName) => {
+                if (scriptName.indexOf("lib.d.ts") > 0) return;
+                var script = this.lsHost.getScript(scriptName);
+                // var doc:ts.SourceFile = ts.createSourceFile(scriptName, script.getContent(),
+                //        this.lsHost.getCompilationSettings().target, script.getVersion());
+                var doc = this.documentRegistry.acquireDocument(
+                    scriptName, 
+                    this.lsHost.getCompilationSettings(), 
+                    script.getScriptSnapshot(),
+                    script.getVersion(), 
+                    script.isOpen()
+                );
+        
+    
+                mc.parse(doc);
+                
+                this.documentRegistry.releaseDocument(scriptName, this.lsHost.getCompilationSettings());
             });
             return mc.getModel();
         }

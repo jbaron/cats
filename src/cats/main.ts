@@ -56,8 +56,8 @@ module Cats {
 
 
     /**
-     * This is the functions that start kicks it all of. When Qooxdoo is loaded it will 
-     * call this main to start the application 
+     * This is the functions that kicks it all of. When Qooxdoo is loaded it will 
+     * call this main to start the application. 
      */
     function main(app: qx.application.Standalone) {
         var GUI = require('nw.gui');

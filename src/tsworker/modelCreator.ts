@@ -13,58 +13,165 @@
 //
 
 module Cats.TSWorker {
-    
-    
+
+
     /**
      * Creates a class model to be used for displaying as an UML diagram
      * 
      * @TODO Fix this using the new language service API. Right now disabled.
-     */ 
+     */
     export class ModelCreator {
 
         private model = {};
         private last: ModelEntry;
 
         constructor() {
-            
+
         }
 
 
         getModel(): Array<ModelEntry> {
             var result = [];
             Object.keys(this.model).forEach((key) => {
-               var entry:ModelEntry = this.model[key];
-               result.push(entry);
+                var entry: ModelEntry = this.model[key];
+                result.push(entry);
             });
             return result;
         }
-        
-        parse(doc /* :TypeScript.Document @TODO */) {
-            // this.handle(doc.topLevelDecl());
+
+
+        parse(doc: ts.SourceFile) {
+            this.last = null;
+            this.handle(doc);
         }
-        
-        /*
-        
-        private interest(kind:TypeScript.PullElementKind) {
+
+        private handle(node: ts.Node) {
+            if (!node) return;
+
+            try {
+            if (this.isTopLevelNode(node.kind)) {
+                this.last = this.createIfNotExist(node);
+            }
+
+
+            if (this.interest(node.kind)) {
+                var s = node.symbol;
+                var fullName = s ? s.getName() : node.id;
+                // console.log(this.interest(node.kind) + ":" + node.name + ":" + fullName) ;
+            }
+
+            if (node.kind === ts.SyntaxKind.Method) {
+                if (this.last) this.last.operations.push(node.symbol.name);
+                return;
+            }
+
+            if (node.kind === ts.SyntaxKind.Constructor) {
+                if (this.last) this.last.operations.push("constructor");
+                return;
+            }
+
+            if (node.kind === ts.SyntaxKind.Property) {
+                if (this.last) {
+                    var attr: Attribute = {
+                        name: node.symbol.name,
+                        modifiers: [],
+                        type: null
+                    }
+
+                    if (node.symbol) {
+                        var t = "any" // node.symbol.valueDeclaration;
+                        attr.type = t;
+                    }
+                    this.last.attributes.push(attr);
+                }
+                return;
+            }
+
+
+            var children = node.getChildren();
+            if (children) {
+                children.forEach((child) => {
+                    this.handle(child);
+                })
+            }
+
+            // this.last = null;
+            
+            } catch(err) {
+                console.log(err.stack);
+                return;
+            } 
+            
+        }
+
+
+        private isTopLevelNode(kind: ts.SyntaxKind) {
+            return ((kind === ts.SyntaxKind.ClassDeclaration) ||
+                (kind === ts.SyntaxKind.InterfaceDeclaration) ||
+                (kind === ts.SyntaxKind.EnumDeclaration)
+                );
+        }
+
+
+
+        private interest(kind: ts.SyntaxKind) {
             switch (kind) {
-                case TypeScript.PullElementKind.Class:
+                case ts.SyntaxKind.ClassDeclaration:
                     return "class";
-                case TypeScript.PullElementKind.Container:
-                    return "container";    
-                case TypeScript.PullElementKind.Interface:
+                case ts.SyntaxKind.ModuleDeclaration:
+                    return "container";
+                case ts.SyntaxKind.InterfaceDeclaration:
                     return "interface";
-                case TypeScript.PullElementKind.Method:
+                case ts.SyntaxKind.Method:
                     return "method";
-                case TypeScript.PullElementKind.Enum:
+                case ts.SyntaxKind.EnumDeclaration:
                     return "enum";
-                case TypeScript.PullElementKind.Property:
+                case ts.SyntaxKind.Property:
                     return "prop"
-                case TypeScript.PullElementKind.ConstructorMethod:
+                case ts.SyntaxKind.Constructor:
                     return "constructor";
                 default:
                     return null;
             }
         }
+
+        private createIfNotExist(node: ts.Declaration): ModelEntry {
+            var fullName = node.name["text"];
+            if (!this.model[fullName]) {
+                var entry: ModelEntry = {
+                    type: this.interest(node.kind),
+                    name: fullName,
+                    extends: [],
+                    implements: [],
+                    operations: [],
+                    attributes: []
+                };
+                this.model[fullName] = entry;
+                // var typeSymbol = node.symbol.getDeclarations();
+
+                if (node.kind === ts.SyntaxKind.ClassDeclaration) {
+                    var cd = <ts.ClassDeclaration>node;
+                    if (cd.baseType) entry.extends.push(cd.baseType.symbol.name);
+                    
+                    if (cd.implementedTypes) cd.implementedTypes.forEach((implType) => {
+                        entry.implements.push(implType.symbol.name);
+                    });
+                }
+                
+                
+                if (node.kind === ts.SyntaxKind.InterfaceDeclaration) {
+                    var id = <ts.InterfaceDeclaration>node;
+                    if (id.baseTypes) id.baseTypes.forEach((type) => {
+                        entry.implements.push(type.symbol.name);
+                    });
+                }
+                
+            }
+            return this.model[fullName];
+        }
+
+
+        /*
         
         private isMainNode(kind:TypeScript.PullElementKind) {
             return ( (kind === TypeScript.PullElementKind.Class) ||
@@ -154,10 +261,10 @@ module Cats.TSWorker {
         }
         
         */
-        
+
     }
-   
-    
-    
-    
+
+
+
+
 }

@@ -28,7 +28,7 @@ module Cats.TSWorker {
  * 
  */ 
 export class ScriptInfo {
-        public version: number = 1;
+        private version: number = 1;
         public editRanges: { length: number; textChangeRange: TypeScript.TextChangeRange; }[] = [];
         private lineMap: TypeScript.LineMap = null;
 
@@ -48,6 +48,15 @@ export class ScriptInfo {
 
         public getContent() {
             return this.content;
+        }
+
+        public isOpen() {
+            return false; // @TODO
+        }
+
+
+        public getVersion() {
+            return this.version + ""; 
         }
 
         public updateContent(content: string): void {

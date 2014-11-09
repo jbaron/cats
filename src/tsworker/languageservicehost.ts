@@ -41,7 +41,7 @@ module Cats.TSWorker {
 
         getScriptIsOpen(fileName: string) {
             // @FIX generates not-implemented yet error in TypeScript if return true;
-            return false; 
+            return this.getScript(fileName).isOpen(); 
         }
 
         getCancellationToken(): ts.CancellationToken {
@@ -76,7 +76,7 @@ module Cats.TSWorker {
 
         public getScriptVersion(fileName: string): string {
             var script = this.scripts[fileName];            
-            return script.version + "";
+            return script.getVersion();
         }
 
         //////////////////////////////////////////////////////////////////////
