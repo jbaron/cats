@@ -31,8 +31,10 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h2>
-<a name="cats" class="anchor" href="#cats"><span class="octicon octicon-link"></span></a>CATS</h2>
+        <p><a href="https://travis-ci.org/jbaron/cats"><img src="https://travis-ci.org/jbaron/cats.svg?branch=master" alt="Build Status"></a></p>
+
+<h2>
+<a id="cats" class="anchor" href="#cats" aria-hidden="true"><span class="octicon octicon-link"></span></a>CATS</h2>
 
 <p>CATS is an IDE for TypeScript and Web developers. CATS is open source software released under the Apache 2.0 license and it runs on Linux, Windows and OS X. 
 CATS itself is also written in TypeScript, so you can easily customize it if required.</p>
@@ -41,7 +43,9 @@ CATS itself is also written in TypeScript, so you can easily customize it if req
 
 <ul>
 <li>Intelligent code editor and code completion for TypeScript sources.</li>
-</ul><p><img width="680" src="https://raw.github.com/jbaron/cats/master/artifacts/cats_screenshot.png"></p>
+</ul>
+
+<p><img width="680" src="https://raw.github.com/jbaron/cats/master/artifacts/cats_screenshot.png"></p>
 
 <ul>
 <li>Syntax highlighting for over 110 languages (TextMate/Sublime Text.tmlanguage files can be imported).</li>
@@ -54,8 +58,10 @@ CATS itself is also written in TypeScript, so you can easily customize it if req
 <li>Editing features like folding, indentation and code formatting.</li>
 <li>Running your application from within IDE and using the WebKit debugger to debug.</li>
 <li>Support for external build systems like Grunt, Jake, Gulp and Makefiles.</li>
-</ul><h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+</ul>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <p>The easiest way to start using CATS it to follow these simple steps:</p>
 
@@ -70,38 +76,38 @@ nodewebkit by typing the following command (using npm, the node package manager)
 <p>Alternatively you can download Nodewebkit from the following page: <a href="https://github.com/rogerwang/node-webkit">Nodewebkit downloads</a>. </p>
 </li>
 <li>
-<p>Download the CATS package (it is a file called cats.nw). There are two versions available, a stable version meant for daily work 
-and an unstable version if you want to try out the latest and greatest features. Download either one:</p>
+<p>Download the CATS binary package (it is a file called cats-x.y.z.nw). There are two versions available, a stable version meant for daily work 
+and an unstable version if you want to try out the latest and greatest features. </p>
 
-<p><a href="https://github.com/jbaron/cats/releases/download/latest_stable/cats.nw">CATS latest stable version</a> </p>
+<p>Download either one from the following location:</p>
 
-<p><a href="https://github.com/jbaron/cats/releases/download/latest_unstable/cats.nw">CATS latest unstable version</a> </p>
+<p><a href="https://github.com/jbaron/cats/releases/">CATS releases</a> </p>
 </li>
-</ul><p>After you installed Nodewebkit, just go to the directory where you downloaded cats.nw and type:</p>
+</ul>
 
-<pre lang="shell"><code>nodewebkit cats.nw
-</code></pre>
+<p>After you installed Nodewebkit, just go to the directory where you downloaded the CATS package and type:</p>
+
+<div class="highlight highlight-shell"><pre>nodewebkit cats-x.y.z.nw</pre></div>
 
 <p>If you already have a directory with TypeScript files, just select that directory from "Open project..." 
-to start editing your files.</p>
+to start editing your files. Othwewise you can open any directory as a project and start adding the
+different typefiles as you go along with your project.</p>
 
 <p>There are some commandline paramters you can use. For example to open CATS with a specific project, use:</p>
 
-<pre lang="shell"><code>nodewebkit cats.nw --project &lt;/path/projectDirectory&gt;
-</code></pre>
+<div class="highlight highlight-shell"><pre>nodewebkit cats-x.y.z.nw --project <span class="pl-ko">&lt;</span>/path/projectDirectory<span class="pl-ko">&gt;</span></pre></div>
 
 <p>Please note that you have to specify the full path to the project directory you want to open. </p>
 
 <p>To open CATS with the same project as last time you opened it, you can use the --restore option:</p>
 
-<pre lang="shell"><code>nodewebkit cats.nw --restore
-</code></pre>
+<div class="highlight highlight-shell"><pre>nodewebkit cats-x.y.z.nw --restore</pre></div>
 
 <h2>
-<a name="building" class="anchor" href="#building"><span class="octicon octicon-link"></span></a>Building</h2>
+<a id="building" class="anchor" href="#building" aria-hidden="true"><span class="octicon octicon-link"></span></a>Building</h2>
 
-<p>In case you want to make changes to CATS and want to do build new versions, there are a few 
-additional steps to do.</p>
+<p>In case you want to make changes to CATS and want to build new versions, there are a few 
+additional steps to perform.</p>
 
 <p>Ensure that you have <a href="http://git-scm.com/downloads">Git</a> and <a href="http://nodejs.org/">Node.js</a> installed.</p>
 
@@ -133,13 +139,13 @@ jake -T                     # List the above commands.
 </code></pre>
 
 <h2>
-<a name="configuration" class="anchor" href="#configuration"><span class="octicon octicon-link"></span></a>Configuration</h2>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h2>
 
 <p>CATS will look for a file in the project directory called: ".settings/config.json". If found, CATS will use the values configured in this file, otherwise it will use some sensible default values.
 You can edit this file (or the default values if you don't have this file yet) from the main menu.</p>
 
 <h2>
-<a name="goals" class="anchor" href="#goals"><span class="octicon octicon-link"></span></a>Goals</h2>
+<a id="goals" class="anchor" href="#goals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Goals</h2>
 
 <p>One of the main goals of CATS is to make the developer that is used to IDE's like Eclipse, NetBeans, Visual Studio or IntelliJ, feel right at home. 
 So the same support you got from your IDE when you developed in Java or C#, is now available for TypeScript projects.</p>
@@ -148,13 +154,13 @@ So the same support you got from your IDE when you developed in Java or C#, is n
 In fact, CATS runs fine on older hardware.</p>
 
 <h2>
-<a name="bugs-and-issues" class="anchor" href="#bugs-and-issues"><span class="octicon octicon-link"></span></a>Bugs and Issues</h2>
+<a id="bugs-and-issues" class="anchor" href="#bugs-and-issues" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bugs and Issues</h2>
 
 <p>In case you encounter an issue, you can open a ticket on Github. 
 Also enhancement requests can be entered here: <a href="https://github.com/jbaron/cats/issues">Github issue tracker</a></p>
 
 <h2>
-<a name="couldnt-have-done-it-without-" class="anchor" href="#couldnt-have-done-it-without-"><span class="octicon octicon-link"></span></a>Couldn't have done it without ....</h2>
+<a id="couldnt-have-done-it-without-" class="anchor" href="#couldnt-have-done-it-without-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Couldn't have done it without ....</h2>
 
 <p>There is not a lot of documentation yet explaining the structure of CATS and how the different parts work together. 
 So the more surprised we were when we received some pull request that added functionality or fixed some bugs. So thanks to everyone who
@@ -172,8 +178,10 @@ CATS use this to read and write local files without the need for a server-side c
 <li><p><a href="https://github.com/sebastian-lenz/typedoc">TypeDoc</a>. This is a documentation generator for TypeScript projects that supports
 theming and a lot of other very impressive features. </p></li>
 <li><p><a href="http://www.jrromero.net/tools/jsUML2">jsUML2</a>. This is library for creating UML diagrams done in pure JavaScript.</p></li>
-</ul><h2>
-<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>Todo</h2>
+</ul>
+
+<h2>
+<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Todo</h2>
 
 <p>The todo list items are tracked as enhancement requests on GitHub. You can check them out at:</p>
 
