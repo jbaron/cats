@@ -39,8 +39,7 @@ module Cats {
 
 
         static RegisterEditor(name:string,restoreFn:(state:any)=>Editor) {
-            console.info("Registered editor for type " + name);
-            Editor.Registry[name] = restoreFn;
+           Editor.Registry[name] = restoreFn;
         }
         /**
          * Save the content of the editor. Not all editors imeplement this method.
