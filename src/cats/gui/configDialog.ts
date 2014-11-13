@@ -20,7 +20,7 @@ module Cats.Gui {
      */
     export class ConfigDialog extends qx.ui.window.Window {
 
-        constructor(name) {
+        constructor(name:string) {
             super(name);
 
             var layout = new qx.ui.layout.VBox();

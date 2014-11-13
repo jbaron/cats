@@ -20,10 +20,12 @@
  * @TODO make this more an async api so it becomes easier to switch to other implementations
  * Perhaps after TS has implement await type of functionality.
  */
+ 
 module Cats.OS.File {
 
         export var PATH = require("path");
         var fs = require("fs");
+        
         var exec = require("child_process").exec;
         var glob = require("glob");
 

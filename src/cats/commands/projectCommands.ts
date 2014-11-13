@@ -95,8 +95,8 @@ module Cats.Commands {
      * @TODO: for a new project provide template capabilities
      */ 
     function newProject() {
-        var chooser: any = document.getElementById('fileDialog');
-        chooser.onchange = function(evt) {
+        var chooser: HTMLElement = document.getElementById('fileDialog');
+        chooser.onchange = function(evt:Event) {
             IDE.addProject(<string>this.value);
         };
         chooser.click();
@@ -108,8 +108,8 @@ module Cats.Commands {
      * Otherwise open the project in a new window
      */ 
     function openProject() {
-        var chooser: any = document.getElementById('fileDialog');
-        chooser.onchange = function(evt) {
+        var chooser: HTMLElement= document.getElementById('fileDialog');
+        chooser.onchange = function(evt:Event) {
             IDE.addProject(<string>this.value);
         };
         chooser.click();

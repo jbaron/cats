@@ -37,7 +37,7 @@ module Cats.Gui {
          * Add a new process to the table
          */
         addProcess(child, cmd: string) {
-            var row = new Array(
+            var row = new Array<any>(
                 "" + child.pid, cmd, child
                 );
             var model = <qx.ui.table.model.Simple>this.table.getTableModel();

@@ -21,7 +21,7 @@ module Cats {
      */
     export class Editor extends qx.event.Emitter {
         
-        private static Registry = {}; 
+        private static Registry:Map<Function> = {}; 
         
         label = "Untitled"; // Label to be used on the tab page
  
@@ -103,7 +103,7 @@ module Cats {
         /**
          * Set a property on the editor
          */ 
-        set(propertyName: string, value) {
+        set(propertyName: string, value:any) {
             if (!propertyName) return;
             this.properties[propertyName] = value;
             this.emit(propertyName, value);
@@ -120,7 +120,7 @@ module Cats {
         /**
          * Command pattern implementation
          */
-        executeCommand(commandName: string, ...args): any { /* NOP */ }
+        executeCommand(commandName: string, ...args:any[]): any { /* NOP */ }
 
 
         /**

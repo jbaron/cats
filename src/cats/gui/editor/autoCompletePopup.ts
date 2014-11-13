@@ -130,7 +130,7 @@ module Cats.Gui.Editor {
             var matchFunction = this.match_forgiven;
             if (IDE.config.editor.completionMode) {
                 var methodName = "match_" + IDE.config.editor.completionMode;
-                if (this[methodName]) matchFunction = this[methodName];
+                if  (this[methodName]) matchFunction = this[methodName];
             }
 
             var lastItem = this.listModel.getItem(this.listModel.getLength() - 1);

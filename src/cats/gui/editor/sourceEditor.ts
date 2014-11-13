@@ -131,7 +131,7 @@ module Cats.Gui.Editor {
             return editor;
         }
 
-        executeCommand( name, ...args ): any {
+        executeCommand( name:string, ...args:any[] ): any {
             switch ( name ) {
                 case 'toggleInvisibles':
                     this.aceEditor.setShowInvisibles( !this.aceEditor.getShowInvisibles() );
@@ -284,8 +284,8 @@ module Cats.Gui.Editor {
             this.selectedTextMarker = this.editSession.addMarker( range, "ace_selected-word", "text" );
         }
 
-        moveToPosition( pos: Cats.Range );
-        moveToPosition( pos: ace.Position );
+        moveToPosition( pos: Cats.Range ):void;
+        moveToPosition( pos: ace.Position ):void;
         moveToPosition( pos: any ) {
             if ( !this.aceEditor ) {
                 this.pendingPosition = pos;

@@ -27,7 +27,7 @@ module Cats.Gui.Editor {
     export class UMLEditor extends Cats.Editor {
 
         private backgroundColors = ["white", "black", "grey"];
-        properties = [
+        properties = [ // @TODO not inline with baseclass definition
             {key:"type" , value: "class diagram"},    
             {key : "created", value: new Date().toLocaleTimeString() }
         ];

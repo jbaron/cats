@@ -44,13 +44,13 @@ module Cats.Gui.Editor {
             return this.canvas;
         }
 
-        executeCommand(name, ...args): any {
+        executeCommand(name:string, ...args:any[]): any {
             return false;
         }
 
         save() { /* NOP */ }
 
-        private loadImage(url) {
+        private loadImage(url:string) {
             var image = new Image();
             image.onload = () => { this.drawImage(image); };
             image.src = url;
