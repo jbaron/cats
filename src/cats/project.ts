@@ -104,7 +104,7 @@ module Cats {
             if (this.config.customBuild && this.config.customBuild.command) {
                 // IDE.resultbar.selectOption(2);
                 var cmd = this.config.customBuild.command;
-                var options = this.config.customBuild.options || {};
+                var options = this.config.customBuild.options || {cwd:null};
 
                 if (!options.cwd) {
                     options.cwd = this.projectDir;
@@ -233,7 +233,7 @@ module Cats {
             if (this.config.customRun && this.config.customRun.command) {
 
                 var cmd = this.config.customRun.command;
-                var options = this.config.customRun.options || {};
+                var options = this.config.customRun.options || {cwd:null};
                 if (!options.cwd) {
                     options.cwd = this.projectDir;
                 }
