@@ -2,7 +2,7 @@
 
 ## CATS
 
-CATS is an IDE for TypeScript and Web developers. CATS is open source software released under the Apache 2.0 license and it runs on Linux, Windows and OS X. 
+CATS is an IDE for TypeScript and Web developers. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. 
 CATS itself is also written in TypeScript, so you can easily customize it if required.
 
 And although still work in progress, CATS is already very usable and has built-in support for the following features:
@@ -14,14 +14,16 @@ And although still work in progress, CATS is already very usable and has built-i
 - Syntax highlighting for over 110 languages (TextMate/Sublime Text.tmlanguage files can be imported).
 - Support for code snippets.
 - Support for refactoring and smart navigation.
-- TypeScript compilation to JavaScript.
+- Very fast TypeScript compilation to JavaScript.
 - Validation of the source code while you are typing.
 - Linter support for TypeScript and JavaScript.
-- Generate API documentation based on the comments in the source code.
+- Documentation generator based on the comments in the source code.
 - Editing features like folding, indentation and code formatting.
 - Running your application from within IDE and using the WebKit debugger to debug.
 - Support for external build systems like Grunt, Jake, Gulp and Makefiles.
 
+Also the unstable release of CATS has support for the latest features in TypeScript like ES6 support 
+and union types.
 
 ## Usage
 
@@ -89,7 +91,6 @@ Install Nodewebkit, TypeScript, Jake and the module dependencies:
 
 ```
 npm install -g nodewebkit
-npm install -g typescript
 npm install -g jake
 npm install
 ```
