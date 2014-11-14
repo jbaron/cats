@@ -26,7 +26,7 @@
   "bugs": {
     "url": "https://github.com/JBaron/cats/issues"
   },
-  "version": "1.3.0",
+  "version": "1.3.0-unstable",
   "repository": {
     "type": "git",
     "url": "https://github.com/jbaron/cats.git"
@@ -42,7 +42,8 @@
     "glob": "^4.0.5",
     "tslint": "^0.4.12",
     "typedoc": "^0.1.1",
-    "dagre" : "^0.4.6"
+    "dagre" : "^0.4.6",
+    "nodewebkit" : "latest"
   },
   "devDependencies": {
 		"jake" : "latest"
