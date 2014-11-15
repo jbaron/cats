@@ -27,11 +27,11 @@ declare module ace {
 	}
 
 	interface CommandManager {
-		byName;
-		commands;
+		byName:any;
+		commands:any;
 		on: any;
-		addCommands(commands:EditorCommand[]);
-		addCommand(command:EditorCommand);
+		addCommands(commands:EditorCommand[]):void;
+		addCommand(command:EditorCommand):void;
 		platform: string; // win or mac
 	}
 

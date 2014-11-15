@@ -24,13 +24,13 @@ module Cats.Util {
         /**      
          * Find the mimetype for a file name      
          */
-        static lookup(filename, fallback?) {
+        static lookup(filename:string, fallback?:string) {
             return this.types[OS.File.PATH.extname(filename)] || fallback || this.default_type;
         }
 
         private static default_type = 'application/octet-stream';
 
-        static types = {
+        static types:Map<string> = {
             ".3gp": "video/3gpp",
             ".a": "application/octet-stream",
             ".ai": "application/postscript",

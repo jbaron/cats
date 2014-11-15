@@ -35,7 +35,7 @@ module Cats.Gui {
         /**
          * Open the search dialog with a root directory
          */ 
-        search(rootDir) {
+        search(rootDir:string) {
             this.rootDir = rootDir;
             this.show();
         }
@@ -49,7 +49,7 @@ module Cats.Gui {
                 var lines = content.split("\n");
                 for (var x = 0; x < lines.length; x++) {
                     var line = lines[x];
-                    var match = null;
+                    var match:RegExpMatchArray = null;
                     while (match = pattern.exec(line)) {
                         var columnX = pattern.lastIndex - match[0].length;
                         var columnY = pattern.lastIndex;
@@ -70,7 +70,7 @@ module Cats.Gui {
             }
         }
 
-        private run(param) {
+        private run(param:any) {
             var result: Cats.FileRange[] = [];
             var mod = param.caseInsensitive ? "i" : "";
             var searchPattern = new RegExp(param.search, "g" + mod);

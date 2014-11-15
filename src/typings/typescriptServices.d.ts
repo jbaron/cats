@@ -137,70 +137,72 @@ declare module ts {
         ConstructSignature = 130,
         IndexSignature = 131,
         TypeReference = 132,
-        TypeQuery = 133,
-        TypeLiteral = 134,
-        ArrayType = 135,
-        TupleType = 136,
-        UnionType = 137,
-        ParenType = 138,
-        ArrayLiteral = 139,
-        ObjectLiteral = 140,
-        PropertyAssignment = 141,
-        PropertyAccess = 142,
-        IndexedAccess = 143,
-        CallExpression = 144,
-        NewExpression = 145,
-        TaggedTemplateExpression = 146,
-        TypeAssertion = 147,
-        ParenExpression = 148,
-        FunctionExpression = 149,
-        ArrowFunction = 150,
-        PrefixOperator = 151,
-        PostfixOperator = 152,
-        BinaryExpression = 153,
-        ConditionalExpression = 154,
-        TemplateExpression = 155,
-        TemplateSpan = 156,
-        OmittedExpression = 157,
-        Block = 158,
-        VariableStatement = 159,
-        EmptyStatement = 160,
-        ExpressionStatement = 161,
-        IfStatement = 162,
-        DoStatement = 163,
-        WhileStatement = 164,
-        ForStatement = 165,
-        ForInStatement = 166,
-        ContinueStatement = 167,
-        BreakStatement = 168,
-        ReturnStatement = 169,
-        WithStatement = 170,
-        SwitchStatement = 171,
-        CaseClause = 172,
-        DefaultClause = 173,
-        LabeledStatement = 174,
-        ThrowStatement = 175,
-        TryStatement = 176,
-        TryBlock = 177,
-        CatchBlock = 178,
-        FinallyBlock = 179,
-        DebuggerStatement = 180,
-        VariableDeclaration = 181,
-        FunctionDeclaration = 182,
-        FunctionBlock = 183,
-        ClassDeclaration = 184,
-        InterfaceDeclaration = 185,
-        TypeAliasDeclaration = 186,
-        EnumDeclaration = 187,
-        ModuleDeclaration = 188,
-        ModuleBlock = 189,
-        ImportDeclaration = 190,
-        ExportAssignment = 191,
-        EnumMember = 192,
-        SourceFile = 193,
-        Program = 194,
-        SyntaxList = 195,
-        Count = 196,
+        FunctionType = 133,
+        ConstructorType = 134,
+        TypeQuery = 135,
+        TypeLiteral = 136,
+        ArrayType = 137,
+        TupleType = 138,
+        UnionType = 139,
+        ParenType = 140,
+        ArrayLiteral = 141,
+        ObjectLiteral = 142,
+        PropertyAssignment = 143,
+        PropertyAccess = 144,
+        IndexedAccess = 145,
+        CallExpression = 146,
+        NewExpression = 147,
+        TaggedTemplateExpression = 148,
+        TypeAssertion = 149,
+        ParenExpression = 150,
+        FunctionExpression = 151,
+        ArrowFunction = 152,
+        PrefixOperator = 153,
+        PostfixOperator = 154,
+        BinaryExpression = 155,
+        ConditionalExpression = 156,
+        TemplateExpression = 157,
+        TemplateSpan = 158,
+        OmittedExpression = 159,
+        Block = 160,
+        VariableStatement = 161,
+        EmptyStatement = 162,
+        ExpressionStatement = 163,
+        IfStatement = 164,
+        DoStatement = 165,
+        WhileStatement = 166,
+        ForStatement = 167,
+        ForInStatement = 168,
+        ContinueStatement = 169,
+        BreakStatement = 170,
+        ReturnStatement = 171,
+        WithStatement = 172,
+        SwitchStatement = 173,
+        CaseClause = 174,
+        DefaultClause = 175,
+        LabeledStatement = 176,
+        ThrowStatement = 177,
+        TryStatement = 178,
+        TryBlock = 179,
+        CatchBlock = 180,
+        FinallyBlock = 181,
+        DebuggerStatement = 182,
+        VariableDeclaration = 183,
+        FunctionDeclaration = 184,
+        FunctionBlock = 185,
+        ClassDeclaration = 186,
+        InterfaceDeclaration = 187,
+        TypeAliasDeclaration = 188,
+        EnumDeclaration = 189,
+        ModuleDeclaration = 190,
+        ModuleBlock = 191,
+        ImportDeclaration = 192,
+        ExportAssignment = 193,
+        EnumMember = 194,
+        SourceFile = 195,
+        Program = 196,
+        SyntaxList = 197,
+        Count = 198,
         FirstAssignment = 51,
         LastAssignment = 62,
         FirstReservedWord = 64,
@@ -210,7 +212,7 @@ declare module ts {
         FirstFutureReservedWord = 100,
         LastFutureReservedWord = 108,
         FirstTypeNode = 132,
-        LastTypeNode = 138,
+        LastTypeNode = 140,
         FirstPunctuation = 13,
         LastPunctuation = 62,
         FirstToken = 1,
@@ -221,6 +223,10 @@ declare module ts {
         LastLiteralToken = 9,
         FirstTemplateToken = 9,
         LastTemplateToken = 12,
+        FirstOperator = 21,
+        LastOperator = 62,
+        FirstBinaryOperator = 23,
+        LastBinaryOperator = 62,
     }
     const enum NodeFlags {
         Export = 1,
@@ -393,6 +399,7 @@ declare module ts {
         tag: Expression;
         template: LiteralExpression | TemplateExpression;
     }
+    type CallLikeExpression = CallExpression | NewExpression | TaggedTemplateExpression;
     interface TypeAssertion extends Expression {
         type: TypeNode;
         operand: Expression;
@@ -512,11 +519,9 @@ declare module ts {
     interface SourceFile extends Block {
         filename: string;
         text: string;
-        getLineAndCharacterFromPosition(position: number): {
-            line: number;
-            character: number;
-        };
+        getLineAndCharacterFromPosition(position: number): LineAndCharacter;
         getPositionFromLineAndCharacter(line: number, character: number): number;
+        getLineStarts(): number[];
         amdDependencies: string[];
         referencedFiles: FileReference[];
         syntacticErrors: Diagnostic[];
@@ -928,6 +933,7 @@ declare module ts {
         category: DiagnosticCategory;
         code: number;
         isEarly?: boolean;
+        isParseError?: boolean;
     }
     enum DiagnosticCategory {
         Warning = 0,
@@ -1152,6 +1158,7 @@ declare module ts {
     function concatenate<T>(array1: T[], array2: T[]): T[];
     function deduplicate<T>(array: T[]): T[];
     function sum(array: any[], prop: string): number;
+    function lastOrUndefined<T>(array: T[]): T;
     function binarySearch(array: number[], value: number): number;
     function hasProperty<T>(map: Map<T>, key: string): boolean;
     function getProperty<T>(map: Map<T>, key: string): T;
@@ -3336,7 +3343,7 @@ declare module ts {
         tryScan<T>(callback: () => T): T;
     }
     function tokenToString(t: SyntaxKind): string;
-    function getLineStarts(text: string): number[];
+    function computeLineStarts(text: string): number[];
     function getPositionFromLineAndCharacter(lineStarts: number[], line: number, character: number): number;
     function getLineAndCharacterOfPosition(lineStarts: number[], position: number): {
         line: number;
@@ -3393,8 +3400,15 @@ declare module ts {
     function isStatement(n: Node): boolean;
     function isDeclarationOrFunctionExpressionOrCatchVariableName(name: Node): boolean;
     function getAncestor(node: Node, kind: SyntaxKind): Node;
+    interface ReferencePathMatchResult {
+        fileReference?: FileReference;
+        diagnostic?: DiagnosticMessage;
+        isNoDefaultLib?: boolean;
+    }
+    function getFileReferenceFromReferencePath(comment: string, commentRange: CommentRange): ReferencePathMatchResult;
     function isKeyword(token: SyntaxKind): boolean;
     function isTrivia(token: SyntaxKind): boolean;
+    function isUnterminatedTemplateEnd(node: LiteralExpression): boolean;
     function isModifier(token: SyntaxKind): boolean;
     function createSourceFile(filename: string, sourceText: string, languageVersion: ScriptTarget, version: string, isOpen?: boolean): SourceFile;
     function createProgram(rootNames: string[], options: CompilerOptions, host: CompilerHost): Program;
@@ -3519,6 +3533,7 @@ declare module TypeScript {
         Type_expected: string;
         Template_literal_cannot_be_used_as_an_element_name: string;
         Computed_property_names_cannot_be_used_here: string;
+        yield_expression_must_be_contained_within_a_generator_declaration: string;
         Duplicate_identifier_0: string;
         The_name_0_does_not_exist_in_the_current_scope: string;
         The_name_0_does_not_refer_to_a_value: string;
@@ -3972,6 +3987,10 @@ declare module TypeScript {
     }
 }
 declare module TypeScript {
+    interface ILineAndCharacter {
+        line: number;
+        character: number;
+    }
     class LineMap {
         private _computeLineStarts;
         private length;
@@ -4223,12 +4242,15 @@ declare module TypeScript {
     }
 }
 declare module TypeScript {
-    enum SyntaxConstants {
+    enum SyntaxNodeConstants {
         None = 0,
-        NodeDataComputed = 1,
-        NodeIncrementallyUnusableMask = 2,
-        NodeParsedInStrictModeMask = 4,
-        NodeFullWidthShift = 3,
+        DataComputed = 1,
+        IncrementallyUnusableMask = 2,
+        ParsedInStrictModeContext = 4,
+        ParsedInDisallowInContext = 8,
+        ParsedInYieldContext = 16,
+        ParsedInGeneratorParameterContext = 32,
+        FullWidthShift,
     }
 }
 declare module TypeScript {
@@ -4435,30 +4457,31 @@ declare module TypeScript {
         OmittedExpression = 187,
         TemplateExpression = 188,
         TemplateAccessExpression = 189,
-        VariableDeclaration = 190,
-        VariableDeclarator = 191,
-        ArgumentList = 192,
-        ParameterList = 193,
-        TypeArgumentList = 194,
-        TypeParameterList = 195,
-        HeritageClause = 196,
-        EqualsValueClause = 197,
-        CaseSwitchClause = 198,
-        DefaultSwitchClause = 199,
-        ElseClause = 200,
-        CatchClause = 201,
-        FinallyClause = 202,
-        TemplateClause = 203,
-        TypeParameter = 204,
-        Constraint = 205,
-        SimplePropertyAssignment = 206,
-        FunctionPropertyAssignment = 207,
-        Parameter = 208,
-        EnumElement = 209,
-        TypeAnnotation = 210,
-        ComputedPropertyName = 211,
-        ExternalModuleReference = 212,
-        ModuleNameModuleReference = 213,
+        YieldExpression = 190,
+        VariableDeclaration = 191,
+        VariableDeclarator = 192,
+        ArgumentList = 193,
+        ParameterList = 194,
+        TypeArgumentList = 195,
+        TypeParameterList = 196,
+        HeritageClause = 197,
+        EqualsValueClause = 198,
+        CaseSwitchClause = 199,
+        DefaultSwitchClause = 200,
+        ElseClause = 201,
+        CatchClause = 202,
+        FinallyClause = 203,
+        TemplateClause = 204,
+        TypeParameter = 205,
+        Constraint = 206,
+        SimplePropertyAssignment = 207,
+        FunctionPropertyAssignment = 208,
+        Parameter = 209,
+        EnumElement = 210,
+        TypeAnnotation = 211,
+        ComputedPropertyName = 212,
+        ExternalModuleReference = 213,
+        ModuleNameModuleReference = 214,
         FirstStandardKeyword,
         LastStandardKeyword,
         FirstFutureReservedKeyword,
@@ -4547,24 +4570,21 @@ declare module TypeScript.Syntax {
     function isUnterminatedStringLiteral(token: ISyntaxToken): boolean;
     function isUnterminatedMultilineCommentTrivia(trivia: ISyntaxTrivia): boolean;
     function isEntirelyInsideCommentTrivia(trivia: ISyntaxTrivia, fullStart: number, position: number): boolean;
-    function isEntirelyInsideComment(sourceUnit: SourceUnitSyntax, position: number): boolean;
-    function isEntirelyInStringOrRegularExpressionLiteral(sourceUnit: SourceUnitSyntax, position: number): boolean;
     function getAncestorOfKind(positionedToken: ISyntaxElement, kind: SyntaxKind): ISyntaxElement;
     function hasAncestorOfKind(positionedToken: ISyntaxElement, kind: SyntaxKind): boolean;
     function isIntegerLiteral(expression: IExpressionSyntax): boolean;
     function containingNode(element: ISyntaxElement): ISyntaxNode;
     function findTokenOnLeft(sourceUnit: SourceUnitSyntax, position: number): ISyntaxToken;
     function findCompleteTokenOnLeft(sourceUnit: SourceUnitSyntax, position: number): ISyntaxToken;
-    function firstTokenInLineContainingPosition(syntaxTree: SyntaxTree, position: number): ISyntaxToken;
 }
 declare module TypeScript {
     function syntaxTree(element: ISyntaxElement): SyntaxTree;
-    function parsedInStrictMode(node: ISyntaxNode): boolean;
+    function parsedInStrictModeContext(node: ISyntaxNode): boolean;
+    function parsedInDisallowInContext(node: ISyntaxNode): boolean;
+    function parsedInYieldContext(node: ISyntaxNode): boolean;
+    function parsedInGeneratorParameterContext(node: ISyntaxNode): boolean;
     function previousToken(token: ISyntaxToken): ISyntaxToken;
     function findToken(sourceUnit: SourceUnitSyntax, position: number): ISyntaxToken;
-    function findSkippedTokenInPositionedToken(positionedToken: ISyntaxToken, position: number): ISyntaxToken;
-    function findSkippedTokenInLeadingTriviaList(positionedToken: ISyntaxToken, position: number): ISyntaxToken;
-    function findSkippedTokenInTrailingTriviaList(positionedToken: ISyntaxToken, position: number): ISyntaxToken;
     function nextToken(token: ISyntaxToken, text?: ISimpleText): ISyntaxToken;
     function isNode(element: ISyntaxElement): boolean;
     function isToken(element: ISyntaxElement): boolean;
@@ -4572,14 +4592,12 @@ declare module TypeScript {
     function syntaxID(element: ISyntaxElement): number;
     function fullText(element: ISyntaxElement, text?: ISimpleText): string;
     function leadingTriviaWidth(element: ISyntaxElement, text?: ISimpleText): number;
-    function trailingTriviaWidth(element: ISyntaxElement, text?: ISimpleText): number;
     function firstToken(element: ISyntaxElement): ISyntaxToken;
     function lastToken(element: ISyntaxElement): ISyntaxToken;
     function fullStart(element: ISyntaxElement): number;
     function fullWidth(element: ISyntaxElement): number;
     function isIncrementallyUnusable(element: ISyntaxElement): boolean;
     function start(element: ISyntaxElement, text?: ISimpleText): number;
-    function end(element: ISyntaxElement, text?: ISimpleText): number;
     function width(element: ISyntaxElement, text?: ISimpleText): number;
     function fullEnd(element: ISyntaxElement): number;
     function existsNewLineBetweenTokens(token1: ISyntaxToken, token2: ISyntaxToken, text: ISimpleText): boolean;
@@ -4694,14 +4712,11 @@ declare module TypeScript {
         text(): string;
         fullText(text?: ISimpleText): string;
         hasLeadingTrivia(): boolean;
-        hasTrailingTrivia(): boolean;
+        hasLeadingNewLine(): boolean;
         hasLeadingComment(): boolean;
-        hasTrailingComment(): boolean;
-        hasSkippedToken(): boolean;
+        hasLeadingSkippedToken(): boolean;
         leadingTrivia(text?: ISimpleText): ISyntaxTriviaList;
-        trailingTrivia(text?: ISimpleText): ISyntaxTriviaList;
         leadingTriviaWidth(text?: ISimpleText): number;
-        trailingTriviaWidth(text?: ISimpleText): number;
         isKeywordConvertedToIdentifier(): boolean;
         isIncrementallyUnusable(): boolean;
         clone(): ISyntaxToken;
@@ -4716,13 +4731,12 @@ declare module TypeScript.Syntax {
     function realizeToken(token: ISyntaxToken, text: ISimpleText): ISyntaxToken;
     function convertKeywordToIdentifier(token: ISyntaxToken): ISyntaxToken;
     function withLeadingTrivia(token: ISyntaxToken, leadingTrivia: ISyntaxTriviaList, text: ISimpleText): ISyntaxToken;
-    function withTrailingTrivia(token: ISyntaxToken, trailingTrivia: ISyntaxTriviaList, text: ISimpleText): ISyntaxToken;
     function emptyToken(kind: SyntaxKind): ISyntaxToken;
 }
 declare module TypeScript {
     interface ISyntaxTrivia {
-        parent?: ISyntaxTriviaList;
-        kind(): SyntaxKind;
+        parent: ISyntaxTriviaList;
+        kind: SyntaxKind;
         isWhitespace(): boolean;
         isComment(): boolean;
         isNewLine(): boolean;
@@ -4851,6 +4865,7 @@ declare module TypeScript {
         visitOmittedExpression(node: OmittedExpressionSyntax): any;
         visitTemplateExpression(node: TemplateExpressionSyntax): any;
         visitTemplateAccessExpression(node: TemplateAccessExpressionSyntax): any;
+        visitYieldExpression(node: YieldExpressionSyntax): any;
         visitVariableDeclaration(node: VariableDeclarationSyntax): any;
         visitVariableDeclarator(node: VariableDeclaratorSyntax): any;
         visitArgumentList(node: ArgumentListSyntax): any;
@@ -4950,6 +4965,7 @@ declare module TypeScript {
         visitOmittedExpression(node: OmittedExpressionSyntax): void;
         visitTemplateExpression(node: TemplateExpressionSyntax): void;
         visitTemplateAccessExpression(node: TemplateAccessExpressionSyntax): void;
+        visitYieldExpression(node: YieldExpressionSyntax): void;
         visitVariableDeclaration(node: VariableDeclarationSyntax): void;
         visitVariableDeclarator(node: VariableDeclaratorSyntax): void;
         visitArgumentList(node: ArgumentListSyntax): void;
@@ -5102,25 +5118,24 @@ declare module TypeScript {
     interface FunctionDeclarationSyntax extends ISyntaxNode, IStatementSyntax {
         modifiers: ISyntaxToken[];
         functionKeyword: ISyntaxToken;
+        asterixToken: ISyntaxToken;
         identifier: ISyntaxToken;
         callSignature: CallSignatureSyntax;
-        block: BlockSyntax;
-        semicolonToken: ISyntaxToken;
+        body: ISyntaxToken | BlockSyntax;
     }
     interface FunctionDeclarationConstructor {
-        new (data: number, modifiers: ISyntaxToken[], functionKeyword: ISyntaxToken, identifier: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax, semicolonToken: ISyntaxToken): FunctionDeclarationSyntax;
+        new (data: number, modifiers: ISyntaxToken[], functionKeyword: ISyntaxToken, asterixToken: ISyntaxToken, identifier: ISyntaxToken, callSignature: CallSignatureSyntax, body: ISyntaxToken | BlockSyntax): FunctionDeclarationSyntax;
     }
     interface ModuleDeclarationSyntax extends ISyntaxNode, IModuleElementSyntax {
         modifiers: ISyntaxToken[];
         moduleKeyword: ISyntaxToken;
         name: INameSyntax;
-        stringLiteral: ISyntaxToken;
         openBraceToken: ISyntaxToken;
         moduleElements: IModuleElementSyntax[];
         closeBraceToken: ISyntaxToken;
     }
     interface ModuleDeclarationConstructor {
-        new (data: number, modifiers: ISyntaxToken[], moduleKeyword: ISyntaxToken, name: INameSyntax, stringLiteral: ISyntaxToken, openBraceToken: ISyntaxToken, moduleElements: IModuleElementSyntax[], closeBraceToken: ISyntaxToken): ModuleDeclarationSyntax;
+        new (data: number, modifiers: ISyntaxToken[], moduleKeyword: ISyntaxToken, name: INameSyntax, openBraceToken: ISyntaxToken, moduleElements: IModuleElementSyntax[], closeBraceToken: ISyntaxToken): ModuleDeclarationSyntax;
     }
     interface ClassDeclarationSyntax extends ISyntaxNode, IModuleElementSyntax {
         modifiers: ISyntaxToken[];
@@ -5168,13 +5183,13 @@ declare module TypeScript {
     }
     interface MemberFunctionDeclarationSyntax extends ISyntaxNode, IMemberDeclarationSyntax {
         modifiers: ISyntaxToken[];
+        asterixToken: ISyntaxToken;
         propertyName: IPropertyNameSyntax;
         callSignature: CallSignatureSyntax;
-        block: BlockSyntax;
-        semicolonToken: ISyntaxToken;
+        body: ISyntaxToken | BlockSyntax;
     }
     interface MemberFunctionDeclarationConstructor {
-        new (data: number, modifiers: ISyntaxToken[], propertyName: IPropertyNameSyntax, callSignature: CallSignatureSyntax, block: BlockSyntax, semicolonToken: ISyntaxToken): MemberFunctionDeclarationSyntax;
+        new (data: number, modifiers: ISyntaxToken[], asterixToken: ISyntaxToken, propertyName: IPropertyNameSyntax, callSignature: CallSignatureSyntax, body: ISyntaxToken | BlockSyntax): MemberFunctionDeclarationSyntax;
     }
     interface MemberVariableDeclarationSyntax extends ISyntaxNode, IMemberDeclarationSyntax {
         modifiers: ISyntaxToken[];
@@ -5188,11 +5203,10 @@ declare module TypeScript {
         modifiers: ISyntaxToken[];
         constructorKeyword: ISyntaxToken;
         callSignature: CallSignatureSyntax;
-        block: BlockSyntax;
-        semicolonToken: ISyntaxToken;
+        body: ISyntaxToken | BlockSyntax;
     }
     interface ConstructorDeclarationConstructor {
-        new (data: number, modifiers: ISyntaxToken[], constructorKeyword: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax, semicolonToken: ISyntaxToken): ConstructorDeclarationSyntax;
+        new (data: number, modifiers: ISyntaxToken[], constructorKeyword: ISyntaxToken, callSignature: CallSignatureSyntax, body: ISyntaxToken | BlockSyntax): ConstructorDeclarationSyntax;
     }
     interface IndexMemberDeclarationSyntax extends ISyntaxNode, IClassElementSyntax {
         modifiers: ISyntaxToken[];
@@ -5335,8 +5349,7 @@ declare module TypeScript {
     interface ForStatementSyntax extends ISyntaxNode, IStatementSyntax {
         forKeyword: ISyntaxToken;
         openParenToken: ISyntaxToken;
-        variableDeclaration: VariableDeclarationSyntax;
-        initializer: IExpressionSyntax;
+        initializer: IExpressionSyntax | VariableDeclarationSyntax;
         firstSemicolonToken: ISyntaxToken;
         condition: IExpressionSyntax;
         secondSemicolonToken: ISyntaxToken;
@@ -5345,20 +5358,19 @@ declare module TypeScript {
         statement: IStatementSyntax;
     }
     interface ForStatementConstructor {
-        new (data: number, forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, variableDeclaration: VariableDeclarationSyntax, initializer: IExpressionSyntax, firstSemicolonToken: ISyntaxToken, condition: IExpressionSyntax, secondSemicolonToken: ISyntaxToken, incrementor: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax): ForStatementSyntax;
+        new (data: number, forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, initializer: IExpressionSyntax | VariableDeclarationSyntax, firstSemicolonToken: ISyntaxToken, condition: IExpressionSyntax, secondSemicolonToken: ISyntaxToken, incrementor: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax): ForStatementSyntax;
     }
     interface ForInStatementSyntax extends ISyntaxNode, IStatementSyntax {
         forKeyword: ISyntaxToken;
         openParenToken: ISyntaxToken;
-        variableDeclaration: VariableDeclarationSyntax;
-        left: IExpressionSyntax;
+        left: IExpressionSyntax | VariableDeclarationSyntax;
         inKeyword: ISyntaxToken;
-        expression: IExpressionSyntax;
+        right: IExpressionSyntax;
         closeParenToken: ISyntaxToken;
         statement: IStatementSyntax;
     }
     interface ForInStatementConstructor {
-        new (data: number, forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, variableDeclaration: VariableDeclarationSyntax, left: IExpressionSyntax, inKeyword: ISyntaxToken, expression: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax): ForInStatementSyntax;
+        new (data: number, forKeyword: ISyntaxToken, openParenToken: ISyntaxToken, left: IExpressionSyntax | VariableDeclarationSyntax, inKeyword: ISyntaxToken, right: IExpressionSyntax, closeParenToken: ISyntaxToken, statement: IStatementSyntax): ForInStatementSyntax;
     }
     interface EmptyStatementSyntax extends ISyntaxNode, IStatementSyntax {
         semicolonToken: ISyntaxToken;
@@ -5533,20 +5545,18 @@ declare module TypeScript {
     interface ParenthesizedArrowFunctionExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
         callSignature: CallSignatureSyntax;
         equalsGreaterThanToken: ISyntaxToken;
-        block: BlockSyntax;
-        expression: IExpressionSyntax;
+        body: IExpressionSyntax | BlockSyntax;
     }
     interface ParenthesizedArrowFunctionExpressionConstructor {
-        new (data: number, callSignature: CallSignatureSyntax, equalsGreaterThanToken: ISyntaxToken, block: BlockSyntax, expression: IExpressionSyntax): ParenthesizedArrowFunctionExpressionSyntax;
+        new (data: number, callSignature: CallSignatureSyntax, equalsGreaterThanToken: ISyntaxToken, body: IExpressionSyntax | BlockSyntax): ParenthesizedArrowFunctionExpressionSyntax;
     }
     interface SimpleArrowFunctionExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
         parameter: ParameterSyntax;
         equalsGreaterThanToken: ISyntaxToken;
-        block: BlockSyntax;
-        expression: IExpressionSyntax;
+        body: IExpressionSyntax | BlockSyntax;
     }
     interface SimpleArrowFunctionExpressionConstructor {
-        new (data: number, parameter: ParameterSyntax, equalsGreaterThanToken: ISyntaxToken, block: BlockSyntax, expression: IExpressionSyntax): SimpleArrowFunctionExpressionSyntax;
+        new (data: number, parameter: ParameterSyntax, equalsGreaterThanToken: ISyntaxToken, body: IExpressionSyntax | BlockSyntax): SimpleArrowFunctionExpressionSyntax;
     }
     interface CastExpressionSyntax extends ISyntaxNode, IUnaryExpressionSyntax {
         lessThanToken: ISyntaxToken;
@@ -5568,12 +5578,13 @@ declare module TypeScript {
     }
     interface FunctionExpressionSyntax extends ISyntaxNode, IPrimaryExpressionSyntax {
         functionKeyword: ISyntaxToken;
+        asterixToken: ISyntaxToken;
         identifier: ISyntaxToken;
         callSignature: CallSignatureSyntax;
         block: BlockSyntax;
     }
     interface FunctionExpressionConstructor {
-        new (data: number, functionKeyword: ISyntaxToken, identifier: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax): FunctionExpressionSyntax;
+        new (data: number, functionKeyword: ISyntaxToken, asterixToken: ISyntaxToken, identifier: ISyntaxToken, callSignature: CallSignatureSyntax, block: BlockSyntax): FunctionExpressionSyntax;
     }
     interface OmittedExpressionSyntax extends ISyntaxNode, IExpressionSyntax {
     }
@@ -5593,6 +5604,14 @@ declare module TypeScript {
     }
     interface TemplateAccessExpressionConstructor {
         new (data: number, expression: ILeftHandSideExpressionSyntax, templateExpression: IPrimaryExpressionSyntax): TemplateAccessExpressionSyntax;
+    }
+    interface YieldExpressionSyntax extends ISyntaxNode, IExpressionSyntax {
+        yieldKeyword: ISyntaxToken;
+        asterixToken: ISyntaxToken;
+        expression: IExpressionSyntax;
+    }
+    interface YieldExpressionConstructor {
+        new (data: number, yieldKeyword: ISyntaxToken, asterixToken: ISyntaxToken, expression: IExpressionSyntax): YieldExpressionSyntax;
     }
     interface VariableDeclarationSyntax extends ISyntaxNode {
         varKeyword: ISyntaxToken;
@@ -5728,12 +5747,13 @@ declare module TypeScript {
         new (data: number, propertyName: IPropertyNameSyntax, colonToken: ISyntaxToken, expression: IExpressionSyntax): SimplePropertyAssignmentSyntax;
     }
     interface FunctionPropertyAssignmentSyntax extends ISyntaxNode, IPropertyAssignmentSyntax {
+        asterixToken: ISyntaxToken;
         propertyName: IPropertyNameSyntax;
         callSignature: CallSignatureSyntax;
         block: BlockSyntax;
     }
     interface FunctionPropertyAssignmentConstructor {
-        new (data: number, propertyName: IPropertyNameSyntax, callSignature: CallSignatureSyntax, block: BlockSyntax): FunctionPropertyAssignmentSyntax;
+        new (data: number, asterixToken: ISyntaxToken, propertyName: IPropertyNameSyntax, callSignature: CallSignatureSyntax, block: BlockSyntax): FunctionPropertyAssignmentSyntax;
     }
     interface ParameterSyntax extends ISyntaxNode {
         dotDotDotToken: ISyntaxToken;
@@ -5853,6 +5873,7 @@ declare module TypeScript {
     var OmittedExpressionSyntax: OmittedExpressionConstructor;
     var TemplateExpressionSyntax: TemplateExpressionConstructor;
     var TemplateAccessExpressionSyntax: TemplateAccessExpressionConstructor;
+    var YieldExpressionSyntax: YieldExpressionConstructor;
     var VariableDeclarationSyntax: VariableDeclarationConstructor;
     var VariableDeclaratorSyntax: VariableDeclaratorConstructor;
     var ArgumentListSyntax: ArgumentListConstructor;
@@ -5935,14 +5956,6 @@ declare module ts {
 declare module ts.NavigationBar {
     function getNavigationBarItems(sourceFile: SourceFile): NavigationBarItem[];
 }
-declare module TypeScript.Indentation {
-    function columnForEndOfTokenAtPosition(syntaxTree: SyntaxTree, position: number, options: FormattingOptions): number;
-    function columnForStartOfTokenAtPosition(syntaxTree: SyntaxTree, position: number, options: FormattingOptions): number;
-    function columnForStartOfFirstTokenInLineContainingPosition(syntaxTree: SyntaxTree, position: number, options: FormattingOptions): number;
-    function columnForPositionInString(input: string, position: number, options: FormattingOptions): number;
-    function indentationString(column: number, options: FormattingOptions): string;
-    function firstNonWhitespacePosition(value: string): number;
-}
 declare module ts.SignatureHelp {
     function getSignatureHelpItems(sourceFile: SourceFile, position: number, typeInfoResolver: TypeChecker, cancellationToken: CancellationTokenObject): SignatureHelpItems;
 }
@@ -5951,6 +5964,14 @@ declare module ts {
         listItemIndex: number;
         list: Node;
     }
+    function getEndLinePosition(line: number, sourceFile: SourceFile): number;
+    function getStartPositionOfLine(line: number, sourceFile: SourceFile): number;
+    function getStartLinePositionForPosition(position: number, sourceFile: SourceFile): number;
+    function rangeContainsRange(r1: TextRange, r2: TextRange): boolean;
+    function startEndContainsRange(start: number, end: number, range: TextRange): boolean;
+    function rangeContainsStartEnd(range: TextRange, start: number, end: number): boolean;
+    function rangeOverlapsWithStartEnd(r1: TextRange, start: number, end: number): boolean;
+    function startEndOverlapsWithStartEnd(start1: number, end1: number, start2: number, end2: number): boolean;
     function findListItemInfo(node: Node): ListItemInfo;
     function findChildOfKind(n: Node, kind: SyntaxKind, sourceFile?: SourceFile): Node;
     function findContainingList(node: Node): Node;
@@ -5964,121 +5985,66 @@ declare module ts {
     function findPrecedingToken(position: number, sourceFile: SourceFile, startNode?: Node): Node;
     function getTypeArgumentOrTypeParameterList(node: Node): NodeArray<Node>;
     function isToken(n: Node): boolean;
-    function isComment(n: Node): boolean;
-    function isPunctuation(n: Node): boolean;
+    function isComment(kind: SyntaxKind): boolean;
+    function isPunctuation(kind: SyntaxKind): boolean;
 }
-declare module TypeScript.Services.Formatting {
-    interface ITextSnapshot {
-        getLength(): number;
-        getText(span: TextSpan): string;
-        getLineNumberFromPosition(position: number): number;
-        getLineFromPosition(position: number): ITextSnapshotLine;
-        getLineFromLineNumber(lineNumber: number): ITextSnapshotLine;
-    }
-    class TextSnapshot implements ITextSnapshot {
-        private snapshot;
-        private lines;
-        constructor(snapshot: ISimpleText);
-        getLength(): number;
-        getText(span: TextSpan): string;
-        getLineNumberFromPosition(position: number): number;
-        getLineFromPosition(position: number): ITextSnapshotLine;
-        getLineFromLineNumber(lineNumber: number): ITextSnapshotLine;
-        private getLineFromLineNumberWorker(lineNumber);
+declare module ts.formatting {
+    module SmartIndenter {
+        function getIndentation(position: number, sourceFile: SourceFile, options: EditorOptions): number;
+        function getIndentationForNode(n: Node, ignoreActualIndentationRange: TextRange, sourceFile: SourceFile, options: FormatCodeOptions): number;
+        function childStartsOnTheSameLineWithElseInIfStatement(parent: Node, child: TextRangeWithKind, childStartLine: number, sourceFile: SourceFile): boolean;
+        function findFirstNonWhitespaceColumn(startPos: number, endPos: number, sourceFile: SourceFile, options: EditorOptions): number;
+        function shouldIndentChildNode(parent: SyntaxKind, child: SyntaxKind): boolean;
     }
 }
-declare module TypeScript.Services.Formatting {
-    interface ITextSnapshotLine {
-        snapshot(): ITextSnapshot;
-        start(): SnapshotPoint;
-        startPosition(): number;
-        end(): SnapshotPoint;
-        endPosition(): number;
-        endIncludingLineBreak(): SnapshotPoint;
-        endIncludingLineBreakPosition(): number;
-        length(): number;
-        lineNumber(): number;
-        getText(): string;
-    }
-    class TextSnapshotLine implements ITextSnapshotLine {
-        private _snapshot;
-        private _lineNumber;
-        private _start;
-        private _end;
-        private _lineBreak;
-        constructor(_snapshot: ITextSnapshot, _lineNumber: number, _start: number, _end: number, _lineBreak: string);
-        snapshot(): ITextSnapshot;
-        start(): SnapshotPoint;
-        startPosition(): number;
-        end(): SnapshotPoint;
-        endPosition(): number;
-        endIncludingLineBreak(): SnapshotPoint;
-        endIncludingLineBreakPosition(): number;
-        length(): number;
-        lineNumber(): number;
-        getText(): string;
-    }
+declare module ts.formatting {
+    function getIndentationString(indentation: number, options: FormatCodeOptions): string;
 }
-declare module TypeScript.Services.Formatting {
-    class SnapshotPoint {
-        snapshot: ITextSnapshot;
-        position: number;
-        constructor(snapshot: ITextSnapshot, position: number);
-        getContainingLine(): ITextSnapshotLine;
-        add(offset: number): SnapshotPoint;
+declare module ts.formatting {
+    interface FormattingScanner {
+        advance(): void;
+        isOnToken(): boolean;
+        readTokenInfo(n: Node): TokenInfo;
+        lastTrailingTriviaWasNewLine(): boolean;
+        close(): void;
     }
+    function getFormattingScanner(sourceFile: SourceFile, startPos: number, endPos: number): FormattingScanner;
 }
-declare module TypeScript.Services.Formatting {
+declare module ts.formatting {
     class FormattingContext {
-        private snapshot;
+        private sourceFile;
         formattingRequestKind: FormattingRequestKind;
-        currentTokenSpan: TokenSpan;
-        nextTokenSpan: TokenSpan;
-        contextNode: IndentationNodeContext;
-        currentTokenParent: IndentationNodeContext;
-        nextTokenParent: IndentationNodeContext;
+        currentTokenSpan: TextRangeWithKind;
+        nextTokenSpan: TextRangeWithKind;
+        contextNode: Node;
+        currentTokenParent: Node;
+        nextTokenParent: Node;
         private contextNodeAllOnSameLine;
         private nextNodeAllOnSameLine;
         private tokensAreOnSameLine;
         private contextNodeBlockIsOnOneLine;
         private nextNodeBlockIsOnOneLine;
-        constructor(snapshot: ITextSnapshot, formattingRequestKind: FormattingRequestKind);
-        updateContext(currentTokenSpan: TokenSpan, currentTokenParent: IndentationNodeContext, nextTokenSpan: TokenSpan, nextTokenParent: IndentationNodeContext, commonParent: IndentationNodeContext): void;
+        constructor(sourceFile: SourceFile, formattingRequestKind: FormattingRequestKind);
+        updateContext(currentRange: TextRangeWithKind, currentTokenParent: Node, nextRange: TextRangeWithKind, nextTokenParent: Node, commonParent: Node): void;
         ContextNodeAllOnSameLine(): boolean;
         NextNodeAllOnSameLine(): boolean;
         TokensAreOnSameLine(): boolean;
         ContextNodeBlockIsOnOneLine(): boolean;
         NextNodeBlockIsOnOneLine(): boolean;
-        NodeIsOnOneLine(node: IndentationNodeContext): boolean;
-        BlockIsOnOneLine(node: IndentationNodeContext): boolean;
+        private NodeIsOnOneLine(node);
+        private BlockIsOnOneLine(node);
     }
 }
-declare module TypeScript.Services.Formatting {
-    class FormattingManager {
-        private syntaxTree;
-        private snapshot;
-        private rulesProvider;
-        private options;
-        constructor(syntaxTree: SyntaxTree, snapshot: ITextSnapshot, rulesProvider: RulesProvider, editorOptions: ts.EditorOptions);
-        formatSelection(minChar: number, limChar: number): ts.TextChange[];
-        formatDocument(): ts.TextChange[];
-        formatOnSemicolon(caretPosition: number): ts.TextChange[];
-        formatOnClosingCurlyBrace(caretPosition: number): ts.TextChange[];
-        formatOnEnter(caretPosition: number): ts.TextChange[];
-        private formatSpan(span, formattingRequestKind);
-    }
-}
-declare module TypeScript.Services.Formatting {
-    enum FormattingRequestKind {
+declare module ts.formatting {
+    const enum FormattingRequestKind {
         FormatDocument = 0,
         FormatSelection = 1,
         FormatOnEnter = 2,
         FormatOnSemicolon = 3,
         FormatOnClosingCurlyBrace = 4,
-        FormatOnPaste = 5,
     }
 }
-declare module TypeScript.Services.Formatting {
+declare module ts.formatting {
     class Rule {
         Descriptor: RuleDescriptor;
         Operation: RuleOperation;
@@ -6087,15 +6053,15 @@ declare module TypeScript.Services.Formatting {
         toString(): string;
     }
 }
-declare module TypeScript.Services.Formatting {
-    enum RuleAction {
-        Ignore = 0,
-        Space = 1,
-        NewLine = 2,
-        Delete = 3,
+declare module ts.formatting {
+    const enum RuleAction {
+        Ignore = 1,
+        Space = 2,
+        NewLine = 4,
+        Delete = 8,
     }
 }
-declare module TypeScript.Services.Formatting {
+declare module ts.formatting {
     class RuleDescriptor {
         LeftTokenRange: Shared.TokenRange;
         RightTokenRange: Shared.TokenRange;
@@ -6107,13 +6073,13 @@ declare module TypeScript.Services.Formatting {
         static create4(left: Shared.TokenRange, right: Shared.TokenRange): RuleDescriptor;
     }
 }
-declare module TypeScript.Services.Formatting {
-    enum RuleFlags {
+declare module ts.formatting {
+    const enum RuleFlags {
         None = 0,
         CanDeleteNewLines = 1,
     }
 }
-declare module TypeScript.Services.Formatting {
+declare module ts.formatting {
     class RuleOperation {
         Context: RuleOperationContext;
         Action: RuleAction;
@@ -6123,7 +6089,7 @@ declare module TypeScript.Services.Formatting {
         static create2(context: RuleOperationContext, action: RuleAction): RuleOperation;
     }
 }
-declare module TypeScript.Services.Formatting {
+declare module ts.formatting {
     class RuleOperationContext {
         private customContextChecks;
         constructor(...funcs: ((context: FormattingContext) => boolean)[]);
@@ -6132,7 +6098,7 @@ declare module TypeScript.Services.Formatting {
         InContext(context: FormattingContext): boolean;
     }
 }
-declare module TypeScript.Services.Formatting {
+declare module ts.formatting {
     class Rules {
         getRuleName(rule: Rule): any;
         [name: string]: any;
@@ -6235,10 +6201,10 @@ declare module TypeScript.Services.Formatting {
         static IsSingleLineBlockContext(context: FormattingContext): boolean;
         static IsBlockContext(context: FormattingContext): boolean;
         static IsBeforeBlockContext(context: FormattingContext): boolean;
-        static NodeIsBlockContext(node: IndentationNodeContext): boolean;
+        static NodeIsBlockContext(node: Node): boolean;
         static IsFunctionDeclContext(context: FormattingContext): boolean;
         static IsTypeScriptDeclWithBlockContext(context: FormattingContext): boolean;
-        static NodeIsTypeScriptDeclWithBlockContext(node: IndentationNodeContext): boolean;
+        static NodeIsTypeScriptDeclWithBlockContext(node: Node): boolean;
         static IsAfterCodeBlockContext(context: FormattingContext): boolean;
         static IsControlDeclContext(context: FormattingContext): boolean;
         static IsObjectContext(context: FormattingContext): boolean;
@@ -6249,12 +6215,12 @@ declare module TypeScript.Services.Formatting {
         static IsNotFormatOnEnter(context: FormattingContext): boolean;
         static IsModuleDeclContext(context: FormattingContext): boolean;
         static IsObjectTypeContext(context: FormattingContext): boolean;
-        static IsTypeArgumentOrParameter(tokenKind: SyntaxKind, parentKind: SyntaxKind): boolean;
+        static IsTypeArgumentOrParameter(token: TextRangeWithKind, parent: Node): boolean;
         static IsTypeArgumentOrParameterContext(context: FormattingContext): boolean;
         static IsVoidOpContext(context: FormattingContext): boolean;
     }
 }
-declare module TypeScript.Services.Formatting {
+declare module ts.formatting {
     class RulesMap {
         map: RulesBucket[];
         mapRowLength: number;
@@ -6287,31 +6253,7 @@ declare module TypeScript.Services.Formatting {
         AddRule(rule: Rule, specificTokens: boolean, constructionState: RulesBucketConstructionState[], rulesBucketIndex: number): void;
     }
 }
-declare module TypeScript.Services.Formatting {
-    class RulesProvider {
-        private logger;
-        private globalRules;
-        private options;
-        private activeRules;
-        private rulesMap;
-        constructor(logger: Logger);
-        getRuleName(rule: Rule): string;
-        getRuleByName(name: string): Rule;
-        getRulesMap(): RulesMap;
-        ensureUpToDate(options: ts.FormatCodeOptions): void;
-        private createActiveRules(options);
-    }
-}
-declare module TypeScript.Services.Formatting {
-    class TextEditInfo {
-        position: number;
-        length: number;
-        replaceWith: string;
-        constructor(position: number, length: number, replaceWith: string);
-        toString(): string;
-    }
-}
-declare module TypeScript.Services.Formatting {
+declare module ts.formatting {
     module Shared {
         interface ITokenAccess {
             GetTokens(): SyntaxKind[];
@@ -6322,7 +6264,6 @@ declare module TypeScript.Services.Formatting {
             constructor(from: SyntaxKind, to: SyntaxKind, except: SyntaxKind[]);
             GetTokens(): SyntaxKind[];
             Contains(token: SyntaxKind): boolean;
-            toString(): string;
         }
         class TokenValuesAccess implements ITokenAccess {
             private tokens;
@@ -6335,7 +6276,6 @@ declare module TypeScript.Services.Formatting {
             constructor(token: SyntaxKind);
             GetTokens(): SyntaxKind[];
             Contains(tokenValue: SyntaxKind): boolean;
-            toString(): string;
         }
         class TokenAllAccess implements ITokenAccess {
             GetTokens(): SyntaxKind[];
@@ -6370,113 +6310,41 @@ declare module TypeScript.Services.Formatting {
         }
     }
 }
-declare module TypeScript.Services.Formatting {
-    class TokenSpan extends TextSpan {
+declare module ts.formatting {
+    class TokenSpan extends TypeScript.TextSpan {
         kind: SyntaxKind;
         constructor(kind: SyntaxKind, start: number, length: number);
     }
 }
-declare module TypeScript.Services.Formatting {
-    class IndentationNodeContext {
-        private _node;
-        private _parent;
-        private _fullStart;
-        private _indentationAmount;
-        private _childIndentationAmountDelta;
-        private _depth;
-        private _hasSkippedOrMissingTokenChild;
-        constructor(parent: IndentationNodeContext, node: ISyntaxNode, fullStart: number, indentationAmount: number, childIndentationAmountDelta: number);
-        parent(): IndentationNodeContext;
-        node(): ISyntaxNode;
-        fullStart(): number;
-        fullWidth(): number;
-        start(): number;
-        end(): number;
-        indentationAmount(): number;
-        childIndentationAmountDelta(): number;
-        depth(): number;
-        kind(): SyntaxKind;
-        hasSkippedOrMissingTokenChild(): boolean;
-        clone(pool: IndentationNodeContextPool): IndentationNodeContext;
-        update(parent: IndentationNodeContext, node: ISyntaxNode, fullStart: number, indentationAmount: number, childIndentationAmountDelta: number): void;
-    }
-}
-declare module TypeScript.Services.Formatting {
-    class IndentationNodeContextPool {
-        private nodes;
-        getNode(parent: IndentationNodeContext, node: ISyntaxNode, fullStart: number, indentationLevel: number, childIndentationLevelDelta: number): IndentationNodeContext;
-        releaseNode(node: IndentationNodeContext, recursive?: boolean): void;
-    }
-}
-declare module TypeScript.Services.Formatting {
-    class IndentationTrackingWalker {
-        options: FormattingOptions;
-        private _position;
-        private _parent;
-        private _textSpan;
-        private _snapshot;
-        private _lastTriviaWasNewLine;
-        private _indentationNodeContextPool;
-        private _text;
-        constructor(textSpan: TextSpan, sourceUnit: SourceUnitSyntax, snapshot: ITextSnapshot, indentFirstToken: boolean, options: FormattingOptions);
-        position(): number;
-        parent(): IndentationNodeContext;
-        textSpan(): TextSpan;
-        snapshot(): ITextSnapshot;
-        indentationNodeContextPool(): IndentationNodeContextPool;
-        forceIndentNextToken(tokenStart: number): void;
-        forceSkipIndentingNextToken(tokenStart: number): void;
-        indentToken(token: ISyntaxToken, indentationAmount: number, commentIndentationAmount: number): void;
-        visitTokenInSpan(token: ISyntaxToken): void;
-        visitToken(token: ISyntaxToken): void;
-        walk(element: ISyntaxElement): void;
-        private visitNode(node);
-        private getTokenIndentationAmount(token);
-        private getCommentIndentationAmount(token);
-        private getNodeIndentation(node, newLineInsertedByFormatting?);
-        private shouldIndentBlockInParent(parent);
-        private forceRecomputeIndentationOfParent(tokenStart, newLineAdded);
-    }
-}
-declare module TypeScript.Services.Formatting {
-    class MultipleTokenIndenter extends IndentationTrackingWalker {
-        private _edits;
-        constructor(textSpan: TextSpan, sourceUnit: SourceUnitSyntax, snapshot: ITextSnapshot, indentFirstToken: boolean, options: FormattingOptions);
-        indentToken(token: ISyntaxToken, indentationAmount: number, commentIndentationAmount: number): void;
-        edits(): TextEditInfo[];
-        recordEdit(position: number, length: number, replaceWith: string): void;
-        private recordIndentationEditsForToken(token, indentationString, commentIndentationString);
-        private recordIndentationEditsForSingleLineOrSkippedText(trivia, fullStart, indentationString);
-        private recordIndentationEditsForWhitespace(trivia, fullStart, indentationString);
-        private recordIndentationEditsForMultiLineComment(trivia, fullStart, indentationString, leadingWhiteSpace, firstLineAlreadyIndented);
-        private recordIndentationEditsForSegment(segment, fullStart, indentationColumns, whiteSpaceColumnsInFirstSegment);
-    }
-}
-declare module TypeScript.Services.Formatting {
-    class Formatter extends MultipleTokenIndenter {
-        private previousTokenSpan;
-        private previousTokenParent;
-        private scriptHasErrors;
-        private rulesProvider;
-        private formattingRequestKind;
-        private formattingContext;
-        constructor(textSpan: TextSpan, sourceUnit: SourceUnitSyntax, indentFirstToken: boolean, options: FormattingOptions, snapshot: ITextSnapshot, rulesProvider: RulesProvider, formattingRequestKind: FormattingRequestKind);
-        static getEdits(textSpan: TextSpan, sourceUnit: SourceUnitSyntax, options: FormattingOptions, indentFirstToken: boolean, snapshot: ITextSnapshot, rulesProvider: RulesProvider, formattingRequestKind: FormattingRequestKind): TextEditInfo[];
-        visitTokenInSpan(token: ISyntaxToken): void;
-        private processToken(token);
-        private processTrivia(triviaList, fullStart);
-        private findCommonParents(parent1, parent2);
-        private formatPair(t1, t1Parent, t2, t2Parent);
-        private getLineNumber(span);
-        private trimWhitespaceInLineRange(startLine, endLine, token?);
-        private trimWhitespace(line, token?);
-        private RecordRuleEdits(rule, t1, t2);
+declare module ts.formatting {
+    class RulesProvider {
+        private logger;
+        private globalRules;
+        private options;
+        private activeRules;
+        private rulesMap;
+        constructor(logger: TypeScript.Logger);
+        getRuleName(rule: Rule): string;
+        getRuleByName(name: string): Rule;
+        getRulesMap(): RulesMap;
+        ensureUpToDate(options: FormatCodeOptions): void;
+        private createActiveRules(options);
     }
 }
 declare module ts.formatting {
-    module SmartIndenter {
-        function getIndentation(position: number, sourceFile: SourceFile, options: TypeScript.FormattingOptions): number;
+    interface TextRangeWithKind extends TextRange {
+        kind: SyntaxKind;
     }
+    interface TokenInfo {
+        leadingTrivia: TextRangeWithKind[];
+        token: TextRangeWithKind;
+        trailingTrivia: TextRangeWithKind[];
+    }
+    function formatOnEnter(position: number, sourceFile: SourceFile, rulesProvider: RulesProvider, options: FormatCodeOptions): TextChange[];
+    function formatOnSemicolon(position: number, sourceFile: SourceFile, rulesProvider: RulesProvider, options: FormatCodeOptions): TextChange[];
+    function formatOnClosingCurly(position: number, sourceFile: SourceFile, rulesProvider: RulesProvider, options: FormatCodeOptions): TextChange[];
+    function formatDocument(sourceFile: SourceFile, rulesProvider: RulesProvider, options: FormatCodeOptions): TextChange[];
+    function formatSelection(start: number, end: number, sourceFile: SourceFile, rulesProvider: RulesProvider, options: FormatCodeOptions): TextChange[];
 }
 declare module TypeScript {
     interface Logger {
@@ -6490,11 +6358,7 @@ declare module TypeScript {
     function createIntrinsicsObject<T>(): ts.Map<T>;
 }
 declare module TypeScript {
-    function stripStartAndEndQuotes(str: string): string;
-    function switchToForwardSlashes(path: string): string;
     function isDTSFile(fname: string): boolean;
-    function getPathComponents(path: string): string[];
-    function normalizePath(path: string): string;
 }
 declare module ts {
     interface Node {
@@ -6541,6 +6405,11 @@ declare module ts {
         getScriptSnapshot(): TypeScript.IScriptSnapshot;
         getNamedDeclarations(): Declaration[];
         update(scriptSnapshot: TypeScript.IScriptSnapshot, version: string, isOpen: boolean, textChangeRange: TypeScript.TextChangeRange): SourceFile;
+    }
+    interface PreProcessedFileInfo {
+        referencedFiles: FileReference[];
+        importedFiles: FileReference[];
+        isLibFile: boolean;
     }
     interface Logger {
         log(s: string): void;
@@ -6895,33 +6764,13 @@ declare module ts {
         throwIfCancellationRequested(): void;
     }
     function createDocumentRegistry(): DocumentRegistry;
+    function preProcessFile(sourceText: string, readImportFiles?: boolean): PreProcessedFileInfo;
     function getNodeModifiers(node: Node): string;
     function createLanguageService(host: LanguageServiceHost, documentRegistry: DocumentRegistry): LanguageService;
     function createClassifier(host: Logger): Classifier;
 }
 declare module ts.BreakpointResolver {
     function spanInSourceFileAtLocation(sourceFile: SourceFile, position: number): TypeScript.TextSpan;
-}
-declare module TypeScript {
-    interface ILineAndCharacter {
-        line: number;
-        character: number;
-    }
-    interface IFileReference extends ILineAndCharacter {
-        path: string;
-        isResident: boolean;
-        position: number;
-        length: number;
-    }
-    interface IPreProcessedFileInfo {
-        referencedFiles: IFileReference[];
-        importedFiles: IFileReference[];
-        diagnostics: Diagnostic[];
-        isLibFile: boolean;
-    }
-    var tripleSlashReferenceRegExp: RegExp;
-    function preProcessFile(fileName: string, sourceText: IScriptSnapshot, readImportFiles?: boolean): IPreProcessedFileInfo;
-    function getReferencedFiles(fileName: string, sourceText: IScriptSnapshot): IFileReference[];
 }
 declare var debugObjectHost: any;
 declare module ts {
@@ -6941,6 +6790,11 @@ declare module ts {
         getCancellationToken(): CancellationToken;
         getCurrentDirectory(): string;
         getDefaultLibFilename(): string;
+    }
+    interface IFileReference {
+        path: string;
+        position: number;
+        length: number;
     }
     interface ShimFactory {
         registerShim(shim: Shim): void;

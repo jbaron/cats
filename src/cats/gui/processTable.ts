@@ -36,7 +36,7 @@ module Cats.Gui {
         /**
          * Add a new process to the table
          */
-        addProcess(child, cmd: string) {
+        addProcess(child: any, cmd: string) {
             var row = new Array<any>(
                 "" + child.pid, cmd, child
                 );
@@ -73,7 +73,7 @@ module Cats.Gui {
             tableModel.setData([]);
 
             var custom: IMap = {
-                tableColumnModel: function(obj) {
+                tableColumnModel: function() {
                     return new qx.ui.table.columnmodel.Resize();
                 }
             };

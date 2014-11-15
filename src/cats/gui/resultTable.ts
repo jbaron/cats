@@ -25,14 +25,14 @@ module Cats.Gui {
         constructor(headers = ["tableheader_message", "tableheader_file", "tableheader_position"]) {
 
             var tableModel = new qx.ui.table.model.Simple();
-            var columns = [];
+            var columns:string[] = [];
             headers.forEach((header) => columns.push(this.tr(header)));
             tableModel.setColumns(columns);
             tableModel.setData([]);
             this.setStatusBarVisible(false); 
 
             var custom: any = {
-                tableColumnModel: function(obj) {
+                tableColumnModel: function() {
                     return new qx.ui.table.columnmodel.Resize();
                 }
             };
@@ -41,7 +41,7 @@ module Cats.Gui {
 
             this.setPadding(0, 0, 0, 0);
 
-            this.addListener("click", (data) => {
+            this.addListener("click", () => {
                 var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
                 var data = this.getTableModel().getRowData(selectedRow);
                 if (data) FileEditor.OpenEditor(data[1], data[3]);
@@ -76,7 +76,7 @@ module Cats.Gui {
             return this.data;
         }
 
-        private areEmpty(...args) {
+        private areEmpty(...args:any[]) {
             for (var i=0; i< args.length; i++ ) {
                 var arr = args[i];
                 if (arr && (arr.length > 0)) return false

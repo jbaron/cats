@@ -318,7 +318,7 @@ module Cats.TSWorker {
         /**
          * Convert the data for outline usage.
          */
-        private getOutlineModelData(fileName, data: ts.NavigationBarItem[]) {
+        private getOutlineModelData(fileName:string, data: ts.NavigationBarItem[]) {
             if ((!data) || (!data.length)) {
                 return [];
             }

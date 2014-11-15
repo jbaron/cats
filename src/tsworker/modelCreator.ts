@@ -22,7 +22,7 @@ module Cats.TSWorker {
      */
     export class ModelCreator {
 
-        private model = {};
+        private model:Map<ModelEntry> = {};
         private last: ModelEntry;
 
         constructor() {
@@ -30,8 +30,8 @@ module Cats.TSWorker {
         }
 
 
-        getModel(): Array<ModelEntry> {
-            var result = [];
+        getModel() {
+            var result: Array<ModelEntry> = [];
             Object.keys(this.model).forEach((key) => {
                 var entry: ModelEntry = this.model[key];
                 result.push(entry);

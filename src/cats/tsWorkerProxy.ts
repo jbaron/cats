@@ -40,19 +40,19 @@ module Cats {
         /**
          * Get the diagnostic messages for a file
          */ 
-        getErrors(fileName: string, cb: (err, result: FileRange[]) => void) {
+        getErrors(fileName: string, cb: CB<FileRange[]>) {
             this.perform("getErrors", fileName, cb);
         }
 
-        getNavigateToItems(search: string, cb: (err, result: NavigateToItem[]) => void) {
+        getNavigateToItems(search: string, cb: CB<NavigateToItem[]>) {
             this.perform("getNavigateToItems", search, cb);
         }
 
-        getAllDiagnostics(cb: (err, result: FileRange[]) => void) {
+        getAllDiagnostics(cb: CB<FileRange[]>) {
             this.perform("getAllDiagnostics", cb);
         }
 
-        getTodoItems(cb: (err, result: NavigateToItem[]) => void) {
+        getTodoItems(cb: CB<NavigateToItem[]>) {
             this.perform("getTodoItems", cb);
         }
 
@@ -73,7 +73,7 @@ module Cats {
             this.perform("getCrossReference", type, sessionName, cursor, cb);
         }
 
-        compile(cb: (err, data: Cats.CompileResults) => void) {
+        compile(cb: CB<Cats.CompileResults>) {
             this.perform("compile", cb);
         }
 
@@ -90,11 +90,11 @@ module Cats {
         }
 
 
-        getObjectModel(cb) {
+        getObjectModel(cb:CB<any>) {
             this.perform("getObjectModel", cb);
         }
 
-        setSettings(compilerSettings, editorSettings) {
+        setSettings(compilerSettings:ts.CompilationSettings, editorSettings:ts.FormatCodeOptions) {
             this.perform("setSettings", compilerSettings, editorSettings, null);
         }
 
@@ -106,7 +106,7 @@ module Cats {
             this.perform("updateScript", fileName, content, null);
         }
 
-        getCompletions(fileName: string, cursor: ace.Position, cb: (err, completes: ts.CompletionEntry[]) => void) {
+        getCompletions(fileName: string, cursor: ace.Position, cb: CB<ts.CompletionEntry[]>) {
             this.perform("getCompletions", fileName, cursor, cb);
         }
 
