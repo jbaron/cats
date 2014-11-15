@@ -30,6 +30,10 @@ module Cats {
         toolbar: Map<string>;
     }
 
+    export interface CB<T> {
+        (err:any, result:T): void;
+    }
+
    export interface ModelEntry {
         type: string;
         name: string;

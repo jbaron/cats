@@ -28,7 +28,7 @@ module Cats {
         // The project this editor belongs to
         project = IDE.project;
         
-        protected properties = {};
+        protected properties:Map<any> = {};
 
         /**
          * Does the Editor have any unsaved changes
@@ -87,7 +87,7 @@ module Cats {
         }
 
         /**
-         * Get a certin property from the editor
+         * Get a certain property from the editor
          */ 
         get(propertyName: string) {
             return this.properties[propertyName];

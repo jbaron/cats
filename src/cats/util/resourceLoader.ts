@@ -20,34 +20,34 @@ module Cats.Util {
      */
     export class ResourceLoader {
 
-        require(file, callback) {
+        require(file:string, callback:Function) {
             callback = callback ||
             function() { };
-            var filenode;
+           
             var jsfile_extension = /(.js)$/i;
             var cssfile_extension = /(.css)$/i;
 
             if (jsfile_extension.test(file)) {
-                filenode = document.createElement('script');
-                filenode.src = file;
-                filenode.onload = function() {
+                var scriptnode = document.createElement('script');
+                scriptnode.src = file;
+                scriptnode.onload = function() {
                     callback();
                 };
-                document.head.appendChild(filenode);
+                document.head.appendChild(scriptnode);
 
             } else if (cssfile_extension.test(file)) {
-                filenode = document.createElement('link');
-                filenode.rel = 'stylesheet';
-                filenode.type = 'text/css';
-                filenode.href = file;
-                document.head.appendChild(filenode);
+                var linknode = document.createElement('link');
+                linknode.rel = 'stylesheet';
+                linknode.type = 'text/css';
+                linknode.href = file;
+                document.head.appendChild(linknode);
                 callback();
             } else {
                 console.log("Unknown file type to load.");
             }
         }
 
-        loadResources(files: Array<string>, callback) {
+        loadResources(files: Array<string>, callback:Function) {
             var counter = 0;
             files.forEach((file) => {
                 this.require(file, () => {

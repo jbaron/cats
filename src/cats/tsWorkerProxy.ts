@@ -25,7 +25,7 @@ module Cats {
 
         private worker: Worker;
         private messageId = 0;
-        private registry = {};
+        private registry:Map<CB<any>> = {};
 
         constructor(private project: Project) {
             // Create a new webworker

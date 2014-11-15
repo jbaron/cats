@@ -1,5 +1,5 @@
 {
-  "name": "cats",
+  "name": "typescript-cats",
   "author": "JBaron",
   "homepage": "https://github.com/jbaron/cats.git",
   "licenses": [
@@ -11,7 +11,7 @@
   "main": "index.html",
   "js-flags": "--harmony_scoping",
   "scripts": {
-    "start": "nodewebkit --restore",
+    "start": "nodewebkit",
     "test" : "jake build"
   },
   "description": "CATS in an integrated development environment for TypeScript developers",
@@ -46,7 +46,7 @@
     "nodewebkit" : "latest"
   },
   "devDependencies": {
-		"jake" : "latest"
+	 "jake" : "latest"
   }
 
 }

@@ -294,7 +294,7 @@ module Cats.TSWorker {
          * Tthis method uses a simple mixin to overwrite only the values
          * that are set, leave the other ones at the default value.
          */
-        setSettings(compilerOptions, editorOptions) {
+        setSettings(compilerOptions:ts.CompilerOptions, editorOptions:ts.FormatCodeOptions) {
             this.lsHost.setCompilationSettings(compilerOptions);
 
             
@@ -307,7 +307,7 @@ module Cats.TSWorker {
         }
 
 
-       private isExecutable(kind) {
+       private isExecutable(kind:string) {
             if (kind === "method" || kind === "function" || kind === "constructor") return true;
             return false;
         }

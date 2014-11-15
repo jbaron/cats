@@ -37,13 +37,13 @@ declare module nw.gui {
 	}
 
 	interface Menu {
-		new(config?:MenuConfig);		
+		new(config?:MenuConfig):Menu;		
 		items: MenuItem[];		
-		append(item:MenuItem);
-		remove(item:MenuItem);
-		insert(item:MenuItem, atPosition:number);
-		removeAt(index:number);
-		popup(x:number,y:number);
+		append(item:MenuItem):void;
+		remove(item:MenuItem):void;
+		insert(item:MenuItem, atPosition:number):void;
+		removeAt(index:number):void;
+		popup(x:number,y:number):void;
 
 	}
 
@@ -60,25 +60,25 @@ declare module nw.gui {
 	}
 
 	interface MenuItem extends MenuItemConfig, EventEmitter {
-		new(config:MenuItemConfig);
+		new(config:MenuItemConfig):MenuItem;
 	}
 
 	interface IWindow {
 		menu:Menu;
-		showDevTools();	
-        on(event:string,handler:Function);
-        close(force:boolean);
+		showDevTools():void;	
+        on(event:string,handler:Function):void;
+        close(force:boolean):void;
 	}
 
 	var MenuItem:MenuItem;
 	var Menu:Menu;
 	var Window: { 
         get() : IWindow; 
-        open(url:string, options):IWindow;
+        open(url:string, options:{}):IWindow;
     };
 	var App : {
         argv: any;  
-        closeAllWindows();
-        quit();
+        closeAllWindows():void;
+        quit():void;
 	};
 }

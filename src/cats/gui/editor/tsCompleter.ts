@@ -56,12 +56,12 @@ module Cats.Gui.Editor {
         }
 
  
-        getCompletions(editor:ace.Editor, session:ace.EditSession, pos:ace.Position, prefix:string, cb:(any,completions: Cats.CompletionEntry[])=>void) {
+        getCompletions(editor:ace.Editor, session:ace.EditSession, pos:ace.Position, prefix:string, cb:CB<Cats.CompletionEntry[]>):void {
 
             var fileName = this.editor.filePath;
-            if (! fileName) return [];
+            if (! fileName) cb(null,[]);
             
-            IDE.project.iSense.getCompletions(fileName, pos, (err, completes: ts.CompletionEntry[]) => {
+            IDE.project.iSense.getCompletions(fileName, pos, (err:any, completes: ts.CompletionEntry[]) => {
                     var result:Array<Cats.CompletionEntry> = [];
                     if (! completes) return result;
                     completes.forEach((entry) => {

@@ -57,7 +57,7 @@ module Cats.Gui.Editor {
             this.setHeight(200);
             this.createList();
             this.initHandler();
-            this.changeListener = (ev) => this.onChange(ev);
+            this.changeListener = (ev:Event) => this.onChange(ev);
             this.addListener("disappear", this.hidePopup, this);
         }
 

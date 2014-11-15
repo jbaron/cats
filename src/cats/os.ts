@@ -38,7 +38,7 @@ module Cats.OS.File {
         export class Watcher extends  qx.event.Emitter {
             
             // Keeps track of the files and directories that are being watched 
-            private watches = {}; 
+            private watches:Map<any> = {}; 
             
             constructor() {
                 super();
@@ -51,7 +51,7 @@ module Cats.OS.File {
              */ 
             add(name:string) {
                 if (this.watches[name]) return;
-                var w = fs.watch(name, (event,filename) => {
+                var w = fs.watch(name, (event:any,filename:string) => {
                     console.info("Node changed " + name + " event " + event + " fileName " + filename);
                     this.emit("change", name);
                 });
@@ -152,15 +152,15 @@ module Cats.OS.File {
             var id = child.pid;
             IDE.processTable.addProcess(child, cmd);
            
-            child.stdout.on("data", function (data) {
+            child.stdout.on("data", function (data:string) {
               logger.log("" + data);
             });
             
-            child.stderr.on("data", function (data) {
+            child.stderr.on("data", function (data:string) {
               logger.error("" + data);
             });
             
-            child.on("close", function (code) {
+            child.on("close", function (code:number) {
               logger.log("Done");
             });
         }

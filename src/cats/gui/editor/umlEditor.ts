@@ -13,25 +13,28 @@
 //
 module Cats.Gui.Editor {
 
-    var dagre;
+    var dagre:any;
     
     declare var UMLDependency:any;
     declare var UMLClassDiagram:any;
     declare var UMLPackage:any;
     declare var UMLClass:any;
     declare var UMLInterface:any;
-    declare var UMLInterfaceExtended;
+    declare var UMLInterfaceExtended:any;
     declare var UMLGeneralization:any;
     declare var UMLRealization:any;
 
     export class UMLEditor extends Cats.Editor {
 
         private backgroundColors = ["white", "black", "grey"];
+        
+        /*
         properties = [ // @TODO not inline with baseclass definition
             {key:"type" , value: "class diagram"},    
             {key : "created", value: new Date().toLocaleTimeString() }
         ];
-
+        */
+        
         private diagram: any;
         unsavedChanges = false;
         widget = new qx.ui.embed.Html(null);
@@ -100,14 +103,14 @@ module Cats.Gui.Editor {
             var g = new dagre.Digraph();
             var max = 100;
             IDE.console.log("Creating class diagram ...");
-            IDE.project.iSense.getObjectModel((err, model: Array<Cats.ModelEntry>) => {
+            IDE.project.iSense.getObjectModel((err:any, model: Array<Cats.ModelEntry>) => {
                 if (! model) return;
                 var count = 0;
                 model.forEach((entry) => {
                     count++;
                     if (count > max) return;
                     var name = entry.name;
-                    var c;
+                    var c:any;
                     if (entry.type === "class") c = new UMLClass();
                     if (entry.type === "enum") c = new UMLClass();
                     if (entry.type === "interface") c = new UMLInterfaceExtended();
