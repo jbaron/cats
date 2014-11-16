@@ -23,7 +23,7 @@ module Cats {
      */ 
     export class Linter {
 
-        private lintOptions;
+        private lintOptions:{};
         private TSLint = require("tslint");
 
         constructor(private project: Project) {
@@ -49,7 +49,7 @@ module Cats {
          */
         private getOptions() {
             if (!this.lintOptions) {
-                var fileName;
+                var fileName:string;
                 
                 if (this.project.config.tslint.lintFile) {
                     fileName = OS.File.join(this.project.projectDir, this.project.config.tslint.lintFile);

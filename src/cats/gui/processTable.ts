@@ -61,7 +61,7 @@ module Cats.Gui {
 
         private addButton(bar: qx.ui.toolbar.ToolBar, label: string, signal: string) {
             var button = new qx.ui.toolbar.Button(label);
-            button.addListener("execute", (evt) => { this.sendSignal(signal); });
+            button.addListener("execute", () => { this.sendSignal(signal); });
             bar.add(button);
         }
 

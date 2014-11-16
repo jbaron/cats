@@ -39,7 +39,7 @@ module Cats.Gui.Editor {
         }
 
         gotoDeclaration() {
-            this.getIsense().getDefinitionAtPosition(this.editor.filePath, this.getPos(), (err, data: Cats.FileRange) => {
+            this.getIsense().getDefinitionAtPosition(this.editor.filePath, this.getPos(), (err:any, data: Cats.FileRange) => {
                 if (data && data.fileName)
                     FileEditor.OpenEditor(data.fileName, data.range.start);
             });
@@ -51,7 +51,7 @@ module Cats.Gui.Editor {
 
         private getInfoAt(type: string) {
 
-            this.getIsense().getCrossReference(type, this.editor.filePath, this.getPos(), (err, data: Cats.FileRange[]) => {
+            this.getIsense().getCrossReference(type, this.editor.filePath, this.getPos(), (err:any, data: Cats.FileRange[]) => {
                 if (!data) return;
                 var resultTable = new ResultTable();
                 var page = IDE.resultPane.addPage("info_tab", resultTable);
@@ -99,7 +99,7 @@ module Cats.Gui.Editor {
         private createModeMenu() {
             var menu = new qx.ui.menu.Menu();
              var modes = ace.require( 'ace/ext/modelist' ).modes;
-             modes.forEach((entry) => {
+             modes.forEach((entry:any) => {
                   var button = new qx.ui.menu.Button(entry.caption);
                   button.addListener("execute", ()=> {
                       this.editor.setMode(entry.mode)

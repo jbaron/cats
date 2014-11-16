@@ -50,7 +50,7 @@ module Cats.TSWorker {
 
             try {
             if (this.isTopLevelNode(node.kind)) {
-                this.last = this.createIfNotExist(node);
+                this.last = this.createIfNotExist(<any>node);
             }
 
 
@@ -139,8 +139,8 @@ module Cats.TSWorker {
             return node.getText();
         }
 
-        private createIfNotExist(node: ts.Declaration): ModelEntry {
-            var fullName = node.name["text"];
+        private createIfNotExist(node: ts.InterfaceDeclaration|ts.ClassDeclaration): ModelEntry {
+            var fullName = node.name.text;
             if (!this.model[fullName]) {
                 var entry: ModelEntry = {
                     type: this.interest(node.kind),

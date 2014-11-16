@@ -323,14 +323,14 @@ module Cats.TSWorker {
                 return [];
             }
 
-            var result = [];
+            var result:OutlineModelEntry[] = [];
 
             data.forEach((item) => {
                
                 var extension = this.isExecutable(item.kind) ? "()" : "";
                 var script = this.lsHost.getScript(fileName);
 
-                var entry = {
+                var entry:OutlineModelEntry = {
                     label: item.text + extension,
                     pos: script.positionToLineCol(item.spans[0].start()),
                     kind: item.kind,
@@ -429,7 +429,7 @@ module Cats.TSWorker {
         }
 
         public getFormattedTextForRange(fileName: string, range?:Cats.Range): string {
-            var start, end;
+            var start:number, end:number;
             var script = this.lsHost.getScript(fileName);
             
             var content = script.getContent();
@@ -537,7 +537,21 @@ module Cats.TSWorker {
             
             var pos = script.getPositionFromCursor(cursor);
             var result: Cats.FileRange[] = [];
-            var entries: ts.ReferenceEntry[] = this.ls[method](fileName, pos) || [];
+            var entries: ts.ReferenceEntry[];
+            
+            switch (method) {
+                case "getReferencesAtPosition":
+                        entries = this.ls.getReferencesAtPosition(fileName, pos);
+                        break;
+                 case "getOccurrencesAtPosition":
+                        entries = this.ls.getOccurrencesAtPosition(fileName, pos);
+                        break;
+                case "getImplementorsAtPosition":
+                        entries = this.ls.getImplementorsAtPosition(fileName, pos);
+                        break;
+            } 
+            if (! entries) return result;
+            
             for (var i = 0; i < entries.length; i++) {
                 var ref = entries[i];
                 var refScript = this.lsHost.getScript(ref.fileName);
@@ -594,7 +608,8 @@ module Cats.TSWorker {
         setBusy(true, methodName);
         
         try {
-            var result = tsh[methodName].apply(tsh,params);
+            var fn:Function = tsh[methodName];
+            var result = fn.apply(tsh,params);
             postMessage({ id: msg.id, result: result });
         } catch (err) {
             var error = {

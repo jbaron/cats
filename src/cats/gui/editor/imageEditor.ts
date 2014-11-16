@@ -16,8 +16,11 @@ module Cats.Gui.Editor {
     
     var registryEntryName = "ImageEditor";
     
+    interface ImageEditorState {
+        fileName: string;    
+    }
     
-    function restoreState(state) {
+    function restoreState(state:ImageEditorState) {
         var editor = new ImageEditor(state.fileName);
         return editor;
     }
@@ -33,7 +36,7 @@ module Cats.Gui.Editor {
         private static BackgroundColors = ["white", "black", "grey"];
         private canvas = new qx.ui.embed.Canvas();
 
-        constructor(fileName) {
+        constructor(fileName:string) {
             super(fileName);
             this.set("status", { mode : "IMAGE" });
             this.loadImage(fileName);
@@ -56,7 +59,7 @@ module Cats.Gui.Editor {
             image.src = url;
         }
 
-        getState() {
+        getState() : ImageEditorState {
             return {
                 fileName: this.filePath
             };
@@ -77,7 +80,7 @@ module Cats.Gui.Editor {
             }
         }
 
-        private drawImage(image) {
+        private drawImage(image:HTMLImageElement) {
             this.resizeIfRequired(image);
             this.canvas.getContext2d().drawImage(image,
                 this.canvas.getCanvasWidth() / 2 - image.width / 2,

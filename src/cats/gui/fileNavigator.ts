@@ -14,6 +14,15 @@
 
 module Cats.Gui {
 
+    interface FileNode extends qx.data.Array{
+         getLabel(): string;
+         getFullPath(): string;
+         getLoaded(): boolean;
+         getIcon() : string;
+         getDirectory(): string;
+         getChildren(): FileNode; 
+    }
+
     /**
      * File navigator for CATS that displays a directories and its subdirectories
      * and files as a tree.
@@ -34,7 +43,7 @@ module Cats.Gui {
 
         private directoryModels = {};
         private watcher: OS.File.Watcher;
-        private parents = {};
+        private parents:Map<FileNode> = {};
         private projectDir: string;
 
 
@@ -50,7 +59,7 @@ module Cats.Gui {
             this.projectDir = project.projectDir;
 
             this.watcher = OS.File.getWatcher();
-            this.watcher.on("change", (dir) => {
+            this.watcher.on("change", (dir:string) => {
                 var parent = this.parents[dir];
                 if (parent) this.readDir(parent);
             });
@@ -112,7 +121,7 @@ module Cats.Gui {
         private setup() {
             this.setIconPath("");
             this.setIconOptions({
-                converter: (value, model) => {
+                converter: (value:FileNode, model:any) => {
                     if (value.getDirectory()) {
                         return this.getIconForMimeType("inode/directory");
                     }
@@ -126,7 +135,7 @@ module Cats.Gui {
         private setupDelegate() {
             var self = this;
             var delegate = {
-                bindItem: function(controller, item, index) {
+                bindItem: function(controller, item, index:number) {
                     controller.bindDefaultProperties(item, index);
 
                     controller.bindProperty("", "open", {
@@ -154,7 +163,7 @@ module Cats.Gui {
          * Read the files from a directory
          * @param directory The directory name that should be read
          */
-        private readDir(parent) {
+        private readDir(parent:FileNode) {
             var directory = parent.getFullPath();
             this.watcher.addDir(directory);
             this.parents[directory] = parent;
@@ -175,7 +184,7 @@ module Cats.Gui {
                         directory: false
                     }] : null
                 };
-                parent.getChildren().push(qx.data.marshal.Json.createModel(node, true));
+                parent.getChildren().push(<FileNode>qx.data.marshal.Json.createModel(node, true));
             });
         }
 

@@ -17,7 +17,7 @@
 module Cats {
     
     var GUI = require('nw.gui');
-    var typedoc;
+    var typedoc:any;
     
     /**
      * The project hold the informaiton related to a single project. This include 

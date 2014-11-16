@@ -46,7 +46,7 @@ module Cats.Gui {
                 this.updateDiagnostics(0);
             })
             
-            this.editSession.on("change", (ev) => {
+            this.editSession.on("change", () => {
                 this.updateContent();
             });
         }

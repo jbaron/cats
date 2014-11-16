@@ -44,7 +44,7 @@ module Cats.Gui {
 
                 var newName = prompt("Rename " + data.displayName + " into:");
                 if (!newName) return;
-                project.iSense.findRenameLocations(fileName, pos, false, false, (err, data: Cats.FileRange[]) => {
+                project.iSense.findRenameLocations(fileName, pos, false, false, (err:any, data: Cats.FileRange[]) => {
                     // renameOccurences(data, newName);
                 });
             });

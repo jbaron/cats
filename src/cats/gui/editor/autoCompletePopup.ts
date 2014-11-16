@@ -284,7 +284,7 @@ module Cats.Gui.Editor {
         }
 
 
-        private onChange2(e) {
+        private onChange2(e:any) {
             var key = e.args || "";
             alert(key);
             if ((key == null) || (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0)))) {
@@ -299,7 +299,7 @@ module Cats.Gui.Editor {
          * Check wether the typed character is reason to stop
          * the auto-complete task
          */
-        private onChange(ev) {
+        private onChange(ev:any) {
             var key: string = ev.data.text;
 
             if ((key == null) || (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0)))) {

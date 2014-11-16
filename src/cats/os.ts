@@ -68,7 +68,7 @@ module Cats.OS.File {
              */ 
             addDir(name:string) {
                 if (this.watches[name]) return;
-                var w = fs.watch(name, (event,filename) => {
+                var w = fs.watch(name, (event:any,filename:string) => {
                     console.info("Node changed " + name + " event " + event + " fileName " + filename);
                     if (event === "rename") this.emit("change", name);
                 });
@@ -292,9 +292,9 @@ module Cats.OS.File {
          * @param directory The directory name that should be read
          * 
          */ 
-        export function readDir(directory:string, sorted=false): Cats.FileEntry[] {
+        export function readDir(directory:string, sorted=false) {
             var files:string[] = fs.readdirSync(directory);
-            var result = [];
+            var result:Cats.FileEntry[] = [];
             files.forEach((file) => {
                 var fullName = OS.File.join(directory, file);
                 var stats = fs.statSync(fullName);

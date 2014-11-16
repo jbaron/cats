@@ -194,7 +194,7 @@ module Cats.Gui.Editor {
          * wether the cursor should stay on the same position
          * 
          */
-        setContent( content, keepPosition= true ) {
+        setContent( content:string, keepPosition= true ) {
             var pos: ace.Position;
             if ( keepPosition ) pos = this.getPosition();
             this.aceEditor.getSession().setValue( content );

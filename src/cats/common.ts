@@ -43,6 +43,14 @@ module Cats {
         implements?: Array<string>;
     }   
 
+    export interface OutlineModelEntry{
+        label: string;
+        pos: Position;
+        kind: string;
+        kids: OutlineModelEntry[];
+    };
+
+
     export interface Range {
         start: Position;
         end: Position;
@@ -53,6 +61,8 @@ module Cats {
         Warning = <any>"warning",
         Error = <any>"error"
     }
+
+    
 
     export interface FileRange {
         fileName: string;

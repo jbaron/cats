@@ -140,7 +140,7 @@ module Cats.Gui {
         }
 
         onChangeEditor(cb : (editor:Editor, page:EditorPage)=>void) {
-            this.addListener("changeSelection", (ev) => {
+            this.addListener("changeSelection", (ev:qx.event.type.Data) => {
                 var page:EditorPage = ev.getData()[0];
                 if (page) {
                     cb(page.editor, page);
@@ -200,7 +200,7 @@ module Cats.Gui {
         /**
          * Get the currently active editor
          */
-        getActiveEditor(type?) {
+        getActiveEditor(type?:new() => Editor) {
             var page = this.getActivePage();
             if (!page) return null;
             if (type) {
@@ -230,7 +230,7 @@ module Cats.Gui {
            }
         }
   
-        getPagesForFile(filePath) {
+        getPagesForFile(filePath:string) {
             var result:EditorPage[] = [];
             this.getChildren().forEach((page:EditorPage) => {
                 var editor:FileEditor = <any>page.editor;

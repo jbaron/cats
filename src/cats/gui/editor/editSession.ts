@@ -52,7 +52,7 @@ module Cats.Gui.Editor {
             this.configureAceSession(IDE.project.config);
             this.setUndoManager(new UndoManager());
 
-            IDE.project.on("config", (c) => { this.configureAceSession(c); });
+            IDE.project.on("config", (c:ProjectConfiguration) => { this.configureAceSession(c); });
             this.on("change", () => {this.version++});
         }
 
