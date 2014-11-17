@@ -73,13 +73,52 @@ module Cats {
             window.onpopstate = (data) => {
                 if (data && data.state) this.goto(data.state);
             }
+            
+            this.loadShortCuts();
+            
         }
+
+        private loadShortCuts() {
+            var fileName = OS.File.join(this.catsHomeDir, "resource/shortcuts.json");
+            var c = OS.File.readTextFile(fileName);
+            var shortCuts:{} = JSON.parse(c);
+            for (var s in shortCuts) {
+                var cmd = new qx.ui.core.Command(s);
+                var name = shortCuts[s];
+                cmd.addListener("execute", () => {
+                    Cats.Commands.CMDS[name].command();
+                });
+            }
+            
+        }
+        
+        
+
 
         /**
          * Load the icons map from the file.
          */ 
         private loadIconsMap() {
             return JSON.parse(OS.File.readTextFile("resource/icons.json"));
+        }
+
+
+        setColors() {
+            var manager = qx.theme.manager.Color.getInstance();
+            var colors = manager.getTheme()["colors"];
+            var jcolors = JSON.stringify(colors.__proto__,null,4);
+            IDE.console.log(jcolors);
+            
+            var editor = new Gui.Editor.SourceEditor();
+            IDE.editorTabView.addEditor(editor,{row:0, column:0});
+            editor.setContent(jcolors);
+            editor.setMode("ace/mode/json");
+
+            IDE.console.log(jcolors);
+            for (var c in colors) {
+                var dyn = manager.isDynamic(c);
+                IDE.console.log(c + ":" + colors[c] + ":" + dyn);
+            }
         }
 
 

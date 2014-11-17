@@ -47,12 +47,6 @@ module Cats {
         return projectName;
     }
 
-    // Catch unhandled expections so they don't stop the process.
-    process.on("uncaughtException", function(err: any) {
-        console.error("Uncaught exception occured: " + err);
-        console.error(err.stack);
-        if (IDE.console) IDE.console.error(err.stack);
-    });
 
 
     /**
@@ -83,8 +77,16 @@ module Cats {
         }
     }
 
+    // Catch unhandled expections so they don't stop the process.
+    process.on("uncaughtException", function(err: any) {
+        console.error("Uncaught exception occured: " + err);
+        console.error(err.stack);
+        if (IDE.console) IDE.console.error(err.stack);
+    });
+
     // Register the main method that once Qooxdoo is loaded is called
     qx.registry.registerMainMethod(main);
+    
 }
 
 

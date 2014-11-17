@@ -197,7 +197,7 @@ module Cats.Gui.Editor {
         setContent( content:string, keepPosition= true ) {
             var pos: ace.Position;
             if ( keepPosition ) pos = this.getPosition();
-            this.aceEditor.getSession().setValue( content );
+            this.editSession.setValue( content );
             if ( pos ) this.moveToPosition( pos );
         }
 
@@ -312,7 +312,8 @@ module Cats.Gui.Editor {
          * 
          */
         getPosition() {
-            return this.aceEditor.getCursorPosition();
+            if (this.aceEditor)
+                return this.aceEditor.getCursorPosition();
         }
 
         /**

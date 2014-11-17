@@ -134,6 +134,7 @@ module Cats.Gui {
          * close one page
          */
         close(page= this.getActivePage()) {
+            if (! page) return;
             if (page.continueWhenNeedSaving()) {
                 this.remove(page);
             }
