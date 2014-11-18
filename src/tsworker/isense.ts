@@ -334,12 +334,9 @@ module Cats.TSWorker {
                     label: item.text + extension,
                     pos: script.positionToLineCol(item.spans[0].start()),
                     kind: item.kind,
-                    kids: []
+                    kids: null
                 };
-
-                if (item.childItems && (item.childItems.length > 0)) {
-                    entry.kids = this.getOutlineModelData(fileName, item.childItems)
-                }
+                entry.kids = this.getOutlineModelData(fileName, item.childItems)
                 result.push(entry);
 
             });
