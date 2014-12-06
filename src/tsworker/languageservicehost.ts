@@ -61,7 +61,7 @@ module Cats.TSWorker {
             return "";
         }
         
-        getScriptSnapshot(fileName: string): TypeScript.IScriptSnapshot {
+        getScriptSnapshot(fileName: string): ts.IScriptSnapshot {
              var script = this.scripts[fileName];
              if (script) return script.getScriptSnapshot();
         }
@@ -89,6 +89,7 @@ module Cats.TSWorker {
         public addScript(fileName: string, content: string) {
             var script = new ScriptInfo(fileName, content);
             this.scripts[fileName] = script;
+            return script;
         }
 
         public updateScript(fileName: string, content: string) {

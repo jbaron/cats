@@ -324,12 +324,12 @@ module Cats.TSWorker {
             }
 
             var result:OutlineModelEntry[] = [];
+            var script = this.lsHost.getScript(fileName);
 
             data.forEach((item) => {
                
                 var extension = this.isExecutable(item.kind) ? "()" : "";
-                var script = this.lsHost.getScript(fileName);
-
+    
                 var entry:OutlineModelEntry = {
                     label: item.text + extension,
                     pos: script.positionToLineCol(item.spans[0].start()),
@@ -451,7 +451,8 @@ module Cats.TSWorker {
             if (this.lsHost.getScript(fileName)) {
                 this.updateScript(fileName, content);
             } else {
-                this.lsHost.addScript(fileName, content);
+                var script = this.lsHost.addScript(fileName, content);
+                script.ls = this.ls;
             }
         }
 
@@ -544,7 +545,7 @@ module Cats.TSWorker {
                         entries = this.ls.getOccurrencesAtPosition(fileName, pos);
                         break;
                 case "getImplementorsAtPosition":
-                        entries = this.ls.getImplementorsAtPosition(fileName, pos);
+                        entries = []; // @TODO this.ls.getImplementorsAtPosition(fileName, pos);
                         break;
             } 
             if (! entries) return result;

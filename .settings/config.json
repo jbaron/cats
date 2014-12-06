@@ -11,7 +11,7 @@
         "sourceMap": false,
         "propagateEnumConstants": false,
         "allowAutomaticSemicolonInsertion": true,
-        "target": 1,
+        "target": 2,
         "module": 0,
         "outDir": null,
         "out": null

@@ -29,8 +29,9 @@ module Cats.TSWorker {
  */ 
 export class ScriptInfo {
         private version: number = 1;
-        public editRanges: { length: number; textChangeRange: TypeScript.TextChangeRange; }[] = [];
-        private lineMap: TypeScript.LineMap = null;
+        public editRanges: { length: number; textChangeRange: ts.TextChangeRange; }[] = [];
+        // private lineMap: ts.LineMap = null;
+        public ls:ts.LanguageService;
 
         constructor(public fileName: string, private content: string) {
             this.setContent(content);
@@ -38,12 +39,18 @@ export class ScriptInfo {
 
         private setContent(content: string): void {
             this.content = content;
-            this.lineMap = null;
+            // this.lineMap = null;
         }
 
+        /*
         public getLineMap() {
             if (! this.lineMap) this.lineMap = TypeScript.LineMap1.fromString(this.content);
             return this.lineMap;
+        }
+        */
+        
+        public getSourceFile() {
+            return this.ls.getSourceFile(this.fileName);
         }
 
         public getContent() {
@@ -75,34 +82,34 @@ export class ScriptInfo {
             // Store edit range + new length of script
             this.editRanges.push({
                 length: this.content.length,
-                textChangeRange: new TypeScript.TextChangeRange(
-                    TypeScript.TextSpan.fromBounds(minChar, limChar), newText.length)
+                textChangeRange: new ts.TextChangeRange(
+                    ts.TextSpan.fromBounds(minChar, limChar), newText.length)
             });
 
             // Update version #
             this.version++;
         }
 
-        public getTextChangeRangeSinceVersion(version: number): TypeScript.TextChangeRange {
+        public getTextChangeRangeSinceVersion(version: number): ts.TextChangeRange {
             if (this.version === version) {
                 // No edits!
-                return TypeScript.TextChangeRange.unchanged;
+                return ts.TextChangeRange.unchanged;
             }
 
             var initialEditRangeIndex = this.editRanges.length - (this.version - version);
 
             var entries = this.editRanges.slice(initialEditRangeIndex);
-            return TypeScript.TextChangeRange.collapseChangesAcrossMultipleVersions(entries.map(e => e.textChangeRange));
+            return ts.TextChangeRange.collapseChangesAcrossMultipleVersions(entries.map(e => e.textChangeRange));
         }
         
         /**
          * Convert a TS offset position to a Cats Position
          */
         positionToLineCol(position: number): Position {
-            var result = this.getLineMap().getLineAndCharacterFromPosition(position);
+            var result = this.getSourceFile().getLineAndCharacterFromPosition(position);
             return {
-                row: result.line(),
-                column: result.character()
+                row: result.line-1,
+                column: result.character-1
             };
         }
         
@@ -110,7 +117,8 @@ export class ScriptInfo {
          * Get the chars offset based on the Ace position
          */ 
         getPositionFromCursor(cursor: Position): number {
-            var pos = this.getLineMap().getPosition(cursor.row, cursor.column);
+            var pos = this.getSourceFile().getPositionFromLineAndCharacter(cursor.row+1, cursor.column+1);
+            // var pos = this.getLineMap().getPosition(cursor.row, cursor.column);
             return pos;
         }
         
@@ -118,7 +126,7 @@ export class ScriptInfo {
          * Retieve the line of code that contains a certain range. Used to provide the 
          * user with contexts of what is found
          */
-        getLine(span:TypeScript.TextSpan) {
+        getLine(span:ts.TextSpan) {
             var min = this.content.substring(0, span.start()).lastIndexOf("\n");
             var max = this.content.substring(span.end()).indexOf("\n");
             return this.content.substring(min + 1, span.end() + max);
@@ -136,7 +144,7 @@ export class ScriptInfo {
         }
         
         
-        getRangeFromSpan(textSpan: TypeScript.TextSpan) {
+        getRangeFromSpan(textSpan: ts.TextSpan) {
             return this.getRange(textSpan.start(), textSpan.end());
         }
         
@@ -167,7 +175,7 @@ export class ScriptInfo {
          * Get a snapshot for this script
          */ 
         getScriptSnapshot() {
-             return  TypeScript.ScriptSnapshot.fromString(this.content);
+             return  ts.ScriptSnapshot.fromString(this.content);
         }
 
         

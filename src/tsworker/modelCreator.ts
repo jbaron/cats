@@ -155,19 +155,26 @@ module Cats.TSWorker {
 
                 if (node.kind === ts.SyntaxKind.ClassDeclaration) {
                     var cd = <ts.ClassDeclaration>node;
+                    
+                    /*
+                    @TODO
                     if (cd.baseType) entry.extends.push(this.getName(cd.baseType));
                     
                     if (cd.implementedTypes) cd.implementedTypes.forEach((implType) => {
                         entry.implements.push(this.getName(implType));
                     });
+                    */
                 }
                 
                 
                 if (node.kind === ts.SyntaxKind.InterfaceDeclaration) {
                     var id = <ts.InterfaceDeclaration>node;
+                    /*
+                    @TODO
                     if (id.baseTypes) id.baseTypes.forEach((type) => {
                         entry.implements.push(this.getName(type));
                     });
+                    */
                 }
                 
             }

@@ -116,7 +116,7 @@ module Cats.Gui.Editor {
                 this.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration, this));
                 this.add(this.createContextMenuItem("Find References", this.findReferences, this));
                 this.add(this.createContextMenuItem("Find Occurences", this.findOccurences, this));
-                this.add(this.createContextMenuItem("FInd Implementations", this.findImplementors, this));
+                // this.add(this.createContextMenuItem("Find Implementations", this.findImplementors, this));
                 this.addSeparator();
                 this.add(this.createContextMenuItem("Rename", this.refactor, this));
                 this.addSeparator();
