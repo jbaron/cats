@@ -123,6 +123,7 @@ module Cats.TSWorker {
                 var script = this.lsHost.getScript(scriptName);
                 // var doc:ts.SourceFile = ts.createSourceFile(scriptName, script.getContent(),
                 //        this.lsHost.getCompilationSettings().target, script.getVersion());
+                /*
                 var doc = this.documentRegistry.acquireDocument(
                     scriptName, 
                     this.lsHost.getCompilationSettings(), 
@@ -130,7 +131,8 @@ module Cats.TSWorker {
                     script.getVersion(), 
                     script.isOpen()
                 );
-        
+                */
+                var doc = script.getSourceFile();
     
                 mc.parse(doc);
                 
@@ -451,8 +453,7 @@ module Cats.TSWorker {
             if (this.lsHost.getScript(fileName)) {
                 this.updateScript(fileName, content);
             } else {
-                var script = this.lsHost.addScript(fileName, content);
-                script.ls = this.ls;
+                var script = this.lsHost.addScript(fileName, content, this.ls);
             }
         }
 

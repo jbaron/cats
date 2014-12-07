@@ -45,7 +45,7 @@ module Cats.TSWorker {
             this.handle(doc);
         }
 
-        private handle(node: ts.Node) {
+        private handle(node: ts.Declaration) {
             if (!node) return;
 
             try {
@@ -61,7 +61,7 @@ module Cats.TSWorker {
             }
 
             if (node.kind === ts.SyntaxKind.Method) {
-                if (this.last) this.last.operations.push(node.symbol.name);
+                if (this.last) this.last.operations.push(node.name["text"]);
                 return;
             }
 
@@ -73,13 +73,13 @@ module Cats.TSWorker {
             if (node.kind === ts.SyntaxKind.Property) {
                 if (this.last) {
                     var attr: Attribute = {
-                        name: node.symbol.name,
+                        name: node.name["text"],
                         modifiers: [],
                         type: null
                     }
 
-                    if (node.symbol) {
-                        var t = "any" // node.symbol.valueDeclaration;
+                    if (node["type"]) {
+                        var t = node["type"].getText(); // node.symbol.valueDeclaration;
                         attr.type = t;
                     }
                     this.last.attributes.push(attr);
@@ -91,7 +91,7 @@ module Cats.TSWorker {
             var children = node.getChildren();
             if (children) {
                 children.forEach((child) => {
-                    this.handle(child);
+                    this.handle(<ts.Declaration>child);
                 })
             }
 

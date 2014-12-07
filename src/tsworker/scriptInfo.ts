@@ -30,25 +30,15 @@ module Cats.TSWorker {
 export class ScriptInfo {
         private version: number = 1;
         public editRanges: { length: number; textChangeRange: ts.TextChangeRange; }[] = [];
-        // private lineMap: ts.LineMap = null;
-        public ls:ts.LanguageService;
-
-        constructor(public fileName: string, private content: string) {
+ 
+        constructor(public fileName: string, private content: string, private ls:ts.LanguageService) {
             this.setContent(content);
         }
 
         private setContent(content: string): void {
             this.content = content;
-            // this.lineMap = null;
         }
 
-        /*
-        public getLineMap() {
-            if (! this.lineMap) this.lineMap = TypeScript.LineMap1.fromString(this.content);
-            return this.lineMap;
-        }
-        */
-        
         public getSourceFile() {
             return this.ls.getSourceFile(this.fileName);
         }

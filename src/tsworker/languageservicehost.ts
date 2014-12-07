@@ -86,8 +86,8 @@ module Cats.TSWorker {
             return this.scripts[fileName];
         }
         
-        public addScript(fileName: string, content: string) {
-            var script = new ScriptInfo(fileName, content);
+        public addScript(fileName: string, content: string, ls:ts.LanguageService) {
+            var script = new ScriptInfo(fileName, content, ls);
             this.scripts[fileName] = script;
             return script;
         }
@@ -96,9 +96,7 @@ module Cats.TSWorker {
             var script =  this.scripts[fileName];
             if (script) {
                 script.updateContent(content);
-            } else {
-               this.addScript(fileName, content);    
-            }
+            } 
         }
 
         public editScript(fileName: string, minChar: number, limChar: number, newText: string) {

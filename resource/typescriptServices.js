@@ -11587,6 +11587,14 @@ var ts;
                     writeSpace(writer);
                     buildSymbolDisplay(type.symbol, writer, enclosingDeclaration, 107455 /* Value */);
                 }
+                function getIndexerParameterName(type, indexKind, fallbackName) {
+                    var declaration = getIndexDeclarationOfSymbol(type.symbol, indexKind);
+                    if (!declaration) {
+                        return fallbackName;
+                    }
+                    ts.Debug.assert(declaration.parameters.length !== 0);
+                    return ts.declarationNameToString(declaration.parameters[0].name);
+                }
                 function writeLiteralType(type, flags) {
                     var resolved = resolveObjectOrUnionTypeMembers(type);
                     if (!resolved.properties.length && !resolved.stringIndexType && !resolved.numberIndexType) {
@@ -11635,7 +11643,8 @@ var ts;
                     }
                     if (resolved.stringIndexType) {
                         writePunctuation(writer, 17 /* OpenBracketToken */);
-                        writer.writeParameter("x");
+                        resolved.symbol;
+                        writer.writeParameter(getIndexerParameterName(resolved, 0 /* String */, "x"));
                         writePunctuation(writer, 50 /* ColonToken */);
                         writeSpace(writer);
                         writeKeyword(writer, 118 /* StringKeyword */);
@@ -11648,7 +11657,7 @@ var ts;
                     }
                     if (resolved.numberIndexType) {
                         writePunctuation(writer, 17 /* OpenBracketToken */);
-                        writer.writeParameter("x");
+                        writer.writeParameter(getIndexerParameterName(resolved, 1 /* Number */, "x"));
                         writePunctuation(writer, 50 /* ColonToken */);
                         writeSpace(writer);
                         writeKeyword(writer, 116 /* NumberKeyword */);
@@ -21085,7 +21094,7 @@ var ts;
                 return this._lineStartPositions;
             };
             StringScriptSnapshot.prototype.getChangeRange = function (oldSnapshot) {
-                return null; // @FIX JBaron
+                return null; // @TODO JBaron quick fix
                 throw new Error("not yet implemented");
             };
             return StringScriptSnapshot;
@@ -21744,6 +21753,7 @@ var ts;
         ClassificationTypeNames.interfaceName = "interface name";
         ClassificationTypeNames.moduleName = "module name";
         ClassificationTypeNames.typeParameterName = "type parameter name";
+        ClassificationTypeNames.typeAlias = "type alias name";
         return ClassificationTypeNames;
     })();
     ts.ClassificationTypeNames = ClassificationTypeNames;
@@ -24524,6 +24534,9 @@ var ts;
                 }
                 else if (flags & 384 /* Enum */) {
                     return ClassificationTypeNames.enumName;
+                }
+                else if (flags & 2097152 /* TypeAlias */) {
+                    return ClassificationTypeNames.typeAlias;
                 }
                 else if (meaningAtPosition & 2 /* Type */) {
                     if (flags & 64 /* Interface */) {
