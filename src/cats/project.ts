@@ -29,7 +29,7 @@ module Cats {
         projectDir: string;
         name: string;
 
-        private tsfiles:Map<boolean> = {};
+       private tsfiles:Array<string> = [];
 
         // The singleton TSWorker handler instance
         iSense: TSWorkerProxy;
@@ -181,7 +181,7 @@ module Cats {
                     settings.theme = this.config.documentation.theme || "default";
                     var app = new typedoc.Application(settings);
                     var dest = OS.File.join(this.projectDir, outputDir);
-                    app.generate(Object.keys(this.tsfiles), dest);
+                    app.generate(this.tsfiles, dest);
                 } finally {
                     win.hide();
                 }
@@ -280,12 +280,12 @@ module Cats {
         }
 
         hasScriptFile(fileName:string) {
-            return this.tsfiles[fileName];
+            return this.tsfiles.indexOf(fileName) > -1;
         }
         
         addScript(fullName: string, content: string) {
             this.iSense.addScript(fullName, content);
-            if (! this.hasScriptFile(fullName)) this.tsfiles[fullName] = true;
+            if (! this.hasScriptFile(fullName)) this.tsfiles.push(fullName);
         }
 
         /**

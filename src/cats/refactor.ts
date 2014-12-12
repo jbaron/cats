@@ -28,6 +28,7 @@ module Cats.Refactor {
             var r = data.range;
             var range: ace.Range = new Range(r.start.row, r.start.column, r.end.row, r.end.column);
             editor.replace(range,name);
+            editor.moveToPosition(range.start);
         };        
     }
 
