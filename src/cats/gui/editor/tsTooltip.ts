@@ -17,6 +17,8 @@ module Cats.Gui.Editor {
     export class TSTooltip extends qx.ui.tooltip.ToolTip {
 
         private mouseMoveTimer: number;
+        private mouseX: number = 0;
+        private mouseY: number = 0;
 
         constructor(private editor: SourceEditor) {
             super("");
@@ -42,7 +44,7 @@ module Cats.Gui.Editor {
             this.editor.project.iSense.getInfoAtPosition(this.editor.filePath, docPos,
                 (err, data: Cats.TypeInfo) => {
                     if ((!data) || (! data.description)) return;
-                   
+
                     var tip = data.description;
                     if (data.docComment) {
                         tip += '<hr>' + data.docComment;
@@ -57,9 +59,18 @@ module Cats.Gui.Editor {
         }
 
         private onMouseMove(ev: MouseEvent) {
-            if (this.isSeeable()) this.exclude();
+            var oldX = this.mouseX, oldY = this.mouseY;
+            this.mouseX = ev.clientX;
+            this.mouseY = ev.clientY;
+            // Some UA may fire mousemove events periodically even if the mouse is not moving,
+            // so we must not hide tooltip in this situation to avoid blink.
+            if ((this.mouseX - oldX === 0) && (this.mouseY - oldY === 0))
+                return;
+            else if (this.isSeeable())
+                this.exclude();
+
             if (!this.editor.isTypeScript()) return;
-            
+
             clearTimeout(this.mouseMoveTimer);
             var elem = <HTMLElement>ev.srcElement;
             if (elem.className !== "ace_content") return;
