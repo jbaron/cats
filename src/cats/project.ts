@@ -88,12 +88,16 @@ module Cats {
                 var c = confirm("You have some unsaved changes that will get lost.\n Continue anyway ?");
                 if (!c) return;
             }
+            
+            // Lets cleat the various output panes.
             IDE.editorTabView.closeAll();
             IDE.fileNavigator.clear();
             IDE.outlineNavigator.clear();
             IDE.problemResult.clear();
+            IDE.todoList.clear();
             if (this.iSense) this.iSense.stop();
             clearInterval(this.refreshInterval);
+            IDE.project = null;
         }
 
         /**

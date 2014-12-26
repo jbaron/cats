@@ -16,7 +16,7 @@ module Cats.Gui {
 
     /**
      * This table displays data that is related to a file. Can be 
-     * search results of erros messages or even bookmarks. 
+     * search results of error messages or even bookmarks. 
      */
     export class ResultTable extends qx.ui.table.Table {
 

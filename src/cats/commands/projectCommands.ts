@@ -22,14 +22,14 @@ module Cats.Commands {
      * Close all open projects
      */ 
     function closeAllProjects() {
-        if (IDE.project) IDE.closeProject(IDE.project);
+        if (IDE.project) IDE.project.close();
     }
 
     /**
      * Close the project
      */ 
     function closeProject() { 
-        if (IDE.project) IDE.closeProject(IDE.project);
+        if (IDE.project) IDE.project.close();
     }
 
     /**

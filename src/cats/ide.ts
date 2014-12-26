@@ -364,17 +364,6 @@ module Cats {
         
         
         /**
-         * Close an open project
-         * 
-         * @param project to be closed
-         */
-        closeProject(project:Project) {
-            // TODO support multiple projects open in same IDE
-            this.project.close();
-            this.project = null;
-        }
-        
-        /**
          * Quit the application. If there are unsaved changes ask the user if he really
          * wants to quit.
          */ 
