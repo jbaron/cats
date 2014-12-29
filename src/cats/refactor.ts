@@ -45,7 +45,7 @@ module Cats.Refactor {
             }
             
             var dialog = new Gui.PromptDialog("Rename " + data.displayName +  " into:");
-            dialog.onSuccess = (newName: string) {
+            dialog.onSuccess = (newName: string) => {
                 project.iSense.findRenameLocations(fileName, pos, false, false, (err, data: Cats.FileRange[]) => {
                     renameOccurences(data, newName);
                 });
