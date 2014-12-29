@@ -383,6 +383,7 @@ module Cats {
             if (this.editorTabView.hasUnsavedChanges()) {
                 var dialog = new Gui.ConfirmDialog("There are unsaved files!\nDo you really want to quit?");
                 dialog.onConfirm = doClose;
+                dialog.show();
             } else {
                 doClose();
             }
