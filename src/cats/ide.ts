@@ -82,16 +82,27 @@ module Cats {
             var fileName = OS.File.join(this.catsHomeDir, "resource/shortcuts.json");
             var c = OS.File.readTextFile(fileName);
             var shortCuts:{} = JSON.parse(c);
-            for (var s in shortCuts) {
-                var cmd = new qx.ui.core.Command(s);
-                var name = shortCuts[s];
-                cmd.addListener("execute", () => {
-                    Cats.Commands.CMDS[name].command();
-                });
+            for (var shortCut in shortCuts) {
+                var catsCommand = shortCuts[shortCut];
+                this.addShortCut(shortCut, catsCommand);
             }
             
         }
-        
+       
+        private addShortCut(shortCut: string, catsCommand: string) {
+            if (/^Cmd-/.test(shortCut)) {
+                if (process.platform === "darwin") {
+                    shortCut = shortCut.replace(/^Cmd-/, "Meta-");
+                } else {
+                    shortCut = shortCut.replace(/^Cmd-/, "Ctrl-");
+                }
+            }
+
+            var cmd = new qx.ui.core.Command(shortCut);
+            cmd.addListener("execute", () => {
+                Cats.Commands.CMDS[catsCommand].command();
+            });
+        }
         
 
 

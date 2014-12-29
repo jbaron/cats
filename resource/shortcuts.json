@@ -1,7 +1,4 @@
 {
-    "Meta-W" : "file_close"
-    
-    
-    
-    
+    "Cmd-W" : "file_close",
+    "Cmd-Shift-W" : "file_closeAll"
 }
