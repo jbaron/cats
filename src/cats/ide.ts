@@ -352,27 +352,40 @@ module Cats {
             // Catch the close of the windows in order to save any unsaved changes
             var win = GUI.Window.get();
             win.on("close", function() {
+                var doClose = () => {
+                    IDE.savePreferences();
+                    this.close(true);
+                };
+
                 try {
                     if (IDE.editorTabView.hasUnsavedChanges()) {
-                        if (!confirm("There are unsaved changes!\nDo you really want to continue?")) return;
+                        var dialog = new Gui.ConfirmDialog("There are unsaved changes!\nDo you really want to continue?");
+                        dialog.onConfirm = doClose;
+                        dialog.show();
+                    } else {
+                        doClose();
                     }
-                    IDE.savePreferences();
                 } catch (err) { } // lets ignore this
-                this.close(true);
             });
         }
         
         
         /**
-         * Quit the application. If there are unsaved changes ask the user if he really
-         * wants to quit.
+         * Quit the application. If there are unsaved changes ask the user if they really
+         * want to quit.
          */ 
         quit() {
+            var doClose = () => {
+                this.savePreferences();
+                GUI.App.quit();
+            };
+
             if (this.editorTabView.hasUnsavedChanges()) {
-                if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
+                var dialog = new Gui.ConfirmDialog("There are unsaved files!\nDo you really want to quit?");
+                dialog.onConfirm = doClose;
+            } else {
+                doClose();
             }
-            this.savePreferences();
-            GUI.App.quit();
         }
  
     }
