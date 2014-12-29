@@ -41,8 +41,11 @@ module Cats.Gui.Editor {
                 content = OS.File.readTextFile(editor.filePath) ;
 
                 if ( this.isTypeScript() && (!IDE.project.hasScriptFile( editor.filePath )) ) {
-                    var isProjectFile = confirm( "Not yet part of project, add it now?" );
-                    if ( isProjectFile ) IDE.project.addScript( editor.filePath, content );
+                    var addDialog = new Gui.ConfirmDialog("Not yet part of project, add it now?");
+                    addDialog.onConfirm = () => {
+                        IDE.project.addScript(editor.filePath, content);
+                    };
+                    addDialog.show();
                 }
             
             }
@@ -136,8 +139,11 @@ module Cats.Gui.Editor {
                     this.setMode(this.mode); 
                     
                     if ( this.isTypeScript() && (!IDE.project.hasScriptFile(filePath)) ) {
-                        var isProjectFile = confirm( "Not yet part of project, add it now?" );
-                        if (isProjectFile) IDE.project.addScript(filePath, content );
+                        var addDialog = new Gui.ConfirmDialog("Not yet part of project, add it now?");
+                        addDialog.onConfirm = () => {
+                            IDE.project.addScript(filePath, content);
+                        };
+                        addDialog.show();
                     }
                 };
                 dialog.show();
