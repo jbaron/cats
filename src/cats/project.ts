@@ -85,11 +85,21 @@ module Cats {
          */
         close() {
             if (IDE.editorTabView.hasUnsavedChanges()) {
-                var c = confirm("You have some unsaved changes that will get lost.\n Continue anyway ?");
-                if (!c) return;
+                var dialog = new Gui.ConfirmDialog("You have some unsaved changes that will get lost.\n Continue anyway ?");
+                dialog.onConfirm = () => {
+                    this._close();
+                };
+            } else {
+                this._close();
             }
-            
-            // Lets cleat the various output panes.
+        }
+
+        /**
+         * Close the project without confirmation.
+         * (Internal, do not use directly)
+         */
+        _close() {
+            // Lets clear the various output panes.
             IDE.editorTabView.closeAll();
             IDE.fileNavigator.clear();
             IDE.outlineNavigator.clear();

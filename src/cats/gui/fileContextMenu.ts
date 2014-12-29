@@ -96,10 +96,12 @@ export class FileContextMenu extends qx.ui.menu.Menu {
     private deleteFile() {
         var fullName = this.getFullPath();
         var basename = OS.File.PATH.basename(fullName);
-        var sure = confirm("Delete " + basename + "?");
-        if (sure) {
+
+        var dialog = new Gui.ConfirmDialog("Delete " + basename + "?");
+        dialog.onConfirm = () => {
             OS.File.remove(fullName);
         }
+        dialog.show();
     }
 
 
@@ -117,35 +119,44 @@ export class FileContextMenu extends qx.ui.menu.Menu {
     private newFile() {
         var basedir = this.getBaseDir();
  
-        var name = prompt("Enter new file name in directory " + basedir);
-        if (name == null) return;
-        var fullName = OS.File.join(basedir, name);
-        OS.File.writeTextFile(fullName, "");
+        var dialog = new Gui.PromptDialog("Enter new file name in directory " + basedir);
+        dialog.onSuccess = (name: string) => {
+            var fullName = OS.File.join(basedir, name);
+            OS.File.writeTextFile(fullName, "");
+        };
+        dialog.show();
     }
 
     private newFolder() {
         var basedir = this.getBaseDir();
 
-        var name = prompt("Enter new folder name in directory " + basedir);
-        if (name == null) return;
-        var fullName = OS.File.join(basedir, name);
-        OS.File.mkdirRecursiveSync(fullName);
+        var dialog = new Gui.PromptDialog("Enter new folder name in directory " + basedir);
+        dialog.onSuccess = (name: string) => {
+            var fullName = OS.File.join(basedir, name);
+            OS.File.mkdirRecursiveSync(fullName);
+        };
+        dialog.show();
     }
     
     private rename() {
         var fullName = this.getFullPath();
         var dirname = OS.File.PATH.dirname(fullName);
         var basename = OS.File.PATH.basename(fullName);
-        var name = prompt("Enter new name", basename);
-        if (name == null) return;
-        var c = confirm("Going to rename " + basename + " to " + name);
-        if (c) {        
-            try {
-                OS.File.rename(fullName, OS.File.join(dirname, name));
-            } catch (err) {
-                alert(err);
-            }
+
+        var dialog = new Gui.PromptDialog("Enter new name", basename);
+        dialog.onSuccess = (name: string) => {
+            var message = "Going to rename " + basename + " to " + name;
+            var confirmDialog = new Gui.ConfirmDialog(message);
+            confirmDialog.onConfirm = () => {
+                try {
+                    OS.File.rename(fullName, OS.File.join(dirname, name));
+                } catch (err) {
+                    alert(err);
+                }
+            };
+            confirmDialog.show();
         }
+        dialog.show();
     }
 
     

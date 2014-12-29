@@ -193,12 +193,16 @@ module Cats {
             pages = IDE.editorTabView.getPagesForFile(fileName);
             if (!pages.length) {
                 editor = this.CreateEditor(fileName);
-                if (!editor) {
-                    var c = confirm("No suitable editor found for this file type, open with source editor?");
-                    if (!c) return;
-                    editor = new Gui.Editor.SourceEditor(fileName);
+                if (editor) {
+                    IDE.editorTabView.addEditor(editor, pos);
+                } else {
+                    var dialog = new Gui.ConfirmDialog("No suitable editor found for this file type, open with source editor?");
+                    dialog.onConfirm = () => {
+                      var editor = new Gui.Editor.SourceEditor(fileName);
+                      IDE.editorTabView.addEditor(editor, pos);
+                    };
+                    dialog.show();
                 }
-                IDE.editorTabView.addEditor(editor, pos);
             } else {
                 editor = <FileEditor>pages[0].editor;
                 IDE.editorTabView.setSelection([pages[0]]);
