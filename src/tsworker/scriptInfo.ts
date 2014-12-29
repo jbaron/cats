@@ -62,6 +62,7 @@ export class ScriptInfo {
             this.version++;
         }
 
+        /*
         public editContent(minChar: number, limChar: number, newText: string): void {
             // Apply edits
             var prefix = this.content.substring(0, minChar);
@@ -91,6 +92,8 @@ export class ScriptInfo {
             var entries = this.editRanges.slice(initialEditRangeIndex);
             return ts.TextChangeRange.collapseChangesAcrossMultipleVersions(entries.map(e => e.textChangeRange));
         }
+        */
+        
         
         /**
          * Convert a TS offset position to a Cats Position
@@ -117,25 +120,28 @@ export class ScriptInfo {
          * user with contexts of what is found
          */
         getLine(span:ts.TextSpan) {
-            var min = this.content.substring(0, span.start()).lastIndexOf("\n");
-            var max = this.content.substring(span.end()).indexOf("\n");
-            return this.content.substring(min + 1, span.end() + max);
+            var end = spanEnd(span);
+            var min = this.content.substring(0, span.start).lastIndexOf("\n");
+            var max = this.content.substring(end).indexOf("\n");
+            if ((span.start - min) > 100) min = span.start - 100;
+            if (max > 100) max = 100;
+            return this.content.substring(min + 1, end + max);
         }
         
         /**
          * Get an CATS Range from TS minChars and limChars
          */ 
-        getRange(minChar: number, limChar: number): Cats.Range {
+        getRange(minChar: number, len: number): Cats.Range {
             var result = {
                 start: this.positionToLineCol(minChar),
-                end: this.positionToLineCol(limChar)
+                end: this.positionToLineCol(minChar+len)
             };
             return result;
         }
         
         
         getRangeFromSpan(textSpan: ts.TextSpan) {
-            return this.getRange(textSpan.start(), textSpan.end());
+            return this.getRange(textSpan.start, textSpan.length);
         }
         
         /**

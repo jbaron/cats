@@ -94,7 +94,7 @@ module Cats {
             this.perform("getObjectModel", cb);
         }
 
-        setSettings(compilerSettings:ts.CompilationSettings, editorSettings:ts.FormatCodeOptions) {
+        setSettings(compilerSettings:ts.CompilerOptions, editorSettings:ts.FormatCodeOptions) {
             this.perform("setSettings", compilerSettings, editorSettings, null);
         }
 

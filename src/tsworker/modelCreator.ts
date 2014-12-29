@@ -60,7 +60,7 @@ module Cats.TSWorker {
                 // console.log(this.interest(node.kind) + ":" + node.name + ":" + fullName) ;
             }
 
-            if (node.kind === ts.SyntaxKind.Method) {
+            if (node.kind === ts.SyntaxKind.MethodDeclaration) {
                 if (this.last) this.last.operations.push(node.name["text"]);
                 return;
             }
@@ -70,7 +70,7 @@ module Cats.TSWorker {
                 return;
             }
 
-            if (node.kind === ts.SyntaxKind.Property) {
+            if (node.kind === ts.SyntaxKind.PropertyDeclaration) {
                 if (this.last) {
                     var attr: Attribute = {
                         name: node.name["text"],
@@ -122,11 +122,11 @@ module Cats.TSWorker {
                     return "container";
                 case ts.SyntaxKind.InterfaceDeclaration:
                     return "interface";
-                case ts.SyntaxKind.Method:
+                case ts.SyntaxKind.MethodDeclaration:
                     return "method";
                 case ts.SyntaxKind.EnumDeclaration:
                     return "enum";
-                case ts.SyntaxKind.Property:
+                case ts.SyntaxKind.PropertyDeclaration:
                     return "prop"
                 case ts.SyntaxKind.Constructor:
                     return "constructor";

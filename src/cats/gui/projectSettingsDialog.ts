@@ -91,9 +91,9 @@ module Cats.Gui {
     class ProjectCompilerSettings extends ConfigDialogPage {
 
         private moduleGenTarget = [
-            { label: "none", model: ts.ModuleGenTarget.Unspecified },
-            { label: "commonjs", model: ts.ModuleGenTarget.Synchronous },
-            { label: "amd", model: ts.ModuleGenTarget.Asynchronous }
+            { label: "none", model: ts.ModuleKind.None },
+            { label: "commonjs", model: ts.ModuleKind.CommonJS },
+            { label: "amd", model: ts.ModuleKind.AMD }
         ];
 
         private jsTarget = [

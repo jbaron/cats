@@ -39,6 +39,11 @@ module Cats.TSWorker {
         return 0;
     }
 
+
+    export function spanEnd(span:ts.TextSpan) {
+        return span.start + span.length;
+    }
+
     class ISense {
 
         private maxErrors = 100;
@@ -167,7 +172,7 @@ module Cats.TSWorker {
             return errors.map((error) => {
                 var script = this.lsHost.getScript(error.file.filename);  
                 return {
-                    range: script.getRange(error.start, error.start + error.length),
+                    range: script.getRange(error.start, error.length),
                     severity: severity,
                     message: error.messageText,
                     fileName: error.file.filename
@@ -222,7 +227,7 @@ module Cats.TSWorker {
             var script = this.lsHost.getScript(fileName);
             return todos.map((todo) => {
                 var entry:FileRange = {
-                    range: script.getRange(todo.position, todo.position + todo.descriptor.text.length),
+                    range: script.getRange(todo.position, todo.descriptor.text.length),
                     fileName: fileName,
                     message: todo.message
                 };
@@ -334,7 +339,7 @@ module Cats.TSWorker {
     
                 var entry:OutlineModelEntry = {
                     label: item.text + extension,
-                    pos: script.positionToLineCol(item.spans[0].start()),
+                    pos: script.positionToLineCol(item.spans[0].start),
                     kind: item.kind,
                     kids: null
                 };
@@ -365,7 +370,7 @@ module Cats.TSWorker {
             }
 
             var temp = mapEdits(edits).sort(function(a, b) {
-                var result = a.edit.span.start() - b.edit.span.start();
+                var result = a.edit.span.start - b.edit.span.start;
                 if (result === 0)
                     result = a.index - b.index;
                 return result;
@@ -383,7 +388,7 @@ module Cats.TSWorker {
                     continue;
                 }
                 var nextEdit = temp[next].edit;
-                var gap = nextEdit.span.start() - currentEdit.span.end();
+                var gap = nextEdit.span.start - spanEnd(currentEdit.span);
 
                 // non-overlapping edits
                 if (gap >= 0) {
@@ -395,7 +400,7 @@ module Cats.TSWorker {
 
                 // overlapping edits: for now, we only support ignoring an next edit 
                 // entirely contained in the current edit.
-                if (currentEdit.span.end() >= nextEdit.span.end()) {
+                if (spanEnd(currentEdit.span) >= spanEnd(nextEdit.span)) {
                     next++;
                     continue;
                 }
@@ -419,9 +424,9 @@ module Cats.TSWorker {
 
             for (var i = edits.length - 1; i >= 0; i--) {
                 var edit = edits[i];
-                var prefix = result.substring(0, edit.span.start());
+                var prefix = result.substring(0, edit.span.start);
                 var middle = edit.newText;
-                var suffix = result.substring(edit.span.end());
+                var suffix = result.substring(edit.span.start + edit.span.length);
                 result = prefix + middle + suffix;
             }
             return result;
@@ -575,7 +580,7 @@ module Cats.TSWorker {
             var type = script.determineMemeberMode(pos);
 
             // Lets find out what autocompletion there is possible		
-            var completions = this.ls.getCompletionsAtPosition(fileName, type.pos, type.memberMode) || <ts.CompletionInfo>{};
+            var completions = this.ls.getCompletionsAtPosition(fileName, type.pos) || <ts.CompletionInfo>{};
             if (!completions.entries) return []; // @Bug in TS
             completions.entries.sort(caseInsensitiveSort); // Sort case insensitive
             return completions.entries;

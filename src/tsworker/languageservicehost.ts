@@ -68,6 +68,13 @@ module Cats.TSWorker {
 
        public log(s: string): void {
        }
+       
+       public trace(s: string): void {
+       }
+       
+       public error(s: string): void {
+       }
+       
     
          public getCompilationSettings(): ts.CompilerOptions {
             return this.compilationSettings; 
@@ -99,6 +106,7 @@ module Cats.TSWorker {
             } 
         }
 
+        /*
         public editScript(fileName: string, minChar: number, limChar: number, newText: string) {
              var script =  this.scripts[fileName];
             if (script) {
@@ -107,6 +115,7 @@ module Cats.TSWorker {
                 throw new Error("No script with name '" + fileName + "'");
             }
         }
+        */
 
         public setCompilationSettings(compilerOptions: ts.CompilerOptions={}) {
              var options = ts.getDefaultCompilerOptions();
