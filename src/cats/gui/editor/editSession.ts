@@ -126,19 +126,21 @@ module Cats.Gui.Editor {
             var content = this.getValue();
             if (filePath == null) {
                 var dir = OS.File.join(IDE.project.projectDir, "/");
-                filePath = prompt("Please enter the file name", dir);
-                if (! filePath) return;
-                filePath = OS.File.switchToForwardSlashes(filePath);
-                this.editor.setFilePath(filePath);
-                
-                this.mode = this.calculateMode();
-                this.setMode(this.mode); 
-                
-                if ( this.isTypeScript() && (!IDE.project.hasScriptFile(filePath)) ) {
-                    var isProjectFile = confirm( "Not yet part of project, add it now?" );
-                    if (isProjectFile) IDE.project.addScript(filePath, content );
-                }
-                
+                var dialog = new Gui.PromptDialog("Please enter the file name", dir);
+
+                dialog.onSuccess = (filePath: string) => {
+                    filePath = OS.File.switchToForwardSlashes(filePath);
+                    this.editor.setFilePath(filePath);
+                    
+                    this.mode = this.calculateMode();
+                    this.setMode(this.mode); 
+                    
+                    if ( this.isTypeScript() && (!IDE.project.hasScriptFile(filePath)) ) {
+                        var isProjectFile = confirm( "Not yet part of project, add it now?" );
+                        if (isProjectFile) IDE.project.addScript(filePath, content );
+                    }
+                };
+                dialog.show();
             }
 
             OS.File.writeTextFile(filePath, content);

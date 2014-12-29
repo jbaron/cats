@@ -76,8 +76,8 @@ module Cats.Gui.Editor {
 
 
         private bookmark() {
-            var name = prompt("please provide bookmark name");
-            if (name) {
+            var dialog = new Gui.PromptDialog("Please provide bookmark name");
+            dialog.onSuccess = (name: string) => {
                 var pos = this.getPos();
                 IDE.bookmarks.addData({
                     message: name,
@@ -87,7 +87,8 @@ module Cats.Gui.Editor {
                         end: pos
                     }
                 });
-            }
+            };
+            dialog.show();
         }
 
         private refactor() {

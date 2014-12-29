@@ -67,11 +67,12 @@ module Cats.Commands {
      function saveAs() {
         var editor = <Gui.Editor.SourceEditor>IDE.editorTabView.getActiveEditor(Gui.Editor.SourceEditor);
         if (editor) {
-            var newName = prompt("Enter new name", editor.filePath);
-            if (newName) {
+            var dialog = new Gui.PromptDialog("Enter new name", editor.filePath);
+            dialog.onSuccess = () => {
                 editor.filePath = newName;
                 editor.save();
-            }
+            };
+            dialog.show();
         }
     }
 
