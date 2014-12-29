@@ -1,4 +1,7 @@
 {
     "Cmd-W" : "file_close",
-    "Cmd-Shift-W" : "file_closeAll"
+    "Cmd-Shift-W" : "file_closeAll",
+    "Cmd-B": "project_build",
+    "Cmd-F11": "project_run",
+    "Cmd-R": "project_run"
 }
