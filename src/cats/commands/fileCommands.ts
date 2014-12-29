@@ -68,7 +68,7 @@ module Cats.Commands {
         var editor = <Gui.Editor.SourceEditor>IDE.editorTabView.getActiveEditor(Gui.Editor.SourceEditor);
         if (editor) {
             var dialog = new Gui.PromptDialog("Enter new name", editor.filePath);
-            dialog.onSuccess = () => {
+            dialog.onSuccess = (newName: string) => {
                 editor.filePath = newName;
                 editor.save();
             };
