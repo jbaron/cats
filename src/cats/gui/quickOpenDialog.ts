@@ -13,6 +13,7 @@
 //
 
 module Cats.Gui {
+    var fuzzy: any;
     
     /**
      * Quickly open any typescript file in a project.
@@ -23,6 +24,7 @@ module Cats.Gui {
         constructor(public project: Project) {
             super("Quick Open");
 
+            if (!fuzzy) fuzzy = require("fuzzy");
             this.collectFiles();
 
             var layout = new qx.ui.layout.VBox();
@@ -72,13 +74,34 @@ module Cats.Gui {
             }
             form.add(filelist, "");
 
+            valuefield.addListener("input", () => {
+                var query = valuefield.getValue();
+                var opts = {
+                    pre  : '<strong>',
+                    post : '</strong>'
+                };
+                var results = fuzzy.filter(query, this.files, opts);
+                filelist.removeAll();
+                for (var i = 0; i < results.length; i++) {
+                    var result = results[i];
+                    var item = new qx.ui.form.ListItem(result.string);
+                    item.setRich(true);
+                    filelist.add(item);
+                    if (i === 0) {
+                        filelist.addToSelection(item);
+                    }
+                }
+            });
+
             // Success command
             var successCommand = new qx.ui.core.Command("Enter");
             successCommand.addListener("execute", () => {
                 var results = filelist.getSelection();
                 if (results.length > 0) {
                     var result = <qx.ui.basic.Atom>results[0];
-                    var filePath = OS.File.join(this.project.projectDir, result.getLabel());
+                    var label = result.getLabel();
+                    var relativePath = label.replace(/<\/?strong>/g, "");
+                    var filePath = OS.File.join(this.project.projectDir, relativePath);
                     FileEditor.OpenEditor(filePath);
                     this.close();
                 };
