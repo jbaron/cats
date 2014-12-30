@@ -28,6 +28,7 @@ module Cats.Gui {
             this.collectFiles();
 
             var layout = new qx.ui.layout.VBox();
+            layout.setSpacing(6);
             this.setLayout(layout);
             this.setModal(true);
             this.setShowMinimize(false);
@@ -48,15 +49,13 @@ module Cats.Gui {
         }
 
         private addControls() {
-            var form = new qx.ui.form.Form();
-
             // Prompt message
-            form.addGroupHeader("Type a few letters to find a project file to open...");
+            // form.addGroupHeader("Type a few letters to find a project file to open...");
 
             // Value text field
             var valuefield = new qx.ui.form.TextField();
-            valuefield.setWidth(400);
-            form.add(valuefield, "");
+            valuefield.setWidth(450);
+            this.add(valuefield);
 
             this.addListener("appear", () => {
                 valuefield.focus();
@@ -64,28 +63,30 @@ module Cats.Gui {
 
             // File list
             var filelist = new qx.ui.form.List();
-            for (var i = 0; i < this.files.length; i++) {
-              var file = this.files[i];
-              var item = new qx.ui.form.ListItem(file);
-              item.setModel(file);
-              filelist.add(item);
-              if (i === 0) {
-                  filelist.addToSelection(item);
-              }
-            }
-            form.add(filelist, "");
+            filelist.setMinHeight(500);
+            this.add(filelist);
 
             valuefield.addListener("input", () => {
                 var query = valuefield.getValue();
                 var opts = {
-                    pre  : '<strong>',
-                    post : '</strong>'
+                    pre  : '{{{',
+                    post : '}}}'
                 };
                 var results = fuzzy.filter(query, this.files, opts);
                 filelist.removeAll();
                 for (var i = 0; i < results.length; i++) {
                     var result = results[i];
-                    var item = new qx.ui.form.ListItem(result.string);
+
+                    function format(str) {
+                        return str.replace(/{{{/g, "<strong>").replace(/}}}/g, "</strong>");
+                    }
+                    var cutIndex = result.string.lastIndexOf('/');
+                    var long  = result.string;
+                    var short = result.string.slice(cutIndex + 1);
+                    var pretty = "<span style='font-size: 120%; display: block;'>" + format(short) +
+                                 "</span><span style='opacity: 0.7;'>" + format(long) + "</span>";
+
+                    var item = new qx.ui.form.ListItem(pretty);
                     item.setRich(true);
                     item.setModel(result.original);
                     filelist.add(item);
@@ -119,19 +120,6 @@ module Cats.Gui {
                 successCommand.setEnabled(false);
                 cancelCommand.setEnabled(false);
             });
-
-            // Ok button
-            var okbutton = new qx.ui.form.Button("Ok");
-            form.addButton(okbutton);
-            okbutton.setCommand(successCommand);
-
-            // Cancel button
-            var cancelbutton = new qx.ui.form.Button("Cancel");
-            cancelbutton.setCommand(cancelCommand);
-            form.addButton(cancelbutton);
-
-            var renderer = new qx.ui.form.renderer.Single(form);
-            this.add(renderer);
         }
 
     }
