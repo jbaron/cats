@@ -67,6 +67,7 @@ module Cats.Gui {
             for (var i = 0; i < this.files.length; i++) {
               var file = this.files[i];
               var item = new qx.ui.form.ListItem(file);
+              item.setModel(file);
               filelist.add(item);
               if (i === 0) {
                   filelist.addToSelection(item);
@@ -86,6 +87,7 @@ module Cats.Gui {
                     var result = results[i];
                     var item = new qx.ui.form.ListItem(result.string);
                     item.setRich(true);
+                    item.setModel(result.original);
                     filelist.add(item);
                     if (i === 0) {
                         filelist.addToSelection(item);
@@ -98,9 +100,8 @@ module Cats.Gui {
             successCommand.addListener("execute", () => {
                 var results = filelist.getSelection();
                 if (results.length > 0) {
-                    var result = <qx.ui.basic.Atom>results[0];
-                    var label = result.getLabel();
-                    var relativePath = label.replace(/<\/?strong>/g, "");
+                    var result = <qx.ui.form.ListItem>results[0];
+                    var relativePath = result.getModel();
                     var filePath = OS.File.join(this.project.projectDir, relativePath);
                     FileEditor.OpenEditor(filePath);
                     this.close();
