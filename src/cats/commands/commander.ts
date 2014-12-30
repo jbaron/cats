@@ -32,6 +32,8 @@ module Cats.Commands {
         file_save: <Command>null,
         file_saveAs: <Command>null,
         file_saveAll: <Command>null,
+        file_previous: <Command>null,
+        file_next: <Command>null,
         
         edit_undo: <Command>null,
         edit_redo: <Command>null,
@@ -67,6 +69,7 @@ module Cats.Commands {
         project_debug: <Command>null,
         project_refresh: <Command>null,
         project_properties: <Command>null,
+        project_quickOpen: <Command>null,
         project_classDiagram: <Command>null,
         project_configure: <Command>null,
         project_document: <Command>null,

@@ -84,6 +84,38 @@ module Cats.Commands {
         if (editor) editor.save();
     }
 
+    /**
+     * Cycle the active editor by shifting by `delta`
+     * (usually -1 or 1).
+     * Internal: do not use directly.
+     */
+    function cycleActiveEditor(delta: number) {
+        var page = IDE.editorTabView.getActivePage();
+        if (!page) return;
+        var pages = <Array<Cats.Gui.EditorPage>>IDE.editorTabView.getChildren();
+        var index = pages.indexOf(page);
+
+        if (index > -1) {
+            var newIndex = (index + pages.length + delta) % pages.length;
+            var newPage = pages[newIndex];
+            IDE.editorTabView.setSelection([newPage]);
+        }
+    }
+
+    /**
+     * Switch to the previous tab (cycle if necessary)
+     */
+    function previous() {
+        cycleActiveEditor(-1);
+    }
+
+    /**
+     * Switch to the next tab (cycle if necessary)
+     */
+    function next() {
+        cycleActiveEditor(1);
+    }
+
     export class FileCommands {
         static init(registry: (cmd: Command, fn:Function) => void ) {
             registry(CMDS.file_new, newFile);
@@ -93,6 +125,8 @@ module Cats.Commands {
             registry(CMDS.file_save, saveFile);
             registry(CMDS.file_saveAll, saveAll);
             registry(CMDS.file_saveAs, saveAs);
+            registry(CMDS.file_previous, previous);
+            registry(CMDS.file_next, next);
         }
 
     }

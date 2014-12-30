@@ -47,6 +47,15 @@ module Cats.Commands {
        if (IDE.project) IDE.editorTabView.addEditor(new Gui.Editor.UMLEditor("Class Diagram"));
     }
 
+    /**
+     * Shows a quick open dialog for the project.
+     */
+    function quickOpen() {
+      if (IDE.project) {
+        var dialog = new Gui.QuickOpenDialog(IDE.project);
+        dialog.show();
+      }
+    }
  
     /**
      * Compile all the sources without actually saving them
@@ -126,9 +135,10 @@ module Cats.Commands {
             registry(CMDS.project_refresh, refreshProject);
             registry(CMDS.project_run, runProject);
             // registry(CMDS.project_debug, label: "Debug Project",null, icon: "debug.png" });
+            registry(CMDS.project_quickOpen, quickOpen);
             registry(CMDS.project_classDiagram, showDiagram);
             registry(CMDS.project_configure, configureProject);
-             registry(CMDS.project_document, documentProject);
+            registry(CMDS.project_document, documentProject);
         }
 
     }

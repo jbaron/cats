@@ -27,6 +27,8 @@ module Cats.Gui {
             var layout = new qx.ui.layout.VBox();
             this.setLayout(layout);
             this.setModal(true);
+            this.setShowMinimize(false);
+            this.setShowMaximize(false);
 
             this.addControls(text, value);
             this.addListener("resize", this.center);

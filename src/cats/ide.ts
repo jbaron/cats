@@ -81,19 +81,23 @@ module Cats {
         private loadShortCuts() {
             var fileName = OS.File.join(this.catsHomeDir, "resource/shortcuts.json");
             var c = OS.File.readTextFile(fileName);
-            var shortCuts:{} = JSON.parse(c);
-            for (var s in shortCuts) {
-                var cmd = new qx.ui.core.Command(s);
-                var name = shortCuts[s];
-                cmd.addListener("execute", () => {
-                    Cats.Commands.CMDS[name].command();
-                });
+            var shortCutSets:{} = JSON.parse(c);
+            var os = "linux";
+            if (Cats.OS.File.isWindows()) {
+              os = "win";
+            } else if (Cats.OS.File.isOSX()) {
+              os = "osx";
+            }
+            var shortCuts = shortCutSets[os];
+            for (var shortCut in shortCuts) {
+                var commandName = shortCuts[shortCut];
+                var cmd = new qx.ui.core.Command(shortCut);
+                cmd.addListener("execute", (function(commandName: string) {
+                  Cats.Commands.CMDS[commandName].command();
+                }).bind(null, commandName));
             }
             
         }
-        
-        
-
 
         /**
          * Load the icons map from the file.

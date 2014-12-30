@@ -15,7 +15,7 @@
 module Cats.Gui {
     
     /**
-     * Basic Qooxdoo-powered replacement for native `prompt` usage in
+     * Basic Qooxdoo-powered replacement for native `confirm` usage in
      * CATS.
      */
     export class ConfirmDialog extends qx.ui.window.Window {
@@ -28,6 +28,8 @@ module Cats.Gui {
             var layout = new qx.ui.layout.VBox();
             this.setLayout(layout);
             this.setModal(true);
+            this.setShowMinimize(false);
+            this.setShowMaximize(false);
 
             this.addControls(text);
             this.addListener("resize", this.center);

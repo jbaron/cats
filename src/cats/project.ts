@@ -286,7 +286,7 @@ module Cats {
         }
 
         /**
-         * Get the URl for running the project
+         * Get the URL for running the project
          */
         private getStartURL(): string {
             var url = OS.File.join(this.projectDir, this.config.main);
@@ -300,6 +300,10 @@ module Cats {
         addScript(fullName: string, content: string) {
             this.iSense.addScript(fullName, content);
             if (! this.hasScriptFile(fullName)) this.tsfiles.push(fullName);
+        }
+
+        getScripts(): Array<string> {
+          return this.tsfiles;
         }
 
         /**
