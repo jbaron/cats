@@ -1,7 +1,20 @@
 {
-    "Cmd-W" : "file_close",
-    "Cmd-Shift-W" : "file_closeAll",
-    "Cmd-B": "project_build",
-    "Cmd-F11": "project_run",
-    "Cmd-R": "project_run"
+  "osx": {
+    "Meta-W" : "file_close",
+    "Meta-Shift-W" : "file_closeAll",
+    "Meta-B": "project_build",
+    "Meta-R": "project_run"
+  },
+  "win": {
+    "Ctrl-W" : "file_close",
+    "Ctrl-Shift-W" : "file_closeAll",
+    "Ctrl-B": "project_build",
+    "Ctrl-R": "project_run"
+  },
+  "linux": {
+    "Ctrl-W" : "file_close",
+    "Ctrl-Shift-W" : "file_closeAll",
+    "Ctrl-B": "project_build",
+    "Ctrl-R": "project_run"
+  }
 }

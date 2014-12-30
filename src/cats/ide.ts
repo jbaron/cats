@@ -81,30 +81,23 @@ module Cats {
         private loadShortCuts() {
             var fileName = OS.File.join(this.catsHomeDir, "resource/shortcuts.json");
             var c = OS.File.readTextFile(fileName);
-            var shortCuts:{} = JSON.parse(c);
+            var shortCutSets:{} = JSON.parse(c);
+            var os = "linux";
+            if (Cats.OS.File.isWindows()) {
+              os = "win";
+            } else if (Cats.OS.File.isOSX()) {
+              os = "osx";
+            }
+            var shortCuts = shortCutSets[os];
             for (var shortCut in shortCuts) {
-                var catsCommand = shortCuts[shortCut];
-                this.addShortCut(shortCut, catsCommand);
+                var commandName = shortCuts[shortCut];
+                var cmd = new qx.ui.core.Command(shortCut);
+                cmd.addListener("execute", (function(commandName: string) {
+                  Cats.Commands.CMDS[commandName].command();
+                }).bind(null, commandName));
             }
             
         }
-       
-        private addShortCut(shortCut: string, catsCommand: string) {
-            if (/^Cmd-/.test(shortCut)) {
-                if (process.platform === "darwin") {
-                    shortCut = shortCut.replace(/^Cmd-/, "Meta-");
-                } else {
-                    shortCut = shortCut.replace(/^Cmd-/, "Ctrl-");
-                }
-            }
-
-            var cmd = new qx.ui.core.Command(shortCut);
-            cmd.addListener("execute", () => {
-                Cats.Commands.CMDS[catsCommand].command();
-            });
-        }
-        
-
 
         /**
          * Load the icons map from the file.
