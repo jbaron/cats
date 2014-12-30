@@ -139,6 +139,9 @@ module Cats.Gui {
                     this.close();
                 };
             });
+            filelist.addListener("dblclick", () => {
+                successCommand.execute(null);
+            });
 
             // Cancel command
             var cancelCommand = new qx.ui.core.Command("Escape");
