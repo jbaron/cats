@@ -14,6 +14,26 @@
 
 module Cats.Gui {
     var fuzzy: any;
+
+    function throttle(fn, threshhold = 250, context = null) {
+        var last,
+            deferTimer;
+        return function () {
+            var now = +new Date,
+                args = arguments;
+            if (last && now < last + threshhold) {
+                // hold on to it
+                clearTimeout(deferTimer);
+                deferTimer = setTimeout(function () {
+                    last = now;
+                    fn.apply(context, args);
+                }, threshhold);
+            } else {
+                last = now;
+                fn.apply(context, args);
+            }
+        };
+    }
     
     /**
      * Quickly open any typescript file in a project.
@@ -66,7 +86,7 @@ module Cats.Gui {
             filelist.setMinHeight(500);
             this.add(filelist);
 
-            valuefield.addListener("input", () => {
+            var doFilter = () => {
                 var query = valuefield.getValue();
                 var opts = {
                     pre  : '{{{',
@@ -94,7 +114,8 @@ module Cats.Gui {
                         filelist.addToSelection(item);
                     }
                 }
-            });
+            };
+            valuefield.addListener("input", throttle(doFilter, 100));
 
             valuefield.addListener("keypress", (ev) => {
                 var id = ev.getKeyIdentifier();
