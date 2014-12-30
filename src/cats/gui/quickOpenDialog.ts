@@ -15,14 +15,15 @@
 module Cats.Gui {
     
     /**
-     * Basic Qooxdoo-powered replacement for native `prompt` usage in
-     * CATS.
+     * Quickly open any typescript file in a project.
      */
-    export class PromptDialog extends qx.ui.window.Window {
-        onSuccess: (value: string) => void;
+    export class QuickOpenDialog extends qx.ui.window.Window {
+        files: Array<string> = [];
 
-        constructor(text: string, value = "") {
-            super(name);
+        constructor(public project: Project) {
+            super("Quick Open");
+
+            this.collectFiles();
 
             var layout = new qx.ui.layout.VBox();
             this.setLayout(layout);
@@ -30,19 +31,28 @@ module Cats.Gui {
             this.setShowMinimize(false);
             this.setShowMaximize(false);
 
-            this.addControls(text, value);
+            this.addControls();
             this.addListener("resize", this.center);
         }
 
-        private addControls(text: string, value: string) {
+        collectFiles() {
+            var projectDir = this.project.projectDir;
+            this.project.getScripts().forEach((absolutePath) => {
+                if (absolutePath.lastIndexOf(projectDir, 0) === 0) {
+                    var relativePath = absolutePath.slice(projectDir.length + 1);
+                    this.files.push(relativePath);
+                }
+            });
+        }
+
+        private addControls() {
             var form = new qx.ui.form.Form();
 
             // Prompt message
-            form.addGroupHeader(text);
+            form.addGroupHeader("Type a few letters to find a project file to open...");
 
             // Value text field
             var valuefield = new qx.ui.form.TextField();
-            valuefield.setValue(value);
             valuefield.setWidth(400);
             form.add(valuefield, "");
 
@@ -50,13 +60,26 @@ module Cats.Gui {
                 valuefield.focus();
             });
 
+            // File list
+            var filelist = new qx.ui.form.List();
+            for (var i = 0; i < this.files.length; i++) {
+              var file = this.files[i];
+              var item = new qx.ui.form.ListItem(file);
+              filelist.add(item);
+              if (i === 0) {
+                  filelist.addToSelection(item);
+              }
+            }
+            form.add(filelist, "");
+
             // Success command
             var successCommand = new qx.ui.core.Command("Enter");
             successCommand.addListener("execute", () => {
-                if (form.validate()) {
-                    if (this.onSuccess) {
-                      this.onSuccess(valuefield.getValue());
-                    }
+                var results = filelist.getSelection();
+                if (results.length > 0) {
+                    var result = <qx.ui.basic.Atom>results[0];
+                    var filePath = OS.File.join(this.project.projectDir, result.getLabel());
+                    FileEditor.OpenEditor(filePath);
                     this.close();
                 };
             });
@@ -90,3 +113,4 @@ module Cats.Gui {
     }
 
 }
+
