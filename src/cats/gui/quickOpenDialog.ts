@@ -96,6 +96,16 @@ module Cats.Gui {
                 }
             });
 
+            valuefield.addListener("keypress", (ev) => {
+                var id = ev.getKeyIdentifier();
+                switch (id) {
+                    case "Down":
+                    case "Up":
+                        filelist.handleKeyPress(ev);
+                        break;
+                }
+            });
+
             // Success command
             var successCommand = new qx.ui.core.Command("Enter");
             successCommand.addListener("execute", () => {
