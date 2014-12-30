@@ -32,6 +32,8 @@ module Cats.Commands {
         file_save: <Command>null,
         file_saveAs: <Command>null,
         file_saveAll: <Command>null,
+        file_previous: <Command>null,
+        file_next: <Command>null,
         
         edit_undo: <Command>null,
         edit_redo: <Command>null,
