@@ -279,7 +279,7 @@ module Cats.TSWorker {
                     });
 
                     // No need to request other files if there is only one output file
-                    if (this.lsHost.getCompilationSettings().out) {
+                    if (result.length > 0 && this.lsHost.getCompilationSettings().out) {
                         break;
                     }
                 } catch (err) {/*ignore */}
