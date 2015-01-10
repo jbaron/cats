@@ -113,7 +113,9 @@ module Cats.TSWorker {
         }
 
 
-
+        /**
+         * What type of node are we interested in
+         */ 
         private interest(kind: ts.SyntaxKind) {
             switch (kind) {
                 case ts.SyntaxKind.ClassDeclaration:
@@ -153,9 +155,8 @@ module Cats.TSWorker {
                 this.model[fullName] = entry;
                 // var typeSymbol = node.symbol.getDeclarations();
 
-                if (node.kind === ts.SyntaxKind.ClassDeclaration) {
-                    var cd = <ts.ClassDeclaration>node;
-                    
+                // if (node instanceof ts.ClassDeclaration) {
+                   
                     /*
                     @TODO
                     if (cd.baseType) entry.extends.push(this.getName(cd.baseType));
@@ -164,18 +165,18 @@ module Cats.TSWorker {
                         entry.implements.push(this.getName(implType));
                     });
                     */
-                }
+                // }
                 
                 
-                if (node.kind === ts.SyntaxKind.InterfaceDeclaration) {
-                    var id = <ts.InterfaceDeclaration>node;
+                // if (node instanceof ts.InterfaceDeclaration) {
+                   
                     /*
                     @TODO
                     if (id.baseTypes) id.baseTypes.forEach((type) => {
                         entry.implements.push(this.getName(type));
                     });
                     */
-                }
+                // }
                 
             }
             return this.model[fullName];

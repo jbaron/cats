@@ -9,6 +9,7 @@
     }
   ],
   "main": "index.html",
+  "chromium-args" : "--enable-touch-events --enable-viewport --enable-pinch",
   "js-flags": "--harmony_scoping",
   "scripts": {
     "start": "nodewebkit",

@@ -95,6 +95,7 @@ module Cats.Gui {
                 this.container.scrollTop = this.container.scrollHeight;
             }
         }
+        
         /**
          * Log a message to the console widget. This should only be used for 
          * logging mesages that are useful to the enduser (= developer) and not for
@@ -112,7 +113,6 @@ module Cats.Gui {
         error(msg: string) {
             this.print(msg, 2);
         }
-
 
         private createContextMenu() {
             var menu = new qx.ui.menu.Menu();

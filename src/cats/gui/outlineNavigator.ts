@@ -76,7 +76,10 @@ module Cats.Gui {
             return item;
         }
 
-
+        /**
+         * Clear the content of the outline navigator
+         * 
+         */ 
         clear() {
             this.setModel(null);
         }

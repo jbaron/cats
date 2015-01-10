@@ -33,7 +33,6 @@ module Cats.Gui {
         }
 
 
-
         run(fileName: string, project: Project, pos: Position) {
             project.iSense.getRenameInfo(fileName, pos, (err, data) => {
                 if (!data) return;
@@ -51,7 +50,6 @@ module Cats.Gui {
                 dialog.show();
             });
         }
-
 
 
         private addTextField(label: string, model: string) {

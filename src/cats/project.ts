@@ -15,9 +15,9 @@
 // 
 
 module Cats {
-    
+
     var GUI = require('nw.gui');
-    var typedoc:any;
+    var typedoc: any;
     
     /**
      * The project hold the informaiton related to a single project. This include 
@@ -29,16 +29,16 @@ module Cats {
         projectDir: string;
         name: string;
 
-       private tsfiles:Array<string> = [];
+        private tsfiles: Array<string> = [];
 
         // The singleton TSWorker handler instance
         iSense: TSWorkerProxy;
 
         private settings: ProjectSettings;
 
-        linter:Linter;
-        
-        private refreshInterval:number;
+        linter: Linter;
+
+        private refreshInterval: number;
 
         /**    
          * Create a new project.
@@ -52,30 +52,30 @@ module Cats {
             if (this.config.tslint.useLint) this.linter = new Linter(this);
             
             // @TODO optimize only refresh in case of changes
-            this.refreshInterval = setInterval(()=> {this.refreshTodoList()}, 30000);
+            this.refreshInterval = setInterval(() => { this.refreshTodoList() }, 30000);
         }
 
         /**
          * Get the project settings
-         */ 
+         */
         get config() {
             return this.settings.value;
         }
 
         /**
          * Save the project configuration
-         */     
-        updateConfig(config:ProjectConfiguration) {
+         */
+        updateConfig(config: ProjectConfiguration) {
             this.settings.value = config;
             this.emit("config", config);
             if (this.config.tslint.useLint) this.linter = new Linter(this);
             this.settings.store();
             this.iSense.setSettings(this.config.compiler, this.config.codeFormat);
         }
-        
+
         refreshTodoList() {
-            this.iSense.getTodoItems((err,data) => {
-                        IDE.todoList.setData(data);
+            this.iSense.getTodoItems((err, data) => {
+                IDE.todoList.setData(data);
             });
         }
     
@@ -113,7 +113,7 @@ module Cats {
         /**
          * Show the errors on a project level
          */
-        validate(verbose= true) {
+        validate(verbose = true) {
             this.iSense.getAllDiagnostics((err, data) => {
                 if (data) {
                     IDE.problemResult.setData(data);
@@ -121,7 +121,7 @@ module Cats {
                         if (verbose) {
                             IDE.console.log("Project has no errors");
                         }
-                    } 
+                    }
                 }
 
             });
@@ -137,7 +137,7 @@ module Cats {
             if (this.config.customBuild && this.config.customBuild.command) {
                 // IDE.resultbar.selectOption(2);
                 var cmd = this.config.customBuild.command;
-                var options = this.config.customBuild.options || {cwd:null};
+                var options = this.config.customBuild.options || { cwd: null };
 
                 if (!options.cwd) {
                     options.cwd = this.projectDir;
@@ -188,7 +188,7 @@ module Cats {
                     if (this.config.documentation.readme && (this.config.documentation.readme !== "none")) {
                         readme = OS.File.join(this.projectDir, this.config.documentation.readme);
                     }
-                   
+
                     settings.readme = readme;
                     settings.includeDeclarations = this.config.documentation.includeDeclarations || false;
                     settings.verbose = false;
@@ -228,7 +228,7 @@ module Cats {
             srcs.forEach((src: string) => {
                 this.loadTypeScriptFiles(src);
             });
-            
+
             this.refreshTodoList();
 
         }
@@ -260,7 +260,7 @@ module Cats {
             if (this.config.customRun && this.config.customRun.command) {
 
                 var cmd = this.config.customRun.command;
-                var options = this.config.customRun.options || {cwd:null};
+                var options = this.config.customRun.options || { cwd: null };
                 if (!options.cwd) {
                     options.cwd = this.projectDir;
                 }
@@ -293,17 +293,17 @@ module Cats {
             return "file://" + url;
         }
 
-        hasScriptFile(fileName:string) {
+        hasScriptFile(fileName: string) {
             return this.tsfiles.indexOf(fileName) > -1;
         }
-        
+
         addScript(fullName: string, content: string) {
             this.iSense.addScript(fullName, content);
-            if (! this.hasScriptFile(fullName)) this.tsfiles.push(fullName);
+            if (!this.hasScriptFile(fullName)) this.tsfiles.push(fullName);
         }
 
         getScripts(): Array<string> {
-          return this.tsfiles;
+            return this.tsfiles;
         }
 
         /**
