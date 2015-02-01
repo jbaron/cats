@@ -252,8 +252,6 @@ declare module ts {
         LastLiteralToken = 10,
         FirstTemplateToken = 10,
         LastTemplateToken = 13,
-        FirstOperator = 22,
-        LastOperator = 63,
         FirstBinaryOperator = 24,
         LastBinaryOperator = 63,
         FirstNode = 121,
@@ -284,6 +282,11 @@ declare module ts {
         ParserGeneratedFlags = 31,
         ThisNodeOrAnySubNodesHasError = 32,
         HasAggregatedChildData = 64,
+    }
+    const enum RelationComparisonResult {
+        Succeeded = 1,
+        Failed = 2,
+        FailedAndReported = 3,
     }
     interface Node extends TextRange {
         kind: SyntaxKind;
@@ -825,6 +828,7 @@ declare module ts {
         WriteOwnNameForAnyLike = 16,
         WriteTypeArgumentsOfSignature = 32,
         InElementType = 64,
+        UseFullyQualifiedType = 128,
     }
     const enum SymbolFormatFlags {
         None = 0,
@@ -996,11 +1000,15 @@ declare module ts {
         Union = 16384,
         Anonymous = 32768,
         FromSignature = 65536,
-        Unwidened = 131072,
+        ObjectLiteral = 131072,
+        ContainsUndefinedOrNull = 262144,
+        ContainsObjectLiteral = 524288,
         Intrinsic = 127,
+        Primitive = 510,
         StringLike = 258,
         NumberLike = 132,
         ObjectType = 48128,
+        RequiresWidening = 786432,
     }
     interface Type {
         flags: TypeFlags;
@@ -1030,8 +1038,6 @@ declare module ts {
     }
     interface GenericType extends InterfaceType, TypeReference {
         instantiations: Map<TypeReference>;
-        openReferenceTargets: GenericType[];
-        openReferenceChecks: Map<boolean>;
     }
     interface TupleType extends ObjectType {
         elementTypes: Type[];
@@ -1127,6 +1133,7 @@ declare module ts {
         diagnostics?: boolean;
         emitBOM?: boolean;
         help?: boolean;
+        listFiles?: boolean;
         locale?: string;
         mapRoot?: string;
         module?: ModuleKind;
@@ -1140,6 +1147,7 @@ declare module ts {
         out?: string;
         outDir?: string;
         preserveConstEnums?: boolean;
+        project?: string;
         removeComments?: boolean;
         sourceMap?: boolean;
         sourceRoot?: string;
@@ -1172,6 +1180,7 @@ declare module ts {
     interface CommandLineOption {
         name: string;
         type: string | Map<number>;
+        isFilePath?: boolean;
         shortName?: string;
         description?: DiagnosticMessage;
         paramType?: DiagnosticMessage;
@@ -1328,9 +1337,6 @@ declare module ts {
     interface ErrorCallback {
         (message: DiagnosticMessage, length: number): void;
     }
-    interface CommentCallback {
-        (pos: number, end: number): void;
-    }
     interface Scanner {
         getStartPos(): number;
         getToken(): SyntaxKind;
@@ -1375,7 +1381,7 @@ declare module ts {
 declare module ts {
     function getNodeConstructor(kind: SyntaxKind): new () => Node;
     function createNode(kind: SyntaxKind): Node;
-    function forEachChild<T>(node: Node, cbNode: (node: Node) => T, cbNodes?: (nodes: Node[]) => T): T;
+    function forEachChild<T>(node: Node, cbNode: (node: Node) => T, cbNodeArray?: (nodes: Node[]) => T): T;
     function modifierToFlag(token: SyntaxKind): NodeFlags;
     function isEvalOrArgumentsIdentifier(node: Node): boolean;
     function createSourceFile(filename: string, sourceText: string, languageVersion: ScriptTarget, setParentNodes?: boolean): SourceFile;
@@ -1435,6 +1441,7 @@ declare module ts {
         isOpen: boolean;
         version: string;
         scriptSnapshot: IScriptSnapshot;
+        nameTable: Map<string>;
         getNamedDeclarations(): Declaration[];
     }
     /**
@@ -1477,6 +1484,7 @@ declare module ts {
     }
     interface LanguageServiceHost extends Logger {
         getCompilationSettings(): CompilerOptions;
+        getNewLine?(): string;
         getScriptFileNames(): string[];
         getScriptVersion(fileName: string): string;
         getScriptIsOpen(fileName: string): boolean;
