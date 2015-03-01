@@ -60,11 +60,11 @@ module Cats.TSWorker {
             this.lsHost = new LanguageServiceHost();
             this.documentRegistry = ts.createDocumentRegistry();
             this.ls = ts.createLanguageService(this.lsHost, this.documentRegistry);
-            this.formatOptions = this.getDefaultFormatOptions();
+            this.formatOptions = this.getDefaultFormatOptions(); 
         }
 
 
-        private getDefaultFormatOptions() {
+        private getDefaultFormatOptions(): ts.FormatCodeOptions {
             return { 
                 IndentSize: 4,
                 TabSize: 4,
@@ -170,12 +170,12 @@ module Cats.TSWorker {
             if (!(errors && errors.length)) return [];
         
             return errors.map((error) => {
-                var script = this.lsHost.getScript(error.file.filename);  
+                var script = this.lsHost.getScript(error.file.fileName);  
                 return {
                     range: script.getRange(error.start, error.length),
                     severity: severity,
-                    message: error.messageText,
-                    fileName: error.file.filename
+                    message: <string>error.messageText,
+                    fileName: error.file.fileName
                 };
             });
             

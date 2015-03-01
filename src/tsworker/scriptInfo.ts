@@ -99,7 +99,7 @@ export class ScriptInfo {
          * Convert a TS offset position to a Cats Position
          */
         positionToLineCol(position: number): Position {
-            var result = this.getSourceFile().getLineAndCharacterFromPosition(position);
+            var result = this.getSourceFile().getLineAndCharacterOfPosition(position);
             return {
                 row: result.line-1,
                 column: result.character-1
@@ -110,7 +110,7 @@ export class ScriptInfo {
          * Get the chars offset based on the Ace position
          */ 
         getPositionFromCursor(cursor: Position): number {
-            var pos = this.getSourceFile().getPositionFromLineAndCharacter(cursor.row+1, cursor.column+1);
+            var pos = this.getSourceFile().getPositionOfLineAndCharacter(cursor.row+1, cursor.column+1);
             // var pos = this.getLineMap().getPosition(cursor.row, cursor.column);
             return pos;
         }

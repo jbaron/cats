@@ -39,6 +39,10 @@ module Cats.TSWorker {
             return Object.keys(this.scripts);
         }
 
+        getNewLine() {
+            return "\n";
+        }
+
         getScriptIsOpen(fileName: string) {
             // @FIX generates not-implemented yet error in TypeScript if return true;
             return this.getScript(fileName).isOpen(); 
@@ -57,7 +61,7 @@ module Cats.TSWorker {
             return "";
         }
         
-        getDefaultLibFilename() : string {
+        getDefaultLibFileName(options: ts.CompilerOptions) : string {
             return "";
         }
         
