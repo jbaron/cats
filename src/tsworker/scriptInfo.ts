@@ -101,8 +101,8 @@ export class ScriptInfo {
         positionToLineCol(position: number): Position {
             var result = this.getSourceFile().getLineAndCharacterOfPosition(position);
             return {
-                row: result.line-1,
-                column: result.character-1
+                row: result.line,
+                column: result.character
             };
         }
         
@@ -110,7 +110,7 @@ export class ScriptInfo {
          * Get the chars offset based on the Ace position
          */ 
         getPositionFromCursor(cursor: Position): number {
-            var pos = this.getSourceFile().getPositionOfLineAndCharacter(cursor.row+1, cursor.column+1);
+            var pos = this.getSourceFile().getPositionOfLineAndCharacter(cursor.row, cursor.column);
             // var pos = this.getLineMap().getPosition(cursor.row, cursor.column);
             return pos;
         }
