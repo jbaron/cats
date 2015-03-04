@@ -13,7 +13,7 @@
 //
 
 module Cats.Gui {
-    
+ 
     /**
      * Basic Qooxdoo-powered replacement for native `prompt` usage in
      * CATS.

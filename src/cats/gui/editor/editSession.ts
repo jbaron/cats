@@ -80,7 +80,7 @@ module Cats.Gui.Editor {
                     text: error.message
                 });
             });
-            this.setAnnotations(annotations);
+            super.setAnnotations(annotations);
         }
 
 
