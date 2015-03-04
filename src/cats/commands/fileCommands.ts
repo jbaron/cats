@@ -92,7 +92,7 @@ module Cats.Commands {
     function cycleActiveEditor(delta: number) {
         var page = IDE.editorTabView.getActivePage();
         if (!page) return;
-        var pages = <Array<Cats.Gui.EditorPage>>IDE.editorTabView.getChildren();
+        var pages = <Array<Gui.EditorPage>>IDE.editorTabView.getChildren();
         var index = pages.indexOf(page);
 
         if (index > -1) {

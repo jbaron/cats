@@ -146,7 +146,7 @@ module Cats {
                 var child = OS.File.runCommand(cmd, options);
 
             } else {
-                this.iSense.compile((err: Error, data: Cats.CompileResults) => {
+                this.iSense.compile((err: Error, data: CompileResults) => {
                     this.showCompilationResults(data);
                     if (data.errors && (data.errors.length > 0)) return;
                     var sources = data.source;
@@ -237,12 +237,12 @@ module Cats {
          * Compile without actually saving the resulting files
          */
         trialCompile() {
-            this.iSense.compile((err: Error, data: Cats.CompileResults) => {
+            this.iSense.compile((err: Error, data: CompileResults) => {
                 this.showCompilationResults(data);
             });
         }
 
-        private showCompilationResults(data: Cats.CompileResults) {
+        private showCompilationResults(data: CompileResults) {
             if (data.errors && (data.errors.length > 0)) {
                 IDE.problemResult.setData(data.errors);
                 return;

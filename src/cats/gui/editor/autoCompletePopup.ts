@@ -214,7 +214,7 @@ module Cats.Gui.Editor {
          * Show the popup and make sure the keybinding is in place
          * 
          */
-        private showPopup(completions: Cats.CompletionEntry[]) {
+        private showPopup(completions: CompletionEntry[]) {
             if (this.list.isSeeable() || (completions.length === 0)) return;
             var cursor = this.editor.getCursorPosition();
             var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column);

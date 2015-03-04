@@ -12,22 +12,23 @@
   "chromium-args" : "--enable-touch-events --enable-viewport --enable-pinch",
   "js-flags": "--harmony_scoping",
   "scripts": {
-    "start": "nodewebkit",
+    "start": "nw",
     "test" : "jake build"
   },
   "description": "CATS in an integrated development environment for TypeScript developers",
   "keywords": [
     "TypeScript",
     "JBaron",
+    "opensource",
     "editor",
     "IDE",
-    "javascript",
+    "JavaScript",
     "Windows, Linux, OSX"
   ],
   "bugs": {
     "url": "https://github.com/JBaron/cats/issues"
   },
-  "version": "1.3.0-unstable",
+  "version": "1.4.0-unstable",
   "repository": {
     "type": "git",
     "url": "https://github.com/jbaron/cats.git"
@@ -45,7 +46,7 @@
     "typedoc": "^0.1.1",
     "dagre" : "^0.4.6",
     "fuzzy" : "^0.1.0",
-    "nodewebkit" : "latest"
+    "nw" : "latest"
   },
   "devDependencies": {
 	 "jake" : "latest"

@@ -69,10 +69,10 @@ module Cats.Gui.Editor {
         /**
          * Check if there are any errors for this session and show them.    
          */
-        showAnnotations(result: Cats.FileRange[]) {
+        showAnnotations(result: FileRange[]) {
             if (! result) return;
             var annotations: ace.Annotation[] = [];
-            result.forEach((error: Cats.FileRange) => {
+            result.forEach((error: FileRange) => {
                 annotations.push({
                     row: error.range.start.row,
                     column: error.range.start.column,

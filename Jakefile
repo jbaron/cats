@@ -118,7 +118,7 @@ desc("Build the cats.nw distrubution file. Works only on OSX/Linux for now");
 task('dist', {async: true}, function () {
     var getNr = "`git log lib/*.js | grep '^commit ' | wc -l | tr -d ' '`";  
   
-    var cmd = "zip -r ../cats-1.3." + getNr +  ".nw lib/* resource/* node_modules/* CopyrightNotice.txt LICENSE.txt index.html package.json";
+    var cmd = "zip -r ../cats-1.4." + getNr +  ".nw lib/* resource/* node_modules/* CopyrightNotice.txt LICENSE.txt index.html package.json";
     
     jake.exec([cmd], {printStdout: true}, function () {
         console.log('Created cats distribution');
