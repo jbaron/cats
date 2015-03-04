@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 [![Build Status](https://travis-ci.org/jbaron/cats.svg?branch=master)](https://travis-ci.org/jbaron/cats)
-=======
-[![Build Status](https://travis-ci.org/jbaron/cats.svg?branch=unstable)](https://travis-ci.org/jbaron/cats)
->>>>>>> unstable
 
 ## CATS
 
@@ -48,17 +44,10 @@ The easiest way to start using CATS it to follow these simple steps:
   [CATS releases](https://github.com/jbaron/cats/releases/) 
   
   
-<<<<<<< HEAD
-After you installed Nodewebkit, just go to the directory where you downloaded the CATS package and type:
-
-```shell
-nodewebkit cats-x.y.z.nw
-=======
 After you installed NW.js, just go to the directory where you downloaded the CATS package and type:
 
 ```shell
 nw cats-x.y.z.nw
->>>>>>> unstable
 ```
 
 If you already have a directory with TypeScript files, just select that directory from "Open project..." 
@@ -68,11 +57,7 @@ different typefiles as you go along with your project.
 There are some commandline paramters you can use. For example to open CATS with a specific project, use:
 
 ```shell        
-<<<<<<< HEAD
-nodewebkit cats-x.y.z.nw --project </path/projectDirectory>
-=======
 nw cats-x.y.z.nw --project </path/projectDirectory>
->>>>>>> unstable
 ```
 
 Please note that you have to specify the full path to the project directory you want to open. 
@@ -80,11 +65,7 @@ Please note that you have to specify the full path to the project directory you 
 To open CATS with the same project as last time you opened it, you can use the --restore option:
 
 ```shell
-<<<<<<< HEAD
-nodewebkit cats-x.y.z.nw --restore
-=======
 nw cats-x.y.z.nw --restore
->>>>>>> unstable
 ```
 
 ## Building
