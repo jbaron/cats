@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-module Cats.Gui {
+module Cats.Gui.Editor {
     
     var HashHandler = ace.require('ace/keyboard/hash_handler').HashHandler;
 
@@ -57,7 +57,7 @@ module Cats.Gui {
             this.setHeight(200);
             this.createList();
             this.initHandler();
-            this.changeListener = (ev) => this.onChange(ev);
+            this.changeListener = (ev:Event) => this.onChange(ev);
             this.addListener("disappear", this.hidePopup, this);
         }
 
@@ -78,7 +78,8 @@ module Cats.Gui {
                 iconPath: "meta",
                 iconOptions: {
                     converter: (data) => {
-                        return this.getIconForKind(data);
+                        var icon = IDE.icons.kind[data] || IDE.icons.kind["default"];
+                        return icon;
                     }
                 }
             });
@@ -107,7 +108,7 @@ module Cats.Gui {
 
         private match_strict(text: string, completion: string) {
             if (!text) return true;
-            if (completion.toLowerCase().indexOf(text) === 0) return true;
+            if (completion.indexOf(text) === 0) return true;
             return false;
         }
 
@@ -126,10 +127,10 @@ module Cats.Gui {
             var text = this.getInputText();
             if (text) text = text.toLowerCase();
 
-            var matchText = this.match_forgiven;
+            var matchFunction = this.match_forgiven;
             if (IDE.config.editor.completionMode) {
                 var methodName = "match_" + IDE.config.editor.completionMode;
-                if (this[methodName]) matchText = this[methodName];
+                if  (this[methodName]) matchFunction = this[methodName];
             }
 
             var lastItem = this.listModel.getItem(this.listModel.getLength() - 1);
@@ -139,7 +140,7 @@ module Cats.Gui {
             var delegate = {};
             delegate["filter"] = (data) => {
                 var value = data.getCaption().toLowerCase();
-                var result = this.match_forgiven(text, value); // TODO hwo to deal with this
+                var result = matchFunction(text, value); 
                 if (result) this.filtered.push(data);
                 if (data === lastItem) {
                     // IDE.console.log("filtered items: " + this.filtered.length);
@@ -202,24 +203,7 @@ module Cats.Gui {
             this.handler.bindKey("Return|Tab", () => { this.insertSelectedItem(); });
         }
 
-        private getIconForKind(name: string) {
-            var iconPath = "icon/16/types/";
-            switch (name) {
-                case "function":
-                case "keyword":
-                case "method": return iconPath + "method.png";
-                case "constructor": return iconPath + "constructor.png";
-                case "module": return iconPath + "module.png";
-                case "interface": return iconPath + "interface.png";
-                case "enum": return iconPath + "enum.png";
-                case "class": return iconPath + "class.png";
-                case "property":
-                case "var": return iconPath + "property.png";
-                case "snippet" : return iconPath + "snippet.png";
-                default: return iconPath + "method.png";
-            }
-        }
-
+   
         private isExecutable(kind) {
             if (kind === "method" || kind === "function" || kind === "constructor") return true;
             return false;
@@ -230,7 +214,7 @@ module Cats.Gui {
          * Show the popup and make sure the keybinding is in place
          * 
          */
-        private showPopup(completions: Cats.CompletionEntry[]) {
+        private showPopup(completions: CompletionEntry[]) {
             if (this.list.isSeeable() || (completions.length === 0)) return;
             var cursor = this.editor.getCursorPosition();
             var coords = this.editor.renderer.textToScreenCoordinates(cursor.row, cursor.column);
@@ -278,7 +262,6 @@ module Cats.Gui {
 
         /**
          * Hide the popup and remove all keybindings
-         * 
          */
         private hidePopup() {
             this.editor.keyBinding.removeKeyboardHandler(this.handler);
@@ -301,7 +284,7 @@ module Cats.Gui {
         }
 
 
-        private onChange2(e) {
+        private onChange2(e:any) {
             var key = e.args || "";
             alert(key);
             if ((key == null) || (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0)))) {
@@ -316,7 +299,7 @@ module Cats.Gui {
          * Check wether the typed character is reason to stop
          * the auto-complete task
          */
-        private onChange(ev) {
+        private onChange(ev:any) {
             var key: string = ev.data.text;
 
             if ((key == null) || (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0)))) {
@@ -327,6 +310,10 @@ module Cats.Gui {
             // TODO find out how to force update without a timer delay
             setTimeout(() => { this.updateFilter(); }, 0);
         }
+
+
+ 
+        
 
         /**
          * The method called form the editor to start the code completion process. 
@@ -344,7 +331,7 @@ module Cats.Gui {
             // this.base = session.doc.createAnchor(pos.row, pos.column - prefix.length);
 
             var matches = [];
-            var completers = memberCompletionOnly ? [new TSCompleter(this.sourceEditor)] : editor.completers
+            var completers = getCompleters(sourceEditor, memberCompletionOnly);
             var total = completers.length;
             completers.forEach((completer, i) => {
                 completer.getCompletions(editor, session, pos, prefix, (err, results) => {

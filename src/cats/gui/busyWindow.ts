@@ -20,7 +20,7 @@ module Cats.Gui {
      */
     export class BusyWindow extends qx.ui.window.Window {
 
-        constructor(name) {
+        constructor(name:string) {
             super(name);
             this.setLayout(new qx.ui.layout.Basic());
             this.setMinWidth(300);

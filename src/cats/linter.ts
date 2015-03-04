@@ -16,8 +16,6 @@
 
 module Cats {
 
-    var TSLint;
-
     /**
      * Simple helper class to call tslint functionality
      * Ideally this should be done in the tsworker to offload the main thread, but right now
@@ -25,10 +23,10 @@ module Cats {
      */ 
     export class Linter {
 
-        private lintOptions;
+        private lintOptions:{};
+        private TSLint = require("tslint");
 
         constructor(private project: Project) {
-            if (!TSLint) TSLint = require("tslint");
         }
 
 
@@ -51,10 +49,10 @@ module Cats {
          */
         private getOptions() {
             if (!this.lintOptions) {
-                var fileName;
-
-                if (this.project.config.codingStandards.lintFile) {
-                    fileName = OS.File.join(this.project.projectDir, this.project.config.codingStandards.lintFile);
+                var fileName:string;
+                
+                if (this.project.config.tslint.lintFile) {
+                    fileName = OS.File.join(this.project.projectDir, this.project.config.tslint.lintFile);
                 } else {
                     fileName = OS.File.join(IDE.catsHomeDir, "resource/tslint.json");
                 }
@@ -74,11 +72,11 @@ module Cats {
 
 
         /**
-         * Excute lint on the provided conent
+         * Excute lint on the provided content and return the resulting warnings
          * 
          */ 
         lint(fileName:string, content:string) {
-            var ll = new TSLint(fileName, content, this.getOptions());
+            var ll = new this.TSLint(fileName, content, this.getOptions());
             var result: Array<any> = JSON.parse(ll.lint().output);
             var r: Cats.FileRange[] = [];
             result.forEach((msg) => {

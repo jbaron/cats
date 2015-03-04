@@ -12,19 +12,33 @@
 // limitations under the License.
 //
 
-module Cats.Gui {
+module Cats.Gui.Editor {
+    
+    var registryEntryName = "ImageEditor";
+    
+    interface ImageEditorState {
+        fileName: string;    
+    }
+    
+    function restoreState(state:ImageEditorState) {
+        var editor = new ImageEditor(state.fileName);
+        return editor;
+    }
+    
+    Cats.Editor.RegisterEditor(registryEntryName, restoreState);
+    
+    
     /**
      * Simple image viewer for image files. Uses canvas to render the image.
      */
     export class ImageEditor extends FileEditor {
 
-        private backgroundColors = ["white", "black", "grey"];
-        unsavedChanges= false;
-        status = { mode : "image" };
+        private static BackgroundColors = ["white", "black", "grey"];
         private canvas = new qx.ui.embed.Canvas();
 
-        constructor(fileName) {
+        constructor(fileName:string) {
             super(fileName);
+            this.set("status", { mode : "IMAGE" });
             this.loadImage(fileName);
             this.createContextMenu();
         }
@@ -33,18 +47,29 @@ module Cats.Gui {
             return this.canvas;
         }
 
-        executeCommand(name, ...args): boolean {
+        executeCommand(name:string, ...args:any[]): any {
             return false;
         }
 
         save() { /* NOP */ }
 
-        private loadImage(url) {
+        private loadImage(url:string) {
             var image = new Image();
             image.onload = () => { this.drawImage(image); };
             image.src = url;
         }
 
+        getState() : ImageEditorState {
+            return {
+                fileName: this.filePath
+            };
+        }
+       
+        getType() {
+            return registryEntryName;
+        }
+ 
+ 
         private resizeIfRequired(image: HTMLImageElement) {
             if (image.width > this.canvas.getCanvasWidth()) {
                 this.canvas.setCanvasWidth(image.width);
@@ -55,7 +80,7 @@ module Cats.Gui {
             }
         }
 
-        private drawImage(image) {
+        private drawImage(image:HTMLImageElement) {
             this.resizeIfRequired(image);
             this.canvas.getContext2d().drawImage(image,
                 this.canvas.getCanvasWidth() / 2 - image.width / 2,
@@ -65,7 +90,7 @@ module Cats.Gui {
 
         private createContextMenu() {
             var menu = new qx.ui.menu.Menu();
-            this.backgroundColors.forEach((color) => {
+            ImageEditor.BackgroundColors.forEach((color) => {
                 var button = new qx.ui.menu.Button("Background " + color);
                 button.addListener("execute", () => {
                     this.canvas.setBackgroundColor(color);
@@ -77,18 +102,11 @@ module Cats.Gui {
 
         static SupportsFile(fileName:string) {
             var supportedExt = [ ".png", ".gif", ".jpg" , ".jpeg"]
-            var ext = PATH.extname(fileName);
+            var ext = OS.File.PATH.extname(fileName);
             return supportedExt.indexOf(ext) > -1;
         }
 
-        replace(range: ace.Range, content: string) { }
-
-        getContent() { return null; }
-
-        setContent(content, keepPosition= true) { }
-
-        updateWorld() { }
-
+  
         moveToPosition(pos: ace.Position) { }
 
     }

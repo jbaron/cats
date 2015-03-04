@@ -20,21 +20,25 @@
  * @TODO make this more an async api so it becomes easier to switch to other implementations
  * Perhaps after TS has implement await type of functionality.
  */
+ 
 module Cats.OS.File {
 
-        window["EventEmitter"] = require("events").EventEmitter;
-        var fs=require("fs");
+        export var PATH = require("path");
+        var fs = require("fs");
+        
         var exec = require("child_process").exec;
         var glob = require("glob");
+
 
         /**
          * Very lightweight watcher for files and directories, used to inform the user of changes
          * in the underlying file system.
          * 
          */ 
-        export class Watcher extends EventEmitter {
+        export class Watcher extends  qx.event.Emitter {
             
-            private watches = {};
+            // Keeps track of the files and directories that are being watched 
+            private watches:Map<any> = {}; 
             
             constructor() {
                 super();
@@ -47,9 +51,9 @@ module Cats.OS.File {
              */ 
             add(name:string) {
                 if (this.watches[name]) return;
-                var w = fs.watch(name, (event,filename) => {
+                var w = fs.watch(name, (event:any,filename:string) => {
                     console.info("Node changed " + name + " event " + event + " fileName " + filename);
-                    this.emit("change", name, event, filename);
+                    this.emit("change", name);
                 });
                 this.watches[name] = w;
             }
@@ -57,14 +61,16 @@ module Cats.OS.File {
  
            /**
              * Add a new directory to the watch list. If it already exists it is being ignored. 
-             * Only rename type of events are interesting.
+             * Only rename type of events are being propgated (so new files or deletes).
+             * 
+             * Files within a directory changing size etc are not propagated.
              * 
              */ 
             addDir(name:string) {
                 if (this.watches[name]) return;
-                var w = fs.watch(name, (event,filename) => {
+                var w = fs.watch(name, (event:any,filename:string) => {
                     console.info("Node changed " + name + " event " + event + " fileName " + filename);
-                    if (event === "rename") this.emit("change", name, event, filename);
+                    if (event === "rename") this.emit("change", name);
                 });
                 this.watches[name] = w;
             }
@@ -73,15 +79,20 @@ module Cats.OS.File {
             /**
              * Remove an entry from the watch list (file or directory)
              * 
+             * @param name The filepath that no longer should be watched
+             * 
              */ 
             remove(name:string) {
                 var w = this.watches[name];
-                if (w) w.close();
+                if (w) {
+                    w.close();
+                    delete this.watches[name];
+                }
             }
             
         }
 
-
+ 
        /**
          * Create recursively directories if they don't exist yet
          * 
@@ -141,15 +152,15 @@ module Cats.OS.File {
             var id = child.pid;
             IDE.processTable.addProcess(child, cmd);
            
-            child.stdout.on("data", function (data) {
+            child.stdout.on("data", function (data:string) {
               logger.log("" + data);
             });
             
-            child.stderr.on("data", function (data) {
+            child.stderr.on("data", function (data:string) {
               logger.error("" + data);
             });
             
-            child.on("close", function (code) {
+            child.on("close", function (code:number) {
               logger.log("Done");
             });
         }
@@ -168,6 +179,9 @@ module Cats.OS.File {
                 fs.rmdirSync(path);
         }
 
+        /**
+         * Is this instance running on the OSX platform
+         */ 
         export function isOSX() {
             return process.platform === "darwin";
         }
@@ -176,12 +190,18 @@ module Cats.OS.File {
             return process.platform === "win32";
         }
 
-        export function join(a,b) : string{
+        /**
+         * Join two paths together and return the result.
+         */ 
+        export function join(a:string,b:string, native=false) : string{
             var result = PATH.join(a,b);
-            return switchToForwardSlashes(result);
-            
+            if (!native) result = switchToForwardSlashes(result);
+            return result;
         }
 
+        /**
+         * Find a file matching a certain patterns and in the certain directory
+         */ 
         export function find(pattern:string, rootDir:string, cb:Function) {
             var files:Array<string> = glob.sync(pattern, {cwd:rootDir, mark:true}) ;
             files = files.filter((name) => {return name.slice(-1) !== "/"; });
@@ -206,12 +226,15 @@ module Cats.OS.File {
          * @return Return value is either dos or unix
          * 
          */ 
-        function determineNewLIneMode(): string {
-            var mode = IDE.project.config.codingStandards.newLineMode;
-            if ((mode === "dos") || (mode ==="unix")) return mode;
-         
-            if (isWindows()) return "dos";
-            return "unix";
+        function determineNewLineChar(): string {
+            try {
+                var char = IDE.project.config.codeFormat.NewLineCharacter;
+                if (char) return char;
+            } catch (exp) {}
+            
+            if (isWindows()) return "\r\n";
+            return "\n";
+            
         }
 
         /**
@@ -223,16 +246,13 @@ module Cats.OS.File {
          * 
          */ 
          export function writeTextFile(name: string, value: string, stat=false):any {
-            var newLineMode = determineNewLIneMode();
-            if (newLineMode === "dos") {
-                value = value.replace(/\n/g, "\r\n");
+            var newLineChar = determineNewLineChar();
+            if (newLineChar !== "\n") {
+                value = value.replace(/\n/g, newLineChar);
             }
             
             var fileName = name;
-            
-            if (! PATH.isAbsolute(fileName)) {
-                fileName = PATH.join(IDE.project.projectDir, fileName);
-            }
+            fileName = PATH.resolve(IDE.project.projectDir, fileName);
             
             mkdirRecursiveSync(PATH.dirname(fileName));
             fs.writeFileSync(fileName, value, "utf8");
@@ -272,9 +292,9 @@ module Cats.OS.File {
          * @param directory The directory name that should be read
          * 
          */ 
-        export function readDir(directory:string, sorted=false): Cats.FileEntry[] {
+        export function readDir(directory:string, sorted=false) {
             var files:string[] = fs.readdirSync(directory);
-            var result = [];
+            var result:Cats.FileEntry[] = [];
             files.forEach((file) => {
                 var fullName = OS.File.join(directory, file);
                 var stats = fs.statSync(fullName);

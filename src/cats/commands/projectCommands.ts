@@ -22,21 +22,21 @@ module Cats.Commands {
      * Close all open projects
      */ 
     function closeAllProjects() {
-        IDE.closeProject(IDE.project);
+        if (IDE.project) IDE.project.close();
     }
 
     /**
      * Close the project
      */ 
     function closeProject() { 
-        IDE.closeProject(IDE.project);
+        if (IDE.project) IDE.project.close();
     }
 
     /**
      * Run the project
      */ 
     function runProject() {
-        IDE.project.run();
+        if (IDE.project) IDE.project.run();
     };
 
 
@@ -44,39 +44,49 @@ module Cats.Commands {
      * Show a class diagram of the project. 
      */ 
     function showDiagram() {
-        IDE.editorTabView.addEditor(new Gui.UMLEditor("Class Diagram"));
+       if (IDE.project) IDE.editorTabView.addEditor(new Gui.Editor.UMLEditor("Class Diagram"));
     }
 
+    /**
+     * Shows a quick open dialog for the project.
+     */
+    function quickOpen() {
+      if (IDE.project) {
+        var dialog = new Gui.QuickOpenDialog(IDE.project);
+        dialog.show();
+      }
+    }
  
     /**
      * Compile all the sources without actually saving them
      * to see if there are any issues popping up.
      */ 
     function validateProject() {
-        var project = IDE.project;
-        project.validate();
+        if (IDE.project) IDE.project.validate();
     }
 
     /**
      * Build the project
      */ 
     function buildProject() {
-        IDE.project.build();
+        if (IDE.project) IDE.project.build();
     }
 
     /**
      * Generate the API documentation for the project
      */ 
     function documentProject() {
-        IDE.project.document();
+        if (IDE.project) IDE.project.document();
     }
 
     /**
      * Provide the user with an UI to configure the project settings
      */ 
     function configureProject() {
-        var w = new Gui.ProjectConfigDialog(IDE.project);
-        w.show();
+        if (IDE.project) {
+            var w = new Gui.ProjectSettingsDialog(IDE.project);
+            w.show();
+        }
     }
 
     /**
@@ -84,8 +94,22 @@ module Cats.Commands {
      * filesystem changes are done (like renaming TS files etc).
      */ 
     function refreshProject() {
-        IDE.project.refresh();
+        if (IDE.project) IDE.project.refresh();
     }
+
+    /**
+     * Open a project. If current windows doesn't have a project yet, opene there.
+     * Otherwise open the project in a new window.
+     * 
+     * @TODO: for a new project provide template capabilities
+     */ 
+    function newProject() {
+        var chooser: HTMLElement = document.getElementById('fileDialog');
+        chooser.onchange = function(evt:Event) {
+            IDE.addProject(<string>this.value);
+        };
+        chooser.click();
+    };
 
 
     /**
@@ -93,33 +117,28 @@ module Cats.Commands {
      * Otherwise open the project in a new window
      */ 
     function openProject() {
-        var chooser: any = document.getElementById('fileDialog');
-        chooser.onchange = function(evt) {
-            var projectPath: string = this.value;
-            if (! IDE.project) {
-                IDE.addProject(new Project(projectPath));
-            } else {
-                var param = encodeURIComponent(projectPath);
-                this.value = ""; // Make sure the change event goes off next tome
-                window.open('index.html?project=' + param);
-            }
+        var chooser: HTMLElement= document.getElementById('fileDialog');
+        chooser.onchange = function(evt:Event) {
+            IDE.addProject(<string>this.value);
         };
         chooser.click();
     };
 
 
     export class ProjectCommands {
-        static init(registry) {
-            registry({ name: CMDS.project_open, label: "Open Project....", command: openProject, icon: "actions/project-open.png" });
-            registry({ name: CMDS.project_close, label: "Close project", command: closeProject, icon:"actions/project-development-close.png" });
-            registry({ name: CMDS.project_build, label: "Build Project", command: buildProject, icon: "categories/applications-development.png" });
-            registry({ name: CMDS.project_validate, label: "Validate Project", command: validateProject });
-            registry({ name: CMDS.project_refresh, label: "Refresh Project", command: refreshProject, icon: "actions/view-refresh.png" });
-            registry({ name: CMDS.project_run, label: "Run Project", command: runProject, icon: "actions/arrow-right.png" });
-            // registry({ name: CMDS.project_debug, label: "Debug Project", command: null, icon: "debug.png" });
-            registry({ name: CMDS.project_classDiagram, label: "Class Diagram", command: showDiagram });
-            registry({ name: CMDS.project_configure, label: "Settings....", command: configureProject });
-             registry({ name: CMDS.project_document, label: "Generate Documentation", command: documentProject });
+        static init(registry: (cmd: Command, fn:Function) => void) {
+            registry(CMDS.project_open,openProject);
+            registry(CMDS.project_new,newProject);
+            registry(CMDS.project_close,closeProject);
+            registry(CMDS.project_build,buildProject);
+            registry(CMDS.project_validate, validateProject);
+            registry(CMDS.project_refresh, refreshProject);
+            registry(CMDS.project_run, runProject);
+            // registry(CMDS.project_debug, label: "Debug Project",null, icon: "debug.png" });
+            registry(CMDS.project_quickOpen, quickOpen);
+            registry(CMDS.project_classDiagram, showDiagram);
+            registry(CMDS.project_configure, configureProject);
+            registry(CMDS.project_document, documentProject);
         }
 
     }

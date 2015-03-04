@@ -22,15 +22,16 @@ module Cats.Gui {
         private data: Array<any>;
         private editor:Editor;
 
-        constructor(headers = ["Name", "Value"]) {
+        constructor() {
             var tableModel = new qx.ui.table.model.Simple();
+            var headers = [super.tr("tableheader_name"), super.tr("tableheader_value")];
             tableModel.setColumns(headers);
             tableModel.setData([]);
             this.setStatusBarVisible(false); 
 
             var custom: any = {
                 tableColumnModel: function(obj) {
-                    return new qx.ui.table.columnmodel.Resize(obj);
+                    return new qx.ui.table.columnmodel.Resize();
                 }
             };
             super(tableModel, custom);
@@ -48,13 +49,13 @@ module Cats.Gui {
 
         private register(editor:Editor) {
             if (this.editor) {
-                this.editor.off("properties", this.setData, this);
+                this.editor.off("info", this.setData, this);
             }
             this.editor = editor;
             
             if (editor) {
-                editor.on("properties", this.setData,this);
-                this.setData(editor.properties);
+                editor.on("info", this.setData,this);
+                this.setData(editor.get("info"));
             } else {
                 this.clear();
             }
@@ -72,7 +73,8 @@ module Cats.Gui {
                     rows.push([row.key, row.value]);
                 });
             }
-            this.getTableModel().setData(rows);
+            var model = <qx.ui.table.model.Simple>this.getTableModel();
+            model.setData(rows);
             this.getSelectionModel().resetSelection();
         }
 

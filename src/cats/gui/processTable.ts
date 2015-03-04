@@ -16,14 +16,13 @@
 module Cats.Gui {
 
     /**      
-     * Overview of started processes. With the controls the processes can be paused,
+     * Overview of started processes. Also provides the controls so these processes can be paused,
      * stopped or killed.
      * 
-     * @TODO provide visualization of the status of a process
+     * @TODO provide feedback of the actuall status of a process
      */
     export class ProcessTable extends qx.ui.container.Composite {
 
-        private static HEADERS = ["PID", "Command"];
         private table: qx.ui.table.Table;
 
         constructor() {
@@ -37,19 +36,23 @@ module Cats.Gui {
         /**
          * Add a new process to the table
          */
-        addProcess(child, cmd: string) {
-            var row = new Array(
+        addProcess(child: any, cmd: string) {
+            var row = new Array<any>(
                 "" + child.pid, cmd, child
                 );
-            this.table.getTableModel().addRows([row]);
+            var model = <qx.ui.table.model.Simple>this.table.getTableModel();
+            model.addRows([row]);
             this.table.getSelectionModel().resetSelection();
         }
 
 
-        private sendSignal(signal?: string) {
+        private sendSignal(signal: string) {
             var table = this.table;
             var selectedRow = table.getSelectionModel().getLeadSelectionIndex();
-            if (selectedRow < 0) { return; }
+            if (selectedRow < 0) { 
+                alert("You have to select a process from the table below first");
+                return;
+            }
             var data = table.getTableModel().getRowData(selectedRow);
             var child = data[2];
             child.kill(signal);
@@ -58,19 +61,20 @@ module Cats.Gui {
 
         private addButton(bar: qx.ui.toolbar.ToolBar, label: string, signal: string) {
             var button = new qx.ui.toolbar.Button(label);
-            button.addListener("execute", (evt) => { this.sendSignal(signal); });
+            button.addListener("execute", () => { this.sendSignal(signal); });
             bar.add(button);
         }
 
 
         private createTable() {
             var tableModel = new qx.ui.table.model.Simple();
-            tableModel.setColumns(ProcessTable.HEADERS);
+            var headers = [super.tr("tableheader_pid"), super.tr("tableheader_command")];
+            tableModel.setColumns(headers);
             tableModel.setData([]);
 
-            var custom: any = {
-                tableColumnModel: function(obj) {
-                    return new qx.ui.table.columnmodel.Resize(obj);
+            var custom: IMap = {
+                tableColumnModel: function() {
+                    return new qx.ui.table.columnmodel.Resize();
                 }
             };
 

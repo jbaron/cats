@@ -15,7 +15,8 @@
 module Cats.Gui {
     
     /**
-     * Start layout of IDE
+     * This class takes care of the layout of the IDE.
+     * @TODO should not instantiate navigators etc, only do the layout.
      */
     export class Layout {
 
@@ -23,7 +24,7 @@ module Cats.Gui {
         }
 
         /**
-         * Layout various parts ode IDE.
+         * Layout the various parts of de IDE
          */
         layout(ide: Cats.Ide) {
             // container layout
@@ -45,10 +46,11 @@ module Cats.Gui {
 
             // ********************* Navigator Pane ********************
             var navigatorPane = new TabView();
-            ide.bookmarks = new ResultTable(["Bookmark"]);
+            ide.bookmarks = new ResultTable(["tableheader_bookmark"]);
             ide.fileNavigator = new FileNavigator();
-            navigatorPane.addPage("files", null,ide.fileNavigator);
-            navigatorPane.addPage("bookmarks", null,ide.bookmarks);
+            var fileTab = navigatorPane.addPage("files_tab", ide.fileNavigator);
+            navigatorPane.addPage("bookmarks_tab", ide.bookmarks);
+            navigatorPane.setSelection([fileTab]);
 
             mainsplit.add(navigatorPane, 1); // navigator
 
@@ -60,34 +62,35 @@ module Cats.Gui {
             // infoSplit.set({ decorator: null });
             infoSplit.add(ide.editorTabView, 4); // editor
 
-            ide.infoPane = new TabView();
+            ide.contextPane = new TabView();
             ide.outlineNavigator = new OutlineNavigator();
             ide.propertyTable = new PropertyTable();
-            ide.infoPane.addPage("outline",null,ide.outlineNavigator);
-            ide.infoPane.addPage("properties",null,ide.propertyTable);
+            var outlineTab = ide.contextPane.addPage("outline_tab",ide.outlineNavigator);
+            ide.contextPane.addPage("properties_tab",ide.propertyTable);
+            ide.contextPane.setSelection([outlineTab]);
             
             
-            infoSplit.add(ide.infoPane, 1); // todo
+            infoSplit.add(ide.contextPane, 1); // todo
 
             editorSplit.add(infoSplit, 4);
 
             // **********************  Problem Pane ***************************
-            ide.problemPane = new TabView();
-            editorSplit.add(ide.problemPane, 2); // Info
+            ide.resultPane = new TabView();
+            editorSplit.add(ide.resultPane, 2); // Info
 
             ide.console = new ConsoleLog();
             ide.problemResult = new ResultTable();
+            ide.todoList = new ResultTable();
             ide.processTable = new ProcessTable();
-            var problemPage = ide.problemPane.addPage("problems", null, ide.problemResult);
+            var problemPage = ide.resultPane.addPage("problems_tab", ide.problemResult);
             problemPage.autoSelect = true;
             
-            var consolePage = ide.problemPane.addPage("console", null, ide.console);
+            var consolePage = ide.resultPane.addPage("console_tab", ide.console);
             consolePage.autoSelect = true;
-            ide.problemPane.addPage("process", null, ide.processTable);
-
-            ide.problemPane.selectPage("console");
-            // this.problemPane.setSelection([this.problemPane.getChildren()[2]]);
-
+            ide.resultPane.addPage("process_tab",  ide.processTable);
+            ide.resultPane.addPage("todo_tab",  ide.todoList);
+            ide.resultPane.setSelection([consolePage]);
+ 
             mainsplit.add(editorSplit, 4); // main area
 
             mainContainer.add(mainsplit, { flex: 1 });

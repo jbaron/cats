@@ -15,8 +15,7 @@
 module Cats.Gui {
 
     /**
-     * Base class for all the configuration dialogs forms in
-     * CATS.
+     * Searchdialog for searching specific strings within the files.
      */
     export class SearchDialog extends qx.ui.window.Window {
 
@@ -25,21 +24,21 @@ module Cats.Gui {
 
 
         constructor() {
-            super("Search");
-
+            super("Search in Files");
             var layout = new qx.ui.layout.VBox();
             this.setLayout(layout);
             this.add(this.createForm());
             this.setModal(true);
             this.addListener("resize", this.center);
-
         }
 
-        search(rootDir) {
+        /**
+         * Open the search dialog with a root directory
+         */ 
+        search(rootDir:string) {
             this.rootDir = rootDir;
             this.show();
         }
-
 
 
         private getResults(fileName: string, pattern: RegExp, result: Cats.FileRange[]) {
@@ -50,7 +49,7 @@ module Cats.Gui {
                 var lines = content.split("\n");
                 for (var x = 0; x < lines.length; x++) {
                     var line = lines[x];
-                    var match = null;
+                    var match:RegExpMatchArray = null;
                     while (match = pattern.exec(line)) {
                         var columnX = pattern.lastIndex - match[0].length;
                         var columnY = pattern.lastIndex;
@@ -71,7 +70,7 @@ module Cats.Gui {
             }
         }
 
-        private run(param) {
+        private run(param:any) {
             var result: Cats.FileRange[] = [];
             var mod = param.caseInsensitive ? "i" : "";
             var searchPattern = new RegExp(param.search, "g" + mod);
@@ -84,10 +83,9 @@ module Cats.Gui {
                 });
                 var resultTable = new ResultTable();
                 var toolTipText = "Search results for " + searchPattern + " in " + this.rootDir + "/" + param.glob;
-                var page = IDE.problemPane.addPage("search", toolTipText, resultTable);
+                var page = IDE.resultPane.addPage("search", resultTable, toolTipText);
                 page.setShowCloseButton(true);
                 resultTable.setData(result);
-                page.select();
                 this.close();
             });
         }

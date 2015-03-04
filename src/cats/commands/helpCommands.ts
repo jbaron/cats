@@ -37,7 +37,8 @@ module Cats.Commands {
     /**
      * Open the webkit developers tools for debugging etc.
      */ 
-    function showDevTools() {        
+    function showDevTools() {
+        var GUI = require('nw.gui');
         GUI.Window.get().showDevTools();
     }
 
@@ -54,11 +55,11 @@ module Cats.Commands {
     }
 
     export class HelpCommands {
-        static init(registry) {
-            registry({name:CMDS.help_about, label:"About", command:showAbout});
-            registry({name:CMDS.help_devTools, label:"Developer Tools", command:showDevTools});
-            registry({name:CMDS.help_shortcuts, label:"Shortcuts", command:showShortcuts});
-            registry({name:CMDS.help_processInfo, label:"Process Info", command: showProcess});
+        static init(registry: (cmd: Command, fn:Function) => void) {
+            registry(CMDS.help_about, showAbout);
+            registry(CMDS.help_devTools,showDevTools);
+            registry(CMDS.help_shortcuts, showShortcuts);
+            registry(CMDS.help_processInfo, showProcess);
         }
 
     }

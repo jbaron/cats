@@ -14,9 +14,14 @@
 //
 
 module Cats {
-  
-    var Events = require('events');
 
+    var GUI = require('nw.gui');
+
+    /**
+     * This class represents the total IDE. The CATS is started a single isntance will be
+     * created that takes care of rendering all the components and open a project if applicable.
+     * 
+     */ 
     export class Ide  extends qx.event.Emitter{
 
         // List of different themes that are available
@@ -29,16 +34,19 @@ module Cats {
             simple:qx.theme.Simple
         };
 
-        problemPane: Gui.TabView;
+        recentProjects:Array<string>;
+
+        resultPane: Gui.TabView;
         toolBar: Gui.ToolBar;
-        infoPane: Gui.TabView;
+        contextPane: Gui.TabView;
         statusBar: Gui.StatusBar;
         editorTabView: Gui.EditorTabView;
         console: Gui.ConsoleLog;
         processTable: Gui.ProcessTable;
+        todoList: Gui.ResultTable;
         bookmarks:Gui.ResultTable;
         problemResult:Gui.ResultTable;
-        menubar:Gui.Menubar;
+        menuBar:Gui.MenuBar;
         propertyTable:Gui.PropertyTable;
         outlineNavigator:Gui.OutlineNavigator; 
         fileNavigator:Gui.FileNavigator;
@@ -49,17 +57,92 @@ module Cats {
         config:IDEConfiguration;
         private static STORE_KEY = "cats.config";
         private lastEntry = <any>{}; 
+        
+        icons:IconMap;
 
         constructor() {
             super();
             this.catsHomeDir = process.cwd();
-            this.config = this.loadConfig();
+            this.loadMessages();
+            this.config = this.loadPreferences();
+            this.recentProjects = Array.isArray(this.config.projects) ?  this.config.projects : [];
+            
+            this.icons = this.loadIconsMap();
             this.configure();
             
             window.onpopstate = (data) => {
                 if (data && data.state) this.goto(data.state);
             }
+            
+            this.loadShortCuts();
+            
         }
+
+        private loadShortCuts() {
+            var fileName = OS.File.join(this.catsHomeDir, "resource/shortcuts.json");
+            var c = OS.File.readTextFile(fileName);
+            var shortCutSets:{} = JSON.parse(c);
+            var os = "linux";
+            if (Cats.OS.File.isWindows()) {
+              os = "win";
+            } else if (Cats.OS.File.isOSX()) {
+              os = "osx";
+            }
+            var shortCuts = shortCutSets[os];
+            for (var shortCut in shortCuts) {
+                var commandName = shortCuts[shortCut];
+                var cmd = new qx.ui.core.Command(shortCut);
+                cmd.addListener("execute", (function(commandName: string) {
+                  Cats.Commands.CMDS[commandName].command();
+                }).bind(null, commandName));
+            }
+            
+        }
+
+        /**
+         * Load the icons map from the file.
+         */ 
+        private loadIconsMap() {
+            return JSON.parse(OS.File.readTextFile("resource/icons.json"));
+        }
+
+
+        setColors() {
+            var manager = qx.theme.manager.Color.getInstance();
+            var colors = manager.getTheme()["colors"];
+            var jcolors = JSON.stringify(colors.__proto__,null,4);
+            IDE.console.log(jcolors);
+            
+            var editor = new Gui.Editor.SourceEditor();
+            IDE.editorTabView.addEditor(editor,{row:0, column:0});
+            editor.setContent(jcolors);
+            editor.setMode("ace/mode/json");
+
+            IDE.console.log(jcolors);
+            for (var c in colors) {
+                var dyn = manager.isDynamic(c);
+                IDE.console.log(c + ":" + colors[c] + ":" + dyn);
+            }
+        }
+
+
+        /**
+         * Load all the locale dependend messages from the message file.
+         * 
+         * @param locale The locale you want to retrieve the messages for 
+         */ 
+        private loadMessages(locale="en") {
+            var fileName = "resource/locales/" + locale + "/messages.json";
+            var messages = JSON.parse(OS.File.readTextFile(fileName));
+            var map:IMap = {};
+            for (var key in messages) {
+                map[key] = messages[key].message;
+            }
+            qx.locale.Manager.getInstance().setLocale(locale);
+            qx.locale.Manager.getInstance().addTranslation(locale, map);
+
+        }
+
 
         private goto(entry) {
             var hash = entry.hash;
@@ -76,11 +159,14 @@ module Cats {
             Cats.Commands.init();
             var layouter = new Gui.Layout(rootDoc);
             layouter.layout(this);
-            this.menubar = new Gui.Menubar();
+            this.menuBar = new Gui.MenuBar();
             this.initFileDropArea();
             this.handleCloseWindow();
         }
 
+        /**
+         * Add an entry to the history list
+         */ 
         addHistory(editor:Editor, pos?:any) {
              var page = this.editorTabView.getPageForEditor(editor);
              if ((this.lastEntry.hash === page.toHashCode()) && (this.lastEntry.pos === pos)) return;
@@ -141,9 +227,11 @@ module Cats {
             var files: FileList = event.dataTransfer.files;
 
             for(var i = 0; i < files.length; i++) {
-                FileEditor.OpenEditor((<any>files[i]).path);
+                var path:string = (<any>files[i]).path;
+                FileEditor.OpenEditor(path);
             }
         }
+
 
         /**
          * Load the projects and files that were open last time before the
@@ -153,13 +241,14 @@ module Cats {
             console.info("restoring previous project and sessions.");
             if (this.config.projects && this.config.projects.length) { 
                 var projectDir = this.config.projects[0]; 
-                this.addProject(new Project(projectDir));
+                this.addProject(projectDir);
             
                 if (this.config.sessions) {
                     console.info("Found previous sessions: ", this.config.sessions.length);
                     this.config.sessions.forEach((session) => {
                         try {
-                            FileEditor.OpenEditor(session.path);
+                            var editor = Editor.Restore(session.type, JSON.parse(session.state));
+                            if (editor) IDE.editorTabView.addEditor(editor);
                         } catch (err) {
                             console.error("error " + err);
                         }
@@ -174,7 +263,7 @@ module Cats {
          * Load the configuration for the IDE. If there is no configuration
          * found, create the default one to use.
          */ 
-        private loadConfig() {
+        private loadPreferences() {
             
             var defaultConfig:IDEConfiguration = {
                 version: "1.1",
@@ -203,30 +292,33 @@ module Cats {
             return defaultConfig;
         }
 
-        updateConfig(config) {
+        /**
+         * Update the configuration for IDE
+         * 
+         */ 
+        updatePreferences(config) {
             this.config = config;
             this.emit("config", config);
             this.configure();
-            this.saveConfig();
+            this.savePreferences();
         }
 
         /**
          * Persist the current IDE configuration to a file
          */ 
-        saveConfig() {
+        savePreferences() {
             try {
                 var config = this.config;
                 config.version = "1.1";
                 config.sessions = [];
-                config.projects = [];
+                config.projects = this.recentProjects;
                 if (this.project) {
-                    config.projects.push(this.project.projectDir);
                     this.editorTabView.getEditors().forEach((editor)=>{ 
                         var state = editor.getState();
-                        if (state !== null) {
+                        if ((state !== null) && (editor.getType())) {
                             config.sessions.push({ 
-                                path: state
-                                // session.getPosition() //@TODO make session fully responsible
+                                state: JSON.stringify(state),
+                                type: editor.getType()
                             });
                         }
                     });
@@ -240,17 +332,22 @@ module Cats {
         }
 
 
-
-
         /**
          * Add a new project to the IDE
+         * 
          * @param projectDir the directory of the new project
          */
-        addProject(project: Project) {
-            this.project = project;
-              
-            if (this.project) {
+        addProject(projectDir: string) {
+            projectDir = OS.File.PATH.resolve(this.catsHomeDir,projectDir);
+            if (this.recentProjects.indexOf(projectDir) === -1) {
+                this.recentProjects.push(projectDir);
+            }
+            if (! this.project) {
+                this.project = new Project(projectDir);
                 this.fileNavigator.setProject(this.project);
+            } else {
+                var param = encodeURIComponent(projectDir);
+                window.open('index.html?project=' + param);
             }
         }
         
@@ -259,33 +356,41 @@ module Cats {
             // Catch the close of the windows in order to save any unsaved changes
             var win = GUI.Window.get();
             win.on("close", function() {
+                var doClose = () => {
+                    IDE.savePreferences();
+                    this.close(true);
+                };
+
                 try {
                     if (IDE.editorTabView.hasUnsavedChanges()) {
-                        if (!confirm("There are unsaved changes!\nDo you really want to continue?")) return;
+                        var dialog = new Gui.ConfirmDialog("There are unsaved changes!\nDo you really want to continue?");
+                        dialog.onConfirm = doClose;
+                        dialog.show();
+                    } else {
+                        doClose();
                     }
-                    IDE.saveConfig();
                 } catch (err) { } // lets ignore this
-                this.close(true);
             });
         }
         
         
         /**
-         * Close an open project
-         * @param project to be closed
-         */
-        closeProject(project:Project) {
-            // TODO put code on IDE
-            this.project.close();
-            this.project = null;
-        }
-        
+         * Quit the application. If there are unsaved changes ask the user if they really
+         * want to quit.
+         */ 
         quit() {
+            var doClose = () => {
+                this.savePreferences();
+                GUI.App.quit();
+            };
+
             if (this.editorTabView.hasUnsavedChanges()) {
-                if (! confirm("There are unsaved files!\nDo you really want to quit?")) return;
+                var dialog = new Gui.ConfirmDialog("There are unsaved files!\nDo you really want to quit?");
+                dialog.onConfirm = doClose;
+                dialog.show();
+            } else {
+                doClose();
             }
-            this.saveConfig();
-            GUI.App.quit();
         }
  
     }

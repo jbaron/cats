@@ -18,13 +18,14 @@ module Cats {
     /** 
      * Load the TSWorker and handles the communication with the web worker
      * This implementation uses internally a JSON-RPC style message format 
-     * for the communication.
+     * for the communication. However it exposes a typed interface to towards
+     * the outside world.
      */
     export class TSWorkerProxy {
 
         private worker: Worker;
         private messageId = 0;
-        private registry = {};
+        private registry:Map<CB<any>> = {};
 
         constructor(private project: Project) {
             // Create a new webworker
@@ -36,16 +37,23 @@ module Cats {
             this.worker.terminate();
         }
 
-        getErrors(fileName: string, cb: (err, result: FileRange[]) => void) {
+        /**
+         * Get the diagnostic messages for a file
+         */ 
+        getErrors(fileName: string, cb: CB<FileRange[]>) {
             this.perform("getErrors", fileName, cb);
         }
 
-        getNavigateToItems(search: string, cb: (err, result: NavigateToItem[]) => void) {
+        getNavigateToItems(search: string, cb: CB<NavigateToItem[]>) {
             this.perform("getNavigateToItems", search, cb);
         }
 
-        getAllDiagnostics(cb: (err, result: FileRange[]) => void) {
+        getAllDiagnostics(cb: CB<FileRange[]>) {
             this.perform("getAllDiagnostics", cb);
+        }
+
+        getTodoItems(cb: CB<NavigateToItem[]>) {
+            this.perform("getTodoItems", cb);
         }
 
         getFormattedTextForRange(sessionName: string, range: Range, cb: Function) {
@@ -56,31 +64,37 @@ module Cats {
             this.perform("getDefinitionAtPosition", sessionName, cursor, cb);
         }
 
-        getInfoAtPosition(type: string, sessionName: string, cursor: Cats.Position, cb: (err: any, data: Cats.FileRange[]) => void) {
-            this.perform("getInfoAtPosition", type, sessionName, cursor, cb);
+
+        findRenameLocations(fileName: string, position: Position, findInStrings: boolean, findInComments: boolean, cb: (err: any, data: Cats.FileRange[]) => void) {
+            this.perform("findRenameLocations", fileName, position, findInStrings, findInComments, cb);
+        }
+ 
+        getCrossReference(type: string, sessionName: string, cursor: Cats.Position, cb: (err: any, data: Cats.FileRange[]) => void) {
+            this.perform("getCrossReference", type, sessionName, cursor, cb);
         }
 
-        compile(cb: (err, data: Cats.CompileResults) => void) {
+        compile(cb: CB<Cats.CompileResults>) {
             this.perform("compile", cb);
         }
 
-        getScriptLexicalStructure(sessionName: string, cb: (err: any, data: NavigateToItem[]) => void) {
-            this.perform("getScriptLexicalStructure", sessionName, cb);
+        getScriptOutline(sessionName: string, cb: (err: any, data: NavigateToItem[]) => void) {
+            this.perform("getScriptOutline", sessionName, cb);
         }
 
-        getTypeAtPosition(name: string, docPos: ace.Position, cb: (err: any, data: TypeInfo) => void) {
-            this.perform("getTypeAtPosition", name, docPos, cb);
+        getInfoAtPosition(name: string, docPos: ace.Position, cb: (err: any, data: TypeInfo) => void) {
+            this.perform("getInfoAtPosition", name, docPos, cb);
         }
 
-        getDependencyGraph(cb) {
-            this.perform("getDependencyGraph", cb);
+        getRenameInfo(name: string, docPos: ace.Position, cb: (err: any, data: ts.RenameInfo) => void) {
+            this.perform("getRenameInfo", name, docPos, cb);
         }
 
-        getObjectModel(cb) {
+
+        getObjectModel(cb:CB<any>) {
             this.perform("getObjectModel", cb);
         }
 
-        setSettings(compilerSettings, editorSettings) {
+        setSettings(compilerSettings:ts.CompilerOptions, editorSettings:ts.FormatCodeOptions) {
             this.perform("setSettings", compilerSettings, editorSettings, null);
         }
 
@@ -92,7 +106,7 @@ module Cats {
             this.perform("updateScript", fileName, content, null);
         }
 
-        getCompletions(fileName: string, cursor: ace.Position, cb: (err, completes: TypeScript.Services.CompletionEntry[]) => void) {
+        getCompletions(fileName: string, cursor: ace.Position, cb: CB<ts.CompletionEntry[]>) {
             this.perform("getCompletions", fileName, cursor, cb);
         }
 
@@ -145,12 +159,15 @@ module Cats {
                         handler(msg.error, msg.result);
                     }
                 } else {
-                    if (msg.method && (msg.method === "setBusy")) {
-                        IDE.statusBar.setBusy(msg.params[0]);
+                    var params = msg.params;
+                    var methodName = msg.method;
+                    
+                    if (methodName && (methodName === "setBusy")) {
+                        IDE.statusBar.setBusy(params[0], params[1]);
                     } 
                     
-                    if (msg.method && (msg.method === "console")) {
-                        console[msg.params[0]](msg.params[1]);
+                    if (methodName && (methodName === "console")) {
+                        console[params[0]](params[1]);
                     } 
                 }
             };

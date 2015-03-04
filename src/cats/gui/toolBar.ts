@@ -24,6 +24,7 @@ module Cats.Gui {
             Cats.Commands.CMDS.file_new,
             Cats.Commands.CMDS.file_close,
             Cats.Commands.CMDS.file_closeAll,
+            null,
             Cats.Commands.CMDS.file_save,
             Cats.Commands.CMDS.file_saveAll,
             Cats.Commands.CMDS.file_saveAs,
@@ -54,10 +55,8 @@ module Cats.Gui {
         }
 
         private createButton(cmd: Cats.Commands.Command) {
-            // var icon = this.iconFolder + cmd.icon;
-            var icon = "icon/22/" + cmd.icon;
-
-            var button = new qx.ui.toolbar.Button(cmd.label, icon);
+           var icon = IDE.icons.toolbar[cmd.name];
+           var button = new qx.ui.toolbar.Button(cmd.label, icon);
             button.setShow("icon");
             button.getChildControl("icon").set({
                 width: 22,
@@ -74,24 +73,33 @@ module Cats.Gui {
         }
 
         private init() {
-            // var part = new qx.ui.toolbar.Part();
-            this.commands.forEach((cmdEnum) => {
-                if (cmdEnum === null) {
-                    // this.add(part);
-                    // part = new qx.ui.toolbar.Part();
-                    this.addSeparator();
+            var part = new qx.ui.toolbar.Part();
+            this.commands.forEach((cmd) => {
+                if (cmd === null) {
+                    this.add(part);
+                    part = new qx.ui.toolbar.Part();
                 } else {
-                    var cmd = Cats.Commands.get(cmdEnum);
-                    if (cmd && cmd.icon) {
-                        var button = this.createButton(cmd);
-                        this.add(button);
-                        // part.add(button);
-                    }
+                    var button = this.createButton(cmd);
+                    part.add(button);
                 }
             });
-            // this.add(part);
-            return;
+            this.add(part);
         }
+
+        /**
+         * Alternative way to adding buttons to the toolbar
+         */ 
+        private init2() {
+            this.commands.forEach((cmd) => {
+                if (cmd === null) {
+                    this.addSeparator();
+                } else {
+                    var button = this.createButton(cmd);
+                    this.add(button);
+                }
+            });
+        }
+        
 
     }
 }

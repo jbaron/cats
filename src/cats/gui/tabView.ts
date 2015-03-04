@@ -14,73 +14,17 @@
 
 module Cats.Gui {
 
-      var iconMapping = {
-            "search": {
-                label: "Search",
-                icon: "actions/edit-find.png"
-            },
-
-            "console": {
-                icon: "apps/utilities-terminal.png"
-            },
-
-            "process": {
-                icon: "actions/view-process-all.png"
-            },
-
-            "files": {
-                label: "Project Explorer",
-                icon: "actions/view-list-tree.png"
-                // icon: "filenav_nav.svg"
-            },
-
-            "outline": {
-                icon: "actions/code-class.png"
-                // icon: "outline_co.svg"
-            },
-
-            "bookmarks": {
-                icon: "actions/bookmarks-organize.png"
-            },
-
-            "todo": {
-                icon: "actions/view-pim-tasks.png"
-            },
-
-            "properties": {
-                icon: "actions/document-properties.png"
-            },
-
-            "problems": {
-                icon: "status/task-attention.png"
-            },
-
-            "info": {
-                icon: "status/dialog-information.png"
-            }
-
-        };
-
-    function getLabel(name: string) {
-            var label: string;
-            var entry = iconMapping[name];
-            if (entry) label = entry.label;
-            if (!label) label = qx.Bootstrap.firstUp(name);
-            return label;
-    }
-
-    function getIconName(name: string) {
-            var entry = iconMapping[name];
-            if (entry) return "icon/16/" + entry.icon;
-    }
-
-
+    /**
+     * Generic tab used for all the tabs in CATS except for the edirtor tabs.
+     * Takes care of basic look & feel and some simple features
+     */
     export class TabViewPage extends qx.ui.tabview.Page {
-        
+
+        // Hints if this tab want to get selected if its content changes 
         autoSelect = false;
-        
-        constructor(public id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem) {
-            super(getLabel(id), getIconName(id));
+
+        constructor(public id: string, widget: qx.ui.core.LayoutItem, tooltipText?: string) {
+            super(super.tr(id), IDE.icons.tab[id]);
             this.setLayout(new qx.ui.layout.Canvas());
 
             if (tooltipText) {
@@ -92,18 +36,30 @@ module Cats.Gui {
 
             if (widget) {
                 this.add(widget, { edge: 0 });
-                widget.addListener("contentChange",() => {
-                    if (this.autoSelect) this.select(); 
+                widget.addListener("contentChange", () => {
+                    if (this.autoSelect) {
+                        var elem = <HTMLElement>document.activeElement;
+                        this.select();
+                        setTimeout(() => {
+                            if (elem) elem.focus();
+                        }, 10);
+                    }
                 });
             }
 
         }
-        
-        select() {
-            var tabView = this.getLayoutParent().getLayoutParent();
-            tabView.setSelection([this]); 
+
+
+
+
+        /**
+         * Convenience method to select this page in the tab view.
+         */
+        private select() {
+            var tabView = <TabView>this.getLayoutParent().getLayoutParent();
+            tabView.setSelection([this]);
         }
-        
+
     }
 
     /**
@@ -115,29 +71,33 @@ module Cats.Gui {
             super();
             this.setPadding(0, 0, 0, 0);
             this.setContentPadding(0, 0, 0, 0);
+            this.createContextMenu();
         }
 
-       addPage(id: string, tooltipText?: string, widget?: qx.ui.core.LayoutItem): TabViewPage {
-            var tab = new TabViewPage(id, tooltipText, widget);
+        private createContextMenu() {
+            var menu = new qx.ui.menu.Menu();
+            var directions = ["top", "left", "right", "bottom"];
+            directions.forEach((dir) => {
+                var item = new qx.ui.menu.Button(this.tr(dir));
+                item.addListener("execute", () => { this.setBarPosition(dir) });
+                menu.add(item);
+            });
+            var mainmenu = new qx.ui.menu.Menu();
+            var b = new qx.ui.menu.Button("Tab layout", null, null, menu);
+            mainmenu.add(b);
+            this.setContextMenu(mainmenu);
+        }
+
+        /**
+         * Add a new Page to the tab Viewx
+         */
+        addPage(id: string, widget: qx.ui.core.LayoutItem, tooltipText?: string): TabViewPage {
+            var tab = new TabViewPage(id, widget, tooltipText);
             this.add(tab);
+            this.setSelection([tab]);
             return tab;
         }
 
-        getPage(id: string): qx.ui.tabview.Page {
-            var pages = <TabViewPage[]>this.getChildren();
-            for (var i = 0; i < pages.length; i++) {
-                var page = pages[i];
-                if (page.id === id) {
-                    return page;
-                }
-            }
-            return null;
-        }
-
-        selectPage(id: string) {
-            var page = this.getPage(id);
-            if (page) this.setSelection([page]);
-        }
 
     }
 }

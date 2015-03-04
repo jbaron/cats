@@ -13,16 +13,25 @@
 // limitations under the License.
 //
 
-/**
- * This section contain the common interfaces and enumerations that are being used to 
- * transfer data between the worker and the main thread. 
- */
+
 module Cats {
 
     export class Attribute {
         name: string;
         modifiers: string[];
         type: string;
+    }
+
+    export interface IconMap {
+        kind: Map<string>;
+        tab: Map<string>;
+        annotation: Map<string>;
+        mimetype: Map<string>;
+        toolbar: Map<string>;
+    }
+
+    export interface CB<T> {
+        (err:any, result:T): void;
     }
 
    export interface ModelEntry {
@@ -34,6 +43,14 @@ module Cats {
         implements?: Array<string>;
     }   
 
+    export interface OutlineModelEntry{
+        label: string;
+        pos: Position;
+        kind: string;
+        kids: OutlineModelEntry[];
+    };
+
+
     export interface Range {
         start: Position;
         end: Position;
@@ -44,6 +61,8 @@ module Cats {
         Warning = <any>"warning",
         Error = <any>"error"
     }
+
+    
 
     export interface FileRange {
         fileName: string;

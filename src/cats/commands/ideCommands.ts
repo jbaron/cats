@@ -46,8 +46,7 @@ module Cats.Commands {
     }
 
     function configureIde() {
-        var w = new Gui.IdeConfigDialog(IDE.config);
-        // w.setData(IDE.project.config.compiler);
+        var w = new Gui.IdePreferencesDialog(IDE.config);
         w.show();
     }
 
@@ -55,12 +54,16 @@ module Cats.Commands {
      * Register the IDE commands
      */
     export class IdeCommands {
-        static init(registry: (cmd: Command) => void) {
-            registry({ name: CMDS.ide_quit, label: "Quit CATS", command: quit });
-            registry({ name: CMDS.ide_toggleView, label: "Toggle View", command: toggleView });
-            registry({ name: CMDS.ide_configure, label: "Preferences....", command: configureIde });
-            registry({ name: CMDS.ide_history_next, label: "Next", command: next,icon: "actions/go-next.png" });
-            registry({ name: CMDS.ide_history_prev, label: "Previous", command: prev,icon: "actions/go-previous.png" });
+        static init(registry: (cmd: Command, fn:Function) => void) {
+            registry(CMDS.ide_quit,  quit );
+            registry( CMDS.ide_toggle_toolbar,  () => toggleView(IDE.toolBar) );
+            registry( CMDS.ide_toggle_statusbar,  () => toggleView(IDE.statusBar) );
+            registry( CMDS.ide_toggle_result,  () => toggleView(IDE.resultPane) );
+            registry( CMDS.ide_toggle_context,  () => toggleView(IDE.contextPane) );
+            
+            registry( CMDS.ide_configure,  configureIde );
+            registry( CMDS.ide_history_next, next);
+            registry(CMDS.ide_history_prev,  prev);
         }
     }
 

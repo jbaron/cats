@@ -27,11 +27,11 @@ declare module ace {
 	}
 
 	interface CommandManager {
-		byName;
-		commands;
+		byName:any;
+		commands:any;
 		on: any;
-		addCommands(commands:EditorCommand[]);
-		addCommand(command:EditorCommand);
+		addCommands(commands:EditorCommand[]):void;
+		addCommand(command:EditorCommand):void;
 		platform: string; // win or mac
 	}
 
@@ -49,15 +49,15 @@ declare module ace {
 	}
 
 	interface Range {
-		new(startRow:number,startColumn:number,endRow:number,endColumn:number);
+		new(startRow:number,startColumn:number,endRow:number,endColumn:number):Range;
 		isEmpty() : boolean;
 		start: Position;
 		end: Position;
 	}
 
 	interface UndoManager {
-		new();
-		undo(dontSelect?: boolean);
+		new():UndoManager;
+		undo(dontSelect?: boolean):Range;
 		redo(dontSelect?:boolean): Range;
 		reset():void;
 		hasUndo(): boolean;
@@ -76,26 +76,26 @@ declare module ace {
 		getValue():string;
         setOverwrite(val:boolean):void;
         getOverwrite():boolean;
-        setValue(value:string);
+        setValue(value:string):void;
 		getDocument():Document;
 		doc: Document;
-		setMode(mode:string);
+		setMode(mode:string):void;
         getSelection():any;
-        setNewLineMode(mode:string); // unix, windows or auto
+        setNewLineMode(mode:string):void; // unix, windows or auto
         getNewLineMode():string;
         getMode():any;
-        setTabSize(size:number);
-        setUseSoftTabs(softTabs:boolean);
-		setUndoManager(manager:UndoManager);
+        setTabSize(size:number):void;
+        setUseSoftTabs(softTabs:boolean):void;
+		setUndoManager(manager:UndoManager):void;
 		on: (event:string, handler:Function) => void;
-		screenToDocumentPosition(x:number,y:number);
+		screenToDocumentPosition(x:number,y:number):Position;
 		getLine(row:number):string;
-		removeListener(event:string, listener:Function);
-		removeAllListeners(event:string);
+		removeListener(event:string, listener:Function):void;
+		removeAllListeners(event:string):void;
 		getTokenAt(row:number, column:number): TokenInfo;	
-		setAnnotations(annotations:Annotation[]);
+		setAnnotations(annotations:Annotation[]):void;
 		getAnnotations():Annotation[]
-		replace(range:Range,newText:string);
+		replace(range:Range,newText:string):void;
 	}
 
 	interface Position {
@@ -104,40 +104,41 @@ declare module ace {
 	}
 
 	interface Editor {
-		find(value:string,options,something);
-		focus();
-		resize();
+		find(value:string,options:{},something:any):void;
+		focus():void;
+		resize():void;
 		completers:any;
+		selection:any;
 		insertSnippet:any;
-		on(event:string,callback);
-        setReadOnly(readOnly:boolean);
+		on(event:string,callback:any):void;
+        setReadOnly(readOnly:boolean):void;
         getReadOnly():boolean;
-		replace(value:string,options);
+		replace(value:string,options:{}):void;
 		session:EditSession;
-		renderer;
-        resize(force:boolean);
-		keyBinding;
-		setOptions(options:any);
-		clearSelection();
-        centerSelection();
+		renderer:any;
+        resize(force:boolean):void;
+		keyBinding:any;
+		setOptions(options:any):void;
+		clearSelection():void;
+        centerSelection():void;
         onTextInput:Function;
         getSelectionRange(): Range;
-		remove(direction:string);
-		insert(text:string);
+		remove(direction:string):void;
+		insert(text:string):void;
 		container: HTMLElement;
 		commands:CommandManager;
-		setSession(session:EditSession);
+		setSession(session:EditSession):void;
 		getCursorPosition(): Position;
-		execCommand(command:string);
+		execCommand(command:string):void;
 		getSession():EditSession;
-		setTheme(theme:string);
+		setTheme(theme:string):void;
 		getTheme():string;
-		moveCursorTo(row:number, column:number, animate?:boolean);
-        moveCursorToPosition(position:Position);
-		setFontSize(cssSize: string);
-		setPrintMarginColumn(column:number);
+		moveCursorTo(row:number, column:number, animate?:boolean):void;
+        moveCursorToPosition(position:Position):void;
+		setFontSize(cssSize: string):void;
+		setPrintMarginColumn(column:number):void;
 		getShowInvisibles():boolean;
-		setShowInvisibles(showInvisibles:boolean);
+		setShowInvisibles(showInvisibles:boolean):void;
 	}
 
 
@@ -166,14 +167,14 @@ declare module ace {
      * @param text {:textParam}
      * @param mode {:modeParam}
     **/
-    function createEditSession(text: Document, mode: string);
+    function createEditSession(text: Document, mode: string):EditSession;
 
     /**
      * Creates a new [[EditSession]], and returns the associated [[Document]].
      * @param text {:textParam}
      * @param mode {:modeParam}
     **/
-    function createEditSession(text: string, mode: string);
+    function createEditSession(text: string, mode: string):EditSession;
     
     
 // }

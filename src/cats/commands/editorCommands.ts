@@ -19,96 +19,55 @@
 
 module Cats.Commands {
 
-    function getRange(editor):Cats.Range {
-        var range:ace.Range = editor.aceEditor.selection.getRange();
-        if (range.isEmpty()) return null; 
-        return {
-            start : range.start,
-            end: range.end
-        };    
-    }
-
+   
     function formatText() {
-      
-        var editor = <Gui.SourceEditor>IDE.editorTabView.getActiveEditor();
-        if (editor && editor.isTypeScript && editor.isTypeScript()) {
-            var range = getRange(editor);
-            IDE.project.iSense.getFormattedTextForRange( editor.filePath, range , (err:Error, result:string) => {                    
-                if (!err) {
-                    editor.setContent(result);
-                }
-                
-            });
-        }
-        
+        var editor = IDE.editorTabView.getActiveEditor();
+        if (editor) editor.executeCommand( "formatText" );
     }
 
 
     function toggleInvisibles() {
-        //@TODO fix,don't access private var
-        var aceSession = IDE.editorTabView.getActiveEditor()["aceEditor"];
-        aceSession.setShowInvisibles(!aceSession.getShowInvisibles());
+        var editor = IDE.editorTabView.getActiveEditor();
+        if (editor) editor.executeCommand( "toggleInvisibles" );
     }
 
-    
-    function editorCommand(commandName:string) {
-        return function(...args:Array<any>) {
-             //@TODO fix,don't access private var
-              var aceEditor = IDE.editorTabView.getActiveEditor()["aceEditor"];
-              // var command:Function = aceEditor.commands.byName[commandName];
-              aceEditor.execCommand(commandName);
+
+    function editorCommand( commandName: string ) {
+        return function ( ...args: Array<any> ) {
+            var editor = IDE.editorTabView.getActiveEditor();
+            if (editor) editor.executeCommand( commandName );
         };
-        
+
     }
-    
+
     export class EditorCommands {
 
+        static init( registry: ( cmd: Command, fn: Function ) => void ) {
 
-        static init(registry:(cmd:Command)=>void) {
+            registry( CMDS.edit_undo, editorCommand( "undo" ) );
+            registry( CMDS.edit_redo, editorCommand( "redo" ) );
 
-            var editorCommands: any[] = [
-               { id: Cats.Commands.CMDS.edit_undo, label: "Undo", icon: "actions/edit-undo.png" },
-               { id: Cats.Commands.CMDS.edit_redo, label: "Redo", icon: "actions/edit-redo.png" },
-        
-               { id: Cats.Commands.CMDS.edit_indent, label: "Indent", icon: "actions/format-indent-more.png" },
-               { id: Cats.Commands.CMDS.edit_outdent, label: "Outdent", icon: "actions/format-indent-less.png" },
-        
-               { id: Cats.Commands.CMDS.edit_find, label: "Find", cmd: "find", icon: "actions/edit-find.png" },
-               { id: Cats.Commands.CMDS.edit_findNext, label: "Find Next", cmd: "findnext" },
-               { id: Cats.Commands.CMDS.edit_findPrev, label: "Find Previous", cmd: "findprevious" },
-               { id: Cats.Commands.CMDS.edit_replace, label: "Find/Replace", cmd: "replace", icon: "actions/edit-find-replace.png", },
-               { id: Cats.Commands.CMDS.edit_replaceAll, label: "Replace All", cmd: "replaceall" },
-        
-               { id: Cats.Commands.CMDS.edit_toggleComment, label: "Toggle Comment", cmd: "togglecomment", icon: "comment.png" },
-               { id: Cats.Commands.CMDS.edit_toggleRecording, label: "Start/Stop Recording", cmd: "togglerecording", icon: "actions/media-record.png"  },
-               { id: Cats.Commands.CMDS.edit_replayMacro, label: "Playback Macro", cmd: "replaymacro", icon: "actions/media-playback-start.png" },
-               
-               { id: Cats.Commands.CMDS.edit_gotoLine, label: "Goto Line", cmd: "gotoline" }
-            ];
+            registry( CMDS.edit_indent, editorCommand( "indent" ) );
+            registry( CMDS.edit_outdent, editorCommand( "outdent" ) );
 
+            registry( CMDS.edit_find, editorCommand( "find" ) );
+            registry( CMDS.edit_findNext, editorCommand( "findnext" ) );
+            registry( CMDS.edit_findPrev, editorCommand( "findprevious" ) );
+            registry( CMDS.edit_replace, editorCommand( "replace" ) );
+            registry( CMDS.edit_replaceAll, editorCommand( "replaceall" ) );
 
+            registry( CMDS.edit_toggleComment, editorCommand( "togglecomment" ) );
+            registry( CMDS.edit_toggleRecording, editorCommand( "togglerecording" ) );
+            registry( CMDS.edit_replayMacro, editorCommand( "replaymacro" ) );
 
-            editorCommands.forEach((config) => {
-                if (!config.cmd) config.cmd = config.label.toLowerCase();
-                // var label = addShortcut(config.label, config.cmd);
-                var item:Command = {
-                    name: config.id,
-                    label: config.label,
-                    icon: config.icon,
-                    shortcut:null,
-                    command: editorCommand(config.cmd),
-                };
-                // if (config.icon) item.icon = config.icon;
-                registry(item);
-            });
-            
-            registry({name:CMDS.edit_toggleInvisibles, label:"Toggle Invisible Characters", command: toggleInvisibles, icon: "invisibles.png"});
-            registry({name:CMDS.source_format, label:"Format Code", command: formatText});
-            registry({name:CMDS.edit_cut, label:"Cut", command: () => {document.execCommand("cut");}});
-            registry({name:CMDS.edit_copy, label:"Copy", command: () => {document.execCommand("copy");}});
-            registry({name:CMDS.edit_paste, label:"Paste", command: () => {document.execCommand("paste");}});
-            
-            
+            registry( CMDS.edit_gotoLine, editorCommand( "gotoline" ) );
+
+            registry( CMDS.edit_toggleInvisibles, toggleInvisibles );
+            registry( CMDS.source_format, formatText );
+            registry( CMDS.edit_cut, () => { document.execCommand( "cut" ); });
+            registry( CMDS.edit_copy, () => { document.execCommand( "copy" ); });
+            registry( CMDS.edit_paste, () => { document.execCommand( "paste" ); });
+
         }
 
     }

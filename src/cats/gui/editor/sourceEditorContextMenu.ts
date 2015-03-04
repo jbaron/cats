@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-module Cats.Gui {
+module Cats.Gui.Editor {
 
     /**
      * The context menu for the source editor. This menu provides basic 
@@ -39,7 +39,7 @@ module Cats.Gui {
         }
 
         gotoDeclaration() {
-            this.getIsense().getDefinitionAtPosition(this.editor.filePath, this.getPos(), (err, data: Cats.FileRange) => {
+            this.getIsense().getDefinitionAtPosition(this.editor.filePath, this.getPos(), (err:any, data: Cats.FileRange) => {
                 if (data && data.fileName)
                     FileEditor.OpenEditor(data.fileName, data.range.start);
             });
@@ -51,13 +51,12 @@ module Cats.Gui {
 
         private getInfoAt(type: string) {
 
-            this.getIsense().getInfoAtPosition(type, this.editor.filePath, this.getPos(), (err, data: Cats.FileRange[]) => {
+            this.getIsense().getCrossReference(type, this.editor.filePath, this.getPos(), (err:any, data: Cats.FileRange[]) => {
                 if (!data) return;
                 var resultTable = new ResultTable();
-                var page = IDE.problemPane.addPage("info", null, resultTable);
+                var page = IDE.resultPane.addPage("info_tab", resultTable);
                 page.setShowCloseButton(true);
                 resultTable.setData(data);
-                page.select();
             });
         }
 
@@ -77,8 +76,8 @@ module Cats.Gui {
 
 
         private bookmark() {
-            var name = prompt("please provide bookmark name");
-            if (name) {
+            var dialog = new Gui.PromptDialog("Please provide bookmark name");
+            dialog.onSuccess = (name: string) => {
                 var pos = this.getPos();
                 IDE.bookmarks.addData({
                     message: name,
@@ -88,7 +87,8 @@ module Cats.Gui {
                         end: pos
                     }
                 });
-            }
+            };
+            dialog.show();
         }
 
         private refactor() {
@@ -97,6 +97,19 @@ module Cats.Gui {
         }
 
 
+        private createModeMenu() {
+            var menu = new qx.ui.menu.Menu();
+             var modes = ace.require( 'ace/ext/modelist' ).modes;
+             modes.forEach((entry:any) => {
+                  var button = new qx.ui.menu.Button(entry.caption);
+                  button.addListener("execute", ()=> {
+                      this.editor.setMode(entry.mode)
+                  });
+                  menu.add(button);
+             });
+             return menu;
+        }
+
 
         private init() {
 
@@ -104,12 +117,16 @@ module Cats.Gui {
                 this.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration, this));
                 this.add(this.createContextMenuItem("Find References", this.findReferences, this));
                 this.add(this.createContextMenuItem("Find Occurences", this.findOccurences, this));
-                this.add(this.createContextMenuItem("FInd Implementations", this.findImplementors, this));
+                // this.add(this.createContextMenuItem("Find Implementations", this.findImplementors, this));
                 this.addSeparator();
                 this.add(this.createContextMenuItem("Rename", this.refactor, this));
                 this.addSeparator();
             }
             this.add(this.createContextMenuItem("Bookmark", this.bookmark, this));
+            var modeMenu = this.createModeMenu();
+            
+            var b = new qx.ui.menu.Button("Modes", null,null,modeMenu);
+            this.add(b);
         }
 
 

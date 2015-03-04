@@ -16,22 +16,24 @@ module Cats.Gui {
 
     /**
      * This table displays data that is related to a file. Can be 
-     * search results of erros messages or even bookmarks. 
+     * search results of error messages or even bookmarks. 
      */
     export class ResultTable extends qx.ui.table.Table {
 
         private data: Cats.FileRange[];
         
-        constructor(headers = ["Message", "File", "Position"]) {
+        constructor(headers = ["tableheader_message", "tableheader_file", "tableheader_position"]) {
 
             var tableModel = new qx.ui.table.model.Simple();
-            tableModel.setColumns(headers);
+            var columns:string[] = [];
+            headers.forEach((header) => columns.push(this.tr(header)));
+            tableModel.setColumns(columns);
             tableModel.setData([]);
             this.setStatusBarVisible(false); 
 
             var custom: any = {
-                tableColumnModel: function(obj) {
-                    return new qx.ui.table.columnmodel.Resize(obj);
+                tableColumnModel: function() {
+                    return new qx.ui.table.columnmodel.Resize();
                 }
             };
             super(tableModel, custom);
@@ -39,7 +41,7 @@ module Cats.Gui {
 
             this.setPadding(0, 0, 0, 0);
 
-            this.addListener("click", (data) => {
+            this.addListener("click", () => {
                 var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
                 var data = this.getTableModel().getRowData(selectedRow);
                 if (data) FileEditor.OpenEditor(data[1], data[3]);
@@ -74,7 +76,7 @@ module Cats.Gui {
             return this.data;
         }
 
-        private areEmpty(...args) {
+        private areEmpty(...args:any[]) {
             for (var i=0; i< args.length; i++ ) {
                 var arr = args[i];
                 if (arr && (arr.length > 0)) return false
@@ -96,15 +98,17 @@ module Cats.Gui {
                     rows.push(this.convert(row));
                 });
             }
-            this.getTableModel().setData(rows);
-            this.getSelectionModel().resetSelection();
+            var model = <qx.ui.table.model.Simple>this.getTableModel();
+            model.setData(rows);
+            // this.getSelectionModel().resetSelection();
         }
 
         /**
          * Add a row to the table
          */ 
         addData(row: Cats.FileRange) {
-            this.getTableModel().addRows([this.convert(row)]);
+            var model = <qx.ui.table.model.Simple>this.getTableModel();
+            model.addRows([this.convert(row)]);
         }
 
 

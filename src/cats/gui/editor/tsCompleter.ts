@@ -13,19 +13,19 @@
 // limitations under the License.
 //
 
-module Cats.Gui {
+module Cats.Gui.Editor {
     
     
     var langTools = ace.require("ace/ext/language_tools");
 
-    export var snippetCompleter = langTools.snippetCompleter;
-    export var keyWordCompleter = langTools.keyWordCompleter;
+    var snippetCompleter = langTools.snippetCompleter;
+    var keyWordCompleter = langTools.keyWordCompleter;
     
     var ID_REGEX = /[a-zA-Z_0-9\$\-\u00A2-\uFFFF]/;
 
-    export function retrievePrecedingIdentifier(text, pos, regex?) {
+    export function retrievePrecedingIdentifier(text:string, pos:number, regex?:RegExp) {
         regex = regex || ID_REGEX;
-        var buf = [];
+        var buf:string[] = [];
         for (var i = pos-1; i >= 0; i--) {
             if (regex.test(text[i]))
                 buf.push(text[i]);
@@ -34,6 +34,21 @@ module Cats.Gui {
         }
         return buf.reverse().join("");
     };
+    
+    
+    export function getCompleters(editor:SourceEditor, memberCompletionOnly:boolean) {
+            if (memberCompletionOnly && editor.isTypeScript()) {
+                return [new TSCompleter(editor)]
+            } 
+            
+            if (editor.isTypeScript()) {
+                return  [new TSCompleter(editor ), snippetCompleter];
+            }
+            
+            return [keyWordCompleter, snippetCompleter];
+        }
+    
+    
 
     export class TSCompleter {
 
@@ -41,12 +56,12 @@ module Cats.Gui {
         }
 
  
-        getCompletions(editor:ace.Editor, session:ace.EditSession, pos:ace.Position, prefix:string, cb:(any,completions: Cats.CompletionEntry[])=>void) {
-            
+        getCompletions(editor:ace.Editor, session:ace.EditSession, pos:ace.Position, prefix:string, cb:CB<Cats.CompletionEntry[]>):void {
+
             var fileName = this.editor.filePath;
-            if (! fileName) return [];
+            if (! fileName) cb(null,[]);
             
-            IDE.project.iSense.getCompletions(fileName, pos, (err, completes: TypeScript.Services.CompletionEntry[]) => {
+            IDE.project.iSense.getCompletions(fileName, pos, (err:any, completes: ts.CompletionEntry[]) => {
                     var result:Array<Cats.CompletionEntry> = [];
                     if (! completes) return result;
                     completes.forEach((entry) => {

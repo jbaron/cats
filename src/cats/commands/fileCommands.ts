@@ -22,7 +22,11 @@ module Cats.Commands {
      * Create a new edit session
      */ 
     function newFile() {
-        IDE.editorTabView.addEditor(new Gui.SourceEditor(),{row:0, column:0});
+        if (! IDE.project) {
+            alert("Please open a project first.");
+            return;
+        }
+        IDE.editorTabView.addEditor(new Gui.Editor.SourceEditor(),{row:0, column:0});
     }
 
     /**
@@ -61,13 +65,14 @@ module Cats.Commands {
      * Save the active sessions under a different name
      */     
      function saveAs() {
-        var editor = <Gui.SourceEditor>IDE.editorTabView.getActiveEditor(Gui.SourceEditor);
+        var editor = <Gui.Editor.SourceEditor>IDE.editorTabView.getActiveEditor(Gui.Editor.SourceEditor);
         if (editor) {
-            var newName = prompt("Enter new name", editor.filePath);
-            if (newName) {
+            var dialog = new Gui.PromptDialog("Enter new name", editor.filePath);
+            dialog.onSuccess = (newName: string) => {
                 editor.filePath = newName;
                 editor.save();
-            }
+            };
+            dialog.show();
         }
     }
 
@@ -79,15 +84,49 @@ module Cats.Commands {
         if (editor) editor.save();
     }
 
+    /**
+     * Cycle the active editor by shifting by `delta`
+     * (usually -1 or 1).
+     * Internal: do not use directly.
+     */
+    function cycleActiveEditor(delta: number) {
+        var page = IDE.editorTabView.getActivePage();
+        if (!page) return;
+        var pages = <Array<Gui.EditorPage>>IDE.editorTabView.getChildren();
+        var index = pages.indexOf(page);
+
+        if (index > -1) {
+            var newIndex = (index + pages.length + delta) % pages.length;
+            var newPage = pages[newIndex];
+            IDE.editorTabView.setSelection([newPage]);
+        }
+    }
+
+    /**
+     * Switch to the previous tab (cycle if necessary)
+     */
+    function previous() {
+        cycleActiveEditor(-1);
+    }
+
+    /**
+     * Switch to the next tab (cycle if necessary)
+     */
+    function next() {
+        cycleActiveEditor(1);
+    }
+
     export class FileCommands {
-        static init(registry: (cmd: Command) => void ) {
-            registry({ name: CMDS.file_new, label: "New File", command: newFile, icon: "actions/document-new.png" });
-            registry({ name: CMDS.file_close, label: "Close File", command: closeFile, icon: "actions/project-development-close.png" });
-            registry({ name: CMDS.file_closeOther, label: "Close Other Files", command: closeOtherFiles });
-            registry({ name: CMDS.file_closeAll, label: "Close All Files", command: closeAllFiles,icon: "actions/project-development-close-all.png"  });
-            registry({ name: CMDS.file_save, label: "Save File", command: saveFile, icon: "actions/document-save.png"  });
-            registry({ name: CMDS.file_saveAll, label: "Save All", command: saveAll, icon: "actions/document-save-all.png" });
-            registry({ name: CMDS.file_saveAs, label: "Save As....", command: saveAs,  icon: "actions/document-save-as.png"});
+        static init(registry: (cmd: Command, fn:Function) => void ) {
+            registry(CMDS.file_new, newFile);
+            registry(CMDS.file_close, closeFile );
+            registry(CMDS.file_closeOther,closeOtherFiles );
+            registry(CMDS.file_closeAll, closeAllFiles);
+            registry(CMDS.file_save, saveFile);
+            registry(CMDS.file_saveAll, saveAll);
+            registry(CMDS.file_saveAs, saveAs);
+            registry(CMDS.file_previous, previous);
+            registry(CMDS.file_next, next);
         }
 
     }

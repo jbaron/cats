@@ -1,5 +1,5 @@
 {
-  "name": "cats",
+  "name": "typescript-cats",
   "author": "JBaron",
   "homepage": "https://github.com/jbaron/cats.git",
   "licenses": [
@@ -9,24 +9,36 @@
     }
   ],
   "main": "index.html",
+<<<<<<< HEAD
   "js-flags": "--harmony_scoping",
   "scripts": {
     "start": "nodewebkit --restore",
+=======
+  "chromium-args" : "--enable-touch-events --enable-viewport --enable-pinch",
+  "js-flags": "--harmony_scoping",
+  "scripts": {
+    "start": "nw",
+>>>>>>> unstable
     "test" : "jake build"
   },
   "description": "CATS in an integrated development environment for TypeScript developers",
   "keywords": [
     "TypeScript",
     "JBaron",
+    "opensource",
     "editor",
     "IDE",
-    "javascript",
+    "JavaScript",
     "Windows, Linux, OSX"
   ],
   "bugs": {
     "url": "https://github.com/JBaron/cats/issues"
   },
+<<<<<<< HEAD
   "version": "1.3.0",
+=======
+  "version": "1.4.0-unstable",
+>>>>>>> unstable
   "repository": {
     "type": "git",
     "url": "https://github.com/jbaron/cats.git"
@@ -42,10 +54,16 @@
     "glob": "^4.0.5",
     "tslint": "^0.4.12",
     "typedoc": "^0.1.1",
-    "dagre" : "^0.4.6"
+    "dagre" : "^0.4.6",
+    "fuzzy" : "^0.1.0",
+    "nw" : "latest"
   },
   "devDependencies": {
+<<<<<<< HEAD
 		"jake" : "latest"
+=======
+	 "jake" : "latest"
+>>>>>>> unstable
   }
 
 }

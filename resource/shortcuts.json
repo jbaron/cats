@@ -1,0 +1,29 @@
+{
+  "osx": {
+    "Meta-W" : "file_close",
+    "Meta-Shift-W" : "file_closeAll",
+    "Meta-B": "project_build",
+    "Meta-R": "project_run",
+    "Meta-T": "project_quickOpen",
+    "Ctrl-Tab": "file_next",
+    "Ctrl-Shift-Tab": "file_previous"
+  },
+  "win": {
+    "Ctrl-W" : "file_close",
+    "Ctrl-Shift-W" : "file_closeAll",
+    "Ctrl-B": "project_build",
+    "Ctrl-R": "project_run",
+    "Ctrl-T": "project_quickOpen",
+    "Ctrl-Tab": "file_next",
+    "Ctrl-Shift-Tab": "file_previous"
+  },
+  "linux": {
+    "Ctrl-W" : "file_close",
+    "Ctrl-Shift-W" : "file_closeAll",
+    "Ctrl-B": "project_build",
+    "Ctrl-R": "project_run",
+    "Ctrl-T": "project_quickOpen",
+    "Ctrl-Tab": "file_next",
+    "Ctrl-Shift-Tab": "file_previous"
+  }
+}
