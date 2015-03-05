@@ -145,18 +145,19 @@ module Cats.Gui.Editor {
                         };
                         addDialog.show();
                     }
+                    this.save();
                 };
                 dialog.show();
-            }
-
-            OS.File.writeTextFile(filePath, content);
-            this.editor.setHasUnsavedChanges(false);
-            this.editor.updateFileInfo();
-            IDE.console.log("Saved file " + filePath);
-            if (this.isTypeScript()) {
-                IDE.project.iSense.updateScript(filePath, content);
-                IDE.project.validate(false);
-                if (IDE.project.config.buildOnSave) Commands.CMDS.project_build.command();
+            } else {
+                OS.File.writeTextFile(filePath, content);
+                this.editor.setHasUnsavedChanges(false);
+                this.editor.updateFileInfo();
+                IDE.console.log("Saved file " + filePath);
+                if (this.isTypeScript()) {
+                    IDE.project.iSense.updateScript(filePath, content);
+                    IDE.project.validate(false);
+                    if (IDE.project.config.buildOnSave) Commands.CMDS.project_build.command();
+                }
             }
         }
         
