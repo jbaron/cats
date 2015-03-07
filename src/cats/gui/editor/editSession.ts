@@ -77,7 +77,7 @@ module Cats.Gui.Editor {
                     row: error.range.start.row,
                     column: error.range.start.column,
                     type: <any>error.severity,
-                    text: error.message
+                    text: error.message + ""
                 });
             });
             super.setAnnotations(annotations);

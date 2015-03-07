@@ -170,11 +170,14 @@ module Cats.TSWorker {
             if (!(errors && errors.length)) return [];
         
             return errors.map((error) => {
-                var script = this.lsHost.getScript(error.file.fileName);  
+                var script = this.lsHost.getScript(error.file.fileName);
+                
+                var message =  ts.flattenDiagnosticMessageText(error.messageText, "\n");
+       
                 return {
                     range: script.getRange(error.start, error.length),
                     severity: severity,
-                    message: <string>error.messageText,
+                    message: message + "",
                     fileName: error.file.fileName
                 };
             });
