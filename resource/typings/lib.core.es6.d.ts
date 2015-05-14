@@ -179,19 +179,19 @@ interface ObjectConstructor {
       * Prevents the modification of attributes of existing properties, and prevents the addition of new properties.
       * @param o Object on which to lock the attributes. 
       */
-    seal(o: any): any;
+    seal<T>(o: T): T;
 
     /**
       * Prevents the modification of existing property attributes and values, and prevents the addition of new properties.
       * @param o Object on which to lock the attributes.
       */
-    freeze(o: any): any;
+    freeze<T>(o: T): T;
 
     /**
       * Prevents the addition of new properties to an object.
       * @param o Object to make non-extensible. 
       */
-    preventExtensions(o: any): any;
+    preventExtensions<T>(o: T): T;
 
     /**
       * Returns true if existing property attributes cannot be modified in an object and new properties cannot be added to the object.
@@ -425,6 +425,9 @@ interface String {
       */
     substr(from: number, length?: number): string;
 
+    /** Returns the primitive value of the specified object. */
+    valueOf(): string;
+
     [index: number]: string;
 }
 
@@ -477,6 +480,9 @@ interface Number {
       * @param precision Number of significant digits. Must be in the range 1 - 21, inclusive.
       */
     toPrecision(precision?: number): string;
+
+    /** Returns the primitive value of the specified object. */
+    valueOf(): number;
 }
 
 interface NumberConstructor {
@@ -555,7 +561,7 @@ interface Math {
       */
     atan(x: number): number;
     /**
-      * Returns the angle (in radians) from the X axis to a point (y,x).
+      * Returns the angle (in radians) from the X axis to a point.
       * @param y A numeric expression representing the cartesian y-coordinate.
       * @param x A numeric expression representing the cartesian x-coordinate.
       */
@@ -832,7 +838,7 @@ interface RegExp {
       */
     test(string: string): boolean;
 
-    /** Returns a copy of the text of the regular expression pattern. Read-only. The rgExp argument is a Regular expression object. It can be a variable name or a literal. */
+    /** Returns a copy of the text of the regular expression pattern. Read-only. The regExp argument is a Regular expression object. It can be a variable name or a literal. */
     source: string;
 
     /** Returns a Boolean value indicating the state of the global flag (g) used with a regular expression. Default is false. Read-only. */
@@ -1164,6 +1170,20 @@ interface ArrayConstructor {
 }
 
 declare var Array: ArrayConstructor;
+
+interface TypedPropertyDescriptor<T> {
+    enumerable?: boolean;
+    configurable?: boolean;
+    writable?: boolean;
+    value?: T;
+    get?: () => T;
+    set?: (value: T) => void;
+}
+
+declare type ClassDecorator = <TFunction extends Function>(target: TFunction) => TFunction | void;
+declare type PropertyDecorator = (target: Object, propertyKey: string | symbol) => void;
+declare type MethodDecorator = <T>(target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>) => TypedPropertyDescriptor<T> | void;
+declare type ParameterDecorator = (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
 declare type PropertyKey = string | number | symbol;
 
 interface Symbol {
@@ -1217,25 +1237,50 @@ interface SymbolConstructor {
     isConcatSpreadable: symbol;
 
     /** 
-      * A Boolean value that if true indicates that an object may be used as a regular expression. 
-      */
-    isRegExp: symbol;
-
-    /** 
-      * A method that returns the default iterator for an object.Called by the semantics of the 
-      * for-of statement. 
+      * A method that returns the default iterator for an object. Called by the semantics of the 
+      * for-of statement.
       */
     iterator: symbol;
 
+    /**
+      * A regular expression method that matches the regular expression against a string. Called 
+      * by the String.prototype.match method. 
+      */
+    match: symbol;
+
+    /** 
+      * A regular expression method that replaces matched substrings of a string. Called by the 
+      * String.prototype.replace method.
+      */
+    replace: symbol;
+
+    /**
+      * A regular expression method that returns the index within a string that matches the 
+      * regular expression. Called by the String.prototype.search method.
+      */
+    search: symbol;
+
+    /** 
+      * A function valued property that is the constructor function that is used to create 
+      * derived objects.
+      */
+    species: symbol;
+
+    /**
+      * A regular expression method that splits a string at the indices that match the regular 
+      * expression. Called by the String.prototype.split method.
+      */
+    split: symbol;
+
     /** 
       * A method that converts an object to a corresponding primitive value.Called by the ToPrimitive
-      * abstract operation. 
+      * abstract operation.
       */
     toPrimitive: symbol;
 
     /** 
-      * A String value that is used in the creation of the default string description of an object. 
-      * Called by the built- in method Object.prototype.toString. 
+      * A String value that is used in the creation of the default string description of an object.
+      * Called by the built-in method Object.prototype.toString.
       */
     toStringTag: symbol;
 
@@ -1277,7 +1322,7 @@ interface ObjectConstructor {
     getOwnPropertySymbols(o: any): symbol[];
 
     /**
-      *  Returns true if the values are the same value, false otherwise.
+      * Returns true if the values are the same value, false otherwise.
       * @param value1 The first value.
       * @param value2 The second value.
       */
@@ -1613,7 +1658,7 @@ interface IteratorResult<T> {
 }
 
 interface Iterator<T> {
-    next(): IteratorResult<T>;
+    next(value?: any): IteratorResult<T>;
     return?(value?: any): IteratorResult<T>;
     throw?(e?: any): IteratorResult<T>;
 }
@@ -1764,8 +1809,6 @@ interface Math {
 }
 
 interface RegExp {
-    [Symbol.isRegExp]: boolean;
-
     /** 
       * Matches a string with a regular expression, and returns an array containing the results of 
       * that search.
@@ -1796,6 +1839,20 @@ interface RegExp {
       * than limit elements.
       */
     split(string: string, limit?: number): string[];
+
+    /**
+      * Returns a string indicating the flags of the regular expression in question. This field is read-only.
+      * The characters in this string are sequenced and concatenated in the following order:
+      *
+      *    - "g" for global
+      *    - "i" for ignoreCase
+      *    - "m" for multiline
+      *    - "u" for unicode
+      *    - "y" for sticky
+      *
+      * If no flags are set, the value is the empty string.
+      */
+    flags: string;
 
     /** 
       * Returns a Boolean value indicating the state of the sticky flag (y) used with a regular 
@@ -4679,27 +4736,38 @@ interface ProxyHandler<T> {
 
 interface ProxyConstructor {
     revocable<T>(target: T, handler: ProxyHandler<T>): { proxy: T; revoke: () => void; };
-    new <T>(target: T, handeler: ProxyHandler<T>): T
+    new <T>(target: T, handler: ProxyHandler<T>): T
 }
 declare var Proxy: ProxyConstructor;
 
-declare var Reflect: {
-    apply(target: Function, thisArgument: any, argumentsList: ArrayLike<any>): any;
-    construct(target: Function, argumentsList: ArrayLike<any>): any;
-    defineProperty(target: any, propertyKey: PropertyKey, attributes: PropertyDescriptor): boolean;
-    deleteProperty(target: any, propertyKey: PropertyKey): boolean;
-    enumerate(target: any): IterableIterator<any>;
-    get(target: any, propertyKey: PropertyKey, receiver?: any): any;
-    getOwnPropertyDescriptor(target: any, propertyKey: PropertyKey): PropertyDescriptor;
-    getPrototypeOf(target: any): any;
-    has(target: any, propertyKey: string): boolean;
-    has(target: any, propertyKey: symbol): boolean;
-    isExtensible(target: any): boolean;
-    ownKeys(target: any): Array<PropertyKey>;
-    preventExtensions(target: any): boolean;
-    set(target: any, propertyKey: PropertyKey, value: any, receiver? :any): boolean;
-    setPrototypeOf(target: any, proto: any): boolean;
-};
+declare module Reflect {
+    function apply(target: Function, thisArgument: any, argumentsList: ArrayLike<any>): any;
+    function construct(target: Function, argumentsList: ArrayLike<any>): any;
+    function defineProperty(target: any, propertyKey: PropertyKey, attributes: PropertyDescriptor): boolean;
+    function deleteProperty(target: any, propertyKey: PropertyKey): boolean;
+    function enumerate(target: any): IterableIterator<any>;
+    function get(target: any, propertyKey: PropertyKey, receiver?: any): any;
+    function getOwnPropertyDescriptor(target: any, propertyKey: PropertyKey): PropertyDescriptor;
+    function getPrototypeOf(target: any): any;
+    function has(target: any, propertyKey: string): boolean;
+    function has(target: any, propertyKey: symbol): boolean;
+    function isExtensible(target: any): boolean;
+    function ownKeys(target: any): Array<PropertyKey>;
+    function preventExtensions(target: any): boolean;
+    function set(target: any, propertyKey: PropertyKey, value: any, receiver? :any): boolean;
+    function setPrototypeOf(target: any, proto: any): boolean;
+}
+
+interface PromiseLike<T> {
+    /**
+    * Attaches callbacks for the resolution and/or rejection of the Promise.
+    * @param onfulfilled The callback to execute when the Promise is resolved.
+    * @param onrejected The callback to execute when the Promise is rejected.
+    * @returns A Promise for the completion of which ever callback is executed.
+    */
+    then<TResult>(onfulfilled?: (value: T) => TResult | PromiseLike<TResult>, onrejected?: (reason: any) => TResult | PromiseLike<TResult>): PromiseLike<TResult>;
+    then<TResult>(onfulfilled?: (value: T) => TResult | PromiseLike<TResult>, onrejected?: (reason: any) => void): PromiseLike<TResult>;
+}
 
 /**
  * Represents the completion of an asynchronous operation
@@ -4711,14 +4779,17 @@ interface Promise<T> {
     * @param onrejected The callback to execute when the Promise is rejected.
     * @returns A Promise for the completion of which ever callback is executed.
     */
-    then<TResult>(onfulfilled?: (value: T) => TResult | Promise<TResult>, onrejected?: (reason: any) => TResult | Promise<TResult>): Promise<TResult>;
+    then<TResult>(onfulfilled?: (value: T) => TResult | PromiseLike<TResult>, onrejected?: (reason: any) => TResult | PromiseLike<TResult>): Promise<TResult>;
+    then<TResult>(onfulfilled?: (value: T) => TResult | PromiseLike<TResult>, onrejected?: (reason: any) => void): Promise<TResult>;
 
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch(onrejected?: (reason: any) => T | Promise<T>): Promise<T>;
+    catch(onrejected?: (reason: any) => T | PromiseLike<T>): Promise<T>;
+
+    [Symbol.toStringTag]: string;
 }
 
 interface PromiseConstructor {
@@ -4729,13 +4800,11 @@ interface PromiseConstructor {
 
     /**
      * Creates a new Promise.
-     * @param init A callback used to initialize the promise. This callback is passed two arguments: 
+     * @param executor A callback used to initialize the promise. This callback is passed two arguments: 
      * a resolve callback used resolve the promise with a value or the result of another promise, 
      * and a reject callback used to reject the promise with a provided reason or error.
      */
-    new <T>(init: (resolve: (value?: T | Promise<T>) => void, reject: (reason?: any) => void) => void): Promise<T>;
-
-    <T>(init: (resolve: (value?: T | Promise<T>) => void, reject: (reason?: any) => void) => void): Promise<T>;
+    new <T>(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void): Promise<T>;
 
     /**
      * Creates a Promise that is resolved with an array of results when all of the provided Promises 
@@ -4743,15 +4812,7 @@ interface PromiseConstructor {
      * @param values An array of Promises.
      * @returns A new Promise.
      */
-    all<T>(values: (T | Promise<T>)[]): Promise<T[]>;
-
-    /**
-     * Creates a Promise that is resolved with an array of results when all of the provided Promises
-     * resolve, or rejected when any Promise is rejected.
-     * @param values An array of values.
-     * @returns A new Promise.
-     */
-    all(values: Promise<void>[]): Promise<void>;
+    all<T>(values: Iterable<T | PromiseLike<T>>): Promise<T[]>;
 
     /**
      * Creates a Promise that is resolved or rejected when any of the provided Promises are resolved 
@@ -4759,7 +4820,7 @@ interface PromiseConstructor {
      * @param values An array of Promises.
      * @returns A new Promise.
      */
-    race<T>(values: (T | Promise<T>)[]): Promise<T>;
+    race<T>(values: Iterable<T | PromiseLike<T>>): Promise<T>;
 
     /**
      * Creates a new rejected promise for the provided reason.
@@ -4780,13 +4841,15 @@ interface PromiseConstructor {
       * @param value A promise.
       * @returns A promise whose internal state matches the provided promise.
       */
-    resolve<T>(value: T | Promise<T>): Promise<T>;
+    resolve<T>(value: T | PromiseLike<T>): Promise<T>;
 
     /**
      * Creates a new resolved promise .
      * @returns A resolved promise.
      */
     resolve(): Promise<void>;
+
+    [Symbol.species]: Function;
 }
 
 declare var Promise: PromiseConstructor;

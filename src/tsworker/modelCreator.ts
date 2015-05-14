@@ -55,8 +55,8 @@ module Cats.TSWorker {
 
 
             if (this.interest(node.kind)) {
-                var s = node.symbol;
-                var fullName = s ? s.getName() : node.id;
+                var fullName = node.name;// symbol;
+                // var fullName = s ? s.getName() : node.id;
                 // console.log(this.interest(node.kind) + ":" + node.name + ":" + fullName) ;
             }
 

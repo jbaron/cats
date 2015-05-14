@@ -17,14 +17,18 @@ importScripts("../resource/typescriptServices.js");
 
 module Cats.TSWorker {
 
+    function respond(message:any) {
+        postMessage(message,null);
+    }
+
     /**
      * Simple function to stub console.log functionality since this is 
      * not available in a worker.
      */
     export var console = {
-        log: function(str: string) { postMessage({ method: "console", params: ["log",str] }); },
-        error: function(str: string) { postMessage({ method: "console", params: ["error",str] }); },
-        info: function(str: string) { postMessage({ method: "console", params: ["info",str] }); }
+        log: function(str: string) { respond({ method: "console", params: ["log",str] }); },
+        error: function(str: string) { respond({ method: "console", params: ["error",str] }); },
+        info: function(str: string) { respond({ method: "console", params: ["info",str] }); }
     };
     
     /**
@@ -597,7 +601,7 @@ module Cats.TSWorker {
      * @param value true is busy, false othewise
      */
     function setBusy(value: boolean, methodName:string) {
-        postMessage({ method: "setBusy", params: [value,methodName] });
+        respond({ method: "setBusy", params: [value,methodName] });
     }
 
     /*******************************************************************
@@ -617,7 +621,7 @@ module Cats.TSWorker {
         try {
             var fn:Function = tsh[methodName];
             var result = fn.apply(tsh,params);
-            postMessage({ id: msg.id, result: result });
+            respond({ id: msg.id, result: result });
         } catch (err) {
             var error = {
                 description: err.description,
@@ -625,7 +629,7 @@ module Cats.TSWorker {
                 method: methodName
             };
             console.error("Error during processing message " + methodName);
-            postMessage({ id: msg.id, error: error });
+            respond({ id: msg.id, error: error });
         } finally {
             setBusy(false, methodName);
         }

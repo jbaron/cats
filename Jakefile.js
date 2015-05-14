@@ -1,7 +1,8 @@
 // This file contains the build logic for CATS
 
 var workerOptions = [
-    "resource/typings/lib.webworker.d.ts",
+    "resource/typings/lib.es6.d.ts",
+//    "resource/typings/lib.webworker.d.ts",
 
     "src/typings/typescriptServices.d.ts",
     "src/typings/cats.d.ts",
@@ -15,8 +16,8 @@ var workerOptions = [
 
 var catsOptions = [
    
-    "resource/typings/lib.d.ts",
-
+//    "resource/typings/lib.d.ts",
+    "resource/typings/lib.es6.d.ts",
     "src/typings/ace.d.ts",
     "src/typings/cats.d.ts",
     "src/typings/jsuml2.d.ts",

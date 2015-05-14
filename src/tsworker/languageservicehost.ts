@@ -132,7 +132,7 @@ module Cats.TSWorker {
             // Set values to avoid the compiler trying to load/resolve files
             options.emitBOM = false;
             options.noLib = true;
-            options.noLibCheck = true;
+            options.noLib = true;
             options.noResolve = true;
             this.compilationSettings = options;
         }
