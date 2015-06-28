@@ -13,8 +13,8 @@ declare module qx.registry {
 
 declare module qx {
 class Bootstrap {
-    static base(args:any,...varargs:any[]):any;
-    static bind(func:Function,self?:any,...varargs:any[]):Function;
+    static base(args:any,varargs?:any):any;
+    static bind(func:Function,self?:any,varargs?:any):Function;
     static createNamespace(name:string,object:any):string;
     static debug(object:any,message:any):void;
     static define(name?:string,config?:IMap):qx.Class;
@@ -138,10 +138,10 @@ class AbstractGui extends qx.core.Object implements qx.application.IApplication 
     main():void;
     terminate():void;
     marktr(messageId:string):string;
-    tr(messageId:string,...varargs:any[]):string;
-    trc(hint:string,messageId:string,...varargs:any[]):string;
-    trn(singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
-    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
+    tr(messageId:string,varargs?:any):string;
+    trc(hint:string,messageId:string,varargs?:any):string;
+    trn(singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
+    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
     protected _createRootWidget():qx.ui.core.Widget;
     getRoot():qx.ui.core.Widget;
     render():void;
@@ -358,10 +358,10 @@ declare module qx.bom {
 class GeoLocation extends qx.core.Object {
     constructor ();
     static getInstance():qx.bom.GeoLocation;
-    protected _errorHandler(error:Function):void;
-    protected _successHandler(position:Function):void;
-    getCurrentPosition(enableHighAccuracy:Function,timeout:Function,maximumAge:Function):void;
-    startWatchPosition(enableHighAccuracy:Function,timeout:Function,maximumAge:Function):void;
+    protected _errorHandler(error:any):void;
+    protected _successHandler(position:any):void;
+    getCurrentPosition(enableHighAccuracy:boolean,timeout:number,maximumAge:number):void;
+    startWatchPosition(enableHighAccuracy:boolean,timeout:number,maximumAge:number):void;
     stopWatchPosition():void;
 
 }
@@ -441,6 +441,7 @@ class Label {
     static getHtmlSize(content:string,styles?:IMap,width?:number):IMap;
     static getTextSize(text:string,styles:IMap):IMap;
     static getValue(element:HTMLElement):string;
+    static setSanitizer(func:Function):void;
     static setValue(element:HTMLElement,value:string):void;
 
 }
@@ -454,15 +455,9 @@ class Lifecycle {
 }
 declare module qx.bom {
 class MediaQuery extends qx.event.Emitter {
-    constructor (query?:string,ctxWindow?:any);
+    constructor (query?:string);
     getQuery():string;
     isMatching():boolean;
-
-}
-}
-declare module qx.bom {
-class MediaQueryListener extends qx.bom.MediaQuery {
-    constructor (query?:string,ctxWindow?:any);
 
 }
 }
@@ -651,7 +646,6 @@ class Css {
     static getRgba():boolean;
     static getTextOverflow():string;
     static getTextShadow():boolean;
-    static getTranslate3d():boolean;
     static getUserModify():string;
     static getUserSelect():string;
     static getUserSelectNone():string;
@@ -769,6 +763,7 @@ class Html {
     static getDataset():boolean;
     static getDataUrl(callback:Function):void;
     static getFileReader():boolean;
+    static getFullScreen():boolean;
     static getGeoLocation():boolean;
     static getHistoryState():boolean;
     static getIsEqualNode():boolean;
@@ -787,12 +782,6 @@ class Html {
     static getWebWorker():boolean;
     static getXPath():boolean;
     static getXul():boolean;
-
-}
-}
-declare module qx.bom.client {
-class Json {
-    static getJson():boolean;
 
 }
 }
@@ -986,6 +975,7 @@ declare module qx.bom.element {
 class Dataset {
     static get(element:HTMLElement,name:string):any;
     static getAll(element:HTMLElement):IMap;
+    static hasData(element:HTMLElement):boolean;
     static remove(element:HTMLElement,name:string):void;
     static set(element:HTMLElement,name:string,value:any):void;
 
@@ -1003,6 +993,7 @@ class Decoration {
 }
 declare module qx.bom.element {
 class Dimension {
+    protected static _getBoundingClientRect(element:HTMLElement):IMap;
     static getContentHeight(element:HTMLElement):number;
     static getContentSize(element:HTMLElement):IMap;
     static getContentWidth(element:HTMLElement):number;
@@ -1058,12 +1049,15 @@ class Style {
 }
 declare module qx.bom.element {
 class Transform {
+    protected static _compute3dProperty(property:string,params:qx.data.Array):string;
+    protected static _computeAxisProperties(property:string,params:qx.data.Array):string;
     static getBackfaceVisibility(el:HTMLElement):boolean;
     static getCss(transforms:IMap):string;
     static getOrigin(el:HTMLElement):string;
     static getPerspective(el:HTMLElement):string;
     static getPerspectiveOrigin(el:HTMLElement):string;
     static getStyle(el:HTMLElement):string;
+    static getTransformValue(transforms:IMap):string;
     static rotate(el:HTMLElement,value:string):void;
     static scale(el:HTMLElement,value:number):void;
     static setBackfaceVisibility(el:HTMLElement,value:boolean):void;
@@ -1195,7 +1189,7 @@ class Script {
 }
 }
 declare module qx.bom.request {
-class SimpleXhr {
+class SimpleXhr extends qx.event.Emitter {
     constructor (url?:string,method?:string);
     protected _createResponseParser():qx.util.ResponseParser;
     protected _createTransport():qx.bom.request.IRequest;
@@ -1208,12 +1202,13 @@ class SimpleXhr {
     protected _serializeData(data:string,contentType?:string):string;
     protected _setResponse(response:string):void;
     abort():qx.bom.request.SimpleXhr;
-    addListenerOnce(name:string,listener:Function,ctx?:any):qx.bom.request.Xhr;
     dispose():boolean;
+    getAllResponseHeaders():string;
     getMethod():string;
     getRequestData():string;
     getRequestHeader(key:string):string;
     getResponse():string;
+    getResponseHeader(header:string):string;
     getTimeout():number;
     getTransport():any;
     getUrl():string;
@@ -1268,7 +1263,7 @@ class Resource extends qx.event.Emitter {
     protected _getThrottleCount():number;
     protected _getThrottleLimit():number;
     protected _startPoll(action:string,listener:Function,interval:number):void;
-    abort(...varargs:string[]):void;
+    abort(varargs?:string):void;
     configureRequest(callback:Function):void;
     destruct():void;
     dispose():void;
@@ -1522,7 +1517,7 @@ class MAssert {
 }
 declare module qx.core {
 class MBindTo {
-    bindTo(func:Function,...varargs:any[]):Function;
+    bindTo(func:Function,varargs?:any):Function;
 
 }
 }
@@ -1542,11 +1537,11 @@ class MEvent {
 }
 declare module qx.core {
 class MLogging {
-    debug(...varargs:any[]):void;
-    error(...varargs:any[]):void;
-    info(...varargs:any[]):void;
+    debug(varargs?:any):void;
+    error(varargs?:any):void;
+    info(varargs?:any):void;
     trace():void;
-    warn(...varargs:any[]):void;
+    warn(varargs?:any):void;
 
 }
 }
@@ -1562,7 +1557,7 @@ declare module qx.core {
 class Object {
     addListener(type:string,listener:Function,self?:any,capture?:boolean):string;
     addListenerOnce(type:string,listener:Function,self?:any,capture?:boolean):string;
-    dispatchEvent(evt:qx.event.type.Event):boolean;
+    dispatchEvent(evt:qx.event.type.Event):any;
     fireDataEvent(type:string,data:any,oldData?:any,cancelable?:boolean):boolean;
     fireEvent(type:string,clazz?:qx.Class,args?:qx.data.Array):boolean;
     fireNonBubblingEvent(type:string,clazz?:qx.Class,args?:qx.data.Array):boolean;
@@ -1612,21 +1607,22 @@ class Object {
     get(prop:string):any;
     reset(prop:string):void;
     set(data:IMap,value?:any):any;
-    debug(...varargs:any[]):void;
-    error(...varargs:any[]):void;
-    info(...varargs:any[]):void;
+    debug(varargs?:any):void;
+    error(varargs?:any):void;
+    info(varargs?:any):void;
     trace():void;
-    warn(...varargs:any[]):void;
+    warn(varargs?:any):void;
     bind(sourcePropertyChain:string,targetObject:qx.core.Object,targetProperty:string,options:IMap):any;
     getBindings():qx.data.Array;
     removeAllBindings():void;
     removeBinding(id:any):void;
+    removeRelatedBindings(relatedObject:qx.core.Object):void;
     constructor ();
     protected _disposeArray(field:string):void;
     protected _disposeMap(field:string):void;
-    protected _disposeObjects(...varargs:any[]):void;
-    protected _disposeSingletonObjects(...varargs:any[]):void;
-    base(args:any,...varargs:any[]):any;
+    protected _disposeObjects(varargs?:any):void;
+    protected _disposeSingletonObjects(varargs?:any):void;
+    base(args:any,varargs?:any):any;
     clone():qx.core.Object;
     dispose():void;
     getUserData(key:string):any;
@@ -1681,7 +1677,7 @@ class Array extends qx.core.Object implements qx.data.IListData {
     getItem(index:number):any;
     getLength():number;
     setItem(index:number,item:any):void;
-    splice(startIndex:number,amount:number,...varargs:any[]):qx.data.Array;
+    splice(startIndex:number,amount:number,varargs?:any):qx.data.Array;
     toArray():qx.data.Array;
     constructor (param?:any);
     append(array:qx.data.Array):void;
@@ -1704,7 +1700,7 @@ class Array extends qx.core.Object implements qx.data.IListData {
     max():number;
     min():number;
     pop():any;
-    push(...varargs:any[]):number;
+    push(varargs?:any):number;
     reduce(callback:Function,initValue?:any):any;
     reduceRight(callback:Function,initValue?:any):any;
     remove(item:any):any;
@@ -1719,7 +1715,7 @@ class Array extends qx.core.Object implements qx.data.IListData {
     sort(func:Function):void;
     sum():number;
     toggleAutoDisposeItems():boolean;
-    unshift(...varargs:any[]):number;
+    unshift(varargs?:any):number;
 
 }
 }
@@ -1736,17 +1732,19 @@ interface IListData {
     getItem(index:number):any;
     getLength():number;
     setItem(index:number,item:any):void;
-    splice(startIndex:number,amount:number,...varargs:any[]):qx.data.Array;
+    splice(startIndex:number,amount:number,varargs?:any):qx.data.Array;
     toArray():qx.data.Array;
 
 }
 }
 declare module qx.data {
 class MBinding {
+    constructor ();
     bind(sourcePropertyChain:string,targetObject:qx.core.Object,targetProperty:string,options:IMap):any;
     getBindings():qx.data.Array;
     removeAllBindings():void;
     removeBinding(id:any):void;
+    removeRelatedBindings(relatedObject:qx.core.Object):void;
 
 }
 }
@@ -1758,6 +1756,7 @@ class SingleValueBinding {
     static removeAllBindings():void;
     static removeAllBindingsForObject(object:qx.core.Object):void;
     static removeBindingFromObject(sourceObject:qx.core.Object,id:any):void;
+    static removeRelatedBindings(object:qx.core.Object,relatedObject:qx.core.Object):void;
     static resolvePropertyChain(o:qx.core.Object,propertyChain:string):any;
     static showAllBindingsInLog():void;
     static showBindingInLog(object:qx.core.Object,id:any):void;
@@ -1954,6 +1953,7 @@ interface IMarshaler {
 }
 declare module qx.data.marshal {
 interface IMarshalerDelegate {
+    getArrayClass(parentProperty:string,depth:number):qx.Class;
     getModelClass(properties:string,object:IMap,parentProperty:string,depth:number):qx.Class;
     getModelMixins(properties:string,parentProperty:string,depth:number):qx.data.Array;
     getModelSuperClass(properties:string,parentProperty:string,depth:number):qx.Class;
@@ -2032,6 +2032,7 @@ class Offline extends qx.core.Object {
     protected _applyModel(value:any,old:any):void;
     protected _initializeModel():void;
     protected _setModel(data:any):void;
+    protected _storeModel():void;
     getKey():string;
     getModel():any;
     protected initModel(value:any):any;
@@ -2160,6 +2161,7 @@ class Emitter {
     addListener(name:string,listener:Function,ctx?:any):number;
     addListenerOnce(name:string,listener:Function,ctx?:any):number;
     emit(name:string,data?:any):void;
+    getEntryById(id:number):IMap;
     getListeners():IMap;
     off(name:string,listener:Function,ctx?:any):number;
     offById(id:number):number;
@@ -2174,7 +2176,7 @@ declare module qx.event {
 class GlobalError {
     static handleError(ex:qx.core.WindowError):void;
     static observeMethod(method:Function):Function;
-    static setErrorHandler(callback:Function,context:any):void;
+    static setErrorHandler(callback?:Function,context?:any):void;
 
 }
 }
@@ -2303,7 +2305,7 @@ class Timer extends qx.core.Object {
 declare module qx.event.dispatch {
 class AbstractBubbling extends qx.core.Object implements qx.event.IEventDispatcher {
     canDispatchEvent(target:HTMLElement,event:qx.event.type.Event,type:string):boolean;
-    dispatchEvent(target:HTMLElement|any,event?:qx.event.type.Event,type?:string):boolean;
+    dispatchEvent(target:HTMLElement|any,event?:qx.event.type.Event,type?:string):void;
     constructor (manager?:qx.event.Manager);
     protected _getParent(target:any):any;
 
@@ -2312,7 +2314,7 @@ class AbstractBubbling extends qx.core.Object implements qx.event.IEventDispatch
 declare module qx.event.dispatch {
 class Direct extends qx.core.Object implements qx.event.IEventDispatcher {
     canDispatchEvent(target:HTMLElement,event:qx.event.type.Event,type:string):boolean;
-    dispatchEvent(target:HTMLElement|any,event?:qx.event.type.Event,type?:string):boolean;
+    dispatchEvent(target:HTMLElement|any,event?:qx.event.type.Event,type?:string):void;
     constructor (manager?:qx.event.Manager);
 
 }
@@ -2372,16 +2374,17 @@ class DragDrop extends qx.core.Object implements qx.event.IEventHandler {
     registerEvent(target:any,type:string,capture:boolean):void;
     unregisterEvent(target:any,type:string,capture:boolean):void;
     constructor (manager?:qx.event.Manager);
+    protected _getDelta(e:qx.event.type.Pointer):IMap;
     protected _onKeyDown(e:qx.event.type.KeySequence):void;
     protected _onKeyPress(e:qx.event.type.KeySequence):void;
     protected _onKeyUp(e:qx.event.type.KeySequence):void;
     protected _onLongtap(e:qx.event.type.Tap):void;
+    protected _onPointerdown(e:qx.event.type.Pointer):void;
+    protected _onPointermove(e:qx.event.type.Pointer):void;
+    protected _onPointerup(e:qx.event.type.Pointer):void;
     protected _onRoll(e:qx.event.type.Roll):void;
-    protected _onTrack(e:qx.event.type.Track):void;
-    protected _onTrackEnd(e:qx.event.type.Track):void;
-    protected _onTrackStart(e:qx.event.type.Track):void;
     protected _onWindowBlur(e:qx.event.type.Event):void;
-    protected _start(e:qx.event.type.Pointer):void;
+    protected _start(e:qx.event.type.Pointer):boolean;
     addAction(action:string):void;
     addData(type:string,data:any):void;
     addType(type:string):void;
@@ -2395,6 +2398,7 @@ class DragDrop extends qx.core.Object implements qx.event.IEventHandler {
     isSessionActive():boolean;
     resetCursor():void;
     setCursor(value:any):qx.ui.core.Widget;
+    setDropAllowed(isAllowed:boolean):void;
     supportsAction(type:string):boolean;
     supportsType(type:string):boolean;
 
@@ -2476,6 +2480,7 @@ class GestureCore {
     gestureMove(domEvent:qx.event.type.Event,target:HTMLElement):void;
     isBelowTapMaxDistance(event:qx.event.type.Event):boolean;
     stopMomentum(id:number):void;
+    updateGestureTarget(id:string,target:HTMLElement):void;
 
 }
 }
@@ -2495,7 +2500,6 @@ class Input extends qx.core.Object implements qx.event.IEventHandler {
     unregisterEvent(target:any,type:string,capture:boolean):void;
     constructor ();
     protected _inputFix(e:qx.event.type.Event,target:HTMLElement):void;
-    protected _onBlur(e:qx.event.type.Event):void;
     protected _onChangeChecked(e:qx.event.type.Event):void;
     protected _onChangeValue(e:qx.event.type.Event):void;
     protected _onInput(e:qx.event.type.Event):void;
@@ -2596,6 +2600,7 @@ class Pointer extends qx.event.handler.PointerCore implements qx.event.IEventHan
 declare module qx.event.handler {
 class PointerCore {
     constructor (target?:HTMLElement,emitter?:qx.event.Emitter);
+    protected _determineActiveTouches(type:string,changedTouches:qx.data.Array):void;
     protected _fireEvent(domEvent:qx.event.type.Event,type?:string,target?:HTMLElement):void;
     protected _initObserver(callback:Function,useEmitter:boolean):void;
     protected _initPointerObserver():void;
@@ -2662,7 +2667,7 @@ class Window extends qx.core.Object implements qx.event.IEventHandler {
     unregisterEvent(target:any,type:string,capture:boolean):void;
     constructor (manager?:qx.event.Manager);
     protected _initWindowObserver():void;
-    protected _onNative(e:qx.event.type.Event):void;
+    protected _onNative():void;
     protected _stopWindowObserver():void;
 
 }
@@ -2728,6 +2733,7 @@ class Drag extends qx.event.type.Event {
     getDocumentTop():number;
     getDragTarget():qx.ui.core.Widget;
     getManager():qx.event.handler.DragDrop;
+    setDropAllowed(isAllowed:boolean):void;
     stopSession():void;
     supportsAction(action:string):boolean;
     supportsType(type:string):boolean;
@@ -2958,7 +2964,7 @@ declare module qx.event.type.dom {
 class Custom {
     constructor (type?:string,domEvent?:qx.event.type.Event,customProps?:IMap);
     protected _createEvent():qx.event.type.Event;
-    protected _initEvent(domEvent:qx.event.type.Event,customProps:IMap):void;
+    protected _initEvent(domEvent:qx.event.type.Event,customProps?:IMap):void;
 
 }
 }
@@ -3022,7 +3028,7 @@ class Element extends qx.core.Object {
     protected _syncChildren():void;
     protected _syncData():void;
     activate():void;
-    add(...varargs:qx.html.Element[]):qx.html.Element;
+    add(varargs?:qx.html.Element):qx.html.Element;
     addAt(child:qx.html.Element,index:number):qx.html.Element;
     addClass(name:string):void;
     addListener(type:string,listener:Function,self?:any,capture?:boolean):any;
@@ -3074,8 +3080,8 @@ class Element extends qx.core.Object {
     removeAt(index:number):qx.html.Element;
     removeAttribute(key:string,direct?:boolean):qx.html.Element;
     removeClass(name:string):void;
-    // removeListener(type:string,listener:Function,self:any,capture?:boolean):qx.html.Element;
-    // removeListenerById(id:any):qx.html.Element;
+    removeListener(type:string,listener:Function,self:any,capture?:boolean):any;
+    removeListenerById(id:any):any;
     removeStyle(key:string,direct?:boolean):qx.html.Element;
     scrollChildIntoViewX(elem:qx.html.Element,align?:string,direct?:boolean):void;
     scrollChildIntoViewY(elem:qx.html.Element,align?:string,direct?:boolean):void;
@@ -3171,7 +3177,7 @@ class ImageLoader {
     static isFailed(source:string):boolean;
     static isLoaded(source:string):boolean;
     static isLoading(source:string):boolean;
-    static load(source:string,callback:Function,context:any):void;
+    static load(source:string,callback?:Function,context?:any):void;
 
 }
 }
@@ -3609,6 +3615,7 @@ class XmlHttp extends qx.io.remote.transport.Abstract {
 declare module qx.io.request {
 class AbstractRequest extends qx.core.Object {
     constructor (url?:string);
+    protected _createTransport():qx.bom.request.IRequest;
     protected _fireStatefulEvent(evt:string):void;
     protected _getAllRequestHeaders():IMap;
     protected _getConfiguredRequestHeaders():IMap;
@@ -3724,7 +3731,7 @@ class Resource extends qx.core.Object {
     protected _getThrottleCount():number;
     protected _getThrottleLimit():number;
     protected _tailorResource(resource:qx.bom.rest.Resource):qx.bom.rest.Resource;
-    abort(...varargs:string[]):void;
+    abort(varargs?:string):void;
     configureRequest(callback:Function):void;
     invoke(action:string,params:IMap,data:IMap):number;
     longPoll(action:string):string;
@@ -3751,6 +3758,7 @@ class Array {
     static insertBefore(arr:qx.data.Array,obj:any,obj2:any):qx.data.Array;
     static max(arr:number[]):number;
     static min(arr:number[]):number;
+    static range(start:number,stop:number,step:number):qx.data.Array;
     static remove(arr:qx.data.Array,obj:any):any;
     static removeAll(arr:qx.data.Array):qx.data.Array;
     static removeAt(arr:qx.data.Array,i:number):any;
@@ -3761,16 +3769,16 @@ class Array {
 }
 declare module qx.lang {
 class Function {
-    static attempt(func:Function,self?:any,...varargs:any[]):boolean;
-    static bind(func:Function,self?:any,...varargs:any[]):Function;
+    static attempt(func:Function,self?:any,varargs?:any):boolean;
+    static bind(func:Function,self?:any,varargs?:any):Function;
     static create(func:Function,options?:IMap):Function;
-    static curry(func:Function,...varargs:any[]):any;
-    static delay(func:Function,delay:number,self?:any,...varargs:any[]):number;
+    static curry(func:Function,varargs?:any):any;
+    static delay(func:Function,delay:number,self?:any,varargs?:any):number;
     static getCaller(args:any):Function;
     static getName(fcn:Function):string;
     static globalEval(data:string):any;
-    static listener(func:Function,self?:any,...varargs:any[]):any;
-    static periodical(func:Function,interval:number,self?:any,...varargs:any[]):number;
+    static listener(func:Function,self?:any,varargs?:any):any;
+    static periodical(func:Function,interval:number,self?:any,varargs?:any):number;
 
 }
 }
@@ -3923,10 +3931,10 @@ class LocalizedString extends qx.type.BaseString {
 declare module qx.locale {
 class MTranslation {
     marktr(messageId:string):string;
-    tr(messageId:string,...varargs:any[]):string;
-    trc(hint:string,messageId:string,...varargs:any[]):string;
-    trn(singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
-    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
+    tr(messageId:string,varargs?:any):string;
+    trc(hint:string,messageId:string,varargs?:any):string;
+    trn(singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
+    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
 
 }
 }
@@ -3935,10 +3943,10 @@ class Manager extends qx.core.Object {
     constructor ();
     static getInstance():qx.locale.Manager;
     static marktr(messageId:string):string;
-    static tr(messageId:string,...varargs:any[]):string;
-    static trc(hint:string,messageId:string,...varargs:any[]):string;
-    static trn(singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
-    static trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
+    static tr(messageId:string,varargs?:any):string;
+    static trc(hint:string,messageId:string,varargs?:any):string;
+    static trn(singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
+    static trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
     protected _applyLocale(value:string,old:string):void;
     addLocale(localeCode:string,localeMap:IMap):void;
     addTranslation(languageCode:string,translationMap:IMap):void;
@@ -4125,12 +4133,12 @@ class Font {
 }
 declare module qx.theme.icon {
 class Oxygen {
-    static aliases: any;
+     static aliases: any;
 }
 }
 declare module qx.theme.icon {
 class Tango {
-    static aliases: any;
+     static aliases: any;
 }
 }
 declare module qx.theme.indigo {
@@ -4183,12 +4191,15 @@ class Decoration extends qx.core.Object {
     static getInstance():qx.theme.manager.Decoration;
     protected _applyTheme(value:qx.Theme,old:qx.Theme):void;
     addCssClass(value:string):string;
+    clear():void;
     getCssClassName(value:string):string;
     getTheme():qx.Theme;
     protected initTheme(value:any):qx.Theme;
     isCached(decorator:string):boolean;
     isDynamic(value:string):boolean;
     isValidPropertyValue(value:any):boolean;
+    refresh():void;
+    removeAllCssClasses():void;
     resetTheme():void;
     resolve(value:string):any;
     setTheme(value:any):qx.Theme;
@@ -4220,7 +4231,10 @@ class Icon extends qx.core.Object {
 declare module qx.theme.manager {
 class Meta extends qx.core.Object {
     static getInstance():qx.theme.manager.Meta;
+    protected _activateEvents():void;
     protected _applyTheme(value:qx.Theme,old:qx.Theme):void;
+    protected _fireEvent(e:qx.event.type.Data):void;
+    protected _suspendEvents():void;
     getTheme():qx.Theme;
     initialize():void;
     protected initTheme(value:any):qx.Theme;
@@ -4293,7 +4307,7 @@ class Array extends qx.type.BaseArray {
 declare module qx.type {
 class BaseArray extends qx.data.Array {
     constructor (length_or_items?:number);
-    concat(...varargs:qx.data.Array[]):qx.type.BaseArray;
+    concat(varargs?:qx.data.Array):qx.type.BaseArray;
     every(callback:Function,obj:any):boolean;
     filter(callback:Function,obj:any):any;
     forEach(callback:Function,obj:any):void;
@@ -4302,15 +4316,15 @@ class BaseArray extends qx.data.Array {
     lastIndexOf(searchElement:any,fromIndex?:number):number;
     map(callback:Function,obj:any):any;
     pop():any;
-    push(...varargs:any[]):number;
+    push(varargs?:any):number;
     reverse():qx.data.Array;
     shift():any;
     slice(begin:number,end?:number):any;
     some(callback:Function,obj:any):boolean;
     sort(compareFunction?:Function):qx.data.Array;
-    splice(index:number,howMany:number,...varargs:any[]):any;
+    splice(index:number,howMany:number,varargs?:any):any;
     toArray():qx.data.Array;
-    unshift(...varargs:any[]):number;
+    unshift(varargs?:any):number;
 
 }
 }
@@ -4397,6 +4411,8 @@ class Image extends qx.ui.core.Widget {
     constructor (source?:string);
     protected _applyScale(value:boolean,old:boolean):void;
     protected _applySource(value:string,old:string):void;
+    protected _findHighResolutionSource(lowResImgSrc:string):string;
+    protected _getHighResolutionSource(source:string,pixelRatio:number):string;
     protected _styleSource():void;
     getScale():boolean;
     getSource():string;
@@ -4701,8 +4717,8 @@ class ColorSelector extends qx.ui.core.Widget implements qx.ui.form.IColorForm {
 declare module qx.ui.control {
 class DateChooser extends qx.ui.core.Widget implements qx.ui.form.IExecutable,qx.ui.form.IForm,qx.ui.form.IDateForm {
     execute():void;
-    getCommand():qx.ui.core.Command;
-    setCommand(command:qx.ui.core.Command):void;
+    getCommand():qx.ui.command.Command;
+    setCommand(command:qx.ui.command.Command):void;
     getEnabled():boolean;
     getInvalidMessage():string;
     getRequired():boolean;
@@ -4786,45 +4802,6 @@ class ColumnData extends qx.ui.core.LayoutItem {
     getComputedWidth():number;
     getFlex():number;
     setColumnWidth(width:number,flex?:number):void;
-
-}
-}
-declare module qx.ui.core {
-class Command extends qx.core.Object {
-    constructor (shortcut?:string);
-    protected _applyEnabled(value:boolean,old:boolean):void;
-    protected _applyShortcut(value:string,old:string):void;
-    execute(target:any):void;
-    getEnabled():boolean;
-    getIcon():string;
-    getLabel():string;
-    getMenu():qx.ui.menu.Menu;
-    getShortcut():string;
-    getToolTipText():string;
-    getValue():any;
-    protected initEnabled(value:any):boolean;
-    protected initIcon(value:any):string;
-    protected initLabel(value:any):string;
-    protected initMenu(value:any):qx.ui.menu.Menu;
-    protected initShortcut(value:any):string;
-    protected initToolTipText(value:any):string;
-    protected initValue(value:any):any;
-    isEnabled():boolean;
-    resetEnabled():void;
-    resetIcon():void;
-    resetLabel():void;
-    resetMenu():void;
-    resetShortcut():void;
-    resetToolTipText():void;
-    resetValue():void;
-    setEnabled(value:any):boolean;
-    setIcon(value:any):string;
-    setLabel(value:any):string;
-    setMenu(value:any):qx.ui.menu.Menu;
-    setShortcut(value:any):string;
-    setToolTipText(value:any):string;
-    setValue(value:any):any;
-    toggleEnabled():boolean;
 
 }
 }
@@ -5143,12 +5120,12 @@ class MDragDropScrolling {
 }
 declare module qx.ui.core {
 class MExecutable {
-    protected _applyCommand(value:qx.ui.core.Command,old:qx.ui.core.Command):void;
+    protected _applyCommand(value:qx.ui.command.Command,old:qx.ui.command.Command):void;
     execute():void;
-    getCommand():qx.ui.core.Command;
-    protected initCommand(value:any):qx.ui.core.Command;
+    getCommand():qx.ui.command.Command;
+    protected initCommand(value:any):qx.ui.command.Command;
     resetCommand():void;
-    setCommand(value:any):qx.ui.core.Command;
+    setCommand(value:any):qx.ui.command.Command;
 
 }
 }
@@ -5404,10 +5381,10 @@ class Spacer extends qx.ui.core.LayoutItem {
 declare module qx.ui.core {
 class Widget extends qx.ui.core.LayoutItem {
     marktr(messageId:string):string;
-    tr(messageId:string,...varargs:any[]):string;
-    trc(hint:string,messageId:string,...varargs:any[]):string;
-    trn(singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
-    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
+    tr(messageId:string,varargs?:any):string;
+    trc(hint:string,messageId:string,varargs?:any):string;
+    trn(singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
+    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
     constructor ();
     static contains(parent:qx.ui.core.Widget,child:qx.ui.core.Widget):boolean;
     static getWidgetByElement(element:HTMLElement,considerAnonymousState?:boolean):qx.ui.core.Widget;
@@ -5417,6 +5394,7 @@ class Widget extends qx.ui.core.LayoutItem {
     protected _addBefore(child:qx.ui.core.LayoutItem,before:qx.ui.core.LayoutItem,options?:IMap):void;
     protected _afterAddChild(child:qx.ui.core.LayoutItem):void;
     protected _afterRemoveChild(child:qx.ui.core.LayoutItem):void;
+    protected _applyAnonymous(value:boolean,old:boolean):void;
     protected _applyAppearance(value:string,old:string):void;
     protected _applyBackgroundColor(value:string,old:string):void;
     protected _applyContextMenu(value:qx.ui.menu.Menu,old:qx.ui.menu.Menu):void;
@@ -5508,6 +5486,7 @@ class Widget extends qx.ui.core.LayoutItem {
     getPaddingRight():number;
     getPaddingTop():number;
     getSelectable():boolean;
+    getShowToolTipWhenDisabled():boolean;
     getTabIndex():number;
     getTextColor():string;
     getToolTip():qx.ui.tooltip.ToolTip;
@@ -5540,6 +5519,7 @@ class Widget extends qx.ui.core.LayoutItem {
     protected initPaddingRight(value:any):number;
     protected initPaddingTop(value:any):number;
     protected initSelectable(value:any):boolean;
+    protected initShowToolTipWhenDisabled(value:any):boolean;
     protected initTabIndex(value:any):number;
     protected initTextColor(value:any):string;
     protected initToolTip(value:any):qx.ui.tooltip.ToolTip;
@@ -5561,6 +5541,7 @@ class Widget extends qx.ui.core.LayoutItem {
     isNativeContextMenu():boolean;
     isSeeable():boolean;
     isSelectable():boolean;
+    isShowToolTipWhenDisabled():boolean;
     isTabable():boolean;
     isVisible():boolean;
     releaseCapture():void;
@@ -5588,6 +5569,7 @@ class Widget extends qx.ui.core.LayoutItem {
     resetPaddingRight():void;
     resetPaddingTop():void;
     resetSelectable():void;
+    resetShowToolTipWhenDisabled():void;
     resetTabIndex():void;
     resetTextColor():void;
     resetToolTip():void;
@@ -5610,7 +5592,7 @@ class Widget extends qx.ui.core.LayoutItem {
     setDomTop(value:number):void;
     setDraggable(value:any):boolean;
     setDroppable(value:any):boolean;
-    setEnabled(value:any):void;
+    setEnabled(value:any):any;
     setFocusable(value:any):boolean;
     setFont(value:any):string;
     setKeepActive(value:any):boolean;
@@ -5623,6 +5605,7 @@ class Widget extends qx.ui.core.LayoutItem {
     setPaddingRight(value:any):number;
     setPaddingTop(value:any):number;
     setSelectable(value:any):boolean;
+    setShowToolTipWhenDisabled(value:any):boolean;
     setTabIndex(value:any):number;
     setTextColor(value:any):string;
     setToolTip(value:any):qx.ui.tooltip.ToolTip;
@@ -5644,6 +5627,7 @@ class Widget extends qx.ui.core.LayoutItem {
     toggleKeepFocus():boolean;
     toggleNativeContextMenu():boolean;
     toggleSelectable():boolean;
+    toggleShowToolTipWhenDisabled():boolean;
     updateAppearance():void;
     visualizeBlur():void;
     visualizeFocus():void;
@@ -6414,7 +6398,6 @@ class MDoubleBorder {
 declare module qx.ui.decoration {
 class MLinearBackgroundGradient {
     protected _applyLinearBackgroundGradient(value:any,old:any):void;
-    protected _getContent():string;
     protected _styleLinearBackgroundGradient(styles:IMap):void;
     getColorPositionUnit():any;
     getEndColor():string;
@@ -6864,10 +6847,10 @@ class AbstractSelectBox extends qx.ui.core.Widget implements qx.ui.form.IForm {
 declare module qx.ui.form {
 class Button extends qx.ui.basic.Atom implements qx.ui.form.IExecutable {
     execute():void;
-    getCommand():qx.ui.core.Command;
-    setCommand(command:qx.ui.core.Command):void;
+    getCommand():qx.ui.command.Command;
+    setCommand(command:qx.ui.command.Command):void;
     resetCommand():void;
-    constructor (label?:string,icon?:string,command?:qx.ui.core.Command);
+    constructor (label?:string,icon?:string,command?:qx.ui.command.Command);
     protected _onKeyDown(e:qx.event.type.Event):void;
     protected _onKeyUp(e:qx.event.type.Event):void;
     protected _onPointerDown(e:qx.event.type.Event):void;
@@ -7017,8 +7000,8 @@ class Form extends qx.core.Object {
 declare module qx.ui.form {
 class HoverButton extends qx.ui.basic.Atom implements qx.ui.form.IExecutable {
     execute():void;
-    getCommand():qx.ui.core.Command;
-    setCommand(command:qx.ui.core.Command):void;
+    getCommand():qx.ui.command.Command;
+    setCommand(command:qx.ui.command.Command):void;
     resetCommand():void;
     constructor (label?:string,icon?:string);
     protected _onInterval():void;
@@ -7070,8 +7053,8 @@ interface IDateForm {
 declare module qx.ui.form {
 interface IExecutable {
     execute():void;
-    getCommand():qx.ui.core.Command;
-    setCommand(command:qx.ui.core.Command):void;
+    getCommand():qx.ui.command.Command;
+    setCommand(command:qx.ui.command.Command):void;
 
 }
 }
@@ -7291,7 +7274,7 @@ class MenuButton extends qx.ui.form.Button {
     protected _applyMenu(value:qx.ui.menu.Menu,old:qx.ui.menu.Menu):void;
     protected _onMenuChange(e:qx.event.type.Data):void;
     getMenu():qx.ui.menu.Menu;
-    protected initMenu(value:any):qx.ui.menu.Menu;
+    initMenu(value:any):qx.ui.menu.Menu;
     open(selectFirst?:boolean):void;
     resetMenu():void;
     setMenu(value:any):qx.ui.menu.Menu;
@@ -7410,7 +7393,7 @@ class RadioGroup extends qx.core.Object implements qx.ui.core.ISingleSelection,q
     setValid(valid:boolean):void;
     getModelSelection():qx.data.Array;
     setModelSelection(value:qx.data.Array):void;
-    constructor (...varargs:qx.core.Object[]);
+    constructor (varargs?:qx.core.Object);
     protected _applyAllowEmptySelection(value:boolean,old:boolean):void;
     protected _applyEnabled(value:boolean,old:boolean):void;
     protected _applyInvalidMessage(value:string,old:string):void;
@@ -7419,7 +7402,7 @@ class RadioGroup extends qx.core.Object implements qx.ui.core.ISingleSelection,q
     protected _isAllowEmptySelection():boolean;
     protected _isItemSelectable(item:qx.ui.form.IRadioItem):boolean;
     protected _onItemChangeChecked(e:qx.event.type.Data):void;
-    add(...varargs:qx.ui.form.IRadioItem[]):void;
+    add(varargs?:qx.ui.form.IRadioItem):void;
     getAllowEmptySelection():boolean;
     getChildren():qx.ui.form.IRadioItem[];
     getItems():qx.ui.form.IRadioItem[];
@@ -7690,10 +7673,10 @@ class Spinner extends qx.ui.core.Widget implements qx.ui.form.INumberForm,qx.ui.
 declare module qx.ui.form {
 class SplitButton extends qx.ui.core.Widget implements qx.ui.form.IExecutable {
     execute():void;
-    getCommand():qx.ui.core.Command;
-    setCommand(command:qx.ui.core.Command):void;
+    getCommand():qx.ui.command.Command;
+    setCommand(command:qx.ui.command.Command):void;
     resetCommand():void;
-    constructor (label?:string,icon?:string,menu?:qx.ui.menu.Menu,command?:qx.ui.core.Command);
+    constructor (label?:string,icon?:string,menu?:qx.ui.menu.Menu,command?:qx.ui.command.Command);
     protected _applyIcon(value:string,old:string):void;
     protected _applyLabel(value:string,old:string):void;
     protected _applyMenu(value:qx.ui.menu.Menu,old:qx.ui.menu.Menu):void;
@@ -7758,6 +7741,7 @@ class TextArea extends qx.ui.form.AbstractField {
 }
 declare module qx.ui.form {
 class TextField extends qx.ui.form.AbstractField {
+    protected _onKeyPress(evt:qx.event.type.KeySequence):void;
 
 }
 }
@@ -7767,8 +7751,8 @@ class ToggleButton extends qx.ui.basic.Atom implements qx.ui.form.IBooleanForm,q
     resetValue():void;
     setValue(value:boolean):void;
     execute():void;
-    getCommand():qx.ui.core.Command;
-    setCommand(command:qx.ui.core.Command):void;
+    getCommand():qx.ui.command.Command;
+    setCommand(command:qx.ui.command.Command):void;
     getGroup():qx.ui.form.RadioGroup;
     setGroup(value:qx.ui.form.RadioGroup):void;
     resetCommand():void;
@@ -7991,6 +7975,7 @@ class AsyncValidator extends qx.core.Object {
 declare module qx.ui.form.validation {
 class Manager extends qx.core.Object {
     constructor ();
+    protected _setValid(value:boolean):void;
     protected _showToolTip(valid:boolean):void;
     add(formItem:qx.ui.core.Widget,validator:Function,context?:any):void;
     getContext():any;
@@ -8025,8 +8010,8 @@ class Manager extends qx.core.Object {
 declare module qx.ui.groupbox {
 class CheckGroupBox extends qx.ui.groupbox.GroupBox implements qx.ui.form.IExecutable,qx.ui.form.IBooleanForm,qx.ui.form.IModel {
     execute():void;
-    getCommand():qx.ui.core.Command;
-    setCommand(command:qx.ui.core.Command):void;
+    getCommand():qx.ui.command.Command;
+    setCommand(command:qx.ui.command.Command):void;
     getValue():boolean;
     resetValue():void;
     setValue(value:boolean):void;
@@ -8106,8 +8091,8 @@ class RadioGroupBox extends qx.ui.groupbox.GroupBox implements qx.ui.form.IRadio
     setGroup(value:qx.ui.form.RadioGroup):void;
     setValue(value:boolean):void;
     execute():void;
-    getCommand():qx.ui.core.Command;
-    setCommand(command:qx.ui.core.Command):void;
+    getCommand():qx.ui.command.Command;
+    setCommand(command:qx.ui.command.Command):void;
     resetValue():void;
     getModel():any;
     resetModel():void;
@@ -8338,7 +8323,7 @@ class LineSizeIterator {
 declare module qx.ui.layout {
 class Util {
     static arrangeIdeals(beginMin:number,beginIdeal:number,beginMax:number,endMin:number,endIdeal:number,endMax:number):IMap;
-    static collapseMargins(...varargs:any[]):number;
+    static collapseMargins(varargs?:any):number;
     static computeFlexOffsets(flexibles:IMap,avail:number,used:number):IMap;
     static computeHorizontalAlignOffset(align:string,width:number,availWidth:number,marginLeft?:number,marginRight?:number):number;
     static computeHorizontalGaps(children:qx.data.Array,spacing?:number,collapse?:boolean):number;
@@ -8383,6 +8368,7 @@ class List extends qx.ui.virtual.core.Scroller implements qx.data.controller.ISe
     getSelection():qx.data.IListData;
     resetSelection():void;
     setSelection(value:qx.data.IListData):void;
+    getAutoScrollIntoView():boolean;
     getDragSelection():boolean;
     getQuickSelection():boolean;
     getSelectionMode():any;
@@ -8391,6 +8377,7 @@ class List extends qx.ui.virtual.core.Scroller implements qx.data.controller.ISe
     resetDragSelection():void;
     resetQuickSelection():void;
     resetSelectionMode():void;
+    setAutoScrollIntoView(value:boolean):void;
     setDragSelection(value:any):boolean;
     setQuickSelection(value:any):boolean;
     setSelectionMode(value:any):any;
@@ -8400,6 +8387,7 @@ class List extends qx.ui.virtual.core.Scroller implements qx.data.controller.ISe
     protected _applyDelegate(value:any,old:any):void;
     protected _applyGroupLabelOptions(value:any,old:any):void;
     protected _applyGroupLabelPath(value:string,old:string):void;
+    protected _applyGroupRowHeight(value:number,old:number):void;
     protected _applyIconOptions(value:any,old:any):void;
     protected _applyIconPath(value:string,old:string):void;
     protected _applyLabelOptions(value:any,old:any):void;
@@ -8423,6 +8411,7 @@ class List extends qx.ui.virtual.core.Scroller implements qx.data.controller.ISe
     protected _runDelegateSorter(model:qx.data.IListData):void;
     getAutoGrouping():boolean;
     getDelegate():any;
+    getGroupItemHeight():number;
     getGroupLabelOptions():any;
     getGroupLabelPath():string;
     getGroups():qx.data.Array;
@@ -8434,6 +8423,7 @@ class List extends qx.ui.virtual.core.Scroller implements qx.data.controller.ISe
     getModel():qx.data.IListData;
     protected initAutoGrouping(value:any):boolean;
     protected initDelegate(value:any):any;
+    protected initGroupItemHeight(value:any):number;
     protected initGroupLabelOptions(value:any):any;
     protected initGroupLabelPath(value:any):string;
     protected initGroups(value:any):qx.data.Array;
@@ -8447,6 +8437,7 @@ class List extends qx.ui.virtual.core.Scroller implements qx.data.controller.ISe
     refresh():void;
     resetAutoGrouping():void;
     resetDelegate():void;
+    resetGroupItemHeight():void;
     resetGroupLabelOptions():void;
     resetGroupLabelPath():void;
     resetGroups():void;
@@ -8458,6 +8449,7 @@ class List extends qx.ui.virtual.core.Scroller implements qx.data.controller.ISe
     resetModel():void;
     setAutoGrouping(value:any):boolean;
     setDelegate(value:any):any;
+    setGroupItemHeight(value:any):number;
     setGroupLabelOptions(value:any):any;
     setGroupLabelPath(value:any):string;
     setGroups(value:any):qx.data.Array;
@@ -8594,8 +8586,8 @@ class WidgetProvider extends qx.core.Object implements qx.ui.virtual.core.IWidge
 declare module qx.ui.menu {
 class AbstractButton extends qx.ui.core.Widget implements qx.ui.form.IExecutable {
     execute():void;
-    getCommand():qx.ui.core.Command;
-    setCommand(command:qx.ui.core.Command):void;
+    getCommand():qx.ui.command.Command;
+    setCommand(command:qx.ui.command.Command):void;
     resetCommand():void;
     constructor ();
     protected _applyIcon(value:string,old:string):void;
@@ -8629,7 +8621,7 @@ class AbstractButton extends qx.ui.core.Widget implements qx.ui.form.IExecutable
 }
 declare module qx.ui.menu {
 class Button extends qx.ui.menu.AbstractButton {
-    constructor (label?:string,icon?:string,command?:qx.ui.core.Command,menu?:qx.ui.menu.Menu);
+    constructor (label?:string,icon?:string,command?:qx.ui.command.Command,menu?:qx.ui.menu.Menu);
 
 }
 }
@@ -8678,6 +8670,7 @@ declare module qx.ui.menu {
 class Manager extends qx.core.Object {
     constructor ();
     static getInstance():qx.ui.menu.Manager;
+    __onPreventContextMenu(e:qx.event.type.Mouse):void;
     protected _getChild(menu:qx.ui.menu.Menu,start:number,iter:number,loop?:boolean):qx.ui.menu.Button;
     protected _getMenuButton(widget:qx.ui.core.Widget):qx.ui.menu.Button;
     protected _isInMenu(widget:qx.ui.core.Widget):boolean;
@@ -8699,6 +8692,7 @@ class Manager extends qx.core.Object {
     cancelOpen(menu:qx.ui.menu.Menu):void;
     getActiveMenu():qx.ui.menu.Menu;
     hideAll():void;
+    preventContextMenuOnce():void;
     remove(obj:qx.ui.menu.Menu):void;
     scheduleClose(menu:qx.ui.menu.Menu):void;
     scheduleOpen(menu:qx.ui.menu.Menu):void;
@@ -8804,7 +8798,6 @@ class Menu extends qx.ui.core.Widget {
     protected initSpacingY(value:any):number;
     isBlockBackground():boolean;
     open():void;
-    openAtMouse(e:qx.event.type.Mouse):void;
     openAtPoint(point:IMap):void;
     openAtPointer(e:qx.event.type.Pointer):void;
     resetArrowColumnWidth():void;
@@ -9321,6 +9314,7 @@ interface IColumnMenuButton {
     empty():void;
     factory(item:string,options:IMap):qx.ui.core.Widget;
     getMenu():any;
+    initMenu(value:any):any;
     resetMenu():void;
     setMenu(value:any):any;
 
@@ -9329,6 +9323,7 @@ interface IColumnMenuButton {
 declare module qx.ui.table {
 interface IColumnMenuItem {
     getVisible():any;
+    // initVisible(value:any):any;
     resetVisible():void;
     setVisible(value:any):any;
 
@@ -9845,10 +9840,10 @@ class Basic extends qx.core.Object {
 declare module qx.ui.table.columnmodel {
 class Resize extends qx.ui.table.columnmodel.Basic {
     marktr(messageId:string):string;
-    tr(messageId:string,...varargs:any[]):string;
-    trc(hint:string,messageId:string,...varargs:any[]):string;
-    trn(singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
-    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
+    tr(messageId:string,varargs?:any):string;
+    trc(hint:string,messageId:string,varargs?:any):string;
+    trn(singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
+    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
     constructor ();
     protected _addResetColumnWidthButton(event:qx.event.type.Data):void;
     protected _applyBehavior(value:qx.ui.table.columnmodel.resizebehavior.Abstract,old:qx.ui.table.columnmodel.resizebehavior.Abstract):void;
@@ -10792,6 +10787,7 @@ class TreeFolder extends qx.ui.tree.core.AbstractTreeItem {
 declare module qx.ui.tree {
 class VirtualTree extends qx.ui.virtual.core.Scroller implements qx.ui.tree.core.IVirtualTree,qx.data.controller.ISelection {
     closeNode(node:qx.core.Object):void;
+    closeNodeWithoutScrolling(node:qx.core.Object):void;
     getLevel(row:number):number;
     getLookupTable():qx.data.Array;
     getSelection():qx.data.Array;
@@ -10800,8 +10796,10 @@ class VirtualTree extends qx.ui.virtual.core.Scroller implements qx.ui.tree.core
     isNodeOpen(node:qx.core.Object):boolean;
     isShowTopLevelOpenCloseIcons():boolean;
     openNode(node:qx.core.Object):void;
+    openNodeWithoutScrolling(node:qx.core.Object):void;
     resetSelection():void;
     setSelection(value:qx.data.IListData):void;
+    getAutoScrollIntoView():boolean;
     getDragSelection():boolean;
     getQuickSelection():boolean;
     getSelectionMode():any;
@@ -10810,6 +10808,7 @@ class VirtualTree extends qx.ui.virtual.core.Scroller implements qx.ui.tree.core
     resetDragSelection():void;
     resetQuickSelection():void;
     resetSelectionMode():void;
+    setAutoScrollIntoView(value:boolean):void;
     setDragSelection(value:any):boolean;
     setQuickSelection(value:any):boolean;
     setSelectionMode(value:any):any;
@@ -10979,7 +10978,7 @@ class AbstractItem extends qx.ui.core.Widget implements qx.ui.form.IModel {
 declare module qx.ui.tree.core {
 class AbstractTreeItem extends qx.ui.tree.core.AbstractItem {
     constructor (label?:any);
-    add(...varargs:qx.ui.tree.core.AbstractTreeItem[]):void;
+    add(varargs?:qx.ui.tree.core.AbstractTreeItem):void;
     addAfter(treeItem:qx.ui.tree.core.AbstractTreeItem,after:qx.ui.tree.core.AbstractTreeItem):void;
     addAt(treeItem:qx.ui.tree.core.AbstractTreeItem,index:number):void;
     addAtBegin(treeItem:qx.ui.tree.core.AbstractTreeItem):void;
@@ -10992,7 +10991,7 @@ class AbstractTreeItem extends qx.ui.tree.core.AbstractItem {
     hasChildrenContainer():boolean;
     protected initParent(value:any):qx.ui.tree.core.AbstractTreeItem;
     recursiveAddToWidgetQueue():void;
-    remove(...varargs:qx.ui.tree.core.AbstractTreeItem[]):void;
+    remove(varargs?:qx.ui.tree.core.AbstractTreeItem):void;
     removeAll():void;
     removeAt(index:number):void;
     resetParent():void;
@@ -11003,9 +11002,9 @@ class AbstractTreeItem extends qx.ui.tree.core.AbstractItem {
 declare module qx.ui.tree.core {
 class FolderOpenButton extends qx.ui.basic.Image {
     execute():void;
-    getCommand():qx.ui.core.Command;
+    getCommand():qx.ui.command.Command;
     resetCommand():void;
-    setCommand(value:any):qx.ui.core.Command;
+    setCommand(value:any):qx.ui.command.Command;
     constructor ();
     protected _applyOpen(value:boolean,old:boolean):void;
     protected _onTap(e:qx.event.type.Pointer):void;
@@ -11022,6 +11021,7 @@ class FolderOpenButton extends qx.ui.basic.Image {
 declare module qx.ui.tree.core {
 interface IVirtualTree {
     closeNode(node:qx.core.Object):void;
+    closeNodeWithoutScrolling(node:qx.core.Object):void;
     getLevel(row:number):number;
     getLookupTable():qx.data.Array;
     getSelection():qx.data.Array;
@@ -11030,6 +11030,7 @@ interface IVirtualTree {
     isNodeOpen(node:qx.core.Object):boolean;
     isShowTopLevelOpenCloseIcons():boolean;
     openNode(node:qx.core.Object):void;
+    openNodeWithoutScrolling(node:qx.core.Object):void;
 
 }
 }
@@ -11718,6 +11719,7 @@ class WidgetCellSpan extends qx.ui.virtual.layer.Abstract {
     removeAll():qx.data.Array;
     removeAt(index:number):qx.ui.core.LayoutItem;
     constructor (widgetCellProvider?:qx.ui.virtual.core.IWidgetCellProvider,rowConfig?:qx.ui.virtual.core.Axis,columnConfig?:qx.ui.virtual.core.Axis);
+    protected _getSpacer():qx.ui.core.Spacer;
     getRenderedCellWidget(row:number,column:number):qx.ui.core.LayoutItem;
     setCellSpan(row:number,column:number,rowSpan:number,columnSpan:number):void;
 
@@ -11770,6 +11772,7 @@ class MModel {
     protected _onChangeSelection(e:qx.event.type.Data):void;
     protected _onManagerChangeSelection(e:qx.event.type.Data):void;
     protected _updateSelection():void;
+    getAutoScrollIntoView():boolean;
     getDragSelection():boolean;
     getQuickSelection():boolean;
     getSelection():qx.data.Array;
@@ -11784,6 +11787,7 @@ class MModel {
     resetQuickSelection():void;
     resetSelection():void;
     resetSelectionMode():void;
+    setAutoScrollIntoView(value:boolean):void;
     setDragSelection(value:any):boolean;
     setQuickSelection(value:any):boolean;
     setSelection(value:any):qx.data.Array;
@@ -12256,15 +12260,15 @@ class RingBuffer {
 declare module qx.util {
 class Serializer {
     static toJson(object:qx.core.Object,qxSerializer?:Function,dateFormat?:qx.util.format.DateFormat):string;
-    static toNativeObject(object:qx.core.Object,qxSerializer:Function,dateFormat:qx.util.format.DateFormat):string;
-    static toUriParameter(object:qx.core.Object,qxSerializer:Function,dateFormat:qx.util.format.DateFormat):string;
+    static toNativeObject(object:qx.core.Object,qxSerializer?:Function,dateFormat?:qx.util.format.DateFormat):string;
+    static toUriParameter(object:qx.core.Object,qxSerializer?:Function,dateFormat?:qx.util.format.DateFormat):string;
 
 }
 }
 declare module qx.util {
 class StringBuilder extends qx.type.BaseArray {
     constructor (length_or_items?:number);
-    add(...varargs:string[]):void;
+    add(varargs?:string):void;
     clear():void;
     get():string;
     isEmpty():boolean;
@@ -12365,6 +12369,7 @@ class NumberFormat extends qx.core.Object implements qx.util.format.IFormat {
     parse(str:string):any;
     constructor (locale?:string);
     getGroupingUsed():boolean;
+    getLocale():string;
     getMaximumFractionDigits():number;
     getMaximumIntegerDigits():number;
     getMinimumFractionDigits():number;
@@ -12372,6 +12377,7 @@ class NumberFormat extends qx.core.Object implements qx.util.format.IFormat {
     getPostfix():string;
     getPrefix():string;
     protected initGroupingUsed(value:any):boolean;
+    protected initLocale(value:any):string;
     protected initMaximumFractionDigits(value:any):number;
     protected initMaximumIntegerDigits(value:any):number;
     protected initMinimumFractionDigits(value:any):number;
@@ -12380,6 +12386,7 @@ class NumberFormat extends qx.core.Object implements qx.util.format.IFormat {
     protected initPrefix(value:any):string;
     isGroupingUsed():boolean;
     resetGroupingUsed():void;
+    resetLocale():void;
     resetMaximumFractionDigits():void;
     resetMaximumIntegerDigits():void;
     resetMinimumFractionDigits():void;
@@ -12387,6 +12394,7 @@ class NumberFormat extends qx.core.Object implements qx.util.format.IFormat {
     resetPostfix():void;
     resetPrefix():void;
     setGroupingUsed(value:any):boolean;
+    setLocale(value:any):string;
     setMaximumFractionDigits(value:any):number;
     setMaximumIntegerDigits(value:any):number;
     setMinimumFractionDigits(value:any):number;
@@ -12422,6 +12430,7 @@ class FiniteStateMachine extends qx.core.Object {
     protected initNextState(value:any):string;
     protected initPreviousState(value:any):string;
     protected initState(value:any):string;
+    isTerminated():boolean;
     popState():string;
     postponeEvent(event:qx.event.type.Event):void;
     pushState(state:boolean):void;
@@ -12588,6 +12597,83 @@ declare module qx.xml {
 class String {
     static escape(str:string):string;
     static unescape(str:string):string;
+
+}
+}
+declare module qx.ui.command {
+class Command extends qx.core.Object {
+    constructor (shortcut?:string);
+    protected _applyActive(value:boolean,old:boolean):void;
+    protected _applyEnabled(value:boolean,old:boolean):void;
+    protected _applyShortcut(value:string,old:string):void;
+    execute(target?:any):void;
+    getActive():boolean;
+    getEnabled():boolean;
+    getIcon():string;
+    getLabel():string;
+    getMenu():qx.ui.menu.Menu;
+    getShortcut():string;
+    getToolTipText():string;
+    getValue():any;
+    protected initActive(value:any):boolean;
+    protected initEnabled(value:any):boolean;
+    protected initIcon(value:any):string;
+    protected initLabel(value:any):string;
+    protected initMenu(value:any):qx.ui.menu.Menu;
+    protected initShortcut(value:any):string;
+    protected initToolTipText(value:any):string;
+    protected initValue(value:any):any;
+    isActive():boolean;
+    isEnabled():boolean;
+    resetActive():void;
+    resetEnabled():void;
+    resetIcon():void;
+    resetLabel():void;
+    resetMenu():void;
+    resetShortcut():void;
+    resetToolTipText():void;
+    resetValue():void;
+    setActive(value:any):boolean;
+    setEnabled(value:any):boolean;
+    setIcon(value:any):string;
+    setLabel(value:any):string;
+    setMenu(value:any):qx.ui.menu.Menu;
+    setShortcut(value:any):string;
+    setToolTipText(value:any):string;
+    setValue(value:any):any;
+    toggleActive():boolean;
+    toggleEnabled():boolean;
+
+}
+}
+declare module qx.ui.command {
+class Group extends qx.core.Object {
+    constructor ();
+    protected _applyActive(value:boolean,old:boolean):void;
+    add(key:string,command:qx.ui.command.Command):boolean;
+    get(key:string):qx.ui.command.Command;
+    getActive():boolean;
+    has(key:string):boolean;
+    protected initActive(value:any):boolean;
+    isActive():boolean;
+    remove(key:string):qx.ui.command.Command;
+    resetActive():void;
+    setActive(value:any):boolean;
+    toggleActive():boolean;
+
+}
+}
+declare module qx.ui.command {
+class GroupManager extends qx.core.Object {
+    constructor ();
+    protected _getGroup(group:qx.ui.command.Group):qx.ui.command.Group;
+    add(group:qx.ui.command.Group):boolean;
+    block():void;
+    getActive():qx.ui.command.Group;
+    has(group:qx.ui.command.Group):boolean;
+    remove(group:qx.ui.command.Group):qx.ui.command.Group;
+    setActive(group:qx.ui.command.Group):boolean;
+    unblock():void;
 
 }
 }

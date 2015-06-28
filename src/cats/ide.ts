@@ -91,7 +91,7 @@ module Cats {
             var shortCuts = shortCutSets[os];
             for (var shortCut in shortCuts) {
                 var commandName = shortCuts[shortCut];
-                var cmd = new qx.ui.core.Command(shortCut);
+                var cmd = new qx.ui.command.Command(shortCut);
                 cmd.addListener("execute", (function(commandName: string) {
                   Cats.Commands.CMDS[commandName].command();
                 }).bind(null, commandName));
