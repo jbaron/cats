@@ -149,9 +149,9 @@ module Cats {
                 this.iSense.compile((err: Error, data: CompileResults) => {
                     this.showCompilationResults(data);
                     if (data.errors && (data.errors.length > 0)) return;
-                    var sources = data.source;
-                    sources.forEach((source) => {
-                        OS.File.writeTextFile(source.fileName, source.content);
+                    var files = data.outputFiles;
+                    files.forEach((file) => {
+                        OS.File.writeTextFile(file.name, file.text);
                     });
                     IDE.console.log("Done building project " + this.name + ".");
                 });
@@ -249,7 +249,7 @@ module Cats {
             }
 
             IDE.problemResult.clear();
-            IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).");
+            IDE.console.log("Successfully generated " + data.outputFiles.length + " file(s).");
         }
 
         /**

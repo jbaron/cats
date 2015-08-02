@@ -115,7 +115,7 @@ declare module Cats {
     }
 
     interface CompileResults {
-        source: { fileName: string; content: string; }[];
+        outputFiles: ts.OutputFile[];
         errors: FileRange[];
     }
 

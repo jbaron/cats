@@ -265,13 +265,14 @@ module Cats.TSWorker {
 
         /**
          * Compile the loaded TS files and return the 
-         * compiles JS sources and errors (if any).
+         * compiles JS sources, mapfiles and errors (if any).
          */
         compile(): Cats.CompileResults {
             var scripts = this.lsHost.getScriptFileNames();
 
-            var result: { fileName: string; content: string; }[] = [];
+            var outputFiles: ts.OutputFile[] = [];
             var errors: FileRange[] = [];
+            var alreadyProcessed = {};
 
             for (var x=0;x<scripts.length;x++) {
                 try {
@@ -279,14 +280,12 @@ module Cats.TSWorker {
                     var emitOutput = this.ls.getEmitOutput(fileName);
 
                     emitOutput.outputFiles.forEach((file) => {
-                        result.push({
-                            fileName: file.name,
-                            content: file.text
-                        });
+                        if (! alreadyProcessed[file.name]) outputFiles.push(file);
+                        alreadyProcessed[file.name] = true;
                     });
 
                     // No need to request other files if there is only one output file
-                    if (result.length > 0 && this.lsHost.getCompilationSettings().out) {
+                    if (outputFiles.length > 0 && this.lsHost.getCompilationSettings().out) {
                         break;
                     }
                 } catch (err) {/*ignore */}
@@ -297,7 +296,7 @@ module Cats.TSWorker {
             errors = this.getAllDiagnostics();
             console.info("Errors found: " + errors.length);
             return {
-                source: result,
+                outputFiles: outputFiles,
                 errors: errors
             };
         }
