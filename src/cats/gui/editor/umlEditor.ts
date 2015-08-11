@@ -24,6 +24,11 @@ module Cats.Gui.Editor {
     declare var UMLGeneralization:any;
     declare var UMLRealization:any;
 
+
+    /**
+     * Draws an UML diagram
+     * @TODO Canvas is not really suited due to limits in size. Better to use SVG based drawing
+     */ 
     export class UMLEditor extends Cats.Editor {
 
         private backgroundColors = ["white", "black", "grey"];
@@ -72,8 +77,12 @@ module Cats.Gui.Editor {
             return this.widget;
         }
         
-        
-        static LoadResources(cb: Function) {
+        /**
+         * Dynamically load the resources so the overhead ony occurs when using 
+         * the UML feature and not at startup of CATS
+         * 
+         */ 
+        private static LoadResources(cb: Function) {
             if (UMLEditor.ResourcesLoaded) {
                 cb();
             } else {
@@ -188,6 +197,9 @@ module Cats.Gui.Editor {
             return;
         }
 
+        /**
+         * Simple context menu that allows to set backgroud color
+         */ 
         private createContextMenu() {
             var menu = new qx.ui.menu.Menu();
             this.backgroundColors.forEach((color) => {

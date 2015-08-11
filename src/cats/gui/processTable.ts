@@ -17,7 +17,8 @@ module Cats.Gui {
 
     /**      
      * Overview of started processes. Also provides the controls so these processes can be paused,
-     * stopped or killed.
+     * stopped or killed. Especially with custom build and run scripts this provides a bit more 
+     * control from within CATS.
      * 
      * @TODO provide feedback of the actuall status of a process
      */

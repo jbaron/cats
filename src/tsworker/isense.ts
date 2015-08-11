@@ -15,6 +15,10 @@
 
 importScripts("../resource/typescriptServices.js");
 
+/**
+ * TSWorker contains all the code that should run in a webworker and not the main UI thread.
+ * Basically all the compiling and code completion is done in a webworker so the UI in not blocked.
+ */ 
 module Cats.TSWorker {
 
     function respond(message:any) {
@@ -23,7 +27,7 @@ module Cats.TSWorker {
 
     /**
      * Simple function to stub console.log functionality since this is 
-     * not available in a worker.
+     * not available in a webworker.
      */
     export var console = {
         log: function(str: string) { respond({ method: "console", params: ["log",str] }); },
@@ -174,34 +178,41 @@ module Cats.TSWorker {
             if (!(errors && errors.length)) return [];
         
             return errors.map((error) => {
-                var script = this.lsHost.getScript(error.file.fileName);
-                
                 var message =  ts.flattenDiagnosticMessageText(error.messageText, "\n");
-       
-                return {
-                    range: script.getRange(error.start, error.length),
-                    severity: severity,
+                
+                var result:Cats.FileRange = {
                     message: message + "",
-                    fileName: error.file.fileName
+                    severity: severity
                 };
+                
+                if (error.file) {
+                    var script = this.lsHost.getScript(error.file.fileName);
+                    result.range = script.getRange(error.start, error.length);
+                    result.severity= severity;
+                        
+                    result.fileName= error.file.fileName
+                }
+                
+                return result;
             });
             
         }
 
         /**
-         * Get the errors for either one script or for 
-         * all the scripts
+         * Get the diagnostic messages for one source file
          * 
-         * @param fileName name of the script. If none provided the errors
-         * for all scripts will be returned.
+         * @param fileName name of the script. 
          */
         getErrors(fileName: string): FileRange[] {
             var errors: Cats.FileRange[] = [];
+            
+            // Let's first get the syntactic errors
             var fileErrors = this.ls.getSyntacticDiagnostics(fileName);
 
             var newErrors = this.convertErrors(fileErrors, Severity.Error);
             errors = errors.concat(newErrors);
 
+            // And then the semantic errors
             fileErrors = this.ls.getSemanticDiagnostics(fileName);
             newErrors = this.convertErrors(fileErrors, Severity.Warning);
 
@@ -211,17 +222,18 @@ module Cats.TSWorker {
         }
 
         /**
-         * Get the diagnostic messages for all the files that 
-         * are registered in this worker
+         * Get the diagnostic messages for all the files and compiler.
          */
         getAllDiagnostics() {
             
             var errors: FileRange[] = [];
 
+            // Let's first get the errors related to one of the source files
             this.lsHost.getScriptFileNames().forEach((fileName) => {
                 errors = errors.concat(this.getErrors(fileName));
             });
 
+            // And then let's see if one or more compiler setttings are wrong
             var compilerSettingsErrors = this.ls.getCompilerOptionsDiagnostics();
             var newErrors = this.convertErrors(compilerSettingsErrors, Severity.Error);
 

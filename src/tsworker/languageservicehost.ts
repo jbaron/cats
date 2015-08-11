@@ -13,12 +13,6 @@
 // limitations under the License.
 //
 
-
-// This is based on the harness.ts file from TypeScript
-// Major difference is that this module uses real language services API and not the Shim.
-// Licensed under the Apache License, Version 2.0. 
-
-
 module Cats.TSWorker {
 
     /**

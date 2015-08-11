@@ -28,8 +28,10 @@ module Cats.Gui {
 
     /**
      * This class creates the main menubar. This is the only GUI component that 
-     * is not using Qooxdoo but an API exposed by nodewebkit. 
-     * This makes it possible to have the feeling of a native menubar.
+     * is not using Qooxdoo/HTML5 but an API exposed by NW.js. 
+     * This makes it possible to have a native menubar.
+     * 
+     * @TODO revise if this is really the best approach.
      */
     export class MenuBar {
 

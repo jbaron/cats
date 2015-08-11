@@ -44,7 +44,7 @@ module Cats.Gui {
             this.addListener("click", () => {
                 var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
                 var data = this.getTableModel().getRowData(selectedRow);
-                if (data) FileEditor.OpenEditor(data[1], data[3]);
+                if (data && data[1]) FileEditor.OpenEditor(data[1], data[3]);
             });
 
             this.setContextMenu(this.createContextMenu());
@@ -52,7 +52,11 @@ module Cats.Gui {
 
 
         private rangeToPosition(range: Cats.Range): string {
-            return (range.start.row + 1) + ":" + (range.start.column + 1);
+            if (range) {
+                return (range.start.row + 1) + ":" + (range.start.column + 1);
+            } else {
+                return "";
+            }
         }
 
         /**
@@ -66,7 +70,7 @@ module Cats.Gui {
         private convert(row: Cats.FileRange) {
             return [
                 row.message,
-                row.fileName,
+                row.fileName || "",
                 this.rangeToPosition(row.range),
                 row.range
             ];

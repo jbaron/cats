@@ -47,9 +47,9 @@ export class FileContextMenu extends qx.ui.menu.Menu {
     }
 
  
-    private getFullPath() {
-        var fileName = this.getSelectedItem().getFullPath();
-        return fileName;
+    private getFullPath():string {
+        var item = this.getSelectedItem();
+        if (item) return item.getFullPath();
     }
 
 

@@ -23,7 +23,10 @@ module Cats {
         
         private static Registry:Map<Function> = {}; 
         
-        label = "Untitled"; // Label to be used on the tab page
+        /**
+         * Label used on the tab page
+         */ 
+        label = "Untitled"; 
  
         // The project this editor belongs to
         project = IDE.project;
@@ -41,6 +44,7 @@ module Cats {
         static RegisterEditor(name:string,restoreFn:(state:any)=>Editor) {
            Editor.Registry[name] = restoreFn;
         }
+        
         /**
          * Save the content of the editor. Not all editors imeplement this method.
          */

@@ -16,7 +16,7 @@ module Cats.Gui {
  
     /**
      * Basic Qooxdoo-powered replacement for native `prompt` usage in
-     * CATS.
+     * CATS. Main difference is that this is an asynchronous prompt.
      */
     export class PromptDialog extends qx.ui.window.Window {
         onSuccess: (value: string) => void;

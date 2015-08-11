@@ -14,9 +14,12 @@
 //
 
 module Cats.Gui {
+    
     /**
      * The BusyWindow indicates to the user that there is processing going
      * on that first has to finish before the rest of the UI is available again.
+     * 
+     * Since most activities are done in the backgorund, this should not be used often.
      */
     export class BusyWindow extends qx.ui.window.Window {
 

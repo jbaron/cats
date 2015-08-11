@@ -221,10 +221,9 @@ module Cats.OS.File {
 
 
         /**
-         * Determine the newLineMode.
+         * Determine the newLine character that should be used.
          * 
-         * @return Return value is either dos or unix
-         * 
+         * @return Returned value is either the dos or unix newline character 
          */ 
         function determineNewLineChar(): string {
             try {
@@ -273,9 +272,8 @@ module Cats.OS.File {
          
          
         /**
-         * Sort two directory directorie entries first on 
-         * directory versus file and then on alphabet.
-         * 
+         * Sort two file entries. First sort on directory versus file and then on alphabet.
+         * This is similar how most file explorers do it. 
          */ 
         function sort(a: Cats.FileEntry, b: Cats.FileEntry) {
             if ((!a.isDirectory) && b.isDirectory) return 1;
@@ -287,9 +285,10 @@ module Cats.OS.File {
  
                 
         /**
-         * Read the files from a directory
+         * Read all the files from a directory
          * 
          * @param directory The directory name that should be read
+         * @param sorted Should be result be sorted or not
          * 
          */ 
         export function readDir(directory:string, sorted=false) {
@@ -311,7 +310,7 @@ module Cats.OS.File {
         
       
         /**
-         * Read the content from a text file
+         * Read the content from a text file.
          * 
          * @param name The full name/path of the file
          * 

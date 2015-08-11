@@ -15,10 +15,8 @@
 module Cats.Gui {
 
     /**      
-     * Provide an outline view of the source code.
-     * 
-     * When you click on an entry wihin the outline, the corresponding source file will be opened 
-     * at the righ position.
+     * Provide an outline view of the source code. When you click on an entry within the outline, 
+     * the editor will jump the corresponding position.
      */
     export class OutlineNavigator extends qx.ui.tree.VirtualTree {
 

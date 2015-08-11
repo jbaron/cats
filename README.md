@@ -138,7 +138,7 @@ And of course some of the main 3rd party components that we have used within CAT
 
 - [TypeScript](http://www.typescriptlang.org) (of course), developed by Microsoft.
 
-- [Qooxdoo](http://www.qooxdoo.org), an excellent JavaScript library with many great UI widgets.  
+- [Qooxdoo](http://www.qooxdoo.org), an excellent JavaScript library for creating a UI. Has many great widgets out of the box.  
 
 - [ACE](http://ace.ajax.org), an embeddable code editor written in JavaScript. The main developers are Cloud9 and Mozilla.
 

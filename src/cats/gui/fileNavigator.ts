@@ -53,7 +53,45 @@ module Cats.Gui {
             this.setPadding(0, 0, 0, 0);
             var contextMenu = new FileContextMenu(this);
             this.setContextMenu(contextMenu);
+            this.setupDragAndDrop();
         }
+
+        /**
+         * Enable drag and drop on the FileNavigator
+         * @TODO finalized implementation
+         */ 
+        private setupDragAndDrop() {
+             this.setDraggable(true);
+             this.setDroppable(true);
+
+             // @TODO Issue because <cntrl> is also right click.            
+             // this.setSelectionMode("multi");
+
+             this.addListener("dragstart", (e) => { 
+                IDE.console.log("drag started. Not yet implemented!!!"); 
+                e.addAction("move"); 
+                e.addType("tree-items"); 
+                e.addData("tree-items", this.getSelection());
+            }, this); 
+            
+            this.addListener("drop", (e) => { 
+                var target = e.getOriginalTarget(); 
+                var itemlist = []; 
+                for(var i = 0; i < this.getSelection().getLength(); i++) { 
+                  itemlist.push(this.getSelection().getItem(i)); 
+                }   
+                var model = target.getModel(); 
+                
+                for(var k = 0; k < itemlist.length; k++) 
+                { 
+                    var item = itemlist[k]; 
+                    // (<any>this)._moveItem(item, model); // item = source model =  target 
+                    IDE.console.log("moved item. Not yet implemented!!!");
+                    console.log(item);
+                } 
+            }, this);
+        }
+
 
         setProject(project: Cats.Project) {
             this.projectDir = project.projectDir;
