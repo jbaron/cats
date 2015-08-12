@@ -219,7 +219,11 @@ module Cats {
             this.iSense.setSettings(this.config.compiler, this.config.codeFormat);
 
             if (!this.config.compiler.noLib) {
-                var fullName = OS.File.join(IDE.catsHomeDir, "resource/typings/lib.d.ts");
+                var libFile = "resource/typings/lib.d.ts";
+                if (this.config.compiler.target === ts.ScriptTarget.ES6) {
+                    libFile = "resource/typings/lib.es6.d.ts";
+                }
+                var fullName = OS.File.join(IDE.catsHomeDir, libFile);
                 var libdts = OS.File.readTextFile(fullName);
                 this.addScript(fullName, libdts);
             }
