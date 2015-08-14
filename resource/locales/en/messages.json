@@ -222,7 +222,10 @@
     "config_module" : { "message": "Compile for module"},
     "config_noLib" : { "message": "Don't include lib.d.ts"},
     "config_outDir" : { "message": "Output to directory"},
-    "config_out" : { "message": "Output to single file"}
-    
+    "config_out" : { "message": "Output to single file"},
+    "config_rootDir" : { "message": "Root directory of source file"},
+    "config_noImplicitAny" : { "message": "No implicit any casting"},
+    "config_noEmitHelpers" : { "message": "Don't emit any helper code"},
+    "config_newLine" : { "message": "Newline character to use"}
     
 }

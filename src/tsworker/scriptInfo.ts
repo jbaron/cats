@@ -47,10 +47,6 @@ export class ScriptInfo {
             return this.content;
         }
 
-        public isOpen() {
-            return false; // @TODO
-        }
-
 
         public getVersion() {
             return this.version + ""; 

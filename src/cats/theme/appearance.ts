@@ -18,7 +18,10 @@ module Cats.Theme {
     function noDecorator() {
         return {
             base: true,
-            style: function(states: any) { return { decorator: undefined }; }
+            style: function(states: any) { 
+                return { 
+                    decorator: undefined 
+                }; }
         };
     }
 
@@ -30,7 +33,7 @@ module Cats.Theme {
 
             "root": {
                 base: true,
-                style: function(states) {
+                style: function(states:any) {
                     return {
                         backgroundColor: "light-background"
                     };
@@ -39,7 +42,7 @@ module Cats.Theme {
 
             "tabview-page/button": {
                 base: true,
-                style: function(states) {
+                style: function(states:any) {
                     return {
                         padding: [6, 6, 6, 6]
                     };
@@ -47,7 +50,7 @@ module Cats.Theme {
             },
 
             "splitpane": {
-                style: function(states) {
+                style: function(states:any) {
                     return {
                         backgroundColor: "light-background",
                         decorator: undefined
@@ -58,7 +61,7 @@ module Cats.Theme {
 
             "toolbar": {
                 base: true,
-                style: function(states) {
+                style: function(states:any) {
                     return {
                         backgroundColor: undefined,
                     };
@@ -67,7 +70,7 @@ module Cats.Theme {
 
             "toolbar-button": {
                 base: true,
-                style: function(states) {
+                style: function(states:any) {
                     return {
                         padding: [3, 3],
                         margin: [5, 0]

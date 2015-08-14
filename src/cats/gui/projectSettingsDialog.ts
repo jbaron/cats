@@ -93,7 +93,9 @@ module Cats.Gui {
         private moduleGenTarget = [
             { label: "none", model: ts.ModuleKind.None },
             { label: "commonjs", model: ts.ModuleKind.CommonJS },
-            { label: "amd", model: ts.ModuleKind.AMD }
+            { label: "amd", model: ts.ModuleKind.AMD },
+            { label: "umd", model: ts.ModuleKind.UMD },
+            { label: "system", model: ts.ModuleKind.System }
         ];
 
         private jsTarget = [
@@ -101,6 +103,12 @@ module Cats.Gui {
             { label: "es5", model: ts.ScriptTarget.ES5 },
             { label: "es6", model: ts.ScriptTarget.ES6 }
         ];
+        
+        private newLineKind = [
+            { label: "OSX/Linux", model: ts.NewLineKind.LineFeed },
+            { label: "Windows", model: ts.NewLineKind.CarriageReturnLineFeed },
+        ];
+        
 
         constructor() {
             super("Compiler");
@@ -112,13 +120,16 @@ module Cats.Gui {
             this.addCheckBox("noLib");
             this.addCheckBox("removeComments");
             this.addCheckBox("noImplicitAny");
+            this.addCheckBox("noEmitHelpers");
             this.addCheckBox("declaration");
             this.addCheckBox("sourceMap");
             this.addCheckBox("propagateEnumConstants");
             this.addCheckBox("allowAutomaticSemicolonInsertion");
             this.addSelectBox("target", this.jsTarget);
             this.addSelectBox("module", this.moduleGenTarget);
+            this.addSelectBox("newLine", this.newLineKind);
             this.addTextField("outDir");
+            this.addTextField("rootDir");
             this.addTextField("out");
         }
     }

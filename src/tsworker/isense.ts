@@ -284,7 +284,7 @@ module Cats.TSWorker {
 
             var outputFiles: ts.OutputFile[] = [];
             var errors: FileRange[] = [];
-            var alreadyProcessed = {};
+            var alreadyProcessed :{ [fileName: string]: boolean; } = {}
 
             for (var x=0;x<scripts.length;x++) {
                 try {

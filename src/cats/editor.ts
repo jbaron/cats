@@ -149,7 +149,7 @@ module Cats {
             if (filePath) this.setFilePath(filePath);
         }
 
-        protected updateFileInfo() {
+        updateFileInfo() {
             if (this.filePath) {
                 try {
                     this.set("info", OS.File.getProperties(this.filePath));

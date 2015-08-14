@@ -27,7 +27,7 @@ module Cats.Gui.Editor {
      */ 
     export class EditSession extends ace.EditSession {
 
-        private editor;
+        private editor:SourceEditor;
         mode: string;
         private version:number;
 

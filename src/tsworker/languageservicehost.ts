@@ -37,11 +37,6 @@ module Cats.TSWorker {
             return "\n";
         }
 
-        getScriptIsOpen(fileName: string) {
-            // @FIX generates not-implemented yet error in TypeScript if return true;
-            return this.getScript(fileName).isOpen(); 
-        }
-
         getCancellationToken(): ts.CancellationToken {
             // @TODO find out what this is used for
             return ts.CancellationTokenObject.None;
@@ -73,8 +68,8 @@ module Cats.TSWorker {
        public error(s: string): void {
        }
        
-    
-         public getCompilationSettings(): ts.CompilerOptions {
+       
+        public getCompilationSettings(): ts.CompilerOptions {
             return this.compilationSettings; 
         }
 
@@ -115,6 +110,12 @@ module Cats.TSWorker {
         }
         */
 
+
+        /**
+         * Set the various compiler settings. For options not provided default values will be used
+         * 
+         * @param compilerOptions The options you want to set. 
+         */ 
         public setCompilationSettings(compilerOptions: ts.CompilerOptions={}) {
              var options = ts.getDefaultCompilerOptions();
  
@@ -125,7 +126,6 @@ module Cats.TSWorker {
             
             // Set values to avoid the compiler trying to load/resolve files
             options.emitBOM = false;
-            options.noLib = true;
             options.noLib = true;
             options.noResolve = true;
             this.compilationSettings = options;

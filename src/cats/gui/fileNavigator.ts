@@ -67,15 +67,15 @@ module Cats.Gui {
              // @TODO Issue because <cntrl> is also right click.            
              // this.setSelectionMode("multi");
 
-             this.addListener("dragstart", (e) => { 
+             this.addListener("dragstart", (e:qx.event.type.Drag) => { 
                 IDE.console.log("drag started. Not yet implemented!!!"); 
                 e.addAction("move"); 
                 e.addType("tree-items"); 
                 e.addData("tree-items", this.getSelection());
             }, this); 
             
-            this.addListener("drop", (e) => { 
-                var target = e.getOriginalTarget(); 
+            this.addListener("drop", (e:qx.event.type.Event) => { 
+                var target = <any>e.getOriginalTarget(); 
                 var itemlist = []; 
                 for(var i = 0; i < this.getSelection().getLength(); i++) { 
                   itemlist.push(this.getSelection().getItem(i)); 

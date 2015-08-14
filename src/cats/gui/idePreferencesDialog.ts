@@ -53,6 +53,12 @@ module Cats.Gui {
         }
     }
 
+
+    interface Theme {
+        model:string;
+        label:string;
+    }
+
     /**
      * This class contains the configuration page for the overal IDE
      */
@@ -105,10 +111,9 @@ module Cats.Gui {
             { model: "xcode", label: "XCode" },
         ];
 
-
         private getThemes() {
-            var themelist = ace.require("ace/ext/themelist");
-            var result = [];
+            var themelist:ace.ThemeList = ace.require("ace/ext/themelist");
+            var result:Array<Theme> = [];
             themelist.themes.forEach((x) => { 
                 var name = OS.File.PATH.basename(x.theme);
                 result.push({model:name, label:name}); 

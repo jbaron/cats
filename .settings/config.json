@@ -7,13 +7,16 @@
         "noLib": false,
         "removeComments": false,
         "noImplicitAny": false,
+        "noEmitHelpers": false,
         "declaration": false,
         "sourceMap": false,
         "propagateEnumConstants": false,
         "allowAutomaticSemicolonInsertion": true,
-        "target": 1,
+        "target": 2,
         "module": 0,
+        "newLine": 1,
         "outDir": null,
+        "rootDir": null,
         "out": null
     },
     "codeFormat": {

@@ -101,7 +101,7 @@ module Cats.Gui.Editor {
                 this.emit( "errors", this.editSession.getMaxAnnotationLevel() );
             });
 
-            this.editSession.on( "changeOverwrite", ( a ) => {
+            this.editSession.on( "changeOverwrite", () => {
                 this.informWorld();
             });
 
@@ -112,7 +112,7 @@ module Cats.Gui.Editor {
         }
 
 
-        private setHasUnsavedChanges( value: boolean ) {
+        setHasUnsavedChanges( value: boolean ) {
             if ( value === this.unsavedChanges ) return;
             this.unsavedChanges = value;
             this.emit( "changed", value );

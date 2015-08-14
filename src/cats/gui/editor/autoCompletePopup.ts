@@ -31,6 +31,13 @@ module Cats.Gui.Editor {
     }
     
 
+    interface ListEntry {
+         caption:string;
+         meta: any;
+        snippet: any;
+        value : any;
+    }
+
     /** 
      * This class takes care of the autocomplete popup and deals with 
      * the key events and filtering of the results while you are typing
@@ -38,7 +45,7 @@ module Cats.Gui.Editor {
     export class AutoCompletePopup extends qx.ui.popup.Popup {
 
         private listModel: any;
-        private handler;
+        private handler : ace.HashHandler;
         private changeListener: Function;
         private list: qx.ui.list.List;
         private filtered: any[];
@@ -77,7 +84,7 @@ module Cats.Gui.Editor {
                 labelPath: "caption",
                 iconPath: "meta",
                 iconOptions: {
-                    converter: (data) => {
+                    converter: (data:string) => {
                         var icon = IDE.icons.kind[data] || IDE.icons.kind["default"];
                         return icon;
                     }
@@ -204,7 +211,7 @@ module Cats.Gui.Editor {
         }
 
    
-        private isExecutable(kind) {
+        private isExecutable(kind:string) {
             if (kind === "method" || kind === "function" || kind === "constructor") return true;
             return false;
         }
@@ -318,7 +325,7 @@ module Cats.Gui.Editor {
         /**
          * The method called form the editor to start the code completion process. 
          */ 
-        complete(memberCompletionOnly:boolean, sourceEditor, editor) {
+        complete(memberCompletionOnly:boolean, sourceEditor:SourceEditor, editor:ace.Editor) {
             this.editor = editor;
             this.sourceEditor = sourceEditor;
             var session = editor.getSession();
@@ -327,14 +334,14 @@ module Cats.Gui.Editor {
 
             var line = session.getLine(pos.row);
             var prefix = retrievePrecedingIdentifier(line, pos.column);
-
+ 
             // this.base = session.doc.createAnchor(pos.row, pos.column - prefix.length);
 
-            var matches = [];
+            var matches:CompletionEntry[] = [];
             var completers = getCompleters(sourceEditor, memberCompletionOnly);
             var total = completers.length;
             completers.forEach((completer, i) => {
-                completer.getCompletions(editor, session, pos, prefix, (err, results) => {
+                completer.getCompletions(editor, session, pos, prefix, (err:any, results:CompletionEntry[]) => {
                     total--;
                     if (!err) matches = matches.concat(results);
                     if (total === 0) {

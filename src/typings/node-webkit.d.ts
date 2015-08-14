@@ -26,7 +26,7 @@ declare class EventEmitter {
     removeListener(event: string, listener: Function): void;
     removeAllListener(event: string): void;
     setMaxListeners(n: number): void;
-    listeners(event: string): { Function; }[];
+    listeners(event: string): Function[];
     emit(event: string, arg1: any, arg2: any, arg3: any): void;
 }
   

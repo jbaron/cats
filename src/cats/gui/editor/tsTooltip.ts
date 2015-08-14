@@ -42,7 +42,7 @@ module Cats.Gui.Editor {
             var docPos = this.editor.getPositionFromScreenOffset(ev);
 
             this.editor.project.iSense.getInfoAtPosition(this.editor.filePath, docPos,
-                (err, data: Cats.TypeInfo) => {
+                (err:any, data: Cats.TypeInfo) => {
                     if ((!data) || (! data.description)) return;
 
                     var tip = data.description;
