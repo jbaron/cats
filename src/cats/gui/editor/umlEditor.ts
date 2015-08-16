@@ -108,7 +108,7 @@ module Cats.Gui.Editor {
         }
 
         private render(container: HTMLElement) {
-            var nodes = {};
+            var nodes:Map<any> = {};
             var g = new dagre.Digraph();
             var max = 100;
             IDE.console.log("Creating class diagram ...");
@@ -138,7 +138,7 @@ module Cats.Gui.Editor {
                    nodes[name] = c;
                 });
 
-                var rels = [];
+                var rels:any[] = [];
                 model.forEach((entry) => {
                     var curr = nodes[entry.name];
                     if (! curr) return;
@@ -173,7 +173,7 @@ module Cats.Gui.Editor {
                 });
 
                 // Draw all the nodes
-                layout.eachNode((name, value) => {
+                layout.eachNode((name:string, value:any) => {
                     var n = nodes[name];
                     var x = value.x - (n.getWidth() / 2);
                     var y = value.y - (n.getHeight() / 2);

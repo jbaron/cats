@@ -20,7 +20,7 @@ module Cats.Theme {
             base: true,
             style: function(states: any) { 
                 return { 
-                    decorator: undefined 
+                    decorator: <string>undefined 
                 }; }
         };
     }
@@ -53,7 +53,7 @@ module Cats.Theme {
                 style: function(states:any) {
                     return {
                         backgroundColor: "light-background",
-                        decorator: undefined
+                        decorator: <string>undefined
                     };
                 }
             },
@@ -63,7 +63,7 @@ module Cats.Theme {
                 base: true,
                 style: function(states:any) {
                     return {
-                        backgroundColor: undefined,
+                        backgroundColor: <string>undefined,
                     };
                 }
             },

@@ -116,7 +116,7 @@ export class ScriptInfo {
          * user with contexts of what is found
          */
         getLine(span:ts.TextSpan) {
-            var end = spanEnd(span);
+            var end = span.start + span.length;
             var min = this.content.substring(0, span.start).lastIndexOf("\n");
             var max = this.content.substring(end).indexOf("\n");
             if ((span.start - min) > 100) min = span.start - 100;

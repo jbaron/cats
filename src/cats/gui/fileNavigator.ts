@@ -76,7 +76,7 @@ module Cats.Gui {
             
             this.addListener("drop", (e:qx.event.type.Event) => { 
                 var target = <any>e.getOriginalTarget(); 
-                var itemlist = []; 
+                var itemlist:any[] = []; 
                 for(var i = 0; i < this.getSelection().getLength(); i++) { 
                   itemlist.push(this.getSelection().getItem(i)); 
                 }   
@@ -173,11 +173,11 @@ module Cats.Gui {
         private setupDelegate() {
             var self = this;
             var delegate = {
-                bindItem: function(controller, item, index:number) {
+                bindItem: function(controller:qx.ui.tree.core.MWidgetController, item:qx.ui.core.Widget, index:number) {
                     controller.bindDefaultProperties(item, index);
 
                     controller.bindProperty("", "open", {
-                        converter: function(value, model, source, target) {
+                        converter: function(value:any, model:any, source:qx.ui.tree.core.AbstractItem, target:qx.ui.tree.core.AbstractItem) {
                             var isOpen = target.isOpen();
                             if (isOpen && !value.getLoaded()) {
                                 value.setLoaded(true);

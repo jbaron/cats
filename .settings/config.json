@@ -12,7 +12,7 @@
         "sourceMap": false,
         "propagateEnumConstants": false,
         "allowAutomaticSemicolonInsertion": true,
-        "target": 2,
+        "target": 1,
         "module": 0,
         "newLine": 1,
         "outDir": null,

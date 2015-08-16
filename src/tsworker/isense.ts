@@ -16,8 +16,8 @@
 importScripts("../resource/typescriptServices.js");
 
 /**
- * TSWorker contains all the code that should run in a webworker and not the main UI thread.
- * Basically all the compiling and code completion is done in a webworker so the UI in not blocked.
+ * TSWorker contains all the code that runs in the webworker and not the main UI thread.
+ * All the compiling and code completion is done in a webworker so the UI in not blocked.
  */ 
 module Cats.TSWorker {
 
@@ -48,7 +48,7 @@ module Cats.TSWorker {
     }
 
 
-    export function spanEnd(span:ts.TextSpan) {
+    function spanEnd(span:ts.TextSpan) {
         return span.start + span.length;
     }
 

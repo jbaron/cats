@@ -31,11 +31,11 @@ module Cats.Gui.Editor {
     }
     
 
-    interface ListEntry {
-         caption:string;
-         meta: any;
+    interface EntryData {
+        getCaption():string;
+        meta: any;
         snippet: any;
-        value : any;
+        getValue() : any;
     }
 
     /** 
@@ -144,22 +144,23 @@ module Cats.Gui.Editor {
             var counter = 0;
 
             this.filtered = [];
-            var delegate = {};
-            delegate["filter"] = (data) => {
-                var value = data.getCaption().toLowerCase();
-                var result = matchFunction(text, value); 
-                if (result) this.filtered.push(data);
-                if (data === lastItem) {
-                    // IDE.console.log("filtered items: " + this.filtered.length);
-                    // @TODO check for selected
-                    var selection = this.list.getSelection().getItem(0);
-                    if (!(selection && (this.filtered.indexOf(selection) > -1))) {
-                        this.cursorPos = 0;
-                        this.moveCursor(0);
+            var delegate = {
+                filter : (data:EntryData) => {
+                    var value = data.getCaption().toLowerCase();
+                    var result = matchFunction(text, value); 
+                    if (result) this.filtered.push(data);
+                    if (data === lastItem) {
+                        // IDE.console.log("filtered items: " + this.filtered.length);
+                        // @TODO check for selected
+                        var selection = this.list.getSelection().getItem(0);
+                        if (!(selection && (this.filtered.indexOf(selection) > -1))) {
+                            this.cursorPos = 0;
+                            this.moveCursor(0);
+                        }
                     }
+                    return result;
                 }
-                return result;
-            };
+            }
             this.list.setDelegate(delegate);
 
         }
