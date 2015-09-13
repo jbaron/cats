@@ -37,10 +37,12 @@ module Cats.TSWorker {
             return "\n";
         }
 
+        /*
         getCancellationToken(): ts.CancellationToken {
             // @TODO find out what this is used for
             return ts.CancellationTokenObject.None;
         }
+        */
         
         getLocalizedDiagnosticMessages() {
             // console.log("Called getLocalizedDiagnosticMessages");

@@ -58,7 +58,7 @@ declare module Cats {
             theme?: string;
             completionMode?:string;
         };
-        rememberOpenFile?: boolean;
+        rememberOpenFiles?: boolean;
         locale?:string;
         projects: string[];
         sessions: {

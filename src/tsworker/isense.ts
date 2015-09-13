@@ -81,6 +81,7 @@ module Cats.TSWorker {
                 InsertSpaceAfterCommaDelimiter: true,
                 InsertSpaceAfterSemicolonInForStatements: true,
                 InsertSpaceBeforeAndAfterBinaryOperators: true,
+                InsertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: true,
                 InsertSpaceAfterKeywordsInControlFlowStatements: true,
                 InsertSpaceAfterFunctionKeywordForAnonymousFunctions: true,
                 InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: false,
