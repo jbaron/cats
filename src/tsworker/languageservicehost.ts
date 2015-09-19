@@ -33,6 +33,7 @@ module Cats.TSWorker {
             return Object.keys(this.scripts);
         }
 
+  
         getNewLine() {
             return "\n";
         }

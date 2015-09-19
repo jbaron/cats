@@ -243,38 +243,28 @@ module Cats.TSWorker {
             return errors;
         }
 
-        private convertTodoNavigate(fileName:string, todos:ts.TodoComment[]):FileRange[] {
-            var script = this.lsHost.getScript(fileName);
-            return todos.map((todo) => {
-                var entry:FileRange = {
-                    range: script.getRange(todo.position, todo.descriptor.text.length),
-                    fileName: fileName,
-                    message: todo.message
-                };
-                return entry;
-            });
-        }
+    
 
         /**
          * Get the various annotations in the comments, like TODO items.
          */ 
         getTodoItems() {
-            var descriptors = [
-                {text: "@TODO",  priority: 1},
-                {text: "@BUG",  priority: 1},
-                {text: "@FIXME",  priority: 1},
-                {text: "TODO",  priority: 1},
-            ];
-            
             var result:FileRange[] = [];
+           
             this.lsHost.getScriptFileNames().forEach((fileName)=> {
-                var comments = this.ls.getTodoComments(fileName, descriptors);
-                var entries = this.convertTodoNavigate(fileName, comments);
+                var script = this.lsHost.getScript(fileName);
+                var entries = script.getTodoItems();
                 result = result.concat(entries);
             });
             return result;
         }
 
+
+        insertDocComments(fileName: string, position: Cats.Position) {
+            var script = this.lsHost.getScript(fileName);
+            var pos = script.getPositionFromCursor(position);
+            script.insertDoc(pos);
+        }
 
         /**
          * Compile the loaded TS files and return the 

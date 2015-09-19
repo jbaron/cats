@@ -72,6 +72,10 @@ module Cats.Gui.Editor {
         private findImplementors() {
             return this.getInfoAt("getImplementorsAtPosition");
         }
+        
+        private insertDoc() {
+            this.getIsense().insertDocComments(this.editor.filePath, this.getPos());
+        }
 
 
 
@@ -120,6 +124,8 @@ module Cats.Gui.Editor {
                 // this.add(this.createContextMenuItem("Find Implementations", this.findImplementors, this));
                 this.addSeparator();
                 this.add(this.createContextMenuItem("Rename", this.refactor, this));
+                this.addSeparator();
+                this.add(this.createContextMenuItem("Insert doc comments", this.insertDoc, this));
                 this.addSeparator();
             }
             this.add(this.createContextMenuItem("Bookmark", this.bookmark, this));

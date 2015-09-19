@@ -58,6 +58,11 @@ export class ScriptInfo {
             this.version++;
         }
 
+        public insertDoc(position:number) {
+            var text = this.ls.getDocCommentTemplateAtPosition(this.fileName, position);
+            if (text) console.log(text.newText);
+        }
+
         /*
         public editContent(minChar: number, limChar: number, newText: string): void {
             // Apply edits
@@ -135,6 +140,34 @@ export class ScriptInfo {
             return result;
         }
         
+       private convertTodoNavigate(todos:ts.TodoComment[]):FileRange[] {
+            
+            return todos.map((todo) => {
+                var entry:FileRange = {
+                    range: this.getRange(todo.position, todo.descriptor.text.length),
+                    fileName: this.fileName,
+                    message: todo.message
+                };
+                return entry;
+            });
+        }
+
+        
+        /**
+         * Get the various annotations in the comments, like TODO items.
+         */ 
+        getTodoItems() {
+            var descriptors = [
+                {text: "@TODO",  priority: 1},
+                {text: "@BUG",  priority: 1},
+                {text: "@FIXME",  priority: 1},
+                {text: "TODO",  priority: 1},
+            ];
+            
+            var comments = this.ls.getTodoComments(this.fileName, descriptors);
+            var entries = this.convertTodoNavigate(comments);
+            return entries;
+        }
         
         getRangeFromSpan(textSpan: ts.TextSpan) {
             return this.getRange(textSpan.start, textSpan.length);

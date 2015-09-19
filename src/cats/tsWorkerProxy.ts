@@ -89,6 +89,9 @@ module Cats {
             this.perform("getRenameInfo", name, docPos, cb);
         }
 
+        insertDocComments(fileName: string, position: Cats.Position) {
+            this.perform("insertDocComments", fileName, position, null);
+        }
 
         getObjectModel(cb:CB<any>) {
             this.perform("getObjectModel", cb);
