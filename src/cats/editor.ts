@@ -20,7 +20,7 @@ module Cats {
      */
     export class Editor extends qx.event.Emitter {
         
-        private static Registry:Map<Function> = {}; 
+        private static Registry:Map<Function> = {};
         
         /**
          * Label used on the tab page
@@ -151,7 +151,8 @@ module Cats {
         updateFileInfo() {
             if (this.filePath) {
                 try {
-                    this.set("info", OS.File.getProperties(this.filePath));
+                    var prop = OS.File.getProperties(this.filePath);
+                    this.set("info", prop);
                 } catch (err) { /* NOP */ }
             }
         }

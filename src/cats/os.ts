@@ -121,8 +121,11 @@ module Cats.OS.File {
        export function getProperties(fileName:string) {
            if (! fileName) return [];
            var stat:Object = fs.statSync(fileName);
+           var baseName = PATH.basename(fileName);
+           
            var result = [
-               { key: "fileName", value: fileName}
+               { key: "fileName", value: baseName},
+               { key: "filePath", value: fileName}
            ];
            for (var key in stat) {
                if (stat.hasOwnProperty(key)) {
