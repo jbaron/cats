@@ -99,21 +99,6 @@ export class Script {
         }
         
 
-        getDefinitionAtPosition(pos: Position): Cats.FileRange {
-            var chars = this.getPositionFromCursor(pos);
-            var infos = this.ls.getDefinitionAtPosition(this.fileName, chars);
-            if (infos) {
-                var info = infos[0];
-                // TODO handle better
-                return {
-                    fileName: info.fileName,
-                    range: this.getRangeFromSpan(info.textSpan)
-                };
-            } else {
-                return null;
-            }
-        }
-
         public emitOutput() {
             var output = this.ls.getEmitOutput(this.fileName);
             return output.outputFiles;

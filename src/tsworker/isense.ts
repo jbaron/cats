@@ -101,10 +101,21 @@ module Cats.TSWorker {
         }
 
 
-
         getDefinitionAtPosition(fileName: string, pos: Position): Cats.FileRange {
             var script = this.lsHost.getScript(fileName);
-            return script.getDefinitionAtPosition(pos);
+            var chars = script.getPositionFromCursor(pos);
+            var infos = this.ls.getDefinitionAtPosition(fileName, chars);
+            if (infos) {
+                var info = infos[0];
+                var script2 = this.lsHost.getScript(info.fileName);
+                // TODO handle better
+                return {
+                    fileName: info.fileName,
+                    range: script2.getRangeFromSpan(info.textSpan)
+                };
+            } else {
+                return null;
+            }
         }
 
         /**
@@ -204,7 +215,7 @@ module Cats.TSWorker {
             var script = this.lsHost.getScript(fileName);
             var errors = script.getErrors();
 
-            var result = errors.map(this.convertError);
+            var result = errors.map((error) => {return this.convertError(error)});
             return result;  
         }
 
