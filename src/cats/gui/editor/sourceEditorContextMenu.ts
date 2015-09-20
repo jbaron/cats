@@ -74,7 +74,9 @@ module Cats.Gui.Editor {
         }
         
         private insertDoc() {
-            this.getIsense().insertDocComments(this.editor.filePath, this.getPos());
+            this.getIsense().insertDocComments(this.editor.filePath, this.getPos(), (err,data) => {
+                if (data) this.editor.getAceEditor().insert(data.newText);
+            });
         }
 
 

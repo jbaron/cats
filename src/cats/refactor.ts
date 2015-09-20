@@ -21,6 +21,7 @@ module Cats.Refactor {
     
     var Range: ace.Range = ace.require("ace/range").Range;
 
+
     function renameOccurences(edits:FileRange[],name:string) {
         for (var i = edits.length - 1; i >= 0; i--) {
             var data = edits[i];

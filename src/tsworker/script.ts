@@ -14,11 +14,6 @@
 //
 
 
-// This is based on the harness.ts file from TypeScript
-// Major difference is that this module uses real language services API and not the Shim.
-// Licensed under the Apache License, Version 2.0. 
-
-
 module Cats.TSWorker {
 
 /**
@@ -27,7 +22,7 @@ module Cats.TSWorker {
  * within a file.
  * 
  */ 
-export class ScriptInfo {
+export class Script {
         private version: number = 1;
         public editRanges: { length: number; textChangeRange: ts.TextChangeRange; }[] = [];
  
@@ -58,9 +53,70 @@ export class ScriptInfo {
             this.version++;
         }
 
-        public insertDoc(position:number) {
-            var text = this.ls.getDocCommentTemplateAtPosition(this.fileName, position);
-            if (text) console.log(text.newText);
+        public insertDoc(position: Cats.Position) {
+            var pos = this.getPositionFromCursor(position);
+            var text = this.ls.getDocCommentTemplateAtPosition(this.fileName, pos);
+            return text;
+        }
+
+        public getRenameInfo(cursor: Position) {
+            var pos = this.getPositionFromCursor(cursor);
+            var result = this.ls.getRenameInfo(this.fileName, pos);
+            return result;
+        }
+
+
+        /**
+         * Get the info at a certain position. Used for the tooltip in the editor
+         * 
+         */ 
+        public getInfoAtPosition(position: Cats.Position):TypeInfo {
+            var pos = this.getPositionFromCursor(position);
+            if (!pos) return;
+            var info = this.ls.getQuickInfoAtPosition(this.fileName, pos);
+            if (! info) return {};
+            
+            var result = {
+                description : ts.displayPartsToString(info.displayParts),
+                docComment : ts.displayPartsToString(info.documentation)
+            };
+            return result;
+        }
+
+
+        getErrors() {
+            var errors:ts.Diagnostic[] = [];
+            
+            // Let's first get the syntactic errors
+            var syntactic = this.ls.getSyntacticDiagnostics(this.fileName);
+            errors = errors.concat(syntactic);
+            
+            // And now the semantic erros
+            var semantic = this.ls.getSemanticDiagnostics(this.fileName);
+            errors = errors.concat(semantic);
+
+            return errors;
+        }
+        
+
+        getDefinitionAtPosition(pos: Position): Cats.FileRange {
+            var chars = this.getPositionFromCursor(pos);
+            var infos = this.ls.getDefinitionAtPosition(this.fileName, chars);
+            if (infos) {
+                var info = infos[0];
+                // TODO handle better
+                return {
+                    fileName: info.fileName,
+                    range: this.getRangeFromSpan(info.textSpan)
+                };
+            } else {
+                return null;
+            }
+        }
+
+        public emitOutput() {
+            var output = this.ls.getEmitOutput(this.fileName);
+            return output.outputFiles;
         }
 
         /*
@@ -94,6 +150,17 @@ export class ScriptInfo {
             return ts.TextChangeRange.collapseChangesAcrossMultipleVersions(entries.map(e => e.textChangeRange));
         }
         */
+        
+
+        /**
+         * Determine the possible completions available at a certain position in a file.
+         */
+        public getCompletions(cursor: Position): ts.CompletionEntry[] {
+            var pos = this.getPositionFromCursor(cursor);
+            var completions = this.ls.getCompletionsAtPosition(this.fileName, pos) || <ts.CompletionInfo>{};
+            if (!completions.entries) return []; 
+            return completions.entries;
+        }
         
         
         /**
@@ -173,29 +240,7 @@ export class ScriptInfo {
             return this.getRange(textSpan.start, textSpan.length);
         }
         
-        /**
-         * Based on the position within the script, determine if we are in member mode
-         * 
-         */ 
-        determineMemeberMode(pos: number) {
-            var source = this.content;
-            var identifyerMatch = /[0-9A-Za-z_\$]*$/;
-            var previousCode = source.substring(0, pos);
-
-            var match = previousCode.match(identifyerMatch);
-            var newPos = pos;
-            var memberMode = false;
-            if (match && match[0]) newPos = pos - match[0].length;
-            if (source[newPos - 1] === '.') memberMode = true;
-
-            var result = {
-                pos: newPos,
-                memberMode: memberMode
-            };
-
-            return result;
-        }
-        
+    
         /**
          * Get a snapshot for this script
          */ 

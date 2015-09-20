@@ -23,7 +23,7 @@ module Cats.TSWorker {
     export class LanguageServiceHost implements ts.LanguageServiceHost {
 
         private compilationSettings:ts.CompilerOptions = null;
-        private scripts:Map<ScriptInfo> = {};
+        private scripts:Map<Script> = {};
 
         constructor() {
             this.setCompilationSettings();
@@ -33,6 +33,15 @@ module Cats.TSWorker {
             return Object.keys(this.scripts);
         }
 
+
+        getScripts() {
+            var result:Array<Script> = []
+            this.getScriptFileNames().forEach((fileName)=> {
+                var script = this.getScript(fileName);
+                result.push(script);
+            });
+            return result;
+        }
   
         getNewLine() {
             return "\n";
@@ -90,28 +99,11 @@ module Cats.TSWorker {
         }
         
         public addScript(fileName: string, content: string, ls:ts.LanguageService) {
-            var script = new ScriptInfo(fileName, content, ls);
+            var script = new Script(fileName, content, ls);
             this.scripts[fileName] = script;
             return script;
         }
 
-        public updateScript(fileName: string, content: string) {
-            var script =  this.scripts[fileName];
-            if (script) {
-                script.updateContent(content);
-            } 
-        }
-
-        /*
-        public editScript(fileName: string, minChar: number, limChar: number, newText: string) {
-             var script =  this.scripts[fileName];
-            if (script) {
-                script.editContent(minChar, limChar, newText);
-            } else {
-                throw new Error("No script with name '" + fileName + "'");
-            }
-        }
-        */
 
 
         /**

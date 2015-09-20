@@ -111,6 +111,9 @@ module Cats.Gui.Editor {
 
         }
 
+        getAceEditor() {
+            return this.aceEditor;
+        }
 
         setHasUnsavedChanges( value: boolean ) {
             if ( value === this.unsavedChanges ) return;
