@@ -65,6 +65,11 @@ module Cats {
         }
 
 
+       getTypeDefinitionAtPosition(sessionName: string, cursor: Cats.Position, cb: (err: any, data: FileRange) => void) {
+            this.perform("getTypeDefinitionAtPosition", sessionName, cursor, cb);
+        }
+
+
         findRenameLocations(fileName: string, position: Position, findInStrings: boolean, findInComments: boolean, cb: (err: any, data: Cats.FileRange[]) => void) {
             this.perform("findRenameLocations", fileName, position, findInStrings, findInComments, cb);
         }

@@ -101,6 +101,24 @@ module Cats.TSWorker {
         }
 
 
+       getTypeDefinitionAtPosition(fileName: string, pos: Position): Cats.FileRange {
+            var script = this.lsHost.getScript(fileName);
+            var chars = script.getPositionFromCursor(pos);
+            var infos = this.ls.getTypeDefinitionAtPosition(fileName, chars);
+            if (infos) {
+                var info = infos[0];
+                var script2 = this.lsHost.getScript(info.fileName);
+                // TODO handle better
+                return {
+                    fileName: info.fileName,
+                    range: script2.getRangeFromSpan(info.textSpan)
+                };
+            } else {
+                return null;
+            }
+        }
+
+
         getDefinitionAtPosition(fileName: string, pos: Position): Cats.FileRange {
             var script = this.lsHost.getScript(fileName);
             var chars = script.getPositionFromCursor(pos);

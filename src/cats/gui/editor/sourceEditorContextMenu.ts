@@ -45,6 +45,14 @@ module Cats.Gui.Editor {
             });
         }
 
+        gotoTypeDeclaration() {
+            this.getIsense().getTypeDefinitionAtPosition(this.editor.filePath, this.getPos(), (err:any, data: Cats.FileRange) => {
+                if (data && data.fileName)
+                    FileEditor.OpenEditor(data.fileName, data.range.start);
+            });
+        }
+
+
         private getPos() {
             return this.editor.getPosition();
         }
@@ -121,6 +129,8 @@ module Cats.Gui.Editor {
 
             if (this.editor.isTypeScript()) {
                 this.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration, this));
+                this.add(this.createContextMenuItem("Goto Type Declaration", this.gotoTypeDeclaration, this));
+
                 this.add(this.createContextMenuItem("Find References", this.findReferences, this));
                 this.add(this.createContextMenuItem("Find Occurences", this.findOccurences, this));
                 // this.add(this.createContextMenuItem("Find Implementations", this.findImplementors, this));
