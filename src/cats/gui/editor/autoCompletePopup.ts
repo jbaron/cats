@@ -303,12 +303,13 @@ module Cats.Gui.Editor {
             this.updateFilter();
         }
 
+
         /**
          * Check wether the typed character is reason to stop
          * the auto-complete task
          */
         private onChange(ev:any) {
-            var key: string = ev.data.text;
+            var key: string = ev.lines.join("");
 
             if ((key == null) || (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0)))) {
                 this.hidePopup();

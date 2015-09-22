@@ -371,6 +371,7 @@ module Cats.Gui.Editor {
          */
         private createAceEditor( rootElement: HTMLElement ): ace.Editor {
             var editor: ace.Editor = ace.edit( rootElement );
+            editor["$blockScrolling"] = Infinity; // surpresses ACE warning
             editor.setSession( this.editSession );
             editor.on( "changeSelection", () => {
                 this.clearSelectedTextMarker();
