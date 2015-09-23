@@ -5,7 +5,7 @@
 CATS is an IDE for TypeScript and Web developers. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. 
 CATS itself is also written in TypeScript, so you can easily customize it if required.
 
-And although still work in progress, CATS is already very usable and has built-in support for the following features:
+And although still work in progress, CATS is already very usable and has built-in support for the following features: 
 
 - Intelligent code editor and code completion for TypeScript sources.
  
