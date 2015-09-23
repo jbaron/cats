@@ -294,9 +294,9 @@ module Cats.TSWorker {
             
             this.lsHost.getScripts().forEach((script) => {
                 try {
-                    var outputFiles = script.emitOutput();
+                    var emits = script.emitOutput();
 
-                    outputFiles.forEach((file) => {
+                    emits.forEach((file) => {
                         if (! alreadyProcessed[file.name]) outputFiles.push(file);
                         alreadyProcessed[file.name] = true;
                     });
