@@ -15,7 +15,6 @@
 
 module Cats {
 
-    var GUI = require('nw.gui');
 
     /**
      * This class represents the total IDE. The CATS is started a single isntance will be
@@ -353,6 +352,8 @@ module Cats {
         
         
         private handleCloseWindow() {
+            var GUI = require('nw.gui');
+
             // Catch the close of the windows in order to save any unsaved changes
             var win = GUI.Window.get();
             win.on("close", function() {
@@ -379,6 +380,8 @@ module Cats {
          * want to quit.
          */ 
         quit() {
+            var GUI = require('nw.gui');
+
             var doClose = () => {
                 this.savePreferences();
                 GUI.App.quit();

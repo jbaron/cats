@@ -26,6 +26,8 @@ module Cats.Gui {
         return new GUI.MenuItem( item );
     }
 
+
+
     /**
      * This class creates the main menubar. This is the only GUI component that 
      * is not using Qooxdoo/HTML5 but an API exposed by NW.js. 
@@ -81,6 +83,7 @@ module Cats.Gui {
                 this.createMenuBarItem( "help" );
             }
         }
+
 
         /**
          * Create an item in the main menu bar. Optional the position can be passed

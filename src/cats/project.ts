@@ -16,8 +16,6 @@
 
 module Cats {
 
-    var GUI = require('nw.gui');
-    var typedoc: any;
     
     /**
      * The project hold the informaiton related to a single project. This include 
@@ -228,7 +226,7 @@ module Cats {
                 }
                 OS.File.runCommand(cmd, options);
             } else {
-
+                var GUI = require('nw.gui');
                 var main = this.config.main;
                 if (!main) {
                     alert("Please specify the main html file or customRun in the project settings.");

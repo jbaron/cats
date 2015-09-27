@@ -32,7 +32,6 @@ var catsOptions = [
     "src/cats/theme/font.ts",
     "src/cats/theme/appearance.ts",
     "src/cats/theme/theme.ts",
-    
     "src/cats/common.ts",
     "src/cats/os.ts",
     "src/cats/ide.ts",
@@ -82,11 +81,8 @@ var catsOptions = [
     "src/cats/gui/renameDialog.ts",
     "src/cats/gui/menubar.ts",
     "src/cats/gui/tsHelper.ts",
-    
-
     "src/cats/util/mime.ts",
     "src/cats/util/resourceLoader.ts",
-    
     "src/cats/main.ts"
 ];
 

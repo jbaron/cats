@@ -16,7 +16,7 @@
 declare var process: any;
 // declare var global: any; // Also defined in typescript.d.ts
 declare var require: any;
-
+declare var global:any;
 
 
 declare class EventEmitter {
@@ -29,7 +29,8 @@ declare class EventEmitter {
     listeners(event: string): Function[];
     emit(event: string, arg1: any, arg2: any, arg3: any): void;
 }
-  
+
+
 declare module nw.gui {
 
 	interface MenuConfig {

@@ -13,6 +13,8 @@
 // limitations under the License.
 //
 
+if ((typeof nw != 'undefined') && nw["require"]) window["require"] = nw["require"];
+
 module Cats.Theme {
 
     function darken(hex:string, lum=0) {
