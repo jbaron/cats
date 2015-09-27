@@ -23,22 +23,26 @@ module Cats {
      */ 
     export class Linter {
 
-        private lintOptions:{};
+        private lintOptions:Lint.ILinterOptions;
         private TSLint = require("tslint");
 
         constructor(private project: Project) {
         }
 
 
-        private convertPos(item: any): Cats.Range {
+        private convertPos(item: Lint.RuleFailure): Cats.Range {
+            
+            var startPosition = item.getStartPosition().getLineAndCharacter();
+            var endPosition = item.getEndPosition().getLineAndCharacter();
+            
             return {
                 start: {
-                    row: item.startPosition.line,
-                    column: item.startPosition.character
+                    row: startPosition.line,
+                    column: startPosition.character
                 },
                 end: {
-                    row: item.endPosition.line,
-                    column: item.endPosition.position.character
+                    row: endPosition.line,
+                    column: endPosition.character
                 }
             };
         }
@@ -59,7 +63,7 @@ module Cats {
 
                 var content = OS.File.readTextFile(fileName);
                 var config = JSON.parse(content);
-                var options = {
+                var options:Lint.ILinterOptions = {
                     formatter: "json",
                     configuration: config,
                     rulesDirectory: "customRules/",
@@ -76,18 +80,21 @@ module Cats {
          * 
          */ 
         lint(fileName:string, content:string) {
-            var ll = new this.TSLint(fileName, content, this.getOptions());
-            var result: Array<any> = JSON.parse(ll.lint().output);
+            var ll:Lint.Linter = new this.TSLint(fileName, content, this.getOptions());
+            // var result: Array<any> = JSON.parse(ll.lint().output);
             var r: Cats.FileRange[] = [];
-            result.forEach((msg) => {
-                var item: Cats.FileRange = {
-                    fileName: msg.name,
-                    message: msg.failure,
+            var failures = ll.lint().failures;
+            failures.forEach((failure) => {
+               var item: Cats.FileRange = {
+                    fileName: fileName,
+                    message: failure.getFailure(),
                     severity: Cats.Severity.Info,
-                    range: this.convertPos(msg)
+                    range: this.convertPos(failure)
                 };
                 r.push(item);
+                
             });
+    
             return r;
         }
     }

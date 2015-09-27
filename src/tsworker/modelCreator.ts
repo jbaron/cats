@@ -154,6 +154,12 @@ module Cats.TSWorker {
                     attributes: []
                 };
                 this.model[fullName] = entry;
+                
+                if (node.heritageClauses) {
+                    node.heritageClauses.forEach((clause) => {
+                       entry.extends.push(clause.getText()); 
+                    });
+                }
                 // var typeSymbol = node.symbol.getDeclarations();
 
                 // if (node instanceof ts.ClassDeclaration) {
