@@ -21,7 +21,6 @@ var catsOptions = [
     "resource/typings/lib.es6.d.ts",
     "src/typings/ace.d.ts",
     "src/typings/tslint.d.ts",
-    "src/typings/typedoc.d.ts",
     "src/typings/cats.d.ts",
     "src/typings/jsuml2.d.ts",
     "src/typings/node-webkit.d.ts",

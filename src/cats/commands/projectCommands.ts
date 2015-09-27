@@ -72,13 +72,7 @@ module Cats.Commands {
         if (IDE.project) IDE.project.build();
     }
 
-    /**
-     * Generate the API documentation for the project
-     */ 
-    function documentProject() {
-        if (IDE.project) IDE.project.document();
-    }
-
+ 
     /**
      * Provide the user with an UI to configure the project settings
      */ 
@@ -138,7 +132,6 @@ module Cats.Commands {
             registry(CMDS.project_quickOpen, quickOpen);
             registry(CMDS.project_classDiagram, showDiagram);
             registry(CMDS.project_configure, configureProject);
-            registry(CMDS.project_document, documentProject);
         }
 
     }

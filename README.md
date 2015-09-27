@@ -17,10 +17,9 @@ And although still work in progress, CATS is already very usable and has built-i
 - Very fast TypeScript compilation to JavaScript.
 - Validation of the source code while you are typing.
 - Linter support for TypeScript and JavaScript.
-- Documentation generator based on the comments in the source code.
 - Editing features like folding, indentation and code formatting.
 - Running your application from within IDE and using the WebKit debugger to debug.
-- Support for external build systems like Grunt, Jake, Gulp and Makefiles.
+- Flexible build system with support for external build systems like Grunt, Jake, Gulp and Makefiles.
 
 Also the unstable release of CATS has support for the latest features in TypeScript like ES6 support 
 and union types.

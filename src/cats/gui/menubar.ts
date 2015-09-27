@@ -194,7 +194,6 @@ module Cats.Gui {
 
             proj.append( new GUI.MenuItem( { type: "separator" }) );
             proj.append(getItem(CMDS.project_classDiagram));
-            proj.append( getItem( CMDS.project_document ) );
 
             proj.append( new GUI.MenuItem( { type: "separator" }) );
             proj.append( getItem( CMDS.project_configure ) );

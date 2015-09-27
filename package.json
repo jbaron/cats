@@ -45,7 +45,6 @@
   "dependencies": {
     "glob": "^4.3.5",
     "tslint": "^2.5.0",
-    "typedoc": "^0.3.11",
     "dagre" : "^0.4.6",
     "fuzzy" : "^0.1.0",
     "nw" : "latest"

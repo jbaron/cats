@@ -158,53 +158,7 @@ module Cats {
             }
         }
 
-        /**
-         * Generate the documentation for this project
-         */
-        document() {
-            var outputDir = this.config.documentation.outputDirectory;
-            if (!outputDir) {
-                alert("Please configure a output directoty Project -> Settings");
-                return;
-            }
-
-            var win = new Gui.BusyWindow("Generating Documentation");
-            win.show();
-            win.addListenerOnce("ready", () => {
-                try {
-
-                    if (!typedoc) typedoc = require('typedoc');
-
-                    var settings:td.IOptions = {
-                        theme:this.config.documentation.theme || "default",
-                        name: this.name,
-                        verbose: false
-                    };
-                    
-                    var readme = "none";
-                    if (this.config.documentation.readme && (this.config.documentation.readme !== "none")) {
-                        readme = OS.File.join(this.projectDir, this.config.documentation.readme);
-                    }
-                    settings.readme = readme;
-                    settings.includeDeclarations = this.config.documentation.includeDeclarations || false;
-                    
-                    var app:td.Application = new typedoc.Application(settings);
-                    
-                    var compOtions = app.compilerOptions;
-                    app.compilerOptions = JSON.parse(JSON.stringify(this.config.compiler));
-                    app.compilerOptions.noLib = true;
-                    app.compilerOptions.noResolve = true;
-                    app.compilerOptions.mapRoot = "";
-                    app.compilerOptions.sourceRoot = "";
-
-                    
-                    var dest = OS.File.join(this.projectDir, outputDir);
-                    app.generateDocs(this.tsfiles, dest);
-                } finally {
-                    win.hide();
-                }
-            });
-        }
+ 
 
         /**
          *  Refresh the project and loads required artifacts
