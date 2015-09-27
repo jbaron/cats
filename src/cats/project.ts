@@ -175,27 +175,31 @@ module Cats {
 
                     if (!typedoc) typedoc = require('typedoc');
 
-                    var settings = new typedoc.Settings();
-                    settings.name = this.name;
-                    settings.compiler = JSON.parse(JSON.stringify(this.config.compiler));
-                    settings.compiler.codepage = null;
-                    settings.compiler.noLib = true;
-                    settings.compiler.noResolve = true;
-                    settings.compiler.mapRoot = "";
-                    settings.compiler.sourceRoot = "";
-
+                    var settings:td.IOptions = {
+                        theme:this.config.documentation.theme || "default",
+                        name: this.name,
+                        verbose: false
+                    };
+                    
                     var readme = "none";
                     if (this.config.documentation.readme && (this.config.documentation.readme !== "none")) {
                         readme = OS.File.join(this.projectDir, this.config.documentation.readme);
                     }
-
                     settings.readme = readme;
                     settings.includeDeclarations = this.config.documentation.includeDeclarations || false;
-                    settings.verbose = false;
-                    settings.theme = this.config.documentation.theme || "default";
-                    var app = new typedoc.Application(settings);
+                    
+                    var app:td.Application = new typedoc.Application(settings);
+                    
+                    var compOtions = app.compilerOptions;
+                    app.compilerOptions = JSON.parse(JSON.stringify(this.config.compiler));
+                    app.compilerOptions.noLib = true;
+                    app.compilerOptions.noResolve = true;
+                    app.compilerOptions.mapRoot = "";
+                    app.compilerOptions.sourceRoot = "";
+
+                    
                     var dest = OS.File.join(this.projectDir, outputDir);
-                    app.generate(this.tsfiles, dest);
+                    app.generateDocs(this.tsfiles, dest);
                 } finally {
                     win.hide();
                 }
