@@ -14,6 +14,7 @@
 //
 
 if ((typeof nw != 'undefined') && nw["require"]) window["require"] = nw["require"];
+if ((typeof nw != 'undefined') && nw["process"]) window["process"] = nw["process"];
 
 module Cats.Theme {
 

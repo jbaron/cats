@@ -352,6 +352,7 @@ module Cats {
         
         
         private handleCloseWindow() {
+
             var GUI = require('nw.gui');
 
             // Catch the close of the windows in order to save any unsaved changes

@@ -54,6 +54,7 @@ module Cats {
      * call this main to start the application. 
      */
     function main(app: qx.application.Standalone) {
+        
         var GUI = require('nw.gui');
 
         var args:string[] = GUI.App.argv;
@@ -63,12 +64,14 @@ module Cats {
         } 
         
         IDE = new Cats.Ide();
+        IDE.init(<qx.ui.container.Composite>app.getRoot());
+        
+        
         if (args.indexOf("--debug") > -1) {
             IDE.debug = true;
         }
 
-       IDE.init(<qx.ui.container.Composite>app.getRoot());
-
+       
         var prjDir = determineProject(args);
         if (prjDir) {
             IDE.addProject(prjDir);

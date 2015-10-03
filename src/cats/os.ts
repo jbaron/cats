@@ -23,7 +23,7 @@
  
 module Cats.OS.File {
 
-        export var PATH = require("path");
+        export var PATH:NodeJS.Path = require("path");
         var fs = require("fs");
         
         var exec = require("child_process").exec;
