@@ -402,7 +402,7 @@ declare module NodeJS {
 
 declare module NodeJS {
     module fs {
-        interface Stats {
+        export interface Stats {
             isFile(): boolean;
             isDirectory(): boolean;
             isBlockDevice(): boolean;

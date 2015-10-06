@@ -114,13 +114,14 @@ module Cats.OS.File {
             return watcher;
         }
 
+
        /**
         * Get the stat of a file and return them as a set of properties
         * 
         */ 
        export function getProperties(fileName:string) {
            if (! fileName) return [];
-           var stat:Object = fs.statSync(fileName);
+           var stat:NodeJS.fs.Stats = fs.statSync(fileName);
            var baseName = PATH.basename(fileName);
            
            var result = [
