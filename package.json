@@ -11,7 +11,7 @@
   "main": "index.html",
 
   "#chromium-args" : "--enable-touch-events --enable-viewport --enable-pinch",
-  "#js-flags": "--harmony_scoping",
+  "js-flags": "--harmony_default_parameters",
   "scripts": {
     "start": "nw",
     "test" : "jake build"
@@ -30,7 +30,7 @@
     "url": "https://github.com/JBaron/cats/issues"
   },
 
-  "version": "1.6.2",
+  "version": "1.8.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jbaron/cats.git"

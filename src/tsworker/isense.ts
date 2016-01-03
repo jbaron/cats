@@ -71,6 +71,7 @@ module Cats.TSWorker {
         private getDefaultFormatOptions(): ts.FormatCodeOptions {
             return { 
                 IndentSize: 4,
+                IndentStyle: ts.IndentStyle.Smart,
                 TabSize: 4,
                 NewLineCharacter: "\n",
                 ConvertTabsToSpaces: true,
