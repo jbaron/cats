@@ -14,7 +14,12 @@
 //
 
 module Cats.Gui {
-    var GUI = require( 'nw.gui' );
+    
+    if (typeof nw != "undefined") {
+        var GUI:any = nw;
+    } else {
+        var GUI = require( 'nw.gui' );
+    }
 
     var CMDS = Cats.Commands.CMDS;
 
