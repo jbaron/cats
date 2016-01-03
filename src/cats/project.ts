@@ -184,7 +184,12 @@ module Cats {
                 this.addScript(fullName, libdts);
             }
 
-            var srcs = new Array<string>().concat(this.config.src);
+            var srcs = new Array<string>();
+            if (this.config.src) {
+                srcs = srcs.concat(this.config.src);
+            } else {
+                srcs = ["**/*.ts", "**/*.tsx"];
+            }
             srcs.forEach((src: string) => {
                 this.loadTypeScriptFiles(src);
             });
@@ -271,7 +276,6 @@ module Cats {
          * @param pattern The pattern to apply when searching for files
          */
         private loadTypeScriptFiles(pattern: string) {
-            if (!pattern) pattern = "**/*.ts";
             OS.File.find(pattern, this.projectDir, (err: Error, files: Array<string>) => {
                 files.forEach((file) => {
                     try {

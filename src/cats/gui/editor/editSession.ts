@@ -89,7 +89,9 @@ module Cats.Gui.Editor {
          * of features are enabled or not.
          */ 
         isTypeScript() {
-            return this.mode === "ace/mode/typescript";
+            var ext = OS.File.PATH.extname(this.editor.filePath);
+            return ((ext === ".ts") || (ext === ".tsx"));
+            // return this.mode === "ace/mode/typescript";
         }
 
         setMode(mode:string) {
