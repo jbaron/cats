@@ -21,6 +21,26 @@ module Cats {
 
     // Variable used everywhere for accessing the singleton IDE instance
     export var IDE: Cats.Ide;
+    
+    
+    
+    export function getNWWindow() {
+        if (typeof nw != "undefined") {
+            return nw["Window"].get();
+        } else {
+            var GUI = require('nw.gui');
+            return GUI.Window.get();
+        }
+    }
+    
+    export function getNWGui() {
+        if (typeof nw != "undefined") {
+            return nw;
+        } else {
+            global.nw = require( 'nw.gui' );
+            return nw;
+        }
+    }
 
     /**
      * Get a parameter from the URL. This is used when a new project is opened from within
@@ -76,7 +96,7 @@ module Cats {
         if (prjDir) {
             IDE.addProject(prjDir);
         } else {
-            if (args.indexOf("--restore") > -1) IDE.restorePreviousProjects();
+            if (args.indexOf("--restore") !== -1) IDE.restorePreviousProjects();
         }
     }
 

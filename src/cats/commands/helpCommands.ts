@@ -38,8 +38,9 @@ module Cats.Commands {
      * Open the webkit developers tools for debugging etc.
      */ 
     function showDevTools() {
-        var GUI = require('nw.gui');
-        GUI.Window.get().showDevTools();
+        getNWWindow().showDevTools();
+        // var GUI = require('nw.gui');
+        // GUI.Window.get().showDevTools();
     }
 
     /**

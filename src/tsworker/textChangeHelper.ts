@@ -88,7 +88,7 @@ module Cats.TSWorker {
          */
         export function applyEdits(content: string, edits: ts.TextChange[]): string {
             var result = content;
-            edits = this.normalizeEdits(edits);
+            edits = normalizeEdits(edits);
 
             for (var i = edits.length - 1; i >= 0; i--) {
                 var edit = edits[i];
