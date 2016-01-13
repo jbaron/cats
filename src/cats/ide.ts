@@ -338,9 +338,12 @@ module Cats {
          */
         addProject(projectDir: string) {
             projectDir = OS.File.PATH.resolve(this.catsHomeDir,projectDir);
-            if (this.recentProjects.indexOf(projectDir) === -1) {
-                this.recentProjects.push(projectDir);
+            var index = this.recentProjects.indexOf(projectDir);
+            if (index !== -1) {
+                this.recentProjects.splice(index,1);
             }
+            this.recentProjects.push(projectDir);
+            
             if (! this.project) {
                 this.project = new Project(projectDir);
                 this.fileNavigator.setProject(this.project);
