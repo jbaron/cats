@@ -1377,7 +1377,7 @@ declare namespace ts {
         ES6 = 5,
         ES2015 = 5,
     }
-    enum JsxEmit {
+    const enum JsxEmit {
         None = 0,
         Preserve = 1,
         React = 2,

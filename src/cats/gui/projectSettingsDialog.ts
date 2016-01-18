@@ -109,6 +109,12 @@ module Cats.Gui {
             { label: "Windows", model: ts.NewLineKind.CarriageReturnLineFeed },
         ];
         
+        private jsxEmit = [
+            { label: "None", model: ts.JsxEmit.None },
+            { label: "Preserve (jsx)", model: ts.JsxEmit.Preserve },
+            { label: "Generate React code (js)", model:ts.JsxEmit.React }  
+        ];   
+    
 
         constructor() {
             super("Compiler");
@@ -128,6 +134,7 @@ module Cats.Gui {
             this.addSelectBox("target", this.jsTarget);
             this.addSelectBox("module", this.moduleGenTarget);
             this.addSelectBox("newLine", this.newLineKind);
+            this.addSelectBox("jsx", this.jsxEmit);
             this.addTextField("outDir");
             this.addTextField("rootDir");
             this.addTextField("out");
