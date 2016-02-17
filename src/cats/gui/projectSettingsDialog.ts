@@ -95,13 +95,17 @@ module Cats.Gui {
             { label: "commonjs", model: ts.ModuleKind.CommonJS },
             { label: "amd", model: ts.ModuleKind.AMD },
             { label: "umd", model: ts.ModuleKind.UMD },
-            { label: "system", model: ts.ModuleKind.System }
+            { label: "system", model: ts.ModuleKind.System },
+            { label: "es6", model: ts.ModuleKind.ES6 },
+            { label: "es2015", model: ts.ModuleKind.ES2015 }
         ];
 
         private jsTarget = [
             { label: "es3", model: ts.ScriptTarget.ES3 },
             { label: "es5", model: ts.ScriptTarget.ES5 },
-            { label: "es6", model: ts.ScriptTarget.ES6 }
+            { label: "es6", model: ts.ScriptTarget.ES6 },
+            { label: "es2015", model: ts.ScriptTarget.ES2015},
+            { label: "latest", model: ts.ScriptTarget.Latest }
         ];
         
         private newLineKind = [

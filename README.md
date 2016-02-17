@@ -31,7 +31,7 @@ The easiest way to start using CATS it to follow these simple steps:
 * In case you haven't already installed NW.js (previously known as node-webkit) on your machine, do that first. In case you have nodejs installed, you can install
   NW.js by typing the following command (using npm, the node package manager):
 
-        npm install -g nw
+        npm install -g nwjs
 
   Alternatively you can download NW.js from the following page: [NW.js downloads](http://nwjs.io). 
 
@@ -46,7 +46,7 @@ The easiest way to start using CATS it to follow these simple steps:
 After you installed NW.js, just go to the directory where you downloaded the CATS package and type:
 
 ```shell
-nw cats-x.y.z.nw
+nwjs cats-x.y.z.nw
 ```
 
 If you already have a directory with TypeScript files, just select that directory from "Open project..." 
@@ -56,7 +56,7 @@ different typefiles as you go along with your project.
 There are some commandline paramters you can use. For example to open CATS with a specific project, use:
 
 ```shell        
-nw cats-x.y.z.nw --project </path/projectDirectory>
+nwjs cats-x.y.z.nw --project </path/projectDirectory>
 ```
 
 Please note that you have to specify the full path to the project directory you want to open. 
@@ -64,7 +64,7 @@ Please note that you have to specify the full path to the project directory you 
 To open CATS with the same project as last time you opened it, you can use the --restore option:
 
 ```shell
-nw cats-x.y.z.nw --restore
+nwjs cats-x.y.z.nw --restore
 ```
 
 ## Building
@@ -89,7 +89,7 @@ cd cats
 Install NW.js, TypeScript, Jake and the module dependencies:
 
 ```
-npm install -g nw
+npm install -g nwjs
 npm install -g jake
 npm install
 ```
