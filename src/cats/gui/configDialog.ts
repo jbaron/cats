@@ -124,7 +124,7 @@ module Cats.Gui {
         setData(data: any) {
             for (var key in data) {
                 try {
-                    this.model.set(key, data[key]);
+                    this.model.set(<any>key, data[key]);
                 } catch (err) { /* NOP */ }
             }
         }
