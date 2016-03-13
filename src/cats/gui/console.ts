@@ -21,7 +21,7 @@ module Cats.Gui {
         var fileName = sections[0];
         var location:Array<string> = sections[1].split(")")[0].split(",");
         
-        fileName = OS.File.PATH.resolve(IDE.project.projectDir, fileName);
+        // fileName = OS.File.PATH.resolve(IDE.project.projectDir, fileName);
         fileName = OS.File.switchToForwardSlashes(fileName);
         FileEditor.OpenEditor(fileName,{ 
             row : parseInt(location[0], 10)-1,

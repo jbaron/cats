@@ -28,7 +28,7 @@ module Cats {
         label = "Untitled"; 
  
         // The project this editor belongs to
-        project = IDE.project;
+        // project:Project;
         
         protected properties:Map<any> = {};
 
@@ -200,7 +200,7 @@ module Cats {
                 if (editor) {
                     IDE.editorTabView.addEditor(editor, pos);
                 } else {
-                    var dialog = new Gui.ConfirmDialog("No suitable editor found for this file type, open with source editor?");
+                    var dialog = new Gui.ConfirmDialog("No suitable editor found for this file type, open with default editor?");
                     dialog.onConfirm = () => {
                       var editor = new Gui.Editor.SourceEditor(fileName);
                       IDE.editorTabView.addEditor(editor, pos);

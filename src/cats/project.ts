@@ -16,6 +16,29 @@
 
 module Cats {
 
+   var tsconfig = require("tsconfig");
+
+    export interface CompilerOptions {
+    [key: string]: any;
+        noLib: boolean;
+        target: string;
+    }
+    
+    export interface TSConfig {
+        compilerOptions?: CompilerOptions;
+        buildOnSave: boolean;
+        files?: string[];
+        exclude?: string[];
+        filesGlob?: string[];
+        customBuild?: any;
+        customRun?: any;
+        main?: any;
+        tslint?: any;
+        codeFormat?:any;
+        documentation?:any;
+        
+        [key: string]: any;
+    }
     
     /**
      * The project hold the informaiton related to a single project. This include 
@@ -24,7 +47,6 @@ module Cats {
     export class Project extends qx.event.Emitter {
 
         // The home directory of the project
-        projectDir: string;
         name: string;
 
         private tsfiles: Array<string> = [];
@@ -32,43 +54,51 @@ module Cats {
         // The singleton TSWorker handler instance
         iSense: TSWorkerProxy;
 
-        private settings: ProjectSettings;
-
         linter: Linter;
 
         private refreshInterval: number;
+        config:TSConfig;
 
         /**    
          * Create a new project.
          */
-        constructor(projectDir: string) {
+        constructor(public projectDir:string) {
             super();
-            // IDE.project = this;
-            var dir = OS.File.PATH.resolve(projectDir);
-            this.projectDir = OS.File.switchToForwardSlashes(dir);
+            this.readConfigFile();
+        
+            IDE.console.log("Open project " + this.projectDir + " files " + this.config.files.length);
+  
+            this.tsfiles = this.config.files; 
+            this.name = OS.File.PATH.basename(this.projectDir);
+
             this.refresh();
-            if (this.config.tslint.useLint) this.linter = new Linter(this);
+            // if (this.config.tslint.useLint) this.linter = new Linter(this);
             
             // @TODO optimize only refresh in case of changes
             this.refreshInterval = setInterval(() => { this.refreshTodoList() }, 30000);
         }
 
-        /**
-         * Get the project settings
-         */
-        get config() {
-            return this.settings.value;
+
+        private readConfigFile() {
+            let fileName = this.projectDir + "/tsconfig.json";
+            try {
+                this.config = tsconfig.readFileSync(fileName);
+            } catch (err) {
+                IDE.console.error(`Error reading config file ${fileName}`);
+            }
         }
 
         /**
          * Save the project configuration
          */
         updateConfig(config: ProjectConfiguration) {
+            return ; /*
             this.settings.value = config;
             this.emit("config", config);
             if (this.config.tslint.useLint) this.linter = new Linter(this);
             this.settings.store();
             this.iSense.setSettings(this.config.compiler, this.config.codeFormat);
+            */
         }
 
         refreshTodoList() {
@@ -105,7 +135,7 @@ module Cats {
             IDE.todoList.clear();
             if (this.iSense) this.iSense.stop();
             clearInterval(this.refreshInterval);
-            IDE.project = null;
+            IDE.projects = [];
         }
 
         /**
@@ -117,7 +147,7 @@ module Cats {
                     IDE.problemResult.setData(data);
                     if (data.length === 0) {
                         if (verbose) {
-                            IDE.console.log("Project has no errors");
+                            IDE.console.log(`Project ${this.name} has no errors`);
                         }
                     }
                 }
@@ -163,20 +193,17 @@ module Cats {
          *  again from the filesystem to be fully in sync
          */
         refresh() {
-            this.settings = new ProjectSettings(this.projectDir);
-            this.settings.load();
-            this.name = this.config.name || OS.File.PATH.basename(this.projectDir);
-            document.title = "CATS | " + this.name;
-
+ 
             if (this.iSense) this.iSense.stop();
-            this.iSense = new TSWorkerProxy(this);
+            this.iSense = new TSWorkerProxy();
 
-
-            this.iSense.setSettings(this.config.compiler, this.config.codeFormat);
-
-            if (!this.config.compiler.noLib) {
+            var path = OS.File.join(this.projectDir, "tsconfig.json");
+            var content = JSON.stringify(this.config);
+            this.iSense.setConfigFile(path,content);
+            
+             if (!this.config.compilerOptions.noLib) {
                 var libFile = "resource/typings/lib.d.ts";
-                if (this.config.compiler.target === ts.ScriptTarget.ES6) {
+                if (this.config.compilerOptions.target === "ES6") {
                     libFile = "resource/typings/lib.es6.d.ts";
                 }
                 var fullName = OS.File.join(IDE.catsHomeDir, libFile);
@@ -184,16 +211,8 @@ module Cats {
                 this.addScript(fullName, libdts);
             }
 
-            var srcs = new Array<string>();
-            if (this.config.src) {
-                srcs = srcs.concat(this.config.src);
-            } else {
-                srcs = ["**/*.ts", "**/*.tsx"];
-            }
-            srcs.forEach((src: string) => {
-                this.loadTypeScriptFiles(src);
-            });
 
+            this.loadTypeScriptFiles();
             this.refreshTodoList();
 
         }
@@ -271,25 +290,25 @@ module Cats {
             return this.tsfiles;
         }
 
-        /**
+
+         /**
          * Load the TypeScript source files that match the pattern into the tsworker
          * @param pattern The pattern to apply when searching for files
          */
-        private loadTypeScriptFiles(pattern: string) {
-            OS.File.find(pattern, this.projectDir, (err: Error, files: Array<string>) => {
-                files.forEach((file) => {
-                    try {
-                        var fullName = OS.File.join(this.projectDir, file);
+        private loadTypeScriptFiles() {
+            this.config.files.forEach((file) => {
+                 try {
+                        var fullName = file; // OS.File.join(this.projectDir, file);
                         var content = OS.File.readTextFile(fullName);
                         this.addScript(fullName, content);
                     } catch (err) {
                         console.error("Got error while handling file " + fullName);
                         console.error(err);
                     }
-                });
             });
         }
 
+   
 
     }
 

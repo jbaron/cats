@@ -320,10 +320,19 @@ module Cats.TSWorker {
             };
         }
 
+        /**
+         * Use the TSConfig file to set the compiler options
+         */ 
+        setConfigFile(path,content) {
+            var result = ts.readConfigFile(path,(path) => {return content});
+            var options = result.config.compilerOptions;
+            
+            this.lsHost.setCompilationSettings(options);
+        }
 
         /**
          * Configure the compilation and format settings. 
-         * Tthis method uses a simple mixin to overwrite only the values
+         * This method uses a simple mixin to overwrite only the values
          * that are set, leave the other ones at the default value.
          */
         setSettings(compilerOptions:ts.CompilerOptions, editorOptions:ts.FormatCodeOptions) {

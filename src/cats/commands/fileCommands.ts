@@ -22,7 +22,7 @@ module Cats.Commands {
      * Create a new edit session
      */ 
     function newFile() {
-        if (! IDE.project) {
+        if (IDE.projects.length === 0) {
             alert("Please open a project first.");
             return;
         }

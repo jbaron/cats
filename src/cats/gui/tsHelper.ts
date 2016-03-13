@@ -94,7 +94,7 @@ module Cats.Gui {
             this.diagnosticTimer = setTimeout(() => {
             
                     project.iSense.getErrors(this.editor.filePath, (err: Error, result: Cats.FileRange[]) => {
-                        if (project.config.tslint.useLint) {
+                        if (project.config.tslint && project.config.tslint.useLint) {
                             result = result.concat(project.linter.lint(this.editor.filePath, this.editor.getContent()));
                         }
                         this.editSession.showAnnotations(result);

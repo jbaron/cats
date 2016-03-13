@@ -27,38 +27,47 @@ module Cats.Gui.Editor {
      */ 
     export class EditSession extends ace.EditSession {
 
-        private editor:SourceEditor;
+       
         mode: string;
         private version:number;
-
-        constructor(editor:SourceEditor) {
+        private filePath;
+   
+        constructor(private editor:SourceEditor, private project:Project) {
+            // @TODO solve nicely
+            super("","ace/mode/text");
+            this.filePath = editor.filePath;
+            super("","");
             var content = "";
             this.version = 0;
-            this.editor = editor;
             this.mode = this.calculateMode();
             
-            if (editor.filePath) {
-                content = OS.File.readTextFile(editor.filePath) ;
-
-                if ( this.isTypeScript() && (!IDE.project.hasScriptFile( editor.filePath )) ) {
-                    var addDialog = new Gui.ConfirmDialog("Not yet part of project, add it now?");
-                    addDialog.onConfirm = () => {
-                        IDE.project.addScript(editor.filePath, content);
-                    };
-                    addDialog.show();
-                }
-            
+            if (this.filePath) {
+                content = OS.File.readTextFile(this.filePath) ;
+                this.checkIfNewTSFile(this.filePath,content);
             }
             
-            super(content, this.mode);
+            super.setMode(this.mode);
+            super.setValue(content);
             this.setNewLineMode("unix");
-            this.configureAceSession(IDE.project.config);
+            // this.configureAceSession(IDE.project.config); @TODO
             this.setUndoManager(new UndoManager());
 
-            IDE.project.on("config", (c:ProjectConfiguration) => { this.configureAceSession(c); });
+
+            // @TODO
+            project.on("config", (c:ProjectConfiguration) => { this.configureAceSession(c); });
             this.on("change", () => {this.version++});
         }
 
+ 
+        private checkIfNewTSFile(filePath,content) {
+          if ( this.isTypeScript() && (!this.project.hasScriptFile( filePath )) ) {
+                var addDialog = new Gui.ConfirmDialog("Not yet part of project, add it now?");
+                addDialog.onConfirm = () => {
+                    this.project.addScript(filePath, content);
+                };
+                addDialog.show();
+            }
+        }
  
         private calculateMode() {
             if (! this.editor.filePath) return "ace/mode/text";
@@ -89,7 +98,7 @@ module Cats.Gui.Editor {
          * of features are enabled or not.
          */ 
         isTypeScript() {
-            var ext = OS.File.PATH.extname(this.editor.filePath);
+            var ext = OS.File.PATH.extname(this.filePath);
             return ((ext === ".ts") || (ext === ".tsx"));
             // return this.mode === "ace/mode/typescript";
         }
@@ -130,8 +139,8 @@ module Cats.Gui.Editor {
             var filePath = this.editor.filePath;
             var content = this.getValue();
             if (filePath == null) {
-                var dir = OS.File.join(IDE.project.projectDir, "/");
-                var dialog = new Gui.PromptDialog("Please enter the file name", dir);
+                // var dir = OS.File.join(IDE.project.projectDir, "/");
+                var dialog = new Gui.PromptDialog("Please enter the file name", "fullName");
 
                 dialog.onSuccess = (filePath: string) => {
                     filePath = OS.File.switchToForwardSlashes(filePath);
@@ -140,10 +149,10 @@ module Cats.Gui.Editor {
                     this.mode = this.calculateMode();
                     this.setMode(this.mode); 
                     
-                    if ( this.isTypeScript() && (!IDE.project.hasScriptFile(filePath)) ) {
+                    if ( this.isTypeScript() && (!this.project.hasScriptFile(filePath)) ) {
                         var addDialog = new Gui.ConfirmDialog("Not yet part of project, add it now?");
                         addDialog.onConfirm = () => {
-                            IDE.project.addScript(filePath, content);
+                            this.project.addScript(filePath, content);
                         };
                         addDialog.show();
                     }
@@ -156,9 +165,9 @@ module Cats.Gui.Editor {
                 this.editor.updateFileInfo();
                 IDE.console.log("Saved file " + filePath);
                 if (this.isTypeScript()) {
-                    IDE.project.iSense.updateScript(filePath, content);
-                    IDE.project.validate(false);
-                    if (IDE.project.config.buildOnSave) Commands.CMDS.project_build.command();
+                    this.project.iSense.updateScript(filePath, content);
+                    this.project.validate(false);
+                    if (this.project.config.buildOnSave) Commands.CMDS.project_build.command();
                 }
             }
         }

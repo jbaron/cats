@@ -36,7 +36,7 @@ module Cats.Gui {
         private loadValues() {
             var config = this.project.config;
             this.projectSettings.setData(config);
-            this.compilerSettings.setData(config.compiler);
+            this.compilerSettings.setData(config.compilerOptions);
             this.codeFormatSettings.setData(config.codeFormat);
             this.tslintSettings.setData(config.tslint);
             this.customBuild.setData(config.customBuild);
@@ -53,7 +53,7 @@ module Cats.Gui {
             config.customRun = this.customRun.getData();
             config.documentation = this.documentationSettings.getData();
             config.tslint = this.tslintSettings.getData();
-            IDE.project.updateConfig(config);
+            this.project.updateConfig(config);
         }
 
         protected addTabs() {
@@ -135,6 +135,11 @@ module Cats.Gui {
             this.addCheckBox("sourceMap");
             this.addCheckBox("propagateEnumConstants");
             this.addCheckBox("allowAutomaticSemicolonInsertion");
+            this.addCheckBox("allowSyntheticDefaultImports");
+            this.addCheckBox("experimentalDecorators");
+            this.addCheckBox("emitDecoratorMetadata");
+            this.addCheckBox("allowUnusedLabels");
+            this.addCheckBox("allowUnreachableCode");
             this.addSelectBox("target", this.jsTarget);
             this.addSelectBox("module", this.moduleGenTarget);
             this.addSelectBox("newLine", this.newLineKind);

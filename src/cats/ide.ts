@@ -15,11 +15,11 @@
 
 module Cats {
 
+    var glob = require("glob");
 
     /**
      * This class represents the total IDE. The CATS is started a single isntance will be
-     * created that takes care of rendering all the components and open a project if applicable.
-     * 
+     * created that takes care of rendering all the components and open a project if applicable. 
      */ 
     export class Ide  extends qx.event.Emitter{
 
@@ -35,6 +35,7 @@ module Cats {
 
         recentProjects:Array<string>;
 
+        projects: Project[] = [];
         resultPane: Gui.TabView;
         toolBar: Gui.ToolBar;
         contextPane: Gui.TabView;
@@ -52,11 +53,13 @@ module Cats {
         debug:boolean= false;
 
         catsHomeDir: string;
-        project: Project;
+        // project: Project;
         config:IDEConfiguration;
         private static STORE_KEY = "cats.config";
         private lastEntry = <any>{}; 
         
+        private settings: ProjectSettings;
+ 
         icons:IconMap;
 
         constructor() {
@@ -258,6 +261,14 @@ module Cats {
         }
 
 
+        close() {
+            this.projects.forEach((project) => project.close());
+            this.fileNavigator.clear();
+            this.todoList.clear();
+            this.problemResult.clear();
+            this.projects=[];
+        }
+
         /**
          * Load the configuration for the IDE. If there is no configuration
          * found, create the default one to use.
@@ -311,7 +322,7 @@ module Cats {
                 config.version = "1.1";
                 config.sessions = [];
                 config.projects = this.recentProjects;
-                if (this.project) {
+  
                     this.editorTabView.getEditors().forEach((editor)=>{ 
                         var state = editor.getState();
                         if ((state !== null) && (editor.getType())) {
@@ -321,7 +332,7 @@ module Cats {
                             });
                         }
                     });
-                };
+                
                 
                 var configStr = JSON.stringify(config);
                 localStorage[Ide.STORE_KEY] = configStr;
@@ -331,6 +342,14 @@ module Cats {
         }
 
 
+        getProject(path:string) {
+            for (var x=0;x<this.projects.length;x++) {
+                var pDir = this.projects[x].projectDir;
+                if (path.indexOf(pDir) === 0) return this.projects[x];
+            }
+        }
+         
+         
         /**
          * Add a new project to the IDE
          * 
@@ -338,19 +357,30 @@ module Cats {
          */
         addProject(projectDir: string) {
             projectDir = OS.File.PATH.resolve(this.catsHomeDir,projectDir);
+            this.settings = new ProjectSettings(projectDir);
+            this.settings.load();            
+            
             var index = this.recentProjects.indexOf(projectDir);
             if (index !== -1) {
                 this.recentProjects.splice(index,1);
             }
             this.recentProjects.push(projectDir);
             
-            if (! this.project) {
-                this.project = new Project(projectDir);
-                this.fileNavigator.setProject(this.project);
-            } else {
-                var param = encodeURIComponent(projectDir);
-                window.open('index.html?project=' + param);
-            }
+            
+            var name = OS.File.PATH.basename(projectDir);
+            document.title = "CATS | " + name;
+
+            this.fileNavigator.setRootDir(projectDir);
+            var configs:string[] = glob.sync(projectDir + "/" + "**/tsconfig.json");
+            if (configs.length === 0) configs = [projectDir]; 
+     
+            configs.forEach((config) => {
+                var dir = OS.File.PATH.dirname(projectDir);
+                dir = OS.File.PATH.resolve(dir);
+                dir = OS.File.switchToForwardSlashes(dir);
+                let p = new Project(dir);
+                this.projects.push(p);
+            });
         }
         
         

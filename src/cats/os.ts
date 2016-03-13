@@ -230,6 +230,9 @@ module Cats.OS.File {
          * @return Returned value is either the dos or unix newline character 
          */ 
         function determineNewLineChar(): string {
+             return "\n";
+             
+             /*
             try {
                 var char = IDE.project.config.codeFormat.NewLineCharacter;
                 if (char) return char;
@@ -237,7 +240,7 @@ module Cats.OS.File {
             
             if (isWindows()) return "\r\n";
             return "\n";
-            
+            */
         }
 
         /**
@@ -255,7 +258,7 @@ module Cats.OS.File {
             }
             
             var fileName = name;
-            fileName = PATH.resolve(IDE.project.projectDir, fileName);
+            //fileName = PATH.resolve(IDE.project.projectDir, fileName);
             
             mkdirRecursiveSync(PATH.dirname(fileName));
             fs.writeFileSync(fileName, value, "utf8");

@@ -93,8 +93,8 @@ module Cats.Gui {
         }
 
 
-        setProject(project: Cats.Project) {
-            this.projectDir = project.projectDir;
+        setRootDir(dir: string) {
+            this.projectDir = dir;
 
             this.watcher = OS.File.getWatcher();
             this.watcher.on("change", (dir:string) => {
@@ -102,7 +102,7 @@ module Cats.Gui {
                 if (parent) this.readDir(parent);
             });
 
-            var directory = project.projectDir;
+            var directory = dir;
             this.rootTop.fullPath = directory;
             this.rootTop.label = OS.File.PATH.basename(directory);
             var root = qx.data.marshal.Json.createModel(this.rootTop, true);

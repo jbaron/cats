@@ -107,12 +107,12 @@ module Cats.Gui.Editor {
             return str.substr(-maxlen);
         }
 
-        private render(container: HTMLElement) {
+        private render(container: HTMLElement, project:Project=IDE.projects[0]) {
             var nodes:Map<any> = {};
             var g = new dagre.Digraph();
             var max = 100;
             IDE.console.log("Creating class diagram ...");
-            IDE.project.iSense.getObjectModel((err:any, model: Array<Cats.ModelEntry>) => {
+            project.iSense.getObjectModel((err:any, model: Array<Cats.ModelEntry>) => {
                 if (! model) return;
                 var count = 0;
                 model.forEach((entry) => {

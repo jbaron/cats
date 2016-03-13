@@ -9,12 +9,11 @@
     }
   ],
   "main": "index.html",
-
-  "#chromium-args" : "--enable-touch-events --enable-viewport --enable-pinch",
+  "#chromium-args": "--enable-touch-events --enable-viewport --enable-pinch",
   "#js-flags": "--harmony_default_parameters",
   "scripts": {
     "start": "nw",
-    "test" : "jake build"
+    "test": "jake build"
   },
   "description": "CATS in an integrated development environment for TypeScript developers",
   "keywords": [
@@ -29,7 +28,6 @@
   "bugs": {
     "url": "https://github.com/JBaron/cats/issues"
   },
-
   "version": "1.8.0",
   "repository": {
     "type": "git",
@@ -43,14 +41,14 @@
     "height": 800
   },
   "dependencies": {
-    "glob": "^4.3.5",
-    "tslint": "^2.5.0",
-    "dagre" : "^0.4.6",
-    "fuzzy" : "^0.1.0",
-    "nw" : "latest"
+    "dagre": "^0.4.6",
+    "fuzzy": "^0.1.0",
+    "glob": "^4.5.3",
+    "nw": "latest",
+    "tsconfig": "^2.2.0",
+    "tslint": "^2.5.0"
   },
   "devDependencies": {
-    "jake" : "latest"
+    "jake": "latest"
   }
-
 }

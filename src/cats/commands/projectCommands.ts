@@ -22,21 +22,21 @@ module Cats.Commands {
      * Close all open projects
      */ 
     function closeAllProjects() {
-        if (IDE.project) IDE.project.close();
+       IDE.close();
     }
 
     /**
      * Close the project
      */ 
     function closeProject() { 
-        if (IDE.project) IDE.project.close();
+        IDE.close();
     }
 
     /**
      * Run the project
      */ 
-    function runProject() {
-        if (IDE.project) IDE.project.run();
+    function runProject(project) {
+        project.run();
     };
 
 
@@ -44,17 +44,15 @@ module Cats.Commands {
      * Show a class diagram of the project. 
      */ 
     function showDiagram() {
-       if (IDE.project) IDE.editorTabView.addEditor(new Gui.Editor.UMLEditor("Class Diagram"));
+       // if (IDE.project) IDE.editorTabView.addEditor(new Gui.Editor.UMLEditor("Class Diagram"));
     }
 
     /**
      * Shows a quick open dialog for the project.
      */
-    function quickOpen() {
-      if (IDE.project) {
-        var dialog = new Gui.QuickOpenDialog(IDE.project);
+    function quickOpen(project) {
+        var dialog = new Gui.QuickOpenDialog(project);
         dialog.show();
-      }
     }
  
     /**
@@ -62,33 +60,33 @@ module Cats.Commands {
      * to see if there are any issues popping up.
      */ 
     function validateProject() {
-        if (IDE.project) IDE.project.validate();
+        IDE.projects.forEach((project) => project.validate());
     }
 
     /**
      * Build the project
      */ 
-    function buildProject() {
-        if (IDE.project) IDE.project.build();
+    function buildProject(project) {
+        project.build();
     }
 
  
     /**
      * Provide the user with an UI to configure the project settings
      */ 
-    function configureProject() {
-        if (IDE.project) {
-            var w = new Gui.ProjectSettingsDialog(IDE.project);
+    function configureProject(project) {
+        
+            var w = new Gui.ProjectSettingsDialog(project);
             w.show();
-        }
+        
     }
 
     /**
      * Refresh the project so everything is in sync again. This is needed when more complex
      * filesystem changes are done (like renaming TS files etc).
      */ 
-    function refreshProject() {
-        if (IDE.project) IDE.project.refresh();
+    function refreshProject(project) {
+        project.refresh();
     }
 
     /**

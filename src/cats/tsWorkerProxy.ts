@@ -27,7 +27,7 @@ module Cats {
         private messageId = 0;
         private registry:Map<CB<any>> = {};
 
-        constructor(private project: Project) {
+        constructor() {
             // Create a new webworker
             this.worker = new Worker("lib/tsworker.js");
             this.initWorker();
@@ -101,6 +101,10 @@ module Cats {
         getObjectModel(cb:CB<any>) {
             this.perform("getObjectModel", cb);
         }
+
+        setConfigFile(path:string,content:string) {
+            this.perform("setConfigFile", path,content, null); 
+         }
 
         setSettings(compilerSettings:ts.CompilerOptions, editorSettings:ts.FormatCodeOptions) {
             this.perform("setSettings", compilerSettings, editorSettings, null);

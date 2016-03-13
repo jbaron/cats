@@ -81,6 +81,7 @@ declare module ace {
     }
 
 	class EditSession {
+	    constructor();
 		constructor(content:string, mode:string);
 		getUndoManager():UndoManager;
 		addMarker:any;
