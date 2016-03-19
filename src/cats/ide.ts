@@ -344,11 +344,23 @@ module Cats {
 
         getProject(path:string) {
             for (var x=0;x<this.projects.length;x++) {
-                var pDir = this.projects[x].projectDir;
-                if (path.indexOf(pDir) === 0) return this.projects[x];
+                let project = this.projects[x];
+                if (project.hasScriptFile(path)) return project;
+                // var pDir = this.projects[x].projectDir;
+                // if (path.indexOf(pDir) === 0) return this.projects[x];
             }
         }
          
+         
+        getTSConfigs(dir:string) {
+            var configs:string[] = glob.sync(dir + "/" + "**/tsconfig.json");
+            if (configs.length === 0) {
+                let fileName = OS.File.PATH.join(dir,"tsconfig.json");
+                OS.File.writeTextFile(fileName,"{}");
+                configs = [fileName];
+            }
+            return configs;
+        }
          
         /**
          * Add a new project to the IDE
@@ -371,14 +383,10 @@ module Cats {
             document.title = "CATS | " + name;
 
             this.fileNavigator.setRootDir(projectDir);
-            var configs:string[] = glob.sync(projectDir + "/" + "**/tsconfig.json");
-            if (configs.length === 0) configs = [projectDir]; 
-     
+            var configs:string[] = this.getTSConfigs(projectDir);
+    
             configs.forEach((config) => {
-                var dir = OS.File.PATH.dirname(projectDir);
-                dir = OS.File.PATH.resolve(dir);
-                dir = OS.File.switchToForwardSlashes(dir);
-                let p = new Project(dir);
+                let p = new Project(config);
                 this.projects.push(p);
             });
         }

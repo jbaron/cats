@@ -252,6 +252,7 @@ declare module NodeJS {
     export interface Path {
         normalize(p: string): string;
         join(...paths: any[]): string;
+        isAbsolute(path: string): boolean;
         resolve(...pathSegments: any[]): string;
         relative(from: string, to: string): string;
         dirname(p: string): string;

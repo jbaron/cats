@@ -54,13 +54,13 @@ module Cats.Gui.Editor {
 
 
             // @TODO
-            project.on("config", (c:ProjectConfiguration) => { this.configureAceSession(c); });
+            // project.on("config", (c:ProjectConfiguration) => { this.configureAceSession(c); });
             this.on("change", () => {this.version++});
         }
 
  
         private checkIfNewTSFile(filePath,content) {
-          if ( this.isTypeScript() && (!this.project.hasScriptFile( filePath )) ) {
+          if ( this.isTypeScript() && this.project && (!this.project.hasScriptFile( filePath )) ) {
                 var addDialog = new Gui.ConfirmDialog("Not yet part of project, add it now?");
                 addDialog.onConfirm = () => {
                     this.project.addScript(filePath, content);
@@ -99,7 +99,7 @@ module Cats.Gui.Editor {
          */ 
         isTypeScript() {
             var ext = OS.File.PATH.extname(this.filePath);
-            return ((ext === ".ts") || (ext === ".tsx"));
+            return (((ext === ".ts") || (ext === ".tsx")) && this.project);
             // return this.mode === "ace/mode/typescript";
         }
 
@@ -149,7 +149,7 @@ module Cats.Gui.Editor {
                     this.mode = this.calculateMode();
                     this.setMode(this.mode); 
                     
-                    if ( this.isTypeScript() && (!this.project.hasScriptFile(filePath)) ) {
+                    if ( this.isTypeScript() && this.project && (!this.project.hasScriptFile(filePath)) ) {
                         var addDialog = new Gui.ConfirmDialog("Not yet part of project, add it now?");
                         addDialog.onConfirm = () => {
                             this.project.addScript(filePath, content);

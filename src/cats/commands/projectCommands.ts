@@ -35,8 +35,8 @@ module Cats.Commands {
     /**
      * Run the project
      */ 
-    function runProject(project) {
-        project.run();
+    function runProject() {
+        IDE.projects.forEach((project) => project.run());
     };
 
 
@@ -63,11 +63,12 @@ module Cats.Commands {
         IDE.projects.forEach((project) => project.validate());
     }
 
+
     /**
      * Build the project
      */ 
-    function buildProject(project) {
-        project.build();
+    function buildProject() {
+        IDE.projects.forEach((project) => project.build());
     }
 
  
@@ -85,8 +86,8 @@ module Cats.Commands {
      * Refresh the project so everything is in sync again. This is needed when more complex
      * filesystem changes are done (like renaming TS files etc).
      */ 
-    function refreshProject(project) {
-        project.refresh();
+    function refreshProject() {
+                IDE.projects.forEach((project) => project.refresh());
     }
 
     /**

@@ -33,6 +33,7 @@ module Cats {
         customBuild?: any;
         customRun?: any;
         main?: any;
+        name?: string;
         tslint?: any;
         codeFormat?:any;
         documentation?:any;
@@ -50,7 +51,8 @@ module Cats {
         name: string;
 
         private tsfiles: Array<string> = [];
-
+        public projectDir;
+        
         // The singleton TSWorker handler instance
         iSense: TSWorkerProxy;
 
@@ -62,27 +64,25 @@ module Cats {
         /**    
          * Create a new project.
          */
-        constructor(public projectDir:string) {
+        constructor(private tsConfigFile:string) {
             super();
-            this.readConfigFile();
-        
-            IDE.console.log("Open project " + this.projectDir + " files " + this.config.files.length);
-  
-            this.tsfiles = this.config.files; 
-            this.name = OS.File.PATH.basename(this.projectDir);
+            
+             var dir = OS.File.PATH.dirname(tsConfigFile);
+             dir = OS.File.PATH.resolve(dir);
+             this.projectDir = OS.File.switchToForwardSlashes(dir);
+     
 
             this.refresh();
             // if (this.config.tslint.useLint) this.linter = new Linter(this);
             
             // @TODO optimize only refresh in case of changes
-            this.refreshInterval = setInterval(() => { this.refreshTodoList() }, 30000);
+            this.refreshInterval = setInterval(() => { this.refreshTodoList() }, 60000);
         }
 
 
-        private readConfigFile() {
-            let fileName = this.projectDir + "/tsconfig.json";
+        private readConfigFile(fileName) {
             try {
-                this.config = tsconfig.readFileSync(fileName);
+                return tsconfig.readFileSync(fileName);
             } catch (err) {
                 IDE.console.error(`Error reading config file ${fileName}`);
             }
@@ -179,6 +179,10 @@ module Cats {
                     if (data.errors && (data.errors.length > 0)) return;
                     var files = data.outputFiles;
                     files.forEach((file) => {
+                        if (!OS.File.PATH.isAbsolute(file.name)) {
+                            file.name = OS.File.PATH.join(this.projectDir,file.name);
+                            file.name = OS.File.PATH.normalize(file.name);
+                        }
                         OS.File.writeTextFile(file.name, file.text);
                     });
                     IDE.console.log("Done building project " + this.name + ".");
@@ -193,6 +197,11 @@ module Cats {
          *  again from the filesystem to be fully in sync
          */
         refresh() {
+            this.config = this.readConfigFile(this.tsConfigFile);
+            IDE.console.log(`Found TypeScript project at ${this.projectDir} containing ${this.config.files.length} files`);
+            this.tsfiles = this.config.files; 
+            this.name = this.config.name || OS.File.PATH.basename(this.projectDir);
+
  
             if (this.iSense) this.iSense.stop();
             this.iSense = new TSWorkerProxy();
