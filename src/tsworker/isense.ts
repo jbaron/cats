@@ -328,6 +328,12 @@ module Cats.TSWorker {
             var options = result.config.compilerOptions;
             
             this.lsHost.setCompilationSettings(options);
+            
+            this.formatOptions = this.getDefaultFormatOptions();
+            let editorOptions = options.formatCodeOptions || {};
+            for (var i in editorOptions) {
+                this.formatOptions[i] = editorOptions[i];
+            }
         }
 
         /**

@@ -20,13 +20,13 @@ module Cats {
 
     export interface CompilerOptions {
     [key: string]: any;
-        noLib: boolean;
-        target: string;
+        noLib?: boolean;
+        target?: string;
     }
     
     export interface TSConfig {
         compilerOptions?: CompilerOptions;
-        buildOnSave: boolean;
+        buildOnSave?: boolean;
         files?: string[];
         exclude?: string[];
         filesGlob?: string[];
@@ -200,18 +200,28 @@ module Cats {
             this.tsfiles = this.config.files; 
             this.name = this.config.name || OS.File.PATH.basename(this.projectDir);
 
+            if (!this.config.compilerOptions) this.config.compilerOptions = {};
  
             if (this.iSense) this.iSense.stop();
             this.iSense = new TSWorkerProxy();
-
-            var path = OS.File.join(this.projectDir, "tsconfig.json");
+            
             var content = JSON.stringify(this.config);
-            this.iSense.setConfigFile(path,content);
+            this.iSense.setConfigFile(this.tsConfigFile,content);
             
              if (!this.config.compilerOptions.noLib) {
-                var libFile = "resource/typings/lib.d.ts";
-                if (this.config.compilerOptions.target === "ES6") {
-                    libFile = "resource/typings/lib.es6.d.ts";
+                let libFile:string;
+                switch (this.config.compilerOptions.target) {
+                    case "es6":
+                    case "ES6":
+                        libFile = "resource/typings/lib.es6.d.ts";
+                        break;
+                    case "es7":
+                    case "ES7":
+                        libFile = "resource/typings/lib.es7.d.ts";
+                        break;
+                    default:
+                        libFile = "resource/typings/lib.d.ts";
+                        break;
                 }
                 var fullName = OS.File.join(IDE.catsHomeDir, libFile);
                 var libdts = OS.File.readTextFile(fullName);
