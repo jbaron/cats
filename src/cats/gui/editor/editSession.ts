@@ -32,7 +32,7 @@ module Cats.Gui.Editor {
         private version:number;
         private filePath;
    
-        constructor(private editor:SourceEditor, private project:Project) {
+        constructor(private editor:SourceEditor) {
             // @TODO solve nicely
             super("","ace/mode/text");
             this.filePath = editor.filePath;
@@ -58,6 +58,10 @@ module Cats.Gui.Editor {
             this.on("change", () => {this.version++});
         }
 
+ 
+        private get project() {
+            return IDE.getProject(this.filePath);
+        }
  
         private checkIfNewTSFile(filePath,content) {
           if ( this.isTypeScript() && this.project && (!this.project.hasScriptFile( filePath )) ) {

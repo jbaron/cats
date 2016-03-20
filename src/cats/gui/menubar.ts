@@ -200,11 +200,11 @@ module Cats.Gui {
             proj.append( getItem( CMDS.project_validate ) );
             proj.append( getItem( CMDS.project_refresh ) );
 
-            proj.append( new GUI.MenuItem( { type: "separator" }) );
-            proj.append(getItem(CMDS.project_classDiagram));
+            // proj.append( new GUI.MenuItem( { type: "separator" }) );
+            // proj.append(getItem(CMDS.project_classDiagram));
 
-            proj.append( new GUI.MenuItem( { type: "separator" }) );
-            proj.append( getItem( CMDS.project_configure ) );
+            // proj.append( new GUI.MenuItem( { type: "separator" }) );
+            // proj.append( getItem( CMDS.project_configure ) );
         }
 
         private createViewMenu() {

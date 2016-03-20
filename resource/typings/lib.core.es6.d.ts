@@ -4658,7 +4658,6 @@ interface MapConstructor {
 declare var Map: MapConstructor;
 
 interface WeakMap<K, V> {
-    clear(): void;
     delete(key: K): boolean;
     get(key: K): V;
     has(key: K): boolean;
@@ -4698,7 +4697,6 @@ declare var Set: SetConstructor;
 
 interface WeakSet<T> {
     add(value: T): WeakSet<T>;
-    clear(): void;
     delete(value: T): boolean;
     has(value: T): boolean;
     [Symbol.toStringTag]: "WeakSet";

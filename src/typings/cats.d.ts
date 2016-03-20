@@ -89,7 +89,7 @@ declare module Cats {
         buildOnSave?: boolean;
         customBuild?:RunExternal;
         customRun?:RunExternal;
-        compiler: ts.CompilerOptions;
+        compiler: any;
         codeFormat: ts.FormatCodeOptions;
         tslint : {
             useLint?: boolean; // false by default

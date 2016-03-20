@@ -29,14 +29,14 @@ module Cats.Gui {
             headers.forEach((header) => columns.push(this.tr(header)));
             tableModel.setColumns(columns);
             tableModel.setData([]);
-            this.setStatusBarVisible(false); 
-
+ 
             var custom: any = {
                 tableColumnModel: function() {
                     return new qx.ui.table.columnmodel.Resize();
                 }
             };
             super(tableModel, custom);
+            this.setStatusBarVisible(false); 
             this.setDecorator(null);
 
             this.setPadding(0, 0, 0, 0);

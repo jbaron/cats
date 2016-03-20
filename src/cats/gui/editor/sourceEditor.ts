@@ -47,7 +47,6 @@ module Cats.Gui.Editor {
         private aceEditor: ace.Editor;
         private mouseMoveTimer: number;
         private outlineTimer: number
-        project:Project;
         private updateSourceTimer: number;
         private pendingWorkerUpdate = false;
         private editSession: EditSession;
@@ -58,7 +57,6 @@ module Cats.Gui.Editor {
 
         constructor( fileName?: string) {
             super( fileName );
-            this.project = IDE.getProject(fileName);
             this.createEditSession();
             this.createWidget();
             this.contextMenu = new SourceEditorContextMenu( this );
@@ -66,6 +64,9 @@ module Cats.Gui.Editor {
             IDE.on( "config", () => { this.configureEditor(); });
         }
 
+        get project() {
+            return IDE.getProject(this.filePath);
+        }
 
         private createWidget() {
             var widget = new qx.ui.core.Widget();
@@ -97,7 +98,7 @@ module Cats.Gui.Editor {
         }
 
         private createEditSession() {
-            this.editSession = new EditSession( this, this.project );
+            this.editSession = new EditSession( this);
 
             this.editSession.on( "changeAnnotation", () => {
                 this.emit( "errors", this.editSession.getMaxAnnotationLevel() );

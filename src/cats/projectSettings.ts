@@ -21,7 +21,7 @@ module Cats {
      */
     export class ProjectSettings {
 
-        value:ProjectConfiguration;
+        value;
 
         constructor( private projectRoot: string ) {
         }
@@ -68,19 +68,18 @@ module Cats {
          * Load the default configuration for a project
          */
         private loadDefault() {
-            var result: ProjectConfiguration = {
+            var result = {
                 version: "1.3",
                 main: "index.html",
                 src: null, //If not set, the whole project directory is searched for source files
                 buildOnSave: false,
-                compiler: {
-                    "module": ts.ModuleKind.None,
+                compilerOptions: {
                     "noLib": false,
                     "removeComments": false,
                     "noImplicitAny": false,
                     "declaration": false,
                     "sourceMap": false,
-                    "target": ts.ScriptTarget.ES5,
+                    "target":"ES5",
                 },
                 tslint : {
                     useLint : false  

@@ -67,10 +67,8 @@ module Cats {
         constructor(private tsConfigFile:string) {
             super();
             
-             var dir = OS.File.PATH.dirname(tsConfigFile);
-             dir = OS.File.PATH.resolve(dir);
-             this.projectDir = OS.File.switchToForwardSlashes(dir);
-     
+            this.projectDir = OS.File.PATH.dirname(tsConfigFile);
+
 
             this.refresh();
             // if (this.config.tslint.useLint) this.linter = new Linter(this);
@@ -198,7 +196,7 @@ module Cats {
          */
         refresh() {
             this.config = this.readConfigFile(this.tsConfigFile);
-            IDE.console.log(`Found TypeScript project at ${this.projectDir} containing ${this.config.files.length} files`);
+            IDE.console.log(`Found TypeScript project configuration at ${this.tsConfigFile} containing ${this.config.files.length} files`);
             this.tsfiles = this.config.files; 
             this.name = this.config.name || OS.File.PATH.basename(this.projectDir);
 

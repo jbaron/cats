@@ -307,7 +307,7 @@ module Cats.TSWorker {
                     // if (outputFiles.length > 0 && this.lsHost.getCompilationSettings().out) {
                     //    break;
                     // }
-                } catch (err) {/*ignore */}
+                } catch (err) {/* ignore */}
 
 
             });

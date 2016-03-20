@@ -87,7 +87,8 @@ module Cats.Commands {
      * filesystem changes are done (like renaming TS files etc).
      */ 
     function refreshProject() {
-                IDE.projects.forEach((project) => project.refresh());
+        IDE.refresh();
+        // IDE.projects.forEach((project) => project.refresh());
     }
 
     /**

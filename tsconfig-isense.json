@@ -1,0 +1,19 @@
+{
+    "name" : "WebWorker",
+    "compilerOptions": {
+        "preserveConstEnums": false,
+        "out": "lib/tsworker.js",
+        "target" : "ES5"
+     },
+     "files": [
+        "src/typings/typescriptServices.d.ts",
+        "src/typings/cats.d.ts",
+        "src/cats/common.ts",
+        "src/tsworker/languageservicehost.ts",
+        "src/tsworker/script.ts",
+        "src/tsworker/textChangeHelper.ts",
+        "src/tsworker/isense.ts",
+        "src/tsworker/modelCreator.ts"
+    ]
+
+}

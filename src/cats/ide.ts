@@ -35,6 +35,8 @@ module Cats {
 
         recentProjects:Array<string>;
 
+        private rootDir: string;
+
         projects: Project[] = [];
         resultPane: Gui.TabView;
         toolBar: Gui.ToolBar;
@@ -58,7 +60,7 @@ module Cats {
         private static STORE_KEY = "cats.config";
         private lastEntry = <any>{}; 
         
-        private settings: ProjectSettings;
+        // private settings: ProjectSettings;
  
         icons:IconMap;
 
@@ -353,7 +355,7 @@ module Cats {
          
          
         getTSConfigs(dir:string) {
-            var configs:string[] = glob.sync(dir + "/" + "**/tsconfig.json");
+            var configs:string[] = glob.sync(dir + "/" + "**/tsconfig*.json");
             if (configs.length === 0) {
                 let fileName = OS.File.PATH.join(dir,"tsconfig.json");
                 OS.File.writeTextFile(fileName,"{}");
@@ -362,15 +364,21 @@ module Cats {
             return configs;
         }
          
+         
+        refresh() {
+            this.addProject(this.rootDir);
+        }
+         
         /**
          * Add a new project to the IDE
          * 
          * @param projectDir the directory of the new project
          */
         addProject(projectDir: string) {
-            projectDir = OS.File.PATH.resolve(this.catsHomeDir,projectDir);
-            this.settings = new ProjectSettings(projectDir);
-            this.settings.load();            
+            this.projects = [];
+            this.rootDir = OS.File.PATH.resolve(this.catsHomeDir,projectDir);
+            // this.settings = new ProjectSettings(projectDir);
+            // this.settings.load();            
             
             var index = this.recentProjects.indexOf(projectDir);
             if (index !== -1) {
@@ -386,7 +394,9 @@ module Cats {
             var configs:string[] = this.getTSConfigs(projectDir);
     
             configs.forEach((config) => {
-                let p = new Project(config);
+                let path = OS.File.PATH.resolve(config);
+                path = OS.File.switchToForwardSlashes(path);
+                let p = new Project(path);
                 this.projects.push(p);
             });
         }
