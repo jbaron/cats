@@ -33,7 +33,7 @@ module Cats.TSWorker {
             return Object.keys(this.scripts);
         }
 
-
+        
         getScripts() {
             var result:Array<Script> = []
             this.getScriptFileNames().forEach((fileName)=> {
@@ -42,21 +42,12 @@ module Cats.TSWorker {
             });
             return result;
         }
-  
+        
+        
         getNewLine() {
             return "\n";
         }
 
-        /*
-        getCancellationToken(): ts.CancellationToken {
-            // @TODO find out what this is used for
-            return ts.CancellationTokenObject.None;
-        }
-        */
-        
-        getLocalizedDiagnosticMessages() {
-            // console.log("Called getLocalizedDiagnosticMessages");
-        }
         
         getCurrentDirectory(): string {
             return "";
@@ -80,11 +71,9 @@ module Cats.TSWorker {
        public error(s: string): void {
        }
        
-       
         public getCompilationSettings(): ts.CompilerOptions {
             return this.compilationSettings; 
         }
-
 
         public getScriptVersion(fileName: string): string {
             var script = this.scripts[fileName];            

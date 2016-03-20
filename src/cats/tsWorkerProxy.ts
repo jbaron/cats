@@ -106,10 +106,6 @@ module Cats {
             this.perform("setConfigFile", path,content, null); 
          }
 
-        setSettings(compilerSettings:ts.CompilerOptions, editorSettings:ts.FormatCodeOptions) {
-            this.perform("setSettings", compilerSettings, editorSettings, null);
-        }
-
         addScript(fileName: string, content: string) {
             this.perform("addScript", fileName, content, null);
         }

@@ -323,7 +323,7 @@ module Cats.TSWorker {
         /**
          * Use the TSConfig file to set the compiler options
          */ 
-        setConfigFile(path,content) {
+        setConfigFile(path:string,content) {
             var result = ts.readConfigFile(path,(path) => {return content});
             var options = result.config.compilerOptions;
             
@@ -336,31 +336,12 @@ module Cats.TSWorker {
             }
         }
 
-        /**
-         * Configure the compilation and format settings. 
-         * This method uses a simple mixin to overwrite only the values
-         * that are set, leave the other ones at the default value.
-         */
-        setSettings(compilerOptions:ts.CompilerOptions, editorOptions:ts.FormatCodeOptions) {
-            this.lsHost.setCompilationSettings(compilerOptions);
-
-            
-            this.formatOptions = this.getDefaultFormatOptions();
-            // Do a quick mixin
-            for (var i in editorOptions) {
-                this.formatOptions[i] = editorOptions[i];
-            }
-            
-        }
-
-
+  
        private isExecutable(kind:string) {
             if (kind === "method" || kind === "function" || kind === "constructor") return true;
             return false;
         }
 
-
-    
 
         /**
          * Convert the data for outline usage.
