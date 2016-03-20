@@ -1,5 +1,5 @@
 {
-    "name" : "MainUI",
+    "name" : "Cats",
     "compilerOptions": {
         "preserveConstEnums": false,
         "out": "lib/main.js",

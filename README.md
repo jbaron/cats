@@ -86,31 +86,24 @@ Change to the cats directory:
 cd cats
 ```
 
-Install NW.js, TypeScript, Jake and the module dependencies:
+Install NW.js, TypeScript and the module dependencies:
 
 ```
 npm install -g nwjs
-npm install -g jake
 npm install
 ```
 
-Use one of the following to build:
+Then run the following to build:
 
 ```
-jake lib/main.js            # Builds the main frontend module for CATS
-jake lib/tsworker.js        # Builds the Web workers module
-jake clean                  # Cleans the compiler output, declare files, and tests
-jake default                # Builds the full CATS application
-jake dist                   # build a distribution file (only works on OSX/Linux)
-jake -T                     # List the above commands. 
+npm run build
 ```
 
 
 ## Configuration
 
-CATS will look for a file in the project directory called: ".settings/config.json". If found, CATS will use the values configured in this file, otherwise it will use some sensible default values.
-You can edit this file (or the default values if you don't have this file yet) from the main menu.
-
+CATS will look for tsconfig files in the directory opened from th IDE. If found, CATS will use the values configured in this file.
+Otherise it will create this file in the root directory. 
 
 ## Goals
 

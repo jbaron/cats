@@ -1,5 +1,5 @@
 {
-    "name" : "WebWorker",
+    "name" : "ISense",
     "compilerOptions": {
         "preserveConstEnums": false,
         "out": "lib/tsworker.js",
