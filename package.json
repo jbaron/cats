@@ -13,7 +13,8 @@
   "#js-flags": "--harmony_default_parameters",
   "scripts": {
     "start": "nwjs",
-    "build" : "tsc -p tsconfig-cats.json && tsc -p tsconfig-isense.json"
+    "build" : "tsc -p tsconfig-cats.json && tsc -p tsconfig-isense.json",
+    "test" : "tsc -p tsconfig-cats.json && tsc -p tsconfig-isense.json"
   },
   "description": "CATS in an integrated development environment for TypeScript developers",
   "keywords": [
