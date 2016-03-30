@@ -26,6 +26,7 @@ module Cats {
     
     export interface TSConfig {
         compilerOptions?: CompilerOptions;
+        compileOnSave?: boolean;
         buildOnSave?: boolean;
         files?: string[];
         exclude?: string[];
@@ -64,7 +65,7 @@ module Cats {
         /**    
          * Create a new project.
          */
-        constructor(private tsConfigFile:string) {
+        constructor(public tsConfigFile:string) {
             super();
             
             this.projectDir = OS.File.PATH.dirname(tsConfigFile);
@@ -101,7 +102,7 @@ module Cats {
 
         refreshTodoList() {
             this.iSense.getTodoItems((err, data) => {
-                IDE.todoList.setData(data);
+                IDE.todoList.setData(data, this);
             });
         }
     
@@ -142,7 +143,7 @@ module Cats {
         validate(verbose = true) {
             this.iSense.getAllDiagnostics((err, data) => {
                 if (data) {
-                    IDE.problemResult.setData(data);
+                    IDE.problemResult.setData(data,this);
                     if (data.length === 0) {
                         if (verbose) {
                             IDE.console.log(`Project ${this.name} has no errors`);
@@ -229,7 +230,7 @@ module Cats {
             }
 
 
-            this.loadTypeScriptFiles();
+            this.loadProjectSourceFiles();
             this.refreshTodoList();
 
         }
@@ -245,7 +246,7 @@ module Cats {
 
         private showCompilationResults(data: CompileResults) {
             if (data.errors && (data.errors.length > 0)) {
-                IDE.problemResult.setData(data.errors);
+                IDE.problemResult.setData(data.errors, this);
                 return;
             }
 
@@ -298,6 +299,10 @@ module Cats {
             return this.tsfiles.indexOf(fileName) > -1;
         }
 
+        updateScript(fullName: string, content: string) {
+            this.iSense.updateScript(fullName, content);
+        }
+
         addScript(fullName: string, content: string) {
             this.iSense.addScript(fullName, content);
             if (!this.hasScriptFile(fullName)) this.tsfiles.push(fullName);
@@ -309,10 +314,10 @@ module Cats {
 
 
          /**
-         * Load the TypeScript source files that match the pattern into the tsworker
-         * @param pattern The pattern to apply when searching for files
+         * Load the source files that are part of this project. Typically
+         * files ending with ts, tsx or js.
          */
-        private loadTypeScriptFiles() {
+        private loadProjectSourceFiles() {
             this.config.files.forEach((file) => {
                  try {
                         var fullName = file; // OS.File.join(this.projectDir, file);

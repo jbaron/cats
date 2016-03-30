@@ -14,37 +14,44 @@
 
 module Cats.Gui {
 
+    interface ProjectData {
+        data:any[];
+        project:Project;
+    }
+
+
     /**
      * This table displays data that is related to a file. Can be 
      * search results of error messages or even bookmarks. 
      */
     export class ResultTable extends qx.ui.table.Table {
 
-        private data: Cats.FileRange[];
         
-        constructor(headers = ["tableheader_message", "tableheader_file", "tableheader_position"]) {
-
+        private projectData:Map<ProjectData>;
+        
+        constructor(headers = ["tableheader_message", "tableheader_project", "tableheader_file", "tableheader_position"]) {
+    
             var tableModel = new qx.ui.table.model.Simple();
             var columns:string[] = [];
             headers.forEach((header) => columns.push(this.tr(header)));
             tableModel.setColumns(columns);
             tableModel.setData([]);
- 
             var custom: any = {
                 tableColumnModel: function() {
                     return new qx.ui.table.columnmodel.Resize();
                 }
             };
             super(tableModel, custom);
+            
             this.setStatusBarVisible(false); 
             this.setDecorator(null);
-
+            this.projectData = {};
             this.setPadding(0, 0, 0, 0);
 
             this.addListener("click", () => {
                 var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
                 var data = this.getTableModel().getRowData(selectedRow);
-                if (data && data[1]) FileEditor.OpenEditor(data[1], data[3]);
+                if (data && data[2]) FileEditor.OpenEditor(data[2], data[4]);
             });
 
             this.setContextMenu(this.createContextMenu());
@@ -63,7 +70,9 @@ module Cats.Gui {
          * Clear all the data from the table
          */ 
         clear() {
-            this.setData([]);
+            var model = <qx.ui.table.model.Simple>this.getTableModel();
+            this.projectData = {};
+            model.setData([]);
         }
 
 
@@ -76,10 +85,7 @@ module Cats.Gui {
             ];
         }
 
-        getData(): Cats.FileRange[] {
-            return this.data;
-        }
-
+   
         private areEmpty(...args:any[]) {
             for (var i=0; i< args.length; i++ ) {
                 var arr = args[i];
@@ -89,19 +95,40 @@ module Cats.Gui {
         }
 
         /**
+         * @TODO finalize the logic to show results of multiple project in one table
+         */ 
+        private flatten() {
+            var result = [];
+            Object.keys(this.projectData).forEach((key) => {
+                var projectData = this.projectData[key];
+                var projectName = projectData.project ? projectData.project.name : "default";
+                projectData.data.forEach((row) => {
+                    result.push([
+                         row.message,
+                         projectName, 
+                         row.fileName || "",
+                         this.rangeToPosition(row.range),
+                         row.range   
+                    ]);
+                });
+            })
+            return result;
+        }
+
+        /**
          * Set the data for this table
          */ 
-        setData(data: Cats.FileRange[]) {
-            if (this.areEmpty(this.data, data)) return;
+        setData(data: Cats.FileRange[], project?:Project) {
+            var key = project ? project.tsConfigFile : "default";
+            if (this.areEmpty(this.projectData[key], data)) return;
             this.fireDataEvent("contentChange", null);
-            this.data = data;
-            var tableModel = new qx.ui.table.model.Simple();
-            var rows: any[] = [];
-            if (data) {
-                data.forEach((row) => {
-                    rows.push(this.convert(row));
-                });
+            
+            this.projectData[key] = {
+                    data: data,
+                    project : project 
             }
+            
+            var rows = this.flatten();
             var model = <qx.ui.table.model.Simple>this.getTableModel();
             model.setData(rows);
             // this.getSelectionModel().resetSelection();

@@ -33,9 +33,9 @@ module Cats {
             simple:qx.theme.Simple
         };
 
-        recentProjects:Array<string>;
+        private recentProjects:Array<string>;
 
-        private rootDir: string;
+        rootDir: string;
 
         projects: Project[] = [];
         resultPane: Gui.TabView;
@@ -205,7 +205,7 @@ module Cats {
          */
         private initFileDropArea(): void {
             // Listen onto file drop events
-            document.documentElement.addEventListener("drop", this.acceptFileDrop.bind(this), false);
+            document.documentElement.addEventListener("drop", (ev) => this.acceptFileDrop(ev), false);
 
             // Prevent the browser from redirecting to the file
             document.documentElement.addEventListener("dragover", (event: DragEvent) => {
@@ -353,8 +353,10 @@ module Cats {
             }
         }
          
-         
-        getTSConfigs(dir:string) {
+        /**
+         * Find all possible TSConfig files from a certain base directory.
+         */
+        private getTSConfigs(dir:string) {
             var configs:string[] = glob.sync(dir + "/" + "**/tsconfig*.json");
             if (configs.length === 0) {
                 let fileName = OS.File.PATH.join(dir,"tsconfig.json");
@@ -377,9 +379,7 @@ module Cats {
         addProject(projectDir: string) {
             this.projects = [];
             this.rootDir = OS.File.PATH.resolve(this.catsHomeDir,projectDir);
-            // this.settings = new ProjectSettings(projectDir);
-            // this.settings.load();            
-            
+
             var index = this.recentProjects.indexOf(projectDir);
             if (index !== -1) {
                 this.recentProjects.splice(index,1);

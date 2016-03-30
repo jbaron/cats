@@ -64,7 +64,7 @@ module Cats.Gui.Editor {
                 var resultTable = new ResultTable();
                 var page = IDE.resultPane.addPage("info_tab", resultTable);
                 page.setShowCloseButton(true);
-                resultTable.setData(data);
+                resultTable.setData(data,this.editor.project);
             });
         }
 
@@ -127,7 +127,7 @@ module Cats.Gui.Editor {
 
         private init() {
 
-            if (this.editor.isTypeScript()) {
+            if (this.editor.project) {
                 this.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration, this));
                 this.add(this.createContextMenuItem("Goto Type Declaration", this.gotoTypeDeclaration, this));
 

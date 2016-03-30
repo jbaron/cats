@@ -204,6 +204,7 @@
     "info_tab" : { "message": "Info" },
     
     "tableheader_message" : { "message": "Message" },
+    "tableheader_project" : { "message": "Project" },
     "tableheader_file" : { "message": "File" },
     "tableheader_position" : { "message": "Position" },
     "tableheader_bookmark" : { "message": "Bookmark" },

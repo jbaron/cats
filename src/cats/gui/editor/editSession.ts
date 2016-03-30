@@ -36,7 +36,7 @@ module Cats.Gui.Editor {
             // @TODO solve nicely
             super("","ace/mode/text");
             this.filePath = editor.filePath;
-            super("","");
+            // super("","");
             var content = "";
             this.version = 0;
             this.mode = this.calculateMode();
@@ -143,8 +143,8 @@ module Cats.Gui.Editor {
             var filePath = this.editor.filePath;
             var content = this.getValue();
             if (filePath == null) {
-                // var dir = OS.File.join(IDE.project.projectDir, "/");
-                var dialog = new Gui.PromptDialog("Please enter the file name", "fullName");
+                var dir = OS.File.join(IDE.rootDir, "/");
+                var dialog = new Gui.PromptDialog("Please enter the file name", dir);
 
                 dialog.onSuccess = (filePath: string) => {
                     filePath = OS.File.switchToForwardSlashes(filePath);
@@ -153,10 +153,10 @@ module Cats.Gui.Editor {
                     this.mode = this.calculateMode();
                     this.setMode(this.mode); 
                     
-                    if ( this.isTypeScript() && this.project && (!this.project.hasScriptFile(filePath)) ) {
-                        var addDialog = new Gui.ConfirmDialog("Not yet part of project, add it now?");
+                    if ( this.isTypeScript() ) {
+                        var addDialog = new Gui.ConfirmDialog("Not yet part of project, refresh project now?");
                         addDialog.onConfirm = () => {
-                            this.project.addScript(filePath, content);
+                            this.project.refresh();
                         };
                         addDialog.show();
                     }
@@ -168,10 +168,17 @@ module Cats.Gui.Editor {
                 this.editor.setHasUnsavedChanges(false);
                 this.editor.updateFileInfo();
                 IDE.console.log("Saved file " + filePath);
-                if (this.isTypeScript()) {
-                    this.project.iSense.updateScript(filePath, content);
+                if (this.project) {
+                    this.project.updateScript(filePath, content);
                     this.project.validate(false);
-                    if (this.project.config.buildOnSave) Commands.CMDS.project_build.command();
+                    
+                    if (this.project.config.buildOnSave) {
+                        Commands.CMDS.project_build.command();
+                    } else {
+                        if (this.project.config.compileOnSave) {
+                            this.project.validate(true);
+                        }
+                    }
                 }
             }
         }

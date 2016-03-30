@@ -76,7 +76,7 @@ module Cats.Gui {
 
 
         /**
-         * Create a new botton 
+         * Create a new button 
          * 
          */ 
         private createButton(label?: string, icon?: string) {
