@@ -51,7 +51,7 @@ module Cats.Gui {
             this.addListener("click", () => {
                 var selectedRow = this.getSelectionModel().getLeadSelectionIndex();
                 var data = this.getTableModel().getRowData(selectedRow);
-                if (data && data[2]) FileEditor.OpenEditor(data[2], data[4]);
+                if (data && data[4]) FileEditor.OpenEditor(data[4], data[5]);
             });
 
             this.setContextMenu(this.createContextMenu());
@@ -99,15 +99,19 @@ module Cats.Gui {
          */ 
         private flatten() {
             var result = [];
+            var baseDir = IDE.rootDir;
             Object.keys(this.projectData).forEach((key) => {
                 var projectData = this.projectData[key];
                 var projectName = projectData.project ? projectData.project.name : "default";
                 projectData.data.forEach((row) => {
+                    var fileName = row.fileName || "";
+                    if (fileName) fileName = OS.File.PATH.relative(baseDir,fileName);
                     result.push([
                          row.message,
                          projectName, 
-                         row.fileName || "",
+                         fileName,
                          this.rangeToPosition(row.range),
+                         row.fileName || "",
                          row.range   
                     ]);
                 });
