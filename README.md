@@ -2,10 +2,11 @@
 
 ## CATS
 
-CATS is an IDE for TypeScript and Web developers. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. 
-CATS itself is also written in TypeScript, so you can easily customize it to your needs if required.
+CATS is an IDE for TypeScript and Web developers. CATS is open source software released under the Apache 2.0 license 
+and runs on Linux, Windows and OS X.  CATS itself is also written in TypeScript, so you can easily 
+customize it to your needs if required.
 
-And although still work in progress, CATS is already very usable and has built-in support for the following features: 
+Although still new faetures being added, CATS is already very usable and has built-in support for the following: 
 
 - Intelligent code editor and code completion for TypeScript sources.
  
@@ -41,29 +42,16 @@ The easiest way to start using CATS it to follow these simple steps:
   [CATS releases](https://github.com/jbaron/cats/releases/) 
   
   
-After you installed NW.js, just go to the directory where you downloaded the CATS package and type:
+After you performed bove two step, just go to the directory where you downloaded the CATS package and type:
 
 ```shell
 nwjs cats-x.y.z.nw
 ```
 
-If you already have a directory with TypeScript files, just select that directory from "Open project..." 
-to start editing your files. Othwewise you can open any directory as a project and start adding the
+If you already have a directory with TypeScript files, just select that directory from `Project -> Open project...`
+to start editing your files. Alternatively you can open any directory as a project and start adding the
 different typefiles as you go along with your project.
 
-There are some commandline paramters you can use. For example to open CATS with a specific project, use:
-
-```shell        
-nwjs cats-x.y.z.nw --project </path/projectDirectory>
-```
-
-Please note that you have to specify the full path to the project directory you want to open. 
-
-To open CATS with the same project as last time you opened it, you can use the --restore option:
-
-```shell
-nwjs cats-x.y.z.nw --restore
-```
 
 ## Configuration
 
