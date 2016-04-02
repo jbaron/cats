@@ -3,7 +3,7 @@
 ## CATS
 
 CATS is an IDE for TypeScript and Web developers. CATS is open source software released under the Apache 2.0 license and runs on Linux, Windows and OS X. 
-CATS itself is also written in TypeScript, so you can easily customize it if required.
+CATS itself is also written in TypeScript, so you can easily customize it to your needs if required.
 
 And although still work in progress, CATS is already very usable and has built-in support for the following features: 
 
@@ -21,8 +21,7 @@ And although still work in progress, CATS is already very usable and has built-i
 - Running your application from within IDE and using the WebKit debugger to debug.
 - Flexible build system with support for external build systems like Grunt, Jake, Gulp and Makefiles.
 
-Also the unstable release of CATS has support for the latest features in TypeScript like ES6 support 
-and union types.
+CATS supports the latest versions of TypeScript, so you are able to use all the new features.
 
 ## Usage
 
@@ -102,8 +101,9 @@ npm run build
 
 ## Configuration
 
-CATS will look for tsconfig files in the directory opened from th IDE. If found, CATS will use the values configured in this file.
-Otherise it will create this file in the root directory. 
+CATS will look for tsconfig files in the directory opened from the IDE. If found, CATS will use the values configured in this file.
+Otherise it will create a tsconfig file in the root directory and use that.
+
 
 ## Goals
 

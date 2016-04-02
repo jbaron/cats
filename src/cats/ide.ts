@@ -164,6 +164,8 @@ module Cats {
             var layouter = new Gui.Layout(rootDoc);
             layouter.layout(this);
             this.menuBar = new Gui.MenuBar();
+
+            // @TODO fix for 1.4
             this.initFileDropArea();
             this.handleCloseWindow();
         }
@@ -403,9 +405,12 @@ module Cats {
         
         
         private handleCloseWindow() {
-
-            var GUI = require('nw.gui');
-
+            if (typeof nw != "undefined") {
+                var GUI:any = nw;
+            } else {
+                var GUI = require( 'nw.gui' );
+            }
+            
             // Catch the close of the windows in order to save any unsaved changes
             var win = GUI.Window.get();
             win.on("close", function() {
