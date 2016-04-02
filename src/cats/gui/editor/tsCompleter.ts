@@ -37,11 +37,11 @@ module Cats.Gui.Editor {
     
     
     export function getCompleters(editor:SourceEditor, memberCompletionOnly:boolean) {
-            if (memberCompletionOnly && editor.isTypeScript()) {
+            if (memberCompletionOnly && editor.hasProject()) {
                 return [new TSCompleter(editor)]
             } 
             
-            if (editor.isTypeScript()) {
+            if (editor.hasProject()) {
                 return  [new TSCompleter(editor ), snippetCompleter];
             }
             

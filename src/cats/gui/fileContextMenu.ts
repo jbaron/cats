@@ -29,13 +29,13 @@ export class FileContextMenu extends qx.ui.menu.Menu {
     }
 
     private openInApp() {
-        var gui = require("nw.gui");
+        var gui = getNWGui();
         var osPath = OS.File.join(this.getFullPath(),"", true);
         if (osPath) gui.Shell.openItem(osPath);
     }
     
     private showInFolder() {
-        var gui = require("nw.gui");
+        var gui = getNWGui();
         var osPath = OS.File.join(this.getFullPath(),"", true);
         if (osPath) gui.Shell.showItemInFolder(osPath);
     }

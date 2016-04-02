@@ -124,7 +124,7 @@ module Cats.Gui {
          */ 
         setData(data: Cats.FileRange[], project?:Project) {
             var key = project ? project.tsConfigFile : "default";
-            if (this.areEmpty(this.projectData[key], data)) return;
+            // if (this.areEmpty(this.projectData[key], data)) return;
             this.fireDataEvent("contentChange", null);
             
             this.projectData[key] = {

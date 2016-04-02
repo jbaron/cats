@@ -33,7 +33,7 @@ module Cats {
         }
     }
     
-    export function getNWGui() {
+    export function getNWGui() : any {
         if (typeof nw != "undefined") {
             return nw;
         } else {
@@ -94,7 +94,7 @@ module Cats {
        
         var prjDir = determineProject(args);
         if (prjDir) {
-            IDE.addProject(prjDir);
+            IDE.setProjectDirectory(prjDir);
         } else {
             if (args.indexOf("--restore") !== -1) IDE.restorePreviousProjects();
         }

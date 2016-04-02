@@ -56,9 +56,6 @@ module Cats {
         
         // The singleton TSWorker handler instance
         iSense: TSWorkerProxy;
-
-        linter: Linter;
-
         private refreshInterval: number;
         config:TSConfig;
 
@@ -67,13 +64,8 @@ module Cats {
          */
         constructor(public tsConfigFile:string) {
             super();
-            
             this.projectDir = OS.File.PATH.dirname(tsConfigFile);
-
-
             this.refresh();
-            // if (this.config.tslint.useLint) this.linter = new Linter(this);
-            
             // @TODO optimize only refresh in case of changes
             this.refreshInterval = setInterval(() => { this.refreshTodoList() }, 60000);
         }
@@ -144,10 +136,8 @@ module Cats {
             this.iSense.getAllDiagnostics((err, data) => {
                 if (data) {
                     IDE.problemResult.setData(data,this);
-                    if (data.length === 0) {
-                        if (verbose) {
+                    if ((data.length === 0) && verbose) {
                             IDE.console.log(`Project ${this.name} has no errors`);
-                        }
                     }
                 }
 

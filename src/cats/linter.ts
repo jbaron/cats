@@ -24,11 +24,11 @@ module Cats {
     export class Linter {
 
         private lintOptions:Lint.ILinterOptions;
-        private TSLint = require("tslint");
+        private TSLint 
 
         constructor(private project: Project) {
+            this.TSLint = require("tslint");
         }
-
 
         private convertPos(item: Lint.RuleFailure): Cats.Range {
             

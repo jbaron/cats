@@ -69,7 +69,7 @@ module Cats.Gui.Editor {
             else if (this.isSeeable())
                 this.exclude();
 
-            if (!this.editor.isTypeScript()) return;
+            if (!this.editor.hasProject()) return;
 
             clearTimeout(this.mouseMoveTimer);
             var elem = <HTMLElement>ev.srcElement;

@@ -41,13 +41,6 @@ module Cats.Commands {
 
 
     /**
-     * Show a class diagram of the project. 
-     */ 
-    function showDiagram() {
-       // if (IDE.project) IDE.editorTabView.addEditor(new Gui.Editor.UMLEditor("Class Diagram"));
-    }
-
-    /**
      * Shows a quick open dialog for the project.
      */
     function quickOpen(project) {
@@ -100,7 +93,7 @@ module Cats.Commands {
     function newProject() {
         var chooser: HTMLElement = document.getElementById('fileDialog');
         chooser.onchange = function(evt:Event) {
-            IDE.addProject(<string>this.value);
+            IDE.setProjectDirectory(<string>this.value);
         };
         chooser.click();
     };
@@ -113,7 +106,7 @@ module Cats.Commands {
     function openProject() {
         var chooser: HTMLElement= document.getElementById('fileDialog');
         chooser.onchange = function(evt:Event) {
-            IDE.addProject(<string>this.value);
+            IDE.setProjectDirectory(<string>this.value);
         };
         chooser.click();
     };
@@ -130,7 +123,6 @@ module Cats.Commands {
             registry(CMDS.project_run, runProject);
             // registry(CMDS.project_debug, label: "Debug Project",null, icon: "debug.png" });
             registry(CMDS.project_quickOpen, quickOpen);
-            registry(CMDS.project_classDiagram, showDiagram);
             registry(CMDS.project_configure, configureProject);
         }
 

@@ -62,7 +62,6 @@ module Cats {
     }
 
     
-
     export interface FileRange {
         fileName?: string;
         range?: Range;

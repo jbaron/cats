@@ -18,8 +18,9 @@ module Cats {
     var glob = require("glob");
 
     /**
-     * This class represents the total IDE. The CATS is started a single isntance will be
-     * created that takes care of rendering all the components and open a project if applicable. 
+     * This class represents the total IDE. Wehn CATS is started a single instance of this class 
+     * will be created that takes care of rendering all the components and open a project 
+     * if applicable. 
      */ 
     export class Ide  extends qx.event.Emitter{
 
@@ -79,7 +80,6 @@ module Cats {
             }
             
             this.loadShortCuts();
-            
         }
 
         private loadShortCuts() {
@@ -247,7 +247,7 @@ module Cats {
             console.info("restoring previous project and sessions.");
             if (this.config.projects && this.config.projects.length) { 
                 var projectDir = this.config.projects[0]; 
-                this.addProject(projectDir);
+                this.setProjectDirectory(projectDir);
             
                 if (this.config.sessions) {
                     console.info("Found previous sessions: ", this.config.sessions.length);
@@ -346,12 +346,13 @@ module Cats {
         }
 
 
-        getProject(path:string) {
+        /**
+         * For a given file get the first project it belongs to.
+         */
+        getProject(fileName:string) {
             for (var x=0;x<this.projects.length;x++) {
                 let project = this.projects[x];
-                if (project.hasScriptFile(path)) return project;
-                // var pDir = this.projects[x].projectDir;
-                // if (path.indexOf(pDir) === 0) return this.projects[x];
+                if (project.hasScriptFile(fileName)) return project;
             }
         }
          
@@ -370,7 +371,7 @@ module Cats {
          
          
         refresh() {
-            this.addProject(this.rootDir);
+            this.setProjectDirectory(this.rootDir, false);
         }
          
         /**
@@ -378,7 +379,7 @@ module Cats {
          * 
          * @param projectDir the directory of the new project
          */
-        addProject(projectDir: string) {
+        setProjectDirectory(projectDir: string, refreshFileNavigator = true) {
             this.projects = [];
             this.rootDir = OS.File.PATH.resolve(this.catsHomeDir,projectDir);
 
@@ -392,7 +393,7 @@ module Cats {
             var name = OS.File.PATH.basename(projectDir);
             document.title = "CATS | " + name;
 
-            this.fileNavigator.setRootDir(projectDir);
+            if (refreshFileNavigator) this.fileNavigator.setRootDir(projectDir);
             var configs:string[] = this.getTSConfigs(projectDir);
     
             configs.forEach((config) => {
@@ -405,14 +406,9 @@ module Cats {
         
         
         private handleCloseWindow() {
-            if (typeof nw != "undefined") {
-                var GUI:any = nw;
-            } else {
-                var GUI = require( 'nw.gui' );
-            }
             
             // Catch the close of the windows in order to save any unsaved changes
-            var win = GUI.Window.get();
+            var win = getNWWindow();
             win.on("close", function() {
                 var doClose = () => {
                     IDE.savePreferences();
@@ -437,8 +433,8 @@ module Cats {
          * want to quit.
          */ 
         quit() {
-            var GUI = require('nw.gui');
-
+            var GUI = getNWGui();
+  
             var doClose = () => {
                 this.savePreferences();
                 GUI.App.quit();

@@ -176,7 +176,7 @@ module Cats.Gui {
                 if (! project) return;
                 var item = {
                     label: project,
-                    click: () => { IDE.addProject(project); }
+                    click: () => { IDE.setProjectDirectory(project); }
                 };
                 menu.append(new GUI.MenuItem(item));
             });
@@ -199,9 +199,6 @@ module Cats.Gui {
             proj.append( getItem( CMDS.project_run ) );
             proj.append( getItem( CMDS.project_validate ) );
             proj.append( getItem( CMDS.project_refresh ) );
-
-            // proj.append( new GUI.MenuItem( { type: "separator" }) );
-            // proj.append(getItem(CMDS.project_classDiagram));
 
             // proj.append( new GUI.MenuItem( { type: "separator" }) );
             // proj.append( getItem( CMDS.project_configure ) );

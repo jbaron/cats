@@ -43,9 +43,8 @@ module Cats.Gui.Editor {
             
             if (this.filePath) {
                 content = OS.File.readTextFile(this.filePath) ;
-                this.checkIfNewTSFile(this.filePath,content);
             }
-            
+
             super.setMode(this.mode);
             super.setValue(content);
             this.setNewLineMode("unix");
@@ -61,16 +60,6 @@ module Cats.Gui.Editor {
  
         private get project() {
             return IDE.getProject(this.filePath);
-        }
- 
-        private checkIfNewTSFile(filePath,content) {
-          if ( this.isTypeScript() && this.project && (!this.project.hasScriptFile( filePath )) ) {
-                var addDialog = new Gui.ConfirmDialog("Not yet part of project, add it now?");
-                addDialog.onConfirm = () => {
-                    this.project.addScript(filePath, content);
-                };
-                addDialog.show();
-            }
         }
  
         private calculateMode() {
@@ -98,13 +87,15 @@ module Cats.Gui.Editor {
 
 
        /**
-         * Is the editor currently containing TypeScript content. This determines wehther all kind 
-         * of features are enabled or not.
+         * Is the file being edited a possible candiate for the tsconfig project. Right now
+         * TypeScript supports 4 type of scripts: TS, TSX, JS, JSX.
+         *
          */ 
-        isTypeScript() {
+        isProjectCandidate() {
+            if (! this.filePath) return false;
+            var exts = [".ts" , ".tsx" , ".js", ".jsx"];
             var ext = OS.File.PATH.extname(this.filePath);
-            return (((ext === ".ts") || (ext === ".tsx")) && this.project);
-            // return this.mode === "ace/mode/typescript";
+            return (exts.indexOf(ext) > -1) ;
         }
 
         setMode(mode:string) {
@@ -118,10 +109,10 @@ module Cats.Gui.Editor {
          * 
          * @return Possible return values are info, warning or error
          */
-        getMaxAnnotationLevel() {
+        getMaxAnnotationLevel(): ""|"info"|"error"|"warning" {
             var annotations = this.getAnnotations();
             if ((!annotations) || (annotations.length === 0)) return "";
-            var result = "info";
+            var result:"info"|"error"|"warning" = "info";
             annotations.forEach((annotation) => {
                 if (annotation.type === "error") result = "error";
                 if (annotation.type === "warning" && result === "info") result = "warning";
@@ -152,15 +143,16 @@ module Cats.Gui.Editor {
                     
                     this.mode = this.calculateMode();
                     this.setMode(this.mode); 
+                    this.save();
                     
-                    if ( this.isTypeScript() ) {
-                        var addDialog = new Gui.ConfirmDialog("Not yet part of project, refresh project now?");
+                    if ( this.isProjectCandidate() ) {
+                        var addDialog = new Gui.ConfirmDialog("Not yet part of any project, refresh IDE now?");
                         addDialog.onConfirm = () => {
-                            this.project.refresh();
+                            IDE.refresh();
                         };
                         addDialog.show();
                     }
-                    this.save();
+                    
                 };
                 dialog.show();
             } else {

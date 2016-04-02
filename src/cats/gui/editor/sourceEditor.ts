@@ -153,9 +153,15 @@ module Cats.Gui.Editor {
             }
         }
 
-        isTypeScript() {
-            return this.editSession.isTypeScript() && this.project.hasScriptFile(this.filePath);
+        /**
+         * Is the file being part of a tsconfig project. This is used to determine 
+         * wehter all type of features specific to TS will be enabled.
+         * 
+         */ 
+        hasProject() {
+            return this.project != null;
         }
+
 
         getType() {
             return registryEntryName;
@@ -179,7 +185,7 @@ module Cats.Gui.Editor {
 
         private formatText() {
             var r:Range = null;
-            if ( this.isTypeScript() ) {
+            if ( this.hasProject() ) {
                 var range: ace.Range = this.aceEditor.selection.getRange();
                 if ( !range.isEmpty() ) r = { start: range.start, end: range.end };
                 this.project.iSense.getFormattedTextForRange( this.filePath, r, ( err: Error, result: string ) => {
@@ -352,14 +358,14 @@ module Cats.Gui.Editor {
          */
         showAutoComplete( memberCompletionOnly = false ) {
             // Any pending changes that are not yet send to the worker?
-            if (this.isTypeScript()) {
+            if (this.hasProject()) {
                 this.project.iSense.updateScript( this.filePath, this.getContent() );
             }
             autoCompletePopup.complete( memberCompletionOnly, this, this.aceEditor );
         }
 
         private liveAutoComplete( e ) {
-            if (! this.isTypeScript()) return;
+            if (! this.hasProject()) return;
             var text = e.args || "";
             if ( ( e.command.name === "insertstring" ) && ( text === "." ) ) {
                 this.showAutoComplete( true );

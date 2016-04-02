@@ -53,7 +53,7 @@ module Cats.Gui {
         
         
         private updateContent(timeout=500) {
-            if (! this.editor.isTypeScript()) return;
+            if (! this.editor.hasProject()) return;
             clearTimeout(this.updateSourceTimer);
             this.pendingUpdates = true;
             this.updateSourceTimer = setTimeout(() => {
@@ -66,13 +66,13 @@ module Cats.Gui {
             }, timeout);
         }
 
-         /**
+        /**
          * Lets check the worker if something changed in the outline of the source.
          * But lets not call this too often.
          * 
          */
         private updateOutline(timeout= 5000) {
-            if (! this.editor.isTypeScript()) return;
+            if (! this.editor.hasProject()) return;
                 var project = this.editor.project;
                 clearTimeout(this.outlineTimer);
                 this.outlineTimer = setTimeout(() => {
@@ -89,15 +89,11 @@ module Cats.Gui {
          * 
          */
         private updateDiagnostics(timeout=1000) {
-            if (! this.editor.isTypeScript()) return;
+            if (! this.editor.hasProject()) return;
             var project = this.editor.project;
             this.diagnosticTimer = setTimeout(() => {
-            
                     project.iSense.getErrors(this.editor.filePath, (err: Error, result: Cats.FileRange[]) => {
-                        if (project.config.tslint && project.config.tslint.useLint) {
-                            result = result.concat(project.linter.lint(this.editor.filePath, this.editor.getContent()));
-                        }
-                        this.editSession.showAnnotations(result);
+                       this.editSession.showAnnotations(result);
                     });
                 
             }, timeout);    

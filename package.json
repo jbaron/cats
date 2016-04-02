@@ -2,24 +2,19 @@
   "name": "typescript-cats",
   "author": "JBaron",
   "homepage": "https://github.com/jbaron/cats.git",
-  "licenses": [
-    {
-      "type": "Apache License 2.0",
-      "url": "https://github.com/jbaron/cats/blob/master/LICENSE.txt"
-    }
-  ],
+  "license": "Apache-2.0",
   "main": "index.html",
   "#chromium-args": "--enable-touch-events --enable-viewport --enable-pinch",
   "#js-flags": "--harmony_default_parameters",
   "scripts": {
-    "start": "nwjs",
+    "start": "nw",
     "build" : "tsc -p tsconfig-cats.json && tsc -p tsconfig-isense.json",
     "test" : "tsc -p tsconfig-cats.json && tsc -p tsconfig-isense.json"
   },
-  "description": "CATS in an integrated development environment for TypeScript developers",
+  "description": "CATS in an integrated development environment for WebApp developers",
   "keywords": [
     "TypeScript",
-    "JBaron",
+    "React",
     "opensource",
     "editor",
     "IDE",
@@ -29,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/JBaron/cats/issues"
   },
-  "version": "1.8.7",
+  "version": "1.8.9",
   "repository": {
     "type": "git",
     "url": "https://github.com/jbaron/cats.git"
@@ -42,11 +37,8 @@
     "height": 800
   },
   "dependencies": {
-    "dagre": "^0.4.6",
-    "fuzzy": "^0.1.0",
+    "fuzzy": "^0.1.1",
     "glob": "^4.5.3",
-    "nw": "latest",
-    "tsconfig": "^2.2.0",
-    "tslint": "^2.5.0"
+    "tsconfig": "^2.2.0"
   }
 }
