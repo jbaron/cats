@@ -71,7 +71,7 @@ module Cats {
          * Used during startup of CATS to restore same editors as before CATS was closed.
          */
         static Restore(type:string, state: any): Editor {
-            var restoreFn = Editor.Registry[type];
+            const restoreFn = Editor.Registry[type];
             if (! restoreFn) {
                 console.error("No restore function found for " + type);
                 return null;
@@ -192,9 +192,9 @@ module Cats {
          * a new FileEditor suitable for the file selected.
          */
         static OpenEditor(fileName: string, pos: ace.Position = { row: 0, column: 0 }): FileEditor {
-            var editor: FileEditor;
-            var pages: Gui.EditorPage[] = [];
-            pages = IDE.editorTabView.getPagesForFile(fileName);
+            let editor: FileEditor;
+            // var pages: Gui.EditorPage[] = [];
+            const pages = IDE.editorTabView.getPagesForFile(fileName);
             if (!pages.length) {
                 editor = this.CreateEditor(fileName);
                 if (editor) {

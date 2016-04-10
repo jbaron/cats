@@ -8,7 +8,6 @@
     "files": [
         "src/typings/node.d.ts",
         "src/typings/ace.d.ts",
-        "src/typings/tslint.d.ts",
         "src/typings/cats.d.ts",
         "src/typings/jsuml2.d.ts",
         "src/typings/node-webkit.d.ts",
@@ -23,12 +22,10 @@
         "src/cats/common.ts",
         "src/cats/os.ts",
         "src/cats/ide.ts",
-        "src/cats/projectSettings.ts",
         "src/cats/tsWorkerProxy.ts",
         "src/cats/project.ts",
         "src/cats/refactor.ts",
         "src/cats/editor.ts",
-        "src/cats/linter.ts",
         
         "src/cats/commands/commander.ts",
         "src/cats/commands/editorCommands.ts",

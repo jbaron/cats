@@ -22,8 +22,6 @@ module Cats {
     // Variable used everywhere for accessing the singleton IDE instance
     export var IDE: Cats.Ide;
     
-    
-    
     export function getNWWindow() {
         if (typeof nw != "undefined") {
             return nw["Window"].get();
@@ -59,7 +57,7 @@ module Cats {
      * startup. This is used when the IDE is started from the command line
      */
     function determineProject(args:string[]): string {
-        var projectName = getParameterByName("project");
+        let projectName = getParameterByName("project");
         if (!projectName) {
             var i = args.indexOf("--project");
             if (i > -1) projectName = args[i + 1];
@@ -75,9 +73,9 @@ module Cats {
      */
     function main(app: qx.application.Standalone) {
         
-        var GUI = require('nw.gui');
+        const GUI = getNWGui(); // require('nw.gui');
 
-        var args:string[] = GUI.App.argv;
+        const args:string[] = GUI.App.argv;
         if (args.indexOf("--debug") === -1) {
             console.info = function() { /* NOP */};
             console.debug = function() { /* NOP */};

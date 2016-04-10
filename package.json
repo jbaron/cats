@@ -5,7 +5,7 @@
   "license": "Apache-2.0",
   "main": "index.html",
   "#chromium-args": "--enable-touch-events --enable-viewport --enable-pinch",
-  "#js-flags": "--harmony_default_parameters",
+  "js-flags": "--harmony_default_parameters",
   "scripts": {
     "start": "nw",
     "build" : "tsc -p tsconfig-cats.json && tsc -p tsconfig-isense.json",

@@ -251,22 +251,22 @@ module Cats {
         run() {
             if (this.config.customRun && this.config.customRun.command) {
 
-                var cmd = this.config.customRun.command;
+                const cmd = this.config.customRun.command;
                 var options = this.config.customRun.options || { cwd: null };
                 if (!options.cwd) {
                     options.cwd = this.projectDir;
                 }
                 OS.File.runCommand(cmd, options);
             } else {
-                var GUI = require('nw.gui');
-                var main = this.config.main;
+                const GUI = require('nw.gui');
+                const main = this.config.main;
                 if (!main) {
                     alert("Please specify the main html file or customRun in the project settings.");
                     return;
                 }
-                var startPage = this.getStartURL();
+                const startPage = this.getStartURL();
                 console.info("Opening file: " + startPage);
-                var win2 = GUI.Window.open(startPage, {
+                const win2 = GUI.Window.open(startPage, {
                     toolbar: true,
                     // nodejs: true,
                     // "new-instance": true,
@@ -281,7 +281,7 @@ module Cats {
          * Get the URL for running the project
          */
         private getStartURL(): string {
-            var url = OS.File.join(this.projectDir, this.config.main);
+            const url = OS.File.join(this.projectDir, this.config.main);
             return "file://" + url;
         }
 

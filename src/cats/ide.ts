@@ -136,9 +136,9 @@ module Cats {
          * @param locale The locale you want to retrieve the messages for 
          */ 
         private loadMessages(locale="en") {
-            var fileName = "resource/locales/" + locale + "/messages.json";
-            var messages = JSON.parse(OS.File.readTextFile(fileName));
-            var map:IMap = {};
+            const fileName = "resource/locales/" + locale + "/messages.json";
+            const messages = JSON.parse(OS.File.readTextFile(fileName));
+            let map:IMap = {};
             for (var key in messages) {
                 map[key] = messages[key].message;
             }
@@ -149,9 +149,9 @@ module Cats {
 
 
         private goto(entry) {
-            var hash = entry.hash;
+            const hash = entry.hash;
             this.lastEntry = entry;
-            var page = <Gui.EditorPage>qx.core.ObjectRegistry.fromHashCode(hash);
+            const page = <Gui.EditorPage>qx.core.ObjectRegistry.fromHashCode(hash);
             if (page) IDE.editorTabView.navigateToPage(page, entry.pos);
         }
 
@@ -161,7 +161,7 @@ module Cats {
          */ 
         init(rootDoc:qx.ui.container.Composite) {
             Cats.Commands.init();
-            var layouter = new Gui.Layout(rootDoc);
+            const layouter = new Gui.Layout(rootDoc);
             layouter.layout(this);
             this.menuBar = new Gui.MenuBar();
 
@@ -174,7 +174,7 @@ module Cats {
          * Add an entry to the history list
          */ 
         addHistory(editor:Editor, pos?:any) {
-             var page = this.editorTabView.getPageForEditor(editor);
+             const page = this.editorTabView.getPageForEditor(editor);
              if ((this.lastEntry.hash === page.toHashCode()) && (this.lastEntry.pos === pos)) return;
             
              var entry ={
@@ -190,7 +190,7 @@ module Cats {
          * Configure the IDE based on the settings
          */ 
         configure() {
-            var config = this.config;
+            const config = this.config;
             if (config.theme) {
                 var theme = this.themes[config.theme] || this.themes.cats;
                 if (theme !== qx.theme.manager.Meta.getInstance().getTheme()) {
@@ -230,7 +230,7 @@ module Cats {
 
             // Loop over each file dropped. More than one file
             // can be added at a time
-            var files: FileList = event.dataTransfer.files;
+            const files: FileList = event.dataTransfer.files;
 
             for(var i = 0; i < files.length; i++) {
                 var path:string = (<any>files[i]).path;
@@ -246,7 +246,7 @@ module Cats {
         restorePreviousProjects() {
             console.info("restoring previous project and sessions.");
             if (this.config.projects && this.config.projects.length) { 
-                var projectDir = this.config.projects[0]; 
+                const projectDir = this.config.projects[0]; 
                 this.setProjectDirectory(projectDir);
             
                 if (this.config.sessions) {
@@ -322,7 +322,7 @@ module Cats {
          */ 
         savePreferences() {
             try {
-                var config = this.config;
+                let config = this.config;
                 config.version = "1.1";
                 config.sessions = [];
                 config.projects = this.recentProjects;

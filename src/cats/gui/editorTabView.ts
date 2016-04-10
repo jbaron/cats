@@ -55,23 +55,23 @@ module Cats.Gui {
 
 
         private createToolTip() {
-            var button: qx.ui.tabview.TabButton = (<any>this).getButton();
-            var tooltipText = this.editor.getDescription() || this.editor.label
-            var tooltip = new qx.ui.tooltip.ToolTip(tooltipText);
+            const button: qx.ui.tabview.TabButton = (<any>this).getButton();
+            const tooltipText = this.editor.getDescription() || this.editor.label
+            const tooltip = new qx.ui.tooltip.ToolTip(tooltipText);
             button.setToolTip(tooltip);
         }
 
         private createContextMenu() {
-            var button: qx.ui.tabview.TabButton = (<any>this).getButton();
-            var menu = new qx.ui.menu.Menu();
+            const button: qx.ui.tabview.TabButton = (<any>this).getButton();
+            const menu = new qx.ui.menu.Menu();
 
-            var item1 = new qx.ui.menu.Button("Close");
+            const item1 = new qx.ui.menu.Button("Close");
             item1.addListener("execute", () => { IDE.editorTabView.close(this); });
 
-            var item2 = new qx.ui.menu.Button("Close other");
+            const item2 = new qx.ui.menu.Button("Close other");
             item2.addListener("execute", () => { IDE.editorTabView.closeOther(this); });
 
-            var item3 = new qx.ui.menu.Button("Close all");
+            const item3 = new qx.ui.menu.Button("Close all");
             item3.addListener("execute", () => { IDE.editorTabView.closeAll(); });
 
             menu.add(item1);
@@ -93,8 +93,7 @@ module Cats.Gui {
         }
 
         setChanged(changed: boolean) {
-            
-            var button: qx.ui.tabview.TabButton = (<any>this).getButton();
+            const button: qx.ui.tabview.TabButton = (<any>this).getButton();
 
             if (changed) {
                 button.setLabel("*" + this.editor.label);
@@ -115,7 +114,7 @@ module Cats.Gui {
 
 
          addEditor(editor: Editor, pos?: any) {
-            var page = new EditorPage(editor);
+            const page = new EditorPage(editor);
             this.add(page);
             this.navigateToPage(page,pos);
             page.fadeIn(500);
@@ -126,7 +125,7 @@ module Cats.Gui {
          * close all open pages
          */
         closeAll() {
-            var pages = <EditorPage[]>this.getChildren().concat();
+            let pages = <EditorPage[]>this.getChildren().concat();
             this.continueIfUnsavedChanges(pages, () => {
                 pages.forEach((page) => {
                     this.remove(page);
@@ -146,7 +145,7 @@ module Cats.Gui {
 
         onChangeEditor(cb : (editor:Editor, page:EditorPage)=>void) {
             this.addListener("changeSelection", (ev:qx.event.type.Data) => {
-                var page:EditorPage = ev.getData()[0];
+                const page:EditorPage = ev.getData()[0];
                 if (page) {
                     cb(page.editor, page);
                 } else {
@@ -160,7 +159,7 @@ module Cats.Gui {
          * Close the other pages
          */
         closeOther(closePage= this.getActivePage()) {
-            var pages = <EditorPage[]>this.getChildren().concat().filter(
+            let pages = <EditorPage[]>this.getChildren().concat().filter(
                 (page)=>{ return page !== closePage;}
             );
             
@@ -172,7 +171,7 @@ module Cats.Gui {
         }
 
         private continueIfUnsavedChanges(pages:EditorPage[], callback: () => void) {
-            var hasUnsaved = false; 
+            let hasUnsaved = false; 
             hasUnsaved = pages.some((page) => { 
                 return page.editor.hasUnsavedChanges();
             });
@@ -197,7 +196,7 @@ module Cats.Gui {
          * Get all the editors
          */
         getEditors() {
-            var result:Editor[] = [];
+            let result:Editor[] = [];
             this.getChildren().forEach((page: EditorPage) => {
                 result.push(page.editor);
             });
@@ -209,7 +208,7 @@ module Cats.Gui {
          * Get the currently active editor
          */
         getActiveEditor(type?:new() => Editor) {
-            var page = this.getActivePage();
+            let page = this.getActivePage();
             if (!page) return null;
             if (type) {
                 if (page.editor instanceof type) return page.editor;   
@@ -232,14 +231,14 @@ module Cats.Gui {
          * Get the page that has a certain instance of an editor.
          */ 
         getPageForEditor(editor:Editor) {
-           var pages = <EditorPage[]>this.getChildren(); 
+           const pages = <EditorPage[]>this.getChildren(); 
            for (var x=0;x<pages.length;x++) {
                if (pages[x].editor === editor) return pages[x];
            }
         }
   
         getPagesForFile(filePath:string) {
-            var result:EditorPage[] = [];
+            const result:EditorPage[] = [];
             this.getChildren().forEach((page:EditorPage) => {
                 var editor:FileEditor = <any>page.editor;
                 if (editor.filePath  === filePath) result.push(page);

@@ -55,6 +55,9 @@ module Cats.Gui.Editor {
         private sourceEditor: SourceEditor;
         private editor: ace.Editor;
 
+        /**
+         * Create the new Autocomplete popup window
+         */ 
         constructor() {
             super(new qx.ui.layout.Flow());
             // this.setDecorator(null);
@@ -196,8 +199,8 @@ module Cats.Gui.Editor {
         }
 
         /**
-         * Setup the different keybindings that would go to the 
-         * popup window and not the editor
+         * Setup the the keybindings so when typed the key events go to the 
+         * popup window and not the editor.
          */
         private initHandler() {
             this.handler = new HashHandler();
@@ -219,7 +222,7 @@ module Cats.Gui.Editor {
 
 
         /**
-         * Show the popup and make sure the keybinding is in place
+         * Show the popup and make sure the keybindings are in place.
          * 
          */
         private showPopup(completions: CompletionEntry[]) {
@@ -269,7 +272,7 @@ module Cats.Gui.Editor {
         }
 
         /**
-         * Hide the popup and remove all keybindings
+         * Hide the popup and remove all the keybindings
          */
         private hidePopup() {
             this.editor.keyBinding.removeKeyboardHandler(this.handler);
@@ -306,7 +309,7 @@ module Cats.Gui.Editor {
 
         /**
          * Check wether the typed character is reason to stop
-         * the auto-complete task
+         * the code completion
          */
         private onChange(ev:any) {
             var key: string = ev.lines.join("");
@@ -321,11 +324,8 @@ module Cats.Gui.Editor {
         }
 
 
- 
-        
-
         /**
-         * The method called form the editor to start the code completion process. 
+         * This method is called from the editor to start the code completion process. 
          */ 
         complete(memberCompletionOnly:boolean, sourceEditor:SourceEditor, editor:ace.Editor) {
             this.editor = editor;
