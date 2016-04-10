@@ -34,15 +34,12 @@ The easiest way to start using CATS it to follow these simple steps:
 
   Alternatively you can download NW.js from the following page: [NW.js downloads](http://nwjs.io). 
 
-* Download the CATS binary package (it is a file called cats-x.y.z.nw). There are two versions available, a stable version meant for daily work 
-  and an unstable version if you want to try out the latest and greatest features. 
-
-  Download either one from the following location:
+* Get the CATS binary package (it is a file called cats-x.y.z.nw). You can download it from the following location:
 
   [CATS releases](https://github.com/jbaron/cats/releases/) 
   
   
-After you performed bove two step, just go to the directory where you downloaded the CATS package and type:
+After you done just go to the directory where you downloaded the CATS package and type:
 
 ```shell
 nwjs cats-x.y.z.nw
@@ -50,12 +47,12 @@ nwjs cats-x.y.z.nw
 
 If you already have a directory with TypeScript files, just select that directory from `Project -> Open project...`
 to start editing your files. Alternatively you can open any directory as a project and start adding the
-different typefiles as you go along with your project.
+different TypeScript files as you go along with your project.
 
 
 ## Configuration
 
-CATS will look for tsconfig files in the folder opened from within IDE (Project -> Open Project....). If a tsconfig file was found, CATS will use the values configured in that file.
+CATS will look for tsconfig files in the folder you opened from within IDE (Project -> Open Project....). If a tsconfig file was found, CATS will use the values configured in that file.
 Otherwise it will create an empty tsconfig file in the root directory and use that instead.
 
 To find out more, check [TSConfig File](https://github.com/jbaron/cats/wiki/TSConfig-File)
