@@ -69,7 +69,7 @@ module Cats.Gui {
 
         private createTable() {
             var tableModel = new qx.ui.table.model.Simple();
-            var headers = [super.tr("tableheader_pid"), super.tr("tableheader_command")];
+            var headers = [translate("tableheader_pid"), translate("tableheader_command")];
             tableModel.setColumns(headers);
             tableModel.setData([]);
 

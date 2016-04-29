@@ -95,7 +95,7 @@ module Cats.Gui {
          * for this item.
          */
         private createMenuBarItem( name: string, position?: number ) {
-            var label = qx.locale.Manager.tr( name + "_menu_name" );
+            var label = translate( name + "_menu_name" );
             var menu = new GUI.Menu();
             this.menus[name] = menu;
             if ( position ) {

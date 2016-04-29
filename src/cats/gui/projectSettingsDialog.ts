@@ -29,7 +29,7 @@ module Cats.Gui {
         private tslintSettings:TSLintSettings;
 
         constructor(private project: Cats.Project) {
-            super(super.tr("project_settings"));
+            super(translate("project_settings"));
             this.loadValues();
         }
 

@@ -90,7 +90,7 @@ module Cats.Gui {
         private getLabelString(model:string) {
             if (!model) return "<model undefined>";
             var labelId = "config_" + model;
-            var label = this.tr(labelId);
+            var label = translate(labelId);
             if (label != labelId) return label;
             
             return model.split(/(?=[A-Z])/).join(" ");

@@ -152,8 +152,6 @@ module Cats {
             // Setup the message handler
             this.worker.onmessage = (e) => {
                 var msg = e.data;
-                // console.log("Received message " + JSON.stringify(msg) + " from worker");
-                // console.log("Received message reply " + msg.id + " from worker.");
                 if (msg.error) {
                     console.error("Got error back !!! ");
                     console.error(msg.error.stack);

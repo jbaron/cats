@@ -112,7 +112,7 @@ module Cats.Gui {
 
         /**
          * Indicate if the worker is busy or not
-         * 
+         * @TODO fix for when multiple projects
          */
         setBusy(busy: boolean, activity:string) {
             if (busy) {

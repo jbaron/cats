@@ -3,7 +3,7 @@
     "compilerOptions": {
         "preserveConstEnums": false,
         "out": "lib/tsworker.js",
-        "target" : "ES5"
+        "target" : "ES6"
      },
      "files": [
         "src/typings/typescriptServices.d.ts",

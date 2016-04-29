@@ -33,7 +33,10 @@ module Cats.Gui {
     
             var tableModel = new qx.ui.table.model.Simple();
             var columns:string[] = [];
-            headers.forEach((header) => columns.push(this.tr(header)));
+  
+            // headers.forEach((header) => { columns.push(this.tr(header))});
+            headers.forEach((header) => { columns.push(translate(header))});
+                       
             tableModel.setColumns(columns);
             tableModel.setData([]);
             var custom: any = {
@@ -77,11 +80,16 @@ module Cats.Gui {
 
 
         private convert(row: Cats.FileRange) {
+            var baseDir = IDE.rootDir;
+            var fileName = row.fileName || "";
+            if (fileName) fileName = OS.File.PATH.relative(baseDir,fileName);
             return [
                 row.message,
-                row.fileName || "",
+                "",
+                fileName || "",
                 this.rangeToPosition(row.range),
-                row.range
+                row.fileName || "",
+                row.range 
             ];
         }
 

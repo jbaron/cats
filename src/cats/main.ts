@@ -14,6 +14,7 @@
 //
 
 
+
 /**
  * Main module of the CATS IDE
  */
@@ -38,6 +39,16 @@ module Cats {
             global.nw = require( 'nw.gui' );
             return nw;
         }
+    }
+
+    var localeManager = qx.locale.Manager.getInstance();
+
+    export function translate2(msg:string, options=[]) {
+        return localeManager.translate(msg,[])
+    }
+
+    export function translate(msg:string) {
+        return qx.locale.Manager.tr(msg);
     }
 
     /**
@@ -98,12 +109,14 @@ module Cats {
         }
     }
 
+
     // Catch unhandled expections so they don't stop the process.
     process.on("uncaughtException", function(err: any) {
-        console.error("Uncaught exception occured: " + err);
-        console.error(err.stack);
-        if (IDE.console) IDE.console.error(err.stack);
+            console.error("Uncaught exception occured: " + err);
+            console.error(err.stack);
+            if (IDE.console) IDE.console.error(err.stack);
     });
+
 
     // Register the main method that once Qooxdoo is loaded is called
     qx.registry.registerMainMethod(main);
