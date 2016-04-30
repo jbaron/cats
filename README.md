@@ -6,7 +6,7 @@ CATS is an IDE for TypeScript and Web developers. CATS is open source software r
 and runs on Linux, Windows and OS X.  CATS itself is also written in TypeScript, so you can easily 
 customize it to your needs if required.
 
-Although still new faetures being added, CATS is already very usable and has built-in support for the following: 
+Although still new features are being added, CATS is already very usable and has built-in support for the following: 
 
 - Intelligent code editor and code completion for TypeScript sources.
  
@@ -27,12 +27,11 @@ CATS supports the latest versions of TypeScript, so you are able to use all the 
 
 The easiest way to start using CATS it to follow these simple steps:
 
-* In case you haven't already installed NW.js (previously known as node-webkit) on your machine, do that first. In case you have nodejs installed, you can install
-  NW.js by typing the following command (using npm, the node package manager):
+* In case you haven't already installed NW.js (previously known as node-webkit) on your machine, do that first. 
+  You can download NW.js from the following page: [NW.js downloads](http://nwjs.io/downloads/). 
 
-        npm install -g nwjs
-
-  Alternatively you can download NW.js from the following page: [NW.js downloads](http://nwjs.io). 
+  Make sure you download at least version 0.15.x or higher, since CATS relies on some ES6 features that are missing 
+  from earlier versions. Also if you want to be able to debug, get the SDK version.
 
 * Get the CATS binary package (it is a file called cats-x.y.z.nw). You can download it from the following location:
 
@@ -42,8 +41,11 @@ The easiest way to start using CATS it to follow these simple steps:
 After you done just go to the directory where you downloaded the CATS package and type:
 
 ```shell
-nwjs cats-x.y.z.nw
+/path/to/nw cats-x.y.z.nw
 ```
+
+/path/to/nw is the binary file of NW.js. On Windows, it’s nw.exe; On Linux, it’s nw; On Mac, it’s nwjs.app/Contents/MacOS/nwjs.
+
 
 If you already have a directory with TypeScript files, just select that directory from `Project -> Open project...`
 to start editing your files. Alternatively you can open any directory as a project and start adding the
@@ -52,8 +54,9 @@ different TypeScript files as you go along with your project.
 
 ## Configuration
 
-CATS will look for tsconfig files in the folder you opened from within IDE (Project -> Open Project....). If a tsconfig file was found, CATS will use the values configured in that file.
-Otherwise it will create an empty tsconfig file in the root directory and use that instead.
+CATS will look for tsconfig files in the folder you opened from within IDE (Project -> Open Project....). 
+If a tsconfig file was found, CATS will use the values configured in that file. Otherwise it will 
+create an empty tsconfig file in the root directory and use that instead.
 
 To find out more, check [TSConfig File](https://github.com/jbaron/cats/wiki/TSConfig-File)
 

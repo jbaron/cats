@@ -39,8 +39,6 @@ module Cats.Commands {
      */ 
     function showDevTools() {
         getNWWindow().showDevTools();
-        // var GUI = require('nw.gui');
-        // GUI.Window.get().showDevTools();
     }
 
     /**

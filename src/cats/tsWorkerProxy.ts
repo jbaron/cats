@@ -44,6 +44,7 @@ module Cats {
             this.perform("getErrors", fileName, cb);
         }
 
+ 
         getNavigateToItems(search: string, cb: CB<NavigateToItem[]>) {
             this.perform("getNavigateToItems", search, cb);
         }
