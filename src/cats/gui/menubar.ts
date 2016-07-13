@@ -164,9 +164,10 @@ module Cats.Gui {
             file.append( new GUI.MenuItem( { type: "separator" }) );
             file.append( getItem( CMDS.ide_configure ) );
 
-            if ( !OS.File.isOSX() ) {
+            // @TODO enable when OS quit works again
+            // if ( !OS.File.isOSX() ) {
                 file.append( getItem( CMDS.ide_quit ) );
-            }
+            // }
         }
 
 

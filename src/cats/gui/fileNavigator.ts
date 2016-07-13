@@ -60,7 +60,7 @@ module Cats.Gui {
          * Enable drag and drop on the FileNavigator
          * @TODO finalized implementation
          */ 
-        private setupDragAndDrop() {
+        private setupDragAndDrop2() {
              this.setDraggable(true);
              this.setDroppable(true);
 
@@ -75,21 +75,47 @@ module Cats.Gui {
             }, this); 
             
             this.addListener("drop", (e:qx.event.type.Event) => { 
-                var target = <any>e.getOriginalTarget(); 
-                var itemlist:any[] = []; 
+                IDE.console.log("Target path:" + e.getRelatedTarget());
+     
                 for(var i = 0; i < this.getSelection().getLength(); i++) { 
-                  itemlist.push(this.getSelection().getItem(i)); 
+                  IDE.console.log("To be moved:" + this.getSelection().getItem(i));
                 }   
-                var model = target.getModel(); 
-                
-                for(var k = 0; k < itemlist.length; k++) 
-                { 
-                    var item = itemlist[k]; 
-                    // (<any>this)._moveItem(item, model); // item = source model =  target 
-                    IDE.console.log("moved item. Not yet implemented!!!");
-                    console.log(item);
-                } 
+    
             }, this);
+        }
+
+
+        private setupDragAndDrop() {
+ 
+             this.setDraggable(true);
+             this.setDroppable(true);
+       
+            this.addListener("dragstart", (e) => {
+                e.addAction("move");
+                e.addType("tree-items"); 
+                e.addData("tree-items", this.getSelection());
+            });
+            
+            this.addListener("drop", (e) =>
+            {
+              // Using the selection sorted by the original index in the list
+              var sel = e.getData("tree-items");
+            
+              console.log("Drag and Drop");
+              console.log(e);
+            
+              // This is the original target hovered
+              var orig = e.getOriginalTarget();
+              console.log(orig);
+    
+              for (var i=0, l=sel.length; i<l; i++)
+              {
+                // Insert before the marker
+                console.log(sel[i]);
+                // Recover selection as it gets lost during child move
+                // this.addToSelection(sel[i]);
+              }
+            });
         }
 
 
