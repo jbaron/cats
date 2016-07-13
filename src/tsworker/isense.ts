@@ -22,7 +22,7 @@ importScripts("../resource/typescriptServices.js");
 module Cats.TSWorker {
 
     function respond(message:any) {
-        postMessage(message,null);
+        postMessage(message,<any>[]);
     }
 
     /**
