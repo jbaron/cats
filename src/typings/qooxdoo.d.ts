@@ -13,8 +13,8 @@ declare module qx.registry {
 
 declare module qx {
 class Bootstrap {
-    static base(args:any,varargs?:any):any;
-    static bind(func:Function,self?:any,varargs?:any):Function;
+    static base(args:any,...varargs:any[]):any;
+    static bind(func:Function,self?:any,...varargs:any[]):Function;
     static createNamespace(name:string,object:any):string;
     static debug(object:any,message:any):void;
     static define(name?:string,config?:IMap):qx.Class;
@@ -138,10 +138,10 @@ class AbstractGui extends qx.core.Object implements qx.application.IApplication 
     main():void;
     terminate():void;
     marktr(messageId:string):string;
-    tr(messageId:string,varargs?:any):string;
-    trc(hint:string,messageId:string,varargs?:any):string;
-    trn(singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
-    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
+    tr(messageId:string,...varargs:any[]):string;
+    trc(hint:string,messageId:string,...varargs:any[]):string;
+    trn(singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
+    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
     protected _createRootWidget():qx.ui.core.Widget;
     getRoot():qx.ui.core.Widget;
     render():void;
@@ -1263,7 +1263,7 @@ class Resource extends qx.event.Emitter {
     protected _getThrottleCount():number;
     protected _getThrottleLimit():number;
     protected _startPoll(action:string,listener:Function,interval:number):void;
-    abort(varargs?:string):void;
+    abort(...varargs:string[]):void;
     configureRequest(callback:Function):void;
     destruct():void;
     dispose():void;
@@ -1517,7 +1517,7 @@ class MAssert {
 }
 declare module qx.core {
 class MBindTo {
-    bindTo(func:Function,varargs?:any):Function;
+    bindTo(func:Function,...varargs:any[]):Function;
 
 }
 }
@@ -1537,11 +1537,11 @@ class MEvent {
 }
 declare module qx.core {
 class MLogging {
-    debug(varargs?:any):void;
-    error(varargs?:any):void;
-    info(varargs?:any):void;
+    debug(...varargs:any[]):void;
+    error(...varargs:any[]):void;
+    info(...varargs:any[]):void;
     trace():void;
-    warn(varargs?:any):void;
+    warn(...varargs:any[]):void;
 
 }
 }
@@ -1607,11 +1607,11 @@ class Object {
     get(prop:string):any;
     reset(prop:string):void;
     set(data:IMap,value?:any):any;
-    debug(varargs?:any):void;
-    error(varargs?:any):void;
-    info(varargs?:any):void;
+    debug(...varargs:any[]):void;
+    error(...varargs:any[]):void;
+    info(...varargs:any[]):void;
     trace():void;
-    warn(varargs?:any):void;
+    warn(...varargs:any[]):void;
     bind(sourcePropertyChain:string,targetObject:qx.core.Object,targetProperty:string,options:IMap):any;
     getBindings():qx.data.Array;
     removeAllBindings():void;
@@ -1620,9 +1620,9 @@ class Object {
     constructor ();
     protected _disposeArray(field:string):void;
     protected _disposeMap(field:string):void;
-    protected _disposeObjects(varargs?:any):void;
-    protected _disposeSingletonObjects(varargs?:any):void;
-    base(args:any,varargs?:any):any;
+    protected _disposeObjects(...varargs:any[]):void;
+    protected _disposeSingletonObjects(...varargs:any[]):void;
+    base(args:any,...varargs:any[]):any;
     clone():qx.core.Object;
     dispose():void;
     getUserData(key:string):any;
@@ -1677,7 +1677,7 @@ class Array extends qx.core.Object implements qx.data.IListData {
     getItem(index:number):any;
     getLength():number;
     setItem(index:number,item:any):void;
-    splice(startIndex:number,amount:number,varargs?:any):qx.data.Array;
+    splice(startIndex:number,amount:number,...varargs:any[]):qx.data.Array;
     toArray():qx.data.Array;
     constructor (param?:any);
     append(array:qx.data.Array):void;
@@ -1700,7 +1700,7 @@ class Array extends qx.core.Object implements qx.data.IListData {
     max():number;
     min():number;
     pop():any;
-    push(varargs?:any):number;
+    push(...varargs:any[]):number;
     reduce(callback:Function,initValue?:any):any;
     reduceRight(callback:Function,initValue?:any):any;
     remove(item:any):any;
@@ -1715,7 +1715,7 @@ class Array extends qx.core.Object implements qx.data.IListData {
     sort(func:Function):void;
     sum():number;
     toggleAutoDisposeItems():boolean;
-    unshift(varargs?:any):number;
+    unshift(...varargs:any[]):number;
 
 }
 }
@@ -1732,7 +1732,7 @@ interface IListData {
     getItem(index:number):any;
     getLength():number;
     setItem(index:number,item:any):void;
-    splice(startIndex:number,amount:number,varargs?:any):qx.data.Array;
+    splice(startIndex:number,amount:number,...varargs:any[]):qx.data.Array;
     toArray():qx.data.Array;
 
 }
@@ -3028,7 +3028,7 @@ class Element extends qx.core.Object {
     protected _syncChildren():void;
     protected _syncData():void;
     activate():void;
-    add(varargs?:qx.html.Element):qx.html.Element;
+    add(...varargs:qx.html.Element[]):qx.html.Element;
     addAt(child:qx.html.Element,index:number):qx.html.Element;
     addClass(name:string):void;
     addListener(type:string,listener:Function,self?:any,capture?:boolean):any;
@@ -3731,7 +3731,7 @@ class Resource extends qx.core.Object {
     protected _getThrottleCount():number;
     protected _getThrottleLimit():number;
     protected _tailorResource(resource:qx.bom.rest.Resource):qx.bom.rest.Resource;
-    abort(varargs?:string):void;
+    abort(...varargs:string[]):void;
     configureRequest(callback:Function):void;
     invoke(action:string,params:IMap,data:IMap):number;
     longPoll(action:string):string;
@@ -3769,16 +3769,16 @@ class Array {
 }
 declare module qx.lang {
 class Function {
-    static attempt(func:Function,self?:any,varargs?:any):boolean;
-    static bind(func:Function,self?:any,varargs?:any):Function;
+    static attempt(func:Function,self?:any,...varargs:any[]):boolean;
+    static bind(func:Function,self?:any,...varargs:any[]):Function;
     static create(func:Function,options?:IMap):Function;
-    static curry(func:Function,varargs?:any):any;
-    static delay(func:Function,delay:number,self?:any,varargs?:any):number;
+    static curry(func:Function,...varargs:any[]):any;
+    static delay(func:Function,delay:number,self?:any,...varargs:any[]):number;
     static getCaller(args:any):Function;
     static getName(fcn:Function):string;
     static globalEval(data:string):any;
-    static listener(func:Function,self?:any,varargs?:any):any;
-    static periodical(func:Function,interval:number,self?:any,varargs?:any):number;
+    static listener(func:Function,self?:any,...varargs:any[]):any;
+    static periodical(func:Function,interval:number,self?:any,...varargs:any[]):number;
 
 }
 }
@@ -3931,10 +3931,10 @@ class LocalizedString extends qx.type.BaseString {
 declare module qx.locale {
 class MTranslation {
     marktr(messageId:string):string;
-    tr(messageId:string,varargs?:any):string;
-    trc(hint:string,messageId:string,varargs?:any):string;
-    trn(singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
-    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
+    tr(messageId:string,...varargs:any[]):string;
+    trc(hint:string,messageId:string,...varargs:any[]):string;
+    trn(singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
+    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
 
 }
 }
@@ -3943,10 +3943,10 @@ class Manager extends qx.core.Object {
     constructor ();
     static getInstance():qx.locale.Manager;
     static marktr(messageId:string):string;
-    static tr(messageId:string,varargs?:any):string;
-    static trc(hint:string,messageId:string,varargs?:any):string;
-    static trn(singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
-    static trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
+    static tr(messageId:string,...varargs:any[]):string;
+    static trc(hint:string,messageId:string,...varargs:any[]):string;
+    static trn(singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
+    static trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
     protected _applyLocale(value:string,old:string):void;
     addLocale(localeCode:string,localeMap:IMap):void;
     addTranslation(languageCode:string,translationMap:IMap):void;
@@ -4307,7 +4307,7 @@ class Array extends qx.type.BaseArray {
 declare module qx.type {
 class BaseArray extends qx.data.Array {
     constructor (length_or_items?:number);
-    concat(varargs?:qx.data.Array):qx.type.BaseArray;
+    concat(...varargs:qx.data.Array[]):qx.type.BaseArray;
     every(callback:Function,obj:any):boolean;
     filter(callback:Function,obj:any):any;
     forEach(callback:Function,obj:any):void;
@@ -4316,15 +4316,15 @@ class BaseArray extends qx.data.Array {
     lastIndexOf(searchElement:any,fromIndex?:number):number;
     map(callback:Function,obj:any):any;
     pop():any;
-    push(varargs?:any):number;
+    push(...varargs:any[]):number;
     reverse():qx.data.Array;
     shift():any;
     slice(begin:number,end?:number):any;
     some(callback:Function,obj:any):boolean;
     sort(compareFunction?:Function):qx.data.Array;
-    splice(index:number,howMany:number,varargs?:any):any;
+    splice(index:number,howMany:number,...varargs:any[]):any;
     toArray():qx.data.Array;
-    unshift(varargs?:any):number;
+    unshift(...varargs:any[]):number;
 
 }
 }
@@ -5381,10 +5381,10 @@ class Spacer extends qx.ui.core.LayoutItem {
 declare module qx.ui.core {
 class Widget extends qx.ui.core.LayoutItem {
     marktr(messageId:string):string;
-    tr(messageId:string,varargs?:any):string;
-    trc(hint:string,messageId:string,varargs?:any):string;
-    trn(singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
-    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
+    tr(messageId:string,...varargs:any[]):string;
+    trc(hint:string,messageId:string,...varargs:any[]):string;
+    trn(singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
+    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
     constructor ();
     static contains(parent:qx.ui.core.Widget,child:qx.ui.core.Widget):boolean;
     static getWidgetByElement(element:HTMLElement,considerAnonymousState?:boolean):qx.ui.core.Widget;
@@ -7393,7 +7393,7 @@ class RadioGroup extends qx.core.Object implements qx.ui.core.ISingleSelection,q
     setValid(valid:boolean):void;
     getModelSelection():qx.data.Array;
     setModelSelection(value:qx.data.Array):void;
-    constructor (varargs?:qx.core.Object);
+    constructor (...varargs:qx.core.Object[]);
     protected _applyAllowEmptySelection(value:boolean,old:boolean):void;
     protected _applyEnabled(value:boolean,old:boolean):void;
     protected _applyInvalidMessage(value:string,old:string):void;
@@ -7402,7 +7402,7 @@ class RadioGroup extends qx.core.Object implements qx.ui.core.ISingleSelection,q
     protected _isAllowEmptySelection():boolean;
     protected _isItemSelectable(item:qx.ui.form.IRadioItem):boolean;
     protected _onItemChangeChecked(e:qx.event.type.Data):void;
-    add(varargs?:qx.ui.form.IRadioItem):void;
+    add(...varargs:qx.ui.form.IRadioItem[]):void;
     getAllowEmptySelection():boolean;
     getChildren():qx.ui.form.IRadioItem[];
     getItems():qx.ui.form.IRadioItem[];
@@ -8323,7 +8323,7 @@ class LineSizeIterator {
 declare module qx.ui.layout {
 class Util {
     static arrangeIdeals(beginMin:number,beginIdeal:number,beginMax:number,endMin:number,endIdeal:number,endMax:number):IMap;
-    static collapseMargins(varargs?:any):number;
+    static collapseMargins(...varargs:any[]):number;
     static computeFlexOffsets(flexibles:IMap,avail:number,used:number):IMap;
     static computeHorizontalAlignOffset(align:string,width:number,availWidth:number,marginLeft?:number,marginRight?:number):number;
     static computeHorizontalGaps(children:qx.data.Array,spacing?:number,collapse?:boolean):number;
@@ -9840,10 +9840,10 @@ class Basic extends qx.core.Object {
 declare module qx.ui.table.columnmodel {
 class Resize extends qx.ui.table.columnmodel.Basic {
     marktr(messageId:string):string;
-    tr(messageId:string,varargs?:any):string;
-    trc(hint:string,messageId:string,varargs?:any):string;
-    trn(singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
-    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,varargs?:any):string;
+    tr(messageId:string,...varargs:any[]):string;
+    trc(hint:string,messageId:string,...varargs:any[]):string;
+    trn(singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
+    trnc(hint:string,singularMessageId:string,pluralMessageId:string,count:number,...varargs:any[]):string;
     constructor ();
     protected _addResetColumnWidthButton(event:qx.event.type.Data):void;
     protected _applyBehavior(value:qx.ui.table.columnmodel.resizebehavior.Abstract,old:qx.ui.table.columnmodel.resizebehavior.Abstract):void;
@@ -10978,7 +10978,7 @@ class AbstractItem extends qx.ui.core.Widget implements qx.ui.form.IModel {
 declare module qx.ui.tree.core {
 class AbstractTreeItem extends qx.ui.tree.core.AbstractItem {
     constructor (label?:any);
-    add(varargs?:qx.ui.tree.core.AbstractTreeItem):void;
+    add(...varargs:qx.ui.tree.core.AbstractTreeItem[]):void;
     addAfter(treeItem:qx.ui.tree.core.AbstractTreeItem,after:qx.ui.tree.core.AbstractTreeItem):void;
     addAt(treeItem:qx.ui.tree.core.AbstractTreeItem,index:number):void;
     addAtBegin(treeItem:qx.ui.tree.core.AbstractTreeItem):void;
@@ -10991,7 +10991,7 @@ class AbstractTreeItem extends qx.ui.tree.core.AbstractItem {
     hasChildrenContainer():boolean;
     protected initParent(value:any):qx.ui.tree.core.AbstractTreeItem;
     recursiveAddToWidgetQueue():void;
-    remove(varargs?:qx.ui.tree.core.AbstractTreeItem):void;
+    remove(...varargs:qx.ui.tree.core.AbstractTreeItem[]):void;
     removeAll():void;
     removeAt(index:number):void;
     resetParent():void;
@@ -12268,7 +12268,7 @@ class Serializer {
 declare module qx.util {
 class StringBuilder extends qx.type.BaseArray {
     constructor (length_or_items?:number);
-    add(varargs?:string):void;
+    add(...varargs:string[]):void;
     clear():void;
     get():string;
     isEmpty():boolean;
