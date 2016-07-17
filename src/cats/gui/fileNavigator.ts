@@ -51,6 +51,7 @@ module Cats.Gui {
             super(null, "label", "children");
             this.setDecorator(null);
             this.setPadding(0, 0, 0, 0);
+            this.setBackgroundColor("transparent");
             var contextMenu = new FileContextMenu(this);
             this.setContextMenu(contextMenu);
             this.setupDragAndDrop();

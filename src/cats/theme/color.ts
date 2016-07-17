@@ -47,7 +47,7 @@ module Cats.Theme {
     };
 
 
-    qx.Theme.define( "cats.theme.Color", {
+    qx.Theme.define( "cats.theme.ColorBlue", {
         
      
         colors:
@@ -147,17 +147,23 @@ module Cats.Theme {
     });
 
 
-    qx.Theme.define( "cats.theme.ColorGrey", {
+    qx.Theme.define( "cats.theme.Color", {
         extend: qx.theme.simple.Color,
 
         colors:
         {
-            "light-background": "#B0B0B0",
+            "background": "#eeeeee",
+            "light-background": "#646464",
             "button-box-bright": "#A0A0A0",
             "background-selected": "#666666",
             "border-main": "#666666",
             "background-selected-dark": "#555555",
-            "link": "#EEEEEE"
+            "link": "#AAAAAA",
+            
+            "table-row-background-even": "#eeeeee",
+            "table-row-background-odd": "#dedede",
+            "table-row-background-focused-selected": "#646464"
+
         }
     });
 

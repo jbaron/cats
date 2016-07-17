@@ -32,6 +32,7 @@ module Cats.Gui {
             this.setDecorator(null);
             this.setPadding(0, 0, 0, 0);
             this.setHideRoot(true);
+            this.setBackgroundColor("transparent");
 
             this.setDecorator(null);
             this.addListener("click", () => {

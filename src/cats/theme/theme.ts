@@ -30,11 +30,11 @@ module Cats.Theme {
             }
         });
 
-    qx.Theme.define("cats.theme.Grey",
+    qx.Theme.define("cats.theme.Blue",
         {
             meta:
             {
-                color: cats.theme.ColorGrey,
+                color: cats.theme.ColorBlue,
                 decoration: cats.theme.Decoration,
                 font: cats.theme.Font,
                 icon: qx.theme.icon.Oxygen,
