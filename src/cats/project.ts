@@ -140,7 +140,6 @@ module Cats {
                             IDE.console.log(`Project ${this.name} has no errors`);
                     }
                 }
-
             });
         }
 
@@ -303,20 +302,20 @@ module Cats {
         }
 
 
-         /**
+        /**
          * Load the source files that are part of this project. Typically
          * files ending with ts, tsx or js.
          */
         private loadProjectSourceFiles() {
             this.config.files.forEach((file) => {
-                 try {
-                        var fullName = file; // OS.File.join(this.projectDir, file);
-                        var content = OS.File.readTextFile(fullName);
-                        this.addScript(fullName, content);
-                    } catch (err) {
-                        console.error("Got error while handling file " + fullName);
-                        console.error(err);
-                    }
+                try {
+                    var fullName = file; // OS.File.join(this.projectDir, file);
+                    var content = OS.File.readTextFile(fullName);
+                    this.addScript(fullName, content);
+                } catch (err) {
+                    console.error("Got error while handling file " + fullName);
+                    console.error(err);
+                }
             });
         }
 

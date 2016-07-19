@@ -33,6 +33,9 @@ module Cats {
             this.initWorker();
         }
 
+        /**
+         * Stop the worker and release any resources maintained. 
+         */
         stop() {
             this.worker.terminate();
         }

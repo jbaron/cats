@@ -481,9 +481,6 @@ module Cats.TSWorker {
                  case "getOccurrencesAtPosition":
                         entries = this.ls.getOccurrencesAtPosition(fileName, pos);
                         break;
-                case "getImplementorsAtPosition":
-                        entries = []; // @TODO this.ls.getImplementorsAtPosition(fileName, pos);
-                        break;
             } 
             if (! entries) return result;
             

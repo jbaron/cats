@@ -17,6 +17,25 @@ module Cats {
 
     var glob = require("glob");
 
+
+    var bgs = [
+        "linear-gradient(to right, #777 , #999)",
+        "linear-gradient(to right, #077 , #099)",
+        "linear-gradient(to right, #707 , #909)",
+        "linear-gradient(to right, #770 , #990)",
+        "url(resource/bg/Elegant_Background-1.jpg)",
+        "url(resource/bg/Elegant_Background-2.jpg)",
+        "url(resource/bg/Elegant_Background-3.jpg)",
+        "url(resource/bg/Elegant_Background-4.jpg)",
+        "url(resource/bg/Elegant_Background-5.jpg)",
+        "url(resource/bg/Elegant_Background-6.jpg)",
+        "url(resource/bg/Elegant_Background-7.jpg)",
+        "url(resource/bg/Elegant_Background-8.jpg)",
+        "url(resource/bg/Elegant_Background-9.jpg)",
+        "url(resource/bg/Elegant_Background-10.jpg)",
+        "url(resource/bg/Elegant_Background-11.jpg)"
+    ]
+
     /**
      * This class represents the total IDE. Wehn CATS is started a single instance of this class 
      * will be created that takes care of rendering all the components and open a project 
@@ -37,7 +56,7 @@ module Cats {
         private recentProjects:Array<string>;
 
         rootDir: string;
-
+        private styleNr = 0;
         projects: Project[] = [];
         resultPane: Gui.TabView;
         toolBar: Gui.ToolBar;
@@ -80,6 +99,7 @@ module Cats {
             }
             
             this.loadShortCuts();
+            this.setTheme();
         }
 
         private loadShortCuts() {
@@ -247,7 +267,7 @@ module Cats {
             console.info("restoring previous project and sessions.");
             if (this.config.projects && this.config.projects.length) { 
                 const projectDir = this.config.projects[0]; 
-                this.setProjectDirectory(projectDir);
+                this.setDirectory(projectDir);
             
                 if (this.config.sessions) {
                     console.info("Found previous sessions: ", this.config.sessions.length);
@@ -305,6 +325,14 @@ module Cats {
             
             return defaultConfig;
         }
+
+
+        setTheme() {
+            this.styleNr++;
+            if (this.styleNr >= bgs.length) this.styleNr = 0;
+            document.body.style.background = bgs[this.styleNr];
+        }
+
 
         /**
          * Update the configuration for IDE
@@ -371,30 +399,33 @@ module Cats {
          
          
         refresh() {
-            this.setProjectDirectory(this.rootDir, false);
+            this.setDirectory(this.rootDir, false);
         }
          
         /**
-         * Add a new project to the IDE
+         * Set the working directory. CATS will start scanning the directory and subdirectories for
+         * tsconfig files and for each one found create a TS Project. If none found it will create 
+         * the default config file and use that one instead.
          * 
-         * @param projectDir the directory of the new project
+         * @param directory the directory of the new project
+         * @param refreshFileNavigator should the fileNavigator also be refreshed.
          */
-        setProjectDirectory(projectDir: string, refreshFileNavigator = true) {
+        setDirectory(directory: string, refreshFileNavigator = true) {
             this.projects = [];
-            this.rootDir = OS.File.PATH.resolve(this.catsHomeDir,projectDir);
+            this.rootDir = OS.File.PATH.resolve(this.catsHomeDir,directory);
 
-            var index = this.recentProjects.indexOf(projectDir);
+            var index = this.recentProjects.indexOf(directory);
             if (index !== -1) {
                 this.recentProjects.splice(index,1);
             }
-            this.recentProjects.push(projectDir);
+            this.recentProjects.push(directory);
             
             
-            var name = OS.File.PATH.basename(projectDir);
+            var name = OS.File.PATH.basename(directory);
             document.title = "CATS | " + name;
 
-            if (refreshFileNavigator) this.fileNavigator.setRootDir(projectDir);
-            var configs:string[] = this.getTSConfigs(projectDir);
+            if (refreshFileNavigator) this.fileNavigator.setRootDir(directory);
+            var configs:string[] = this.getTSConfigs(directory);
     
             configs.forEach((config) => {
                 let path = OS.File.PATH.resolve(config);

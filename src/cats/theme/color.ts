@@ -147,7 +147,8 @@ module Cats.Theme {
     });
 
 
-    qx.Theme.define( "cats.theme.Color", {
+
+    qx.Theme.define( "cats.theme.Color2", {
         extend: qx.theme.simple.Color,
 
         colors:
@@ -163,6 +164,38 @@ module Cats.Theme {
             "table-row-background-even": "#eeeeee",
             "table-row-background-odd": "#dedede",
             "table-row-background-focused-selected": "#646464"
+
+        }
+    });
+
+
+    qx.Theme.define( "cats.theme.Color", {
+        extend: qx.theme.simple.Color,
+
+        colors:
+        {
+            "background": "rgba(242, 242, 242, 0.5)",
+            "light-background": "transparent",
+            "background-selected": "rgba(151, 151, 151, 0.6)",
+            "background-selected-dark": "rgba(111, 111, 111, 0.6)",
+            
+            
+            
+            "button-box-bright": "rgba(222, 222, 222, 0.3)",
+            "border-main": "rgba(111, 111, 111, 0.6)",
+            "link": "rgba(51, 51, 51, 0.9)",
+            
+            "table-row-background-even": "rgba(222, 222, 222, 0.1)",
+            "table-row-background-odd": "rgba(100, 100, 100, 0.1)",
+            "table-header-cell": "rgba(100, 100, 100, 0.4)",
+            "table-header": "rgba(100, 100, 100, 0.4)",
+            "table-row-background-focused-selected": "rgba(221, 238, 255, 0.7)",
+            
+            
+            // tooltip
+            "tooltip": "rgba(255, 255, 204, 0.8)",
+            "tooltip-text": "#000023"
+
 
         }
     });

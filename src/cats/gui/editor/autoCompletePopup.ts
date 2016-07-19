@@ -65,6 +65,7 @@ module Cats.Gui.Editor {
             this.setMargin(0, 0, 0, 0);
             this.setWidth(300);
             this.setHeight(200);
+            // this.setBackgroundColor("transparent");
             this.createList();
             this.initHandler();
             this.changeListener = (ev:Event) => this.onChange(ev);

@@ -103,7 +103,7 @@ module Cats.Gui {
         }
 
         /**
-         * @TODO finalize the logic to show results of multiple project in one table
+         * Flatten the currently set data for possible multiple projects into a single array.
          */ 
         private flatten() {
             var result = [];
@@ -111,7 +111,8 @@ module Cats.Gui {
             Object.keys(this.projectData).forEach((key) => {
                 var projectData = this.projectData[key];
                 var projectName = projectData.project ? projectData.project.name : "default";
-                projectData.data.forEach((row) => {
+                var data = projectData.data || [];
+                data.forEach((row) => {
                     var fileName = row.fileName || "";
                     if (fileName) fileName = OS.File.PATH.relative(baseDir,fileName);
                     result.push([

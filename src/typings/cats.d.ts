@@ -46,18 +46,25 @@ declare module Cats {
     }
 
  
+    interface EditorConfig {
+            rightMargin?: number;
+            fontSize?: number;
+            theme?: string;
+            completionMode?:string;
+            // IndentSize: number;
+            // TabSize: number;
+            // NewLineCharacter: string;
+            // ConvertTabsToSpaces: boolean;
+    }
+ 
+ 
     /**
      * Interface for the possible IDE specific settings
      */
     interface IDEConfiguration {
         version: string;
         theme?: string;
-        editor?: {
-            rightMargin?: number;
-            fontSize?: number;
-            theme?: string;
-            completionMode?:string;
-        };
+        editor?: EditorConfig;
         rememberOpenFiles?: boolean;
         locale?:string;
         projects: string[];

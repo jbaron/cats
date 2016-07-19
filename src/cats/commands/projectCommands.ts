@@ -81,19 +81,15 @@ module Cats.Commands {
      */ 
     function refreshProject() {
         IDE.refresh();
-        // IDE.projects.forEach((project) => project.refresh());
     }
 
     /**
-     * Open a project. If current windows doesn't have a project yet, opene there.
-     * Otherwise open the project in a new window.
-     * 
-     * @TODO: for a new project provide template capabilities
+     * Open a new project. Thsi can be any directory on the filesystem.
      */ 
     function newProject() {
         var chooser: HTMLElement = document.getElementById('fileDialog');
         chooser.onchange = function(evt:Event) {
-            IDE.setProjectDirectory(<string>this.value);
+            IDE.setDirectory(<string>this.value);
         };
         chooser.click();
     };
@@ -106,7 +102,7 @@ module Cats.Commands {
     function openProject() {
         var chooser: HTMLElement= document.getElementById('fileDialog');
         chooser.onchange = function(evt:Event) {
-            IDE.setProjectDirectory(<string>this.value);
+            IDE.setDirectory(<string>this.value);
         };
         chooser.click();
     };

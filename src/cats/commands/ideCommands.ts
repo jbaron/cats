@@ -64,6 +64,7 @@ module Cats.Commands {
             registry( CMDS.ide_configure,  configureIde );
             registry( CMDS.ide_history_next, next);
             registry(CMDS.ide_history_prev,  prev);
+            registry(CMDS.ide_theme,  () => IDE.setTheme() );
         }
     }
 

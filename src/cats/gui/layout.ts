@@ -16,7 +16,6 @@ module Cats.Gui {
     
     /**
      * This class takes care of the layout of the IDE.
-     * @TODO should not instantiate navigators etc, only do the layout.
      */
     export class Layout {
 
@@ -70,7 +69,7 @@ module Cats.Gui {
             ide.contextPane.setSelection([outlineTab]);
             
             
-            infoSplit.add(ide.contextPane, 1); // todo
+            infoSplit.add(ide.contextPane, 1);
 
             editorSplit.add(infoSplit, 4);
 

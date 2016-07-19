@@ -20,6 +20,10 @@ module Cats.Theme {
 
             fonts:
             {
+                "default" : {
+                    size : 14,    
+                    family : ["arial", "sans-serif"]
+                }
             }
         });
 

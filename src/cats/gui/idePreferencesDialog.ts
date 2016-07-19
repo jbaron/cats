@@ -100,6 +100,12 @@ module Cats.Gui {
             { label: "forgiven", model: "forgiven" }
         ];
 
+        private newLineMode = [
+            { label: "Linux/OSX", model: "\n" },
+            { label: "Dos/Windows", model: "\r\n" },
+        ];
+
+
         private theme = [
             { model: "chrome", label: "Chrome" },
             { model: "clouds", label: "Clouds" },
@@ -132,6 +138,11 @@ module Cats.Gui {
             this.addSpinner( "rightMargin", 40, 240);
             this.addSelectBox("theme", this.getThemes());
             this.addSelectBox("completionMode", this.completionMode);
+            // this.addSelectBox("NewLineCharacter", this.newLineMode);
+            // this.addCheckBox("ConvertTabsToSpaces");
+            // this.addSpinner("IndentSize", 1, 16);
+            // this.addSpinner("TabSize", 1, 16);
+
 
         }
     }

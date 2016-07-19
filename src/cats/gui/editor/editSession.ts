@@ -33,10 +33,8 @@ module Cats.Gui.Editor {
         private filePath;
    
         constructor(private editor:SourceEditor) {
-            // @TODO solve nicely
             super("","ace/mode/text");
             this.filePath = editor.filePath;
-            // super("","");
             var content = "";
             this.version = 0;
             this.mode = this.calculateMode();
@@ -48,7 +46,7 @@ module Cats.Gui.Editor {
             super.setMode(this.mode);
             super.setValue(content);
             this.setNewLineMode("unix");
-            // this.configureAceSession(IDE.project.config); @TODO
+            // this.configureAceSession(IDE.config.editor); @TODO
             this.setUndoManager(new UndoManager());
 
 

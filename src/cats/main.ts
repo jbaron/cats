@@ -103,7 +103,7 @@ module Cats {
        
         var prjDir = determineProject(args);
         if (prjDir) {
-            IDE.setProjectDirectory(prjDir);
+            IDE.setDirectory(prjDir);
         } else {
             if (args.indexOf("--restore") !== -1) IDE.restorePreviousProjects();
         }

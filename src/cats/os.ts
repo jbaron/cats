@@ -33,7 +33,6 @@ module Cats.OS.File {
         /**
          * Very lightweight watcher for files and directories, used to inform the user of changes
          * in the underlying file system.
-         * 
          */ 
         export class Watcher extends  qx.event.Emitter {
             

@@ -44,7 +44,10 @@ module Cats.Gui {
         //       Cats.Commands.CMDS.edit_toggleComment
             null,
             Cats.Commands.CMDS.ide_history_prev,
-            Cats.Commands.CMDS.ide_history_next
+            Cats.Commands.CMDS.ide_history_next,
+            
+            null,
+            Cats.Commands.CMDS.ide_theme
 
         ];
 

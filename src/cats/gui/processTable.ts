@@ -20,7 +20,6 @@ module Cats.Gui {
      * stopped or killed. Especially with custom build and run scripts this provides a bit more 
      * control from within CATS.
      * 
-     * @TODO provide feedback of the actuall status of a process
      */
     export class ProcessTable extends qx.ui.container.Composite {
 

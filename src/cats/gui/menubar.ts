@@ -38,7 +38,6 @@ module Cats.Gui {
      * is not using Qooxdoo/HTML5 but an API exposed by NW.js. 
      * This makes it possible to have a native menubar.
      * 
-     * @TODO revise if this is really the best approach.
      */
     export class MenuBar {
 
@@ -176,7 +175,7 @@ module Cats.Gui {
                 if (! project) return;
                 var item = {
                     label: project,
-                    click: () => { IDE.setProjectDirectory(project); }
+                    click: () => { IDE.setDirectory(project); }
                 };
                 menu.append(new GUI.MenuItem(item));
             });
