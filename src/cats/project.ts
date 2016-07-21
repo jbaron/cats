@@ -309,7 +309,7 @@ module Cats {
         private loadProjectSourceFiles() {
             this.config.files.forEach((file) => {
                 try {
-                    var fullName = file; // OS.File.join(this.projectDir, file);
+                    var fullName = OS.File.switchToForwardSlashes(file); // OS.File.join(this.projectDir, file);
                     var content = OS.File.readTextFile(fullName);
                     this.addScript(fullName, content);
                 } catch (err) {
