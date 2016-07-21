@@ -6,31 +6,37 @@ CATS is an IDE for TypeScript and Web developers. CATS is open source software r
 and runs on Linux, Windows and OS X.  CATS itself is also written in TypeScript, so you can easily 
 customize it to your needs if required.
 
-Although still new features are being added, CATS is already very usable and has built-in support for the following: 
+And who wants to develop cutting edge web applications in a boring, uninpsiring IDE. So now CATS 
+also can be completely themed to your taste. And the great hting, you can use plain CSS to do so.
 
-- Intelligent code editor and code completion for TypeScript sources.
- 
+
 <img width="680" src="https://raw.github.com/jbaron/cats/master/artifacts/cats_screenshot.png" />
 
+
+
+Although still new features are being added, CATS is already very usable and has built-in support for 
+the following: 
+
+- Intelligent code editor and code completion.
 - Syntax highlighting for over 110 languages (TextMate/Sublime Text.tmlanguage files can be imported).
 - Support for code snippets.
 - Support for refactoring and smart navigation.
-- Very fast TypeScript compilation to JavaScript.
-- Validation of the source code while you are typing.
-- Editing features like folding, indentation and code formatting.
-- Running your application from within IDE and using the WebKit debugger to debug.
+- Very fast compilation of TypeScript to JavaScript.
+- Full validation of your source code while you are typing.
+- All the typicall editing features like folding, indentation and code formatting.
+- Run your application from within IDE and using the WebKit debugger to debug.
 - Flexible build system with support for external build systems like Grunt, Jake, Gulp and Makefiles.
 
-CATS supports the latest versions of TypeScript, so you are able to use all the new features.
+CATS always supports the latest versions of TypeScript, so you are able to use all the new features.
 
 ## Getting Started
 
-The easiest way to start using CATS it to follow these simple steps:
+The easiest way to start using CATS it to follow these steps:
 
 * In case you haven't already installed NW.js (previously known as node-webkit) on your machine, do that first. 
   You can download NW.js from the following page: [NW.js downloads](http://nwjs.io/downloads/). 
 
-  Make sure you download at least version 0.15.x or higher, since CATS relies on some ES6 features that are missing 
+  Make sure you download at least version 0.16.x or higher, since CATS relies on some ES6 features that are missing 
   from earlier versions. Also if you want to be able to debug, get the SDK version.
 
 * Get the CATS binary package (it is a file called cats-x.y.z.nw). You can download it from the following location:
