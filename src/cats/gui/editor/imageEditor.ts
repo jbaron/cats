@@ -56,7 +56,8 @@ module Cats.Gui.Editor {
         private loadImage(url:string) {
             var image = new Image();
             image.onload = () => { this.drawImage(image); };
-            image.src = url;
+            url = OS.File.switchToForwardSlashes(url);
+            image.src = "file://" + url;
         }
 
         getState() : ImageEditorState {
