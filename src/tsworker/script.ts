@@ -35,7 +35,7 @@ export class Script {
         }
 
         public getSourceFile() {
-            return this.ls.getSourceFile(this.fileName);
+            return this.ls.getProgram().getSourceFile(this.fileName);
         }
 
         public getContent() {

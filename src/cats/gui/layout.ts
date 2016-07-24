@@ -32,6 +32,7 @@ module Cats.Gui {
 
             // main container
             var mainContainer = new qx.ui.container.Composite(layout);
+            mainContainer.setBackgroundColor("transparent");
             this.rootDoc.add(mainContainer, { edge: 0 });
 
             ide.toolBar = new ToolBar();

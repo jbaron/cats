@@ -3,7 +3,8 @@
     "compilerOptions": {
         "preserveConstEnums": false,
         "out": "lib/main.js",
-        "target" : "ES6"
+        "target" : "ES6",
+        "strictNullChecks" : false 
      },
     "files": [
         "src/typings/node.d.ts",

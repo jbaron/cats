@@ -17,25 +17,6 @@ module Cats {
 
     var glob = require("glob");
 
-
-    var bgs = [
-        "linear-gradient(to right, #777 , #999)",
-        "linear-gradient(to right, #077 , #099)",
-        "linear-gradient(to right, #707 , #909)",
-        "linear-gradient(to right, #770 , #990)",
-        "url(resource/bg/Elegant_Background-1.jpg)",
-        "url(resource/bg/Elegant_Background-2.jpg)",
-        "url(resource/bg/Elegant_Background-3.jpg)",
-        "url(resource/bg/Elegant_Background-4.jpg)",
-        "url(resource/bg/Elegant_Background-5.jpg)",
-        "url(resource/bg/Elegant_Background-6.jpg)",
-        "url(resource/bg/Elegant_Background-7.jpg)",
-        "url(resource/bg/Elegant_Background-8.jpg)",
-        "url(resource/bg/Elegant_Background-9.jpg)",
-        "url(resource/bg/Elegant_Background-10.jpg)",
-        "url(resource/bg/Elegant_Background-11.jpg)"
-    ]
-
     /**
      * This class represents the total IDE. Wehn CATS is started a single instance of this class 
      * will be created that takes care of rendering all the components and open a project 
@@ -44,15 +25,10 @@ module Cats {
     export class Ide  extends qx.event.Emitter{
 
         // List of different themes that are available
-        private themes = {                  
-            cats : cats.theme.Default,
-            gray: cats.theme.Grey,
-            classic: qx.theme.Classic,
-            indigo: qx.theme.Indigo,
-            modern:qx.theme.Modern,
-            simple:qx.theme.Simple
-        };
-
+        private themes:Array<Theme>;
+        
+        theme:Theme;
+        
         private recentProjects:Array<string>;
 
         rootDir: string;
@@ -75,13 +51,11 @@ module Cats {
         debug:boolean= false;
 
         catsHomeDir: string;
-        // project: Project;
         config:IDEConfiguration;
         private static STORE_KEY = "cats.config";
         private lastEntry = <any>{}; 
         
-        // private settings: ProjectSettings;
- 
+
         icons:IconMap;
 
         constructor() {
@@ -92,6 +66,7 @@ module Cats {
             this.recentProjects = Array.isArray(this.config.projects) ?  this.config.projects : [];
             
             this.icons = this.loadIconsMap();
+	        this.themes = this.loadThemes();	
             this.configure();
             
             window.onpopstate = (data) => {
@@ -99,6 +74,7 @@ module Cats {
             }
             
             this.loadShortCuts();
+            qx.theme.manager.Meta.getInstance().setTheme(cats.theme.Default);
             this.setTheme();
         }
 
@@ -131,8 +107,22 @@ module Cats {
         }
 
 
-        setColors() {
+        /**
+         * Load the themes from the file.
+         */ 
+        private loadThemes() {
+            return JSON.parse(OS.File.readTextFile("resource/themes.json"));
+        }
+
+
+
+        setColors(colorTheme = cats.theme.ColorDark) {
             var manager = qx.theme.manager.Color.getInstance();
+            qx.theme.manager.Color.getInstance().setTheme(colorTheme);
+            // document.body.style.color = "black";
+            document.body.style.color = colorTheme.colors.text;
+            
+            /*
             var colors = manager.getTheme()["colors"];
             var jcolors = JSON.stringify(colors.__proto__,null,4);
             IDE.console.log(jcolors);
@@ -147,6 +137,7 @@ module Cats {
                 var dyn = manager.isDynamic(c);
                 IDE.console.log(c + ":" + colors[c] + ":" + dyn);
             }
+            */
         }
 
 
@@ -182,6 +173,7 @@ module Cats {
         init(rootDoc:qx.ui.container.Composite) {
             Cats.Commands.init();
             const layouter = new Gui.Layout(rootDoc);
+            rootDoc.setBackgroundColor("transparent");
             layouter.layout(this);
             this.menuBar = new Gui.MenuBar();
 
@@ -206,19 +198,26 @@ module Cats {
         }
 
 
+        getCurrentTheme() :Theme {
+            const themeName = this.config.theme || "default"; 
+            var theme = this.themes.find((theme) => {return theme.name == themeName});
+            if (theme) return theme;
+            return this.getDefaultTheme();
+        }
+
         /**
          * Configure the IDE based on the settings
          */ 
         configure() {
-            const config = this.config;
-            if (config.theme) {
-                var theme = this.themes[config.theme] || this.themes.cats;
-                if (theme !== qx.theme.manager.Meta.getInstance().getTheme()) {
-                    qx.theme.manager.Meta.getInstance().setTheme(theme);
-                }
-            }
+            this.theme = this.getCurrentTheme();
+            // if (theme.qx && (theme.qx !== qx.theme.manager.Meta.getInstance().getTheme())) qx.theme.manager.Meta.getInstance().setTheme(theme.qx);
+            document.body.style.background = this.theme.background;
         }
 
+
+        getThemes() {
+            return this.themes;
+        }
  
         /**
          * Attach the drag n' drop event listeners to the document
@@ -284,7 +283,16 @@ module Cats {
             }
         }
 
-
+        getDefaultTheme() : Theme {
+            return {
+                name : "default",
+                color: "cats.theme.Color",
+                background : "#aaa",
+                ace: "ace/theme/chrome"
+            }
+        }
+    
+    
         close() {
             this.projects.forEach((project) => project.close());
             this.fileNavigator.clear();
@@ -301,7 +309,7 @@ module Cats {
             
             var defaultConfig:IDEConfiguration = {
                 version: "1.1",
-                theme: "cats",
+                theme: "default",
                 editor : {
                     fontSize: 13,
                     rightMargin: 100
@@ -328,9 +336,17 @@ module Cats {
 
 
         setTheme() {
+            if (this.styleNr >= this.themes.length) this.styleNr = 0;
+            const theme = this.themes[this.styleNr];
+            this.theme = theme;
+            const colorTheme = cats.theme[theme.color] || cats.theme.Color;
+            
+            document.body.style.background = theme.background;
+            var manager = qx.theme.manager.Color.getInstance();
+            qx.theme.manager.Color.getInstance().setTheme(colorTheme);
+            document.body.style.color = colorTheme.colors.text;
+            this.emit("config");
             this.styleNr++;
-            if (this.styleNr >= bgs.length) this.styleNr = 0;
-            document.body.style.background = bgs[this.styleNr];
         }
 
 

@@ -22,11 +22,13 @@ module Cats.Theme {
         {
             meta:
             {
-                color: cats.theme.Color,
+                color: cats.theme.ColorDark,
                 decoration: cats.theme.Decoration,
+                // decoration: qx.theme.simple.Decoration,
                 font: cats.theme.Font,
                 icon: qx.theme.icon.Oxygen,
-                appearance: cats.theme.Appearance
+                // appearance: cats.theme.Appearance
+                appearance: qx.theme.simple.Appearance
             }
         });
 

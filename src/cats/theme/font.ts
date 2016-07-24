@@ -22,7 +22,7 @@ module Cats.Theme {
             {
                 "default" : {
                     size : 14,    
-                    family : ["arial", "sans-serif"]
+                    family : ["Source Sans Pro", "arial", "sans-serif"]
                 }
             }
         });

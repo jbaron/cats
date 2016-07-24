@@ -59,6 +59,16 @@ module Cats.Theme {
             },
 
 
+
+            "popup": {
+                base: true,
+                style: function(states:any) {
+                    return {
+                        backgroundColor: <string>undefined,
+                    };
+                }
+            },
+
             "toolbar": {
                 base: true,
                 style: function(states:any) {

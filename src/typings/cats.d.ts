@@ -49,7 +49,6 @@ declare module Cats {
     interface EditorConfig {
             rightMargin?: number;
             fontSize?: number;
-            theme?: string;
             completionMode?:string;
             // IndentSize: number;
             // TabSize: number;
@@ -63,7 +62,7 @@ declare module Cats {
      */
     interface IDEConfiguration {
         version: string;
-        theme?: string;
+        theme: string;
         editor?: EditorConfig;
         rememberOpenFiles?: boolean;
         locale?:string;
@@ -109,6 +108,14 @@ declare module Cats {
             includeDeclarations?:boolean;
         }
        
+    }
+
+
+    interface Theme {
+        background: string;
+        ace : string;
+        name: string;
+        color: string;
     }
 
     interface Position {

@@ -145,7 +145,7 @@ module Cats {
 
         constructor(filePath: string) {
             super();
-            if (filePath) this.setFilePath(filePath);
+            if (filePath) this.setFilePath(OS.File.switchToForwardSlashes(filePath));
         }
 
         updateFileInfo() {

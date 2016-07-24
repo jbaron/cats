@@ -70,6 +70,8 @@ declare module ace {
 
     interface Theme {
         theme:string;
+        caption: string;
+        isDark: boolean;
     }
 
     interface ThemeList {

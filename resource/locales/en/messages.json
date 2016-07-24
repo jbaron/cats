@@ -178,7 +178,11 @@
         "message": "Previous",
         "description": "Menu item for Previous"
     },
-    
+     "ide_theme": {
+        "message": "Next theme",
+        "description": "try the next theme"
+    },
+   
     
     "project_settings" : {
         "message": "Project Settings",

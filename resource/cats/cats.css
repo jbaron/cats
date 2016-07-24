@@ -1,0 +1,14 @@
+
+@import 'https://fonts.googleapis.com/css?family=Source+Sans+Pro';
+
+.ace_editor { 
+    background-color: transparent !important; 
+}
+
+.ace_gutter {
+    background-color: rgba(100,100,100,0.1) !important;
+}
+
+.ace_active-line, .ace_gutter-active-line {
+    background: rgba(0, 0, 0, 0.1) !important;
+}

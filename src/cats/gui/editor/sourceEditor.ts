@@ -221,7 +221,7 @@ module Cats.Gui.Editor {
             var config = IDE.config.editor;
             if ( config.fontSize ) this.aceEditor.setFontSize( config.fontSize + "px" );
             if ( config.rightMargin ) this.aceEditor.setPrintMarginColumn( config.rightMargin );
-            if ( config.theme ) this.aceEditor.setTheme( "ace/theme/" + config.theme );
+            if ( IDE.theme ) this.aceEditor.setTheme( IDE.theme.ace );
         }
 
 

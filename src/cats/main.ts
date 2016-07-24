@@ -22,6 +22,7 @@ module Cats {
 
     // Variable used everywhere for accessing the singleton IDE instance
     export var IDE: Cats.Ide;
+    // const child_process = require('child_process');
     
     export function getNWWindow() {
         if (typeof nw != "undefined") {
@@ -117,6 +118,12 @@ module Cats {
             if (IDE && IDE.console) IDE.console.error(err.stack);
     });
 
+   /*    
+   var worker_process = child_process.fork("tsserver.js", []);	
+   worker_process.on('close', function (code) {
+      console.log('child process exited with code ' + code);
+   });
+    */
 
     // Register the main method that once Qooxdoo is loaded is called
     qx.registry.registerMainMethod(main);

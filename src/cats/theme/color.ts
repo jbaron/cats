@@ -178,12 +178,47 @@ module Cats.Theme {
             "light-background": "transparent",
             "background-selected": "rgba(151, 151, 151, 0.6)",
             "background-selected-dark": "rgba(111, 111, 111, 0.6)",
+            "background-pane": "rgba(200, 200, 200, 0.9)",
             
             
             
             "button-box-bright": "rgba(222, 222, 222, 0.3)",
             "border-main": "rgba(111, 111, 111, 0.6)",
-            "link": "rgba(51, 51, 51, 0.9)",
+            // "link": "rgba(51, 51, 51, 0.9)",
+            "link": "rgba(221, 221, 221, 0.9)",
+            
+            "table-row-background-even": "rgba(222, 222, 222, 0.1)",
+            "table-row-background-odd": "transparent",
+            "table-header-cell": "rgba(100, 100, 100, 0.4)",
+            "table-header": "rgba(100, 100, 100, 0.4)",
+            "table-row-background-focused-selected": "rgba(221, 238, 255, 0.7)",
+            
+            
+            // tooltip
+            "tooltip": "rgba(255, 255, 204, 0.8)",
+            "tooltip-text": "#000023"
+
+
+        }
+    });
+    
+       qx.Theme.define( "cats.theme.ColorLight2", {
+        extend: qx.theme.simple.Color,
+
+        colors:
+        {
+            "background": "rgba(242, 242, 242, 0.7)",
+            "light-background": "transparent",
+            "background-selected": "rgba(151, 151, 151, 0.6)",
+            "background-selected-dark": "rgba(111, 111, 111, 0.6)",
+            "background-pane": "rgba(200, 200, 200, 0.9)",
+            
+            
+            
+            "button-box-bright": "rgba(222, 222, 222, 0.3)",
+            "border-main": "rgba(111, 111, 111, 0.6)",
+            // "link": "rgba(51, 51, 51, 0.9)",
+            "link": "rgba(221, 221, 221, 0.9)",
             
             "table-row-background-even": "rgba(222, 222, 222, 0.1)",
             "table-row-background-odd": "rgba(100, 100, 100, 0.1)",
@@ -199,5 +234,91 @@ module Cats.Theme {
 
         }
     });
+    
+    
+    
+        qx.Theme.define( "cats.theme.ColorDark", {
+        extend: qx.theme.simple.Color,
+
+        colors:
+        {
+            "background": "rgba(42, 42, 42, 0.5)",
+            "light-background": "transparent",
+            "background-selected": "rgba(51, 51, 51, 0.6)",
+            "background-selected-dark": "rgba(211, 211, 211, 0.6)",
+            "background-pane": "rgba(50, 50, 50, 0.9)",
+            
+            
+            
+            "button-box-bright": "rgba(22, 22, 22, 0.3)",
+            "border-main": "rgba(111, 111, 111, 0.6)",
+            "link": "rgba(222, 222, 222, 0.9)",
+            
+            "table-row-background-even": "rgba(222, 222, 222, 0.1)",
+            "table-row-background-odd": "rgba(100, 100, 100, 0.1)",
+            "table-header-cell": "rgba(100, 100, 100, 0.4)",
+            "table-header": "rgba(100, 100, 100, 0.4)",
+            "table-row-background-focused-selected": "rgba(121, 138, 155, 0.7)",
+            "table-row" : "#aaa",
+ 
+ 
+            "text": "#eee",
+            "text-disabled": "#A7A6AA",
+            "text-selected": "#aaa",
+            "text-placeholder": "#CBC8CD",
+
+            
+            // tooltip
+            "tooltip": "rgba(255, 255, 204, 0.8)",
+            "tooltip-text": "#000023"
+            
+
+
+
+        }
+    });
+    
+           qx.Theme.define( "cats.theme.ColorDark2", {
+        extend: qx.theme.simple.Color,
+
+        colors:
+        {
+            "background": "rgba(42, 42, 42, 0.8)",
+            "light-background": "transparent",
+            "background-selected": "rgba(51, 51, 51, 0.8)",
+            "background-selected-dark": "rgba(211, 211, 211, 0.6)",
+            "background-pane": "rgba(50, 50, 50, 0.9)",
+            
+            
+            
+            "button-box-bright": "rgba(22, 22, 22, 0.3)",
+            "border-main": "rgba(111, 111, 111, 0.6)",
+            "link": "rgba(222, 222, 222, 0.9)",
+            
+            "table-row-background-even": "rgba(222, 222, 222, 0.2)",
+            "table-row-background-odd": "rgba(100, 100, 100, 0.2)",
+            "table-header-cell": "rgba(100, 100, 100, 0.4)",
+            "table-header": "rgba(100, 100, 100, 0.4)",
+            "table-row-background-focused-selected": "rgba(121, 138, 155, 0.7)",
+            "table-row" : "#aaa",
+ 
+ 
+            "text": "#eee",
+            "text-disabled": "#A7A6AA",
+            "text-selected": "#aaa",
+            "text-placeholder": "#CBC8CD",
+
+            
+            // tooltip
+            "tooltip": "rgba(255, 255, 204, 0.8)",
+            "tooltip-text": "#000023"
+            
+
+
+
+        }
+    });
+    
+    
 
 }

@@ -96,6 +96,7 @@ module Cats.Gui.Editor {
             });
 
             list.setDecorator(null);
+            list.setBackgroundColor("transparent");
             this.add(list);
             this.list = list;
             this.list.addListener("click" , this.insertSelectedItem.bind(this));
