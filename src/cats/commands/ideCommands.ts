@@ -19,6 +19,9 @@
  */
 module Cats.Commands {
 
+    var styleNr = 0;
+
+
     /**
      * Quit CATS
      */
@@ -51,6 +54,17 @@ module Cats.Commands {
     }
 
     /**
+     * Cycle trhough the themes and set the next one.
+     */ 
+    function setTheme() {
+            const themes = IDE.getThemes();
+            if (styleNr >= themes.length) styleNr = 0;
+            const theme = themes[styleNr];
+            IDE.setTheme(theme.name);
+            styleNr++;
+    }
+
+    /**
      * Register the IDE commands
      */
     export class IdeCommands {
@@ -64,7 +78,7 @@ module Cats.Commands {
             registry( CMDS.ide_configure,  configureIde );
             registry( CMDS.ide_history_next, next);
             registry(CMDS.ide_history_prev,  prev);
-            registry(CMDS.ide_theme,  () => IDE.setTheme() );
+            registry(CMDS.ide_theme, setTheme);
         }
     }
 

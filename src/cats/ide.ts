@@ -32,7 +32,6 @@ module Cats {
         private recentProjects:Array<string>;
 
         rootDir: string;
-        private styleNr = 0;
         projects: Project[] = [];
         resultPane: Gui.TabView;
         toolBar: Gui.ToolBar;
@@ -75,7 +74,7 @@ module Cats {
             
             this.loadShortCuts();
             qx.theme.manager.Meta.getInstance().setTheme(cats.theme.Default);
-            this.setTheme();
+            this.setTheme(this.config.theme);
         }
 
         private loadShortCuts() {
@@ -291,7 +290,11 @@ module Cats {
                 ace: "ace/theme/chrome"
             }
         }
-    
+   
+   
+        findTheme(name:string) : Theme {
+            return this.themes.find((theme) => {return theme.name == name});
+        } 
     
         close() {
             this.projects.forEach((project) => project.close());
@@ -335,9 +338,13 @@ module Cats {
         }
 
 
-        setTheme() {
-            if (this.styleNr >= this.themes.length) this.styleNr = 0;
-            const theme = this.themes[this.styleNr];
+        setTheme(name:string) {
+            var theme = this.findTheme(name);
+            if (! theme) {
+                IDE.console.error(`Theme with name ${name} not found.`);
+                return;
+            }
+            
             this.theme = theme;
             const colorTheme = cats.theme[theme.color] || cats.theme.Color;
             
@@ -346,7 +353,6 @@ module Cats {
             qx.theme.manager.Color.getInstance().setTheme(colorTheme);
             document.body.style.color = colorTheme.colors.text;
             this.emit("config");
-            this.styleNr++;
         }
 
 

@@ -254,8 +254,8 @@ module Cats.Theme {
             "border-main": "rgba(111, 111, 111, 0.6)",
             "link": "rgba(222, 222, 222, 0.9)",
             
-            "table-row-background-even": "rgba(222, 222, 222, 0.1)",
-            "table-row-background-odd": "rgba(100, 100, 100, 0.1)",
+            "table-row-background-even": "rgba(100, 100, 100, 0.1)",
+            "table-row-background-odd": "transparent",
             "table-header-cell": "rgba(100, 100, 100, 0.4)",
             "table-header": "rgba(100, 100, 100, 0.4)",
             "table-row-background-focused-selected": "rgba(121, 138, 155, 0.7)",
