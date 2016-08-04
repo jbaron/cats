@@ -86,6 +86,7 @@ module Cats.Gui {
 
         createForm() {
             this.addSelectBox("theme", this.getThemes());
+            this.addSpinner("fontSize", 6, 24);
             this.addSelectBox("locale", this.locales);
             this.addCheckBox("rememberOpenFiles");
             this.addCheckBox("rememberLayout");

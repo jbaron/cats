@@ -66,7 +66,6 @@ module Cats {
             
             this.icons = this.loadIconsMap();
 	        this.themes = this.loadThemes();	
-            this.configure();
             
             window.onpopstate = (data) => {
                 if (data && data.state) this.goto(data.state);
@@ -212,15 +211,6 @@ module Cats {
             return this.getDefaultTheme();
         }
 
-        /**
-         * Configure the IDE based on the settings
-         */ 
-        configure() {
-            this.theme = this.getCurrentTheme();
-            // if (theme.qx && (theme.qx !== qx.theme.manager.Meta.getInstance().getTheme())) qx.theme.manager.Meta.getInstance().setTheme(theme.qx);
-            document.body.style.background = this.theme.background;
-        }
-
 
         getThemes() {
             return this.themes;
@@ -292,10 +282,10 @@ module Cats {
 
         private getDefaultTheme() : Theme {
             return {
-                name : "default",
-                color: "cats.theme.Color",
-                background : "#aaa",
-                ace: "ace/theme/chrome"
+                "name" : "default",
+                "background" : "linear-gradient(to right, #666 , #888)",
+                "color" : "Color",
+                "ace" : "ace/theme/eclipse"          
             }
         }
    
@@ -321,8 +311,8 @@ module Cats {
             var defaultConfig:IDEConfiguration = {
                 version: "1.1",
                 theme: "default",
+                fontSize: 13,
                 editor : {
-                    fontSize: 13,
                     rightMargin: 100
                 },
                 locale: "en",
@@ -346,11 +336,11 @@ module Cats {
         }
 
 
-        setTheme(name:string) {
+        setTheme(name="default") {
             var theme = this.findTheme(name);
             if (! theme) {
                 IDE.console.error(`Theme with name ${name} not found.`);
-                return;
+                theme = this.getDefaultTheme();
             }
             
             this.theme = theme;
@@ -359,7 +349,9 @@ module Cats {
             document.body.style.background = theme.background;
             var manager = qx.theme.manager.Color.getInstance();
             qx.theme.manager.Color.getInstance().setTheme(colorTheme);
-            document.body.style.color = colorTheme.colors.text;
+            document.body.style.color = colorTheme.colors.text
+            
+            this.setFont(this.config.fontSize);
             this.emit("config");
         }
 
@@ -368,9 +360,9 @@ module Cats {
          * Update the configuration for IDE
          * 
          */ 
-        updatePreferences(config) {
+        updatePreferences(config:IDEConfiguration) {
             this.config = config;
-            this.configure();
+            this.setTheme(config.theme);
             this.emit("config", config);
             this.savePreferences();
         }

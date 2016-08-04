@@ -218,13 +218,11 @@ module Cats.Gui.Editor {
          *
          */
         private configureEditor() {
-            var config = IDE.config.editor;
+            var config = IDE.config;
             if ( config.fontSize ) this.aceEditor.setFontSize( config.fontSize + "px" );
-            if ( config.rightMargin ) this.aceEditor.setPrintMarginColumn( config.rightMargin );
+            if ( config.editor && config.editor.rightMargin ) this.aceEditor.setPrintMarginColumn( config.editor.rightMargin );
             if ( IDE.theme ) this.aceEditor.setTheme( IDE.theme.ace );
         }
-
-
 
         /**
          * Inform the world about current status of the editor
