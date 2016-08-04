@@ -109,17 +109,17 @@ module Cats.Commands {
 
 
     export class ProjectCommands {
-        static init(registry: (cmd: Command, fn:Function) => void) {
-            registry(CMDS.project_open,openProject);
-            registry(CMDS.project_new,newProject);
-            registry(CMDS.project_close,closeProject);
-            registry(CMDS.project_build,buildProject);
-            registry(CMDS.project_validate, validateProject);
-            registry(CMDS.project_refresh, refreshProject);
-            registry(CMDS.project_run, runProject);
+        static init(registry: (cmd: COMMANDNAME, fn:Function) => void) {
+            registry(COMMANDNAME.project_open,openProject);
+            registry(COMMANDNAME.project_new,newProject);
+            registry(COMMANDNAME.project_close,closeProject);
+            registry(COMMANDNAME.project_build,buildProject);
+            registry(COMMANDNAME.project_validate, validateProject);
+            registry(COMMANDNAME.project_refresh, refreshProject);
+            registry(COMMANDNAME.project_run, runProject);
             // registry(CMDS.project_debug, label: "Debug Project",null, icon: "debug.png" });
-            registry(CMDS.project_quickOpen, quickOpen);
-            registry(CMDS.project_configure, configureProject);
+            registry(COMMANDNAME.project_quickOpen, quickOpen);
+            registry(COMMANDNAME.project_configure, configureProject);
         }
 
     }

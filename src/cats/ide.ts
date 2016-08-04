@@ -92,7 +92,7 @@ module Cats {
                 var commandName = shortCuts[shortCut];
                 var cmd = new qx.ui.command.Command(shortCut);
                 cmd.addListener("execute", (function(commandName: string) {
-                  Cats.Commands.CMDS[commandName].command();
+                  Cats.Commands.commandRegistry.runCommand(commandName);
                 }).bind(null, commandName));
             }
             
@@ -113,7 +113,15 @@ module Cats {
             return JSON.parse(OS.File.readTextFile("resource/themes.json"));
         }
 
-
+        setFont(size=14) {
+            var theme = cats.theme.Font;
+            theme.fonts.default.size = size; 
+            var manager = qx.theme.manager.Font.getInstance();
+            manager.setTheme(cats.theme.Font16);
+            // manager.setTheme(null);
+            manager.setTheme(theme);
+            this.emit("config");
+        }
 
         setColors(colorTheme = cats.theme.ColorDark) {
             var manager = qx.theme.manager.Color.getInstance();
@@ -282,7 +290,7 @@ module Cats {
             }
         }
 
-        getDefaultTheme() : Theme {
+        private getDefaultTheme() : Theme {
             return {
                 name : "default",
                 color: "cats.theme.Color",
@@ -292,7 +300,7 @@ module Cats {
         }
    
    
-        findTheme(name:string) : Theme {
+        private findTheme(name:string) : Theme {
             return this.themes.find((theme) => {return theme.name == name});
         } 
     
@@ -362,8 +370,8 @@ module Cats {
          */ 
         updatePreferences(config) {
             this.config = config;
-            this.emit("config", config);
             this.configure();
+            this.emit("config", config);
             this.savePreferences();
         }
 

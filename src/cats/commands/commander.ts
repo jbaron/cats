@@ -15,79 +15,115 @@
 
 module Cats.Commands {
 
-    /**
+        /**
      * List of known commands
      */ 
-    export var CMDS = {
-        help_devTools: <Command>null,
-        help_shortcuts: <Command>null,
-        help_processInfo: <Command>null,
-        help_about: <Command>null,
+    export enum COMMANDNAME {
+        help_devTools,
+        help_shortcuts,
+        help_processInfo,
+        help_about,
         
-        file_new: <Command>null,
-        file_open: <Command>null,
-        file_close: <Command>null,
-        file_closeOther: <Command>null,
-        file_closeAll: <Command>null,
-        file_save: <Command>null,
-        file_saveAs: <Command>null,
-        file_saveAll: <Command>null,
-        file_previous: <Command>null,
-        file_next: <Command>null,
+        file_new,
+        file_open,
+        file_close,
+        file_closeOther,
+        file_closeAll,
+        file_save,
+        file_saveAs,
+        file_saveAll,
+        file_previous,
+        file_next,
         
-        edit_undo: <Command>null,
-        edit_redo: <Command>null,
-        edit_cut: <Command>null,
-        edit_copy: <Command>null,
-        edit_paste: <Command>null,
-        edit_find: <Command>null,
-        edit_findNext: <Command>null,
-        edit_findPrev: <Command>null,
-        edit_replace: <Command>null,
-        edit_replaceAll: <Command>null,
-        edit_toggleInvisibles: <Command>null,
-        edit_toggleRecording: <Command>null,
-        edit_replayMacro: <Command>null,
+        edit_undo,
+        edit_redo,
+        edit_cut,
+        edit_copy,
+        edit_paste,
+        edit_find,
+        edit_findNext,
+        edit_findPrev,
+        edit_replace,
+        edit_replaceAll,
+        edit_toggleInvisibles,
+        edit_toggleRecording,
+        edit_replayMacro,
         
-        edit_toggleComment: <Command>null,
-        edit_indent: <Command>null,
-        edit_outdent: <Command>null,
-        edit_gotoLine: <Command>null,
+        edit_toggleComment,
+        edit_indent,
+        edit_outdent,
+        edit_gotoLine,
         
-        source_format: <Command>null,
-        source_openDeclaration: <Command>null,
-        source_findRef: <Command>null,
-        source_findDecl: <Command>null,
+        source_format,
+        source_openDeclaration,
+        source_findRef,
+        source_findDecl,
 
         
-        project_open: <Command>null,
-        project_close: <Command>null,
-        project_new: <Command>null,
-        project_build: <Command>null,
-        project_validate: <Command>null,
-        project_run: <Command>null,
-        project_debug: <Command>null,
-        project_refresh: <Command>null,
-        project_properties: <Command>null,
-        project_quickOpen: <Command>null,
-        project_classDiagram: <Command>null,
-        project_configure: <Command>null,
+        project_open,
+        project_close,
+        project_new,
+        project_build,
+        project_validate,
+        project_run,
+        project_debug,
+        project_refresh,
+        project_properties,
+        project_quickOpen,
+        project_classDiagram,
+        project_configure,
 
         
-        ide_quit: <Command>null,
-        ide_theme: <Command>null,
-        ide_fontSize: <Command>null,
-        ide_rightMargin: <Command>null,
-        ide_configure: <Command>null,
-        ide_history_next: <Command>null,
-        ide_history_prev: <Command>null,
-        ide_toggle_toolbar : <Command>null,
-        ide_toggle_statusbar : <Command>null,
-        ide_toggle_context : <Command>null,
-        ide_toggle_result  : <Command>null
+        ide_quit,
+        ide_theme,
+        ide_fontSize,
+        ide_rightMargin,
+        ide_configure,
+        ide_history_next,
+        ide_history_prev,
+        ide_toggle_toolbar,
+        ide_toggle_statusbar,
+        ide_toggle_context,
+        ide_toggle_result 
     };
 
- 
+
+    export class CommandRegistry {
+       
+       private registry = new Map<COMMANDNAME,Command>();
+
+    
+        
+    /**
+     * Register a new command
+     */ 
+	registerCommand(id:COMMANDNAME, fn:Function)  {
+	    
+	    var name = COMMANDNAME[id];
+	    console.log(name);
+	    
+        this.registry.set(id, {
+            name: name,
+            label:qx.locale.Manager.tr(name),
+            command: fn 
+        });
+	}
+	
+	/**
+	 * Get the command based on 
+	 */ 
+	getCommand(command:COMMANDNAME):Command {
+	    return this.registry.get(command);
+	}
+	
+    runCommand(name:String) {
+        this.registry.forEach((cmd) => {
+           if (cmd.name === name) cmd.command(); 
+        })
+    }
+
+        
+    }
 
 
 	export interface Command {
@@ -110,20 +146,19 @@ module Cats.Commands {
 	function register(command:Command, fn:Function)  {       
         command.command = fn;
 	}
+	
+	
+    export var commandRegistry = new CommandRegistry()
 
     /**
      * Call the different command implementers so they can register 
      * themselves
      */ 
 	export function init() {
-	   for (var key in CMDS) {
-            CMDS[key] = {
-                name: key,
-                label : qx.locale.Manager.tr(key),
-                command: nop
-            };
-        }
-	    
+
+	    function register(cmd: COMMANDNAME, fn:Function) {
+	        commandRegistry.registerCommand(cmd,fn);
+	    }
 	    
 		EditorCommands.init(register);
 	    FileCommands.init(register);

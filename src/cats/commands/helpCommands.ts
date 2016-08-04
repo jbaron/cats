@@ -54,11 +54,11 @@ module Cats.Commands {
     }
 
     export class HelpCommands {
-        static init(registry: (cmd: Command, fn:Function) => void) {
-            registry(CMDS.help_about, showAbout);
-            registry(CMDS.help_devTools,showDevTools);
-            registry(CMDS.help_shortcuts, showShortcuts);
-            registry(CMDS.help_processInfo, showProcess);
+        static init(registry: (cmd: COMMANDNAME, fn:Function) => void) {
+            registry(COMMANDNAME.help_about, showAbout);
+            registry(COMMANDNAME.help_devTools,showDevTools);
+            registry(COMMANDNAME.help_shortcuts, showShortcuts);
+            registry(COMMANDNAME.help_processInfo, showProcess);
         }
 
     }

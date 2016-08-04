@@ -163,7 +163,7 @@ module Cats.Gui.Editor {
                     this.project.validate(false);
                     
                     if (this.project.config.buildOnSave) {
-                        Commands.CMDS.project_build.command();
+                        Commands.commandRegistry.getCommand(Commands.COMMANDNAME.project_build).command();
                     } else {
                         if (this.project.config.compileOnSave) {
                             this.project.validate(true);

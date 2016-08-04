@@ -21,33 +21,33 @@ module Cats.Gui {
 
 
         private commands = [
-            Cats.Commands.CMDS.file_new,
-            Cats.Commands.CMDS.file_close,
-            Cats.Commands.CMDS.file_closeAll,
+            Cats.Commands.COMMANDNAME.file_new,
+            Cats.Commands.COMMANDNAME.file_close,
+            Cats.Commands.COMMANDNAME.file_closeAll,
             null,
-            Cats.Commands.CMDS.file_save,
-            Cats.Commands.CMDS.file_saveAll,
-            Cats.Commands.CMDS.file_saveAs,
+            Cats.Commands.COMMANDNAME.file_save,
+            Cats.Commands.COMMANDNAME.file_saveAll,
+            Cats.Commands.COMMANDNAME.file_saveAs,
             null,
-            Cats.Commands.CMDS.project_open,
-            Cats.Commands.CMDS.project_close,
-            Cats.Commands.CMDS.project_build,
-            Cats.Commands.CMDS.project_run,
-            Cats.Commands.CMDS.project_refresh,
+            Cats.Commands.COMMANDNAME.project_open,
+            Cats.Commands.COMMANDNAME.project_close,
+            Cats.Commands.COMMANDNAME.project_build,
+            Cats.Commands.COMMANDNAME.project_run,
+            Cats.Commands.COMMANDNAME.project_refresh,
             null,
-            Cats.Commands.CMDS.edit_undo,
-            Cats.Commands.CMDS.edit_redo,
-            Cats.Commands.CMDS.edit_find,
-            Cats.Commands.CMDS.edit_replace,
-            Cats.Commands.CMDS.edit_indent,
-            Cats.Commands.CMDS.edit_outdent,
+            Cats.Commands.COMMANDNAME.edit_undo,
+            Cats.Commands.COMMANDNAME.edit_redo,
+            Cats.Commands.COMMANDNAME.edit_find,
+            Cats.Commands.COMMANDNAME.edit_replace,
+            Cats.Commands.COMMANDNAME.edit_indent,
+            Cats.Commands.COMMANDNAME.edit_outdent,
         //       Cats.Commands.CMDS.edit_toggleComment
             null,
-            Cats.Commands.CMDS.ide_history_prev,
-            Cats.Commands.CMDS.ide_history_next,
+            Cats.Commands.COMMANDNAME.ide_history_prev,
+            Cats.Commands.COMMANDNAME.ide_history_next,
             
             null,
-            Cats.Commands.CMDS.ide_theme
+            Cats.Commands.COMMANDNAME.ide_theme
 
         ];
 
@@ -57,7 +57,8 @@ module Cats.Gui {
             this.init();
         }
 
-        private createButton(cmd: Cats.Commands.Command) {
+        private createButton(command: Cats.Commands.COMMANDNAME) {
+           var cmd = Commands.commandRegistry.getCommand(command);
            var icon = IDE.icons.toolbar[cmd.name];
            var button = new qx.ui.toolbar.Button(cmd.label, icon);
             button.setShow("icon");
@@ -89,19 +90,7 @@ module Cats.Gui {
             this.add(part);
         }
 
-        /**
-         * Alternative way to adding buttons to the toolbar
-         */ 
-        private init2() {
-            this.commands.forEach((cmd) => {
-                if (cmd === null) {
-                    this.addSeparator();
-                } else {
-                    var button = this.createButton(cmd);
-                    this.add(button);
-                }
-            });
-        }
+
         
 
     }

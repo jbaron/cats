@@ -13,6 +13,22 @@
 // limitations under the License.
 //
 module Cats.Theme {
+    
+    
+     qx.Theme.define("cats.theme.Font16",
+        {
+            extend: qx.theme.simple.Font,
+
+            fonts:
+            {
+                "default" : {
+                    size : 16,    
+                    family : ["Source Sans Pro", "arial", "sans-serif"]
+                }
+            }
+        });
+    
+    
 
     qx.Theme.define("cats.theme.Font",
         {
@@ -21,7 +37,7 @@ module Cats.Theme {
             fonts:
             {
                 "default" : {
-                    size : 14,    
+                    size : 12,    
                     family : ["Source Sans Pro", "arial", "sans-serif"]
                 }
             }

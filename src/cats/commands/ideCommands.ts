@@ -68,17 +68,17 @@ module Cats.Commands {
      * Register the IDE commands
      */
     export class IdeCommands {
-        static init(registry: (cmd: Command, fn:Function) => void) {
-            registry(CMDS.ide_quit,  quit );
-            registry( CMDS.ide_toggle_toolbar,  () => toggleView(IDE.toolBar) );
-            registry( CMDS.ide_toggle_statusbar,  () => toggleView(IDE.statusBar) );
-            registry( CMDS.ide_toggle_result,  () => toggleView(IDE.resultPane) );
-            registry( CMDS.ide_toggle_context,  () => toggleView(IDE.contextPane) );
+        static init(registry: (cmd: COMMANDNAME, fn:Function) => void) {
+            registry(COMMANDNAME.ide_quit,  quit );
+            registry( COMMANDNAME.ide_toggle_toolbar,  () => toggleView(IDE.toolBar) );
+            registry( COMMANDNAME.ide_toggle_statusbar,  () => toggleView(IDE.statusBar) );
+            registry( COMMANDNAME.ide_toggle_result,  () => toggleView(IDE.resultPane) );
+            registry( COMMANDNAME.ide_toggle_context,  () => toggleView(IDE.contextPane) );
             
-            registry( CMDS.ide_configure,  configureIde );
-            registry( CMDS.ide_history_next, next);
-            registry(CMDS.ide_history_prev,  prev);
-            registry(CMDS.ide_theme, setTheme);
+            registry( COMMANDNAME.ide_configure,  configureIde );
+            registry( COMMANDNAME.ide_history_next, next);
+            registry(COMMANDNAME.ide_history_prev,  prev);
+            registry(COMMANDNAME.ide_theme, setTheme);
         }
     }
 

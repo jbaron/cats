@@ -117,16 +117,16 @@ module Cats.Commands {
     }
 
     export class FileCommands {
-        static init(registry: (cmd: Command, fn:Function) => void ) {
-            registry(CMDS.file_new, newFile);
-            registry(CMDS.file_close, closeFile );
-            registry(CMDS.file_closeOther,closeOtherFiles );
-            registry(CMDS.file_closeAll, closeAllFiles);
-            registry(CMDS.file_save, saveFile);
-            registry(CMDS.file_saveAll, saveAll);
-            registry(CMDS.file_saveAs, saveAs);
-            registry(CMDS.file_previous, previous);
-            registry(CMDS.file_next, next);
+        static init(registry: (cmd: COMMANDNAME, fn:Function) => void ) {
+            registry(COMMANDNAME.file_new, newFile);
+            registry(COMMANDNAME.file_close, closeFile );
+            registry(COMMANDNAME.file_closeOther,closeOtherFiles );
+            registry(COMMANDNAME.file_closeAll, closeAllFiles);
+            registry(COMMANDNAME.file_save, saveFile);
+            registry(COMMANDNAME.file_saveAll, saveAll);
+            registry(COMMANDNAME.file_saveAs, saveAs);
+            registry(COMMANDNAME.file_previous, previous);
+            registry(COMMANDNAME.file_next, next);
         }
 
     }
