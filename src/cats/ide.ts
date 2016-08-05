@@ -116,6 +116,7 @@ module Cats {
             var theme = cats.theme.Font;
             theme.fonts.default.size = size; 
             var manager = qx.theme.manager.Font.getInstance();
+            // @TODO hack to make Qooxdoo aware there is a change
             manager.setTheme(cats.theme.Font16);
             // manager.setTheme(null);
             manager.setTheme(theme);
@@ -294,22 +295,24 @@ module Cats {
             return this.themes.find((theme) => {return theme.name == name});
         } 
     
+        /**
+         * CLose the current project
+         */
         close() {
             this.projects.forEach((project) => project.close());
             this.fileNavigator.clear();
             this.todoList.clear();
             this.problemResult.clear();
+            this.console.clear();
             this.projects=[];
         }
 
         /**
-         * Load the configuration for the IDE. If there is no configuration
-         * found, create the default one to use.
-         */ 
-        private loadPreferences() {
-            
+         * Get a set of default preferences.
+         */
+        private getDefaultPreferences() {
             var defaultConfig:IDEConfiguration = {
-                version: "1.1",
+                version: "2.0",
                 theme: "default",
                 fontSize: 13,
                 editor : {
@@ -320,22 +323,32 @@ module Cats {
                 sessions: [],
                 projects:[]
             };
+            return defaultConfig;
+        }
+
+        /**
+         * Load the configuration for the IDE. If there is no configuration
+         * found or it is an old version, use the default one to use.
+         */ 
+        private loadPreferences() {
             
             var configStr = localStorage[Ide.STORE_KEY];
             
             if (configStr) {
                     try {
                         var config:IDEConfiguration = JSON.parse(configStr);
-                        if (config.version === "1.1") return config;
+                        if (config.version === "2.0") return config;
                     } catch (err) {
                         console.error("Error during parsing config " + err);
                     }
             }
             
-            return defaultConfig;
+            return this.getDefaultPreferences();
         }
 
-
+        /**
+         * Set the theme for this IDE
+         */
         setTheme(name="default") {
             var theme = this.findTheme(name);
             if (! theme) {
@@ -373,7 +386,7 @@ module Cats {
         savePreferences() {
             try {
                 let config = this.config;
-                config.version = "1.1";
+                config.version = "2.0";
                 config.sessions = [];
                 config.projects = this.recentProjects;
   

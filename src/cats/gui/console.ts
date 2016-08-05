@@ -127,7 +127,7 @@ module Cats.Gui {
             return menu;
         }
 
-        private clear() {
+        clear() {
             if (this.container) this.container.innerHTML = "";
         }
 
