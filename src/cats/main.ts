@@ -64,21 +64,7 @@ module Cats {
         }
     }
 
-    /**
-     * Determine which project(s) we should load during 
-     * startup. This is used when the IDE is started from the command line
-     */
-    function determineProject(args:string[]): string {
-        let projectName = getParameterByName("project");
-        if (!projectName) {
-            var i = args.indexOf("--project");
-            if (i > -1) projectName = args[i + 1];
-        }
-        return projectName;
-    }
-
-
-
+ 
     /**
      * This is the functions that kicks it all of. When Qooxdoo is loaded it will 
      * call this main to start the application. 
@@ -101,12 +87,13 @@ module Cats {
             IDE.debug = true;
         }
 
-       
-        var prjDir = determineProject(args);
-        if (prjDir) {
-            IDE.setDirectory(prjDir);
-        } else {
-            if (args.indexOf("--restore") !== -1) IDE.restorePreviousProjects();
+        if (args.indexOf("--project") > -1) {
+           let dir = args[args.indexOf("--project") + 1];
+           IDE.setDirectory(dir);
+        }
+
+        if (args.indexOf("--restore") > -1) {
+            IDE.restorePreviousProjects();
         }
     }
 

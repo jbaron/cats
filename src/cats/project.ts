@@ -43,8 +43,9 @@ module Cats {
     }
     
     /**
-     * The project hold the information related to a single project. This include 
-     * a reference to a workerthread that does much of the TypeScript intellisense.
+     * The project hold the information related to a single TypeScript project. 
+     * This include a reference to a workerthread that does much of the TypeScript 
+     * intellisense.
      */
     export class Project extends qx.event.Emitter {
 

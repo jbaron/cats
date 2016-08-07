@@ -55,20 +55,20 @@ module Cats.Gui {
         private addTextField(label: string, model: string) {
             var t = new qx.ui.form.TextField();
             t.setWidth(200);
-            this.form.add(t, label, null, model);
+            this.form.add(t, label, undefined, model);
             return t;
         }
 
         private addSpinner(label: string, model: string) {
             var s = new qx.ui.form.Spinner();
             s.set({ minimum: 0, maximum: 1000 });
-            this.form.add(s, label, null, model);
+            this.form.add(s, label, undefined, model);
             return s;
         }
 
         private addCheckBox(label: string, model?: string) {
             var cb = new qx.ui.form.CheckBox();
-            this.form.add(cb, label, null, model);
+            this.form.add(cb, label, undefined , model);
             return cb;
         }
 

@@ -425,6 +425,7 @@ module Cats {
         private getTSConfigs(dir:string) {
             var configs:string[] = glob.sync(dir + "/" + "**/tsconfig*.json");
             if (configs.length === 0) {
+                this.console.log("No tsconfig file found, creating a default one");
                 let fileName = OS.File.PATH.join(dir,"tsconfig.json");
                 OS.File.writeTextFile(fileName,"{}");
                 configs = [fileName];
