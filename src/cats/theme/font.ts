@@ -37,8 +37,9 @@ module Cats.Theme {
             fonts:
             {
                 "default" : {
-                    size : 12,    
-                    family : ["Source Sans Pro", "arial", "sans-serif"]
+                    size : 13, 
+                    family : ["arial", "sans-serif"]
+                    // family : ["Source Sans Pro", "arial", "sans-serif"]
                 }
             }
         });
