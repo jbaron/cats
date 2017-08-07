@@ -100,7 +100,7 @@ module Cats.Commands {
 	registerCommand(id:COMMANDNAME, fn:Function)  {
 	    
 	    var name = COMMANDNAME[id];
-	    console.log(name);
+	    /* console.log(name); */
 	    
         this.registry.set(id, {
             name: name,
