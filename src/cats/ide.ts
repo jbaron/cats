@@ -77,22 +77,26 @@ module Cats {
         }
 
         private loadShortCuts() {
-            var fileName = OS.File.join(this.catsHomeDir, "resource/shortcuts.json");
-            var c = OS.File.readTextFile(fileName);
-            var shortCutSets:{} = JSON.parse(c);
-            var os = "linux";
-            if (Cats.OS.File.isWindows()) {
-              os = "win";
-            } else if (Cats.OS.File.isOSX()) {
-              os = "osx";
-            }
-            var shortCuts = shortCutSets[os];
-            for (var shortCut in shortCuts) {
-                var commandName = shortCuts[shortCut];
-                var cmd = new qx.ui.command.Command(shortCut);
-                cmd.addListener("execute", (function(commandName: string) {
-                  Cats.Commands.commandRegistry.runCommand(commandName);
-                }).bind(null, commandName));
+            try {
+                var fileName = OS.File.join(this.catsHomeDir, "resource/shortcuts.json");
+                var c = OS.File.readTextFile(fileName);
+                var shortCutSets:{} = JSON.parse(c);
+                var os = "linux";
+                if (Cats.OS.File.isWindows()) {
+                  os = "win";
+                } else if (Cats.OS.File.isOSX()) {
+                  os = "osx";
+                }
+                var shortCuts = shortCutSets[os];
+                for (var shortCut in shortCuts) {
+                    var commandName = shortCuts[shortCut];
+                    var cmd = new qx.ui.command.Command(shortCut);
+                    cmd.addListener("execute", (function(commandName: string) {
+                      Cats.Commands.commandRegistry.runCommand(commandName);
+                    }).bind(null, commandName));
+                }
+            } catch (err) {
+                console.error("Error loading shortcuts" + err);   
             }
             
         }
