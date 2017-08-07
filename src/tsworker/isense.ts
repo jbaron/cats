@@ -138,37 +138,7 @@ module Cats.TSWorker {
             }
         }
 
-        /**
-         * Create a Class Model for project that can be used for example in the 
-         * UML viewer.
-         */ 
-        public getObjectModel() {
-            //Force all symbols to be created.
-            this.getAllDiagnostics();
-  
-           var mc = new ModelCreator();
-            this.lsHost.getScriptFileNames().forEach((scriptName) => {
-                if (scriptName.indexOf("lib.d.ts") > 0) return;
-                var script = this.lsHost.getScript(scriptName);
-                // var doc:ts.SourceFile = ts.createSourceFile(scriptName, script.getContent(),
-                //        this.lsHost.getCompilationSettings().target, script.getVersion());
-                /*
-                var doc = this.documentRegistry.acquireDocument(
-                    scriptName, 
-                    this.lsHost.getCompilationSettings(), 
-                    script.getScriptSnapshot(),
-                    script.getVersion(), 
-                    script.isOpen()
-                );
-                */
-                var doc = script.getSourceFile();
-    
-                mc.parse(doc);
-                
-                this.documentRegistry.releaseDocument(scriptName, this.lsHost.getCompilationSettings());
-            });
-            return mc.getModel();
-        }
+ 
 
   
         /**

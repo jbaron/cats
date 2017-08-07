@@ -1,0 +1,7 @@
+{"seq":1,"type":"quickinfo","command":"open","arguments":{"file":"/Users/peter/Development/cats/src/cats/editor.ts"}}
+
+
+{"seq":1,"type":"request","command":"projectInfo","arguments":{}}
+
+
+{"seq":1,"type":"request","command":"quickinfo","arguments":{"file":"src/cats/editor.ts"}}

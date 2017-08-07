@@ -162,10 +162,10 @@ module Cats.Gui.Editor {
                     this.project.updateScript(filePath, content);
                     this.project.validate(false);
                     
-                    if (this.project.config.buildOnSave) {
-                        Commands.commandRegistry.getCommand(Commands.COMMANDNAME.project_build).command();
+                    if (this.project.config.compileOnSave) {
+                        this.project.build();
                     } else {
-                        if (this.project.config.compileOnSave) {
+                        if (this.project.config.validateOnSave) {
                             this.project.validate(true);
                         }
                     }

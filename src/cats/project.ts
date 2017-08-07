@@ -27,7 +27,7 @@ module Cats {
     export interface TSConfig {
         compilerOptions?: CompilerOptions;
         compileOnSave?: boolean;
-        buildOnSave?: boolean;
+        validateOnSave?: boolean;
         files?: string[];
         exclude?: string[];
         filesGlob?: string[];

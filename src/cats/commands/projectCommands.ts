@@ -89,7 +89,7 @@ module Cats.Commands {
     function newProject() {
         var chooser: HTMLElement = document.getElementById('fileDialog');
         chooser.onchange = function(evt:Event) {
-            IDE.setDirectory(<string>this.value);
+            IDE.setDirectory(<string>this["value"]);
         };
         chooser.click();
     };
@@ -102,7 +102,7 @@ module Cats.Commands {
     function openProject() {
         var chooser: HTMLElement= document.getElementById('fileDialog');
         chooser.onchange = function(evt:Event) {
-            IDE.setDirectory(<string>this.value);
+            IDE.setDirectory(<string>this["value"]);
         };
         chooser.click();
     };

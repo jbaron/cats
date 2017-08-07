@@ -65,6 +65,20 @@ module Cats {
     }
 
  
+    function startWebServer() {
+        var http = require("http");
+        var PORT = 8080;
+        var server = http.createServer((req,res)=>{
+                 var content = OS.File.readTextFile(IDE.rootDir + "/public/manifest.json");
+                 res.end(content);
+        });
+        server.listen(PORT, function(){
+             //Callback triggered when server is successfully listening. Hurray!
+            console.log("Server listening on: http://localhost:%s", PORT);
+        });
+    }
+ 
+ 
     /**
      * This is the functions that kicks it all of. When Qooxdoo is loaded it will 
      * call this main to start the application. 
@@ -95,6 +109,8 @@ module Cats {
         if (args.indexOf("--restore") > -1) {
             IDE.restorePreviousProjects();
         }
+        
+        startWebServer();
     }
 
 

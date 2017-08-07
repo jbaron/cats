@@ -14,7 +14,6 @@
   "description": "CATS in an integrated development environment for WebApp developers",
   "keywords": [
     "TypeScript",
-    "React",
     "opensource",
     "editor",
     "IDE",
@@ -24,7 +23,7 @@
   "bugs": {
     "url": "https://github.com/JBaron/cats/issues"
   },
-  "version": "2.0.0-beta",
+  "version": "2.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/jbaron/cats.git"
