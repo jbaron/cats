@@ -6,8 +6,8 @@ CATS is an IDE for TypeScript and Web developers. CATS is open source software r
 and runs on Linux, Windows and OS X.  CATS itself is also written in TypeScript, so you can easily 
 customize it to your needs if required.
 
-And who wants to develop cutting edge web applications in a boring, uninpsiring IDE. So now CATS 
-also can be completely themed to your taste. And the great hting, you can use plain CSS to do so.
+And who wants to develop cutting edge web applications in a boring, uninspiring IDE. So now CATS 
+also can be completely themed to your taste. And the great thing, you can use plain CSS to do so.
 
 
 <img width="680" src="https://raw.github.com/jbaron/cats/master/artifacts/cats_screenshot.png" />
@@ -23,7 +23,7 @@ the following:
 - Support for refactoring and smart navigation.
 - Very fast compilation of TypeScript to JavaScript.
 - Full validation of your source code while you are typing.
-- All the typicall editing features like folding, indentation and code formatting.
+- All the typical editing features like folding, indentation and code formatting.
 - Run your application from within IDE and using the WebKit debugger to debug.
 - Flexible build system with support for external build systems like Grunt, Jake, Gulp and Makefiles.
 
