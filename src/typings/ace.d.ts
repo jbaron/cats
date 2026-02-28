@@ -68,7 +68,22 @@ declare module ace {
 		value: string;
 	}
 
+    interface Theme {
+        theme:string;
+        caption: string;
+        isDark: boolean;
+    }
+
+    interface ThemeList {
+        themes: Theme[];
+    }
+
+    class HashHandler {
+        bindKey(key:string,fn:Function ):void;
+    }
+
 	class EditSession {
+	    constructor();
 		constructor(content:string, mode:string);
 		getUndoManager():UndoManager;
 		addMarker:any;

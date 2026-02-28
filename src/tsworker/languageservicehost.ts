@@ -13,12 +13,6 @@
 // limitations under the License.
 //
 
-
-// This is based on the harness.ts file from TypeScript
-// Major difference is that this module uses real language services API and not the Shim.
-// Licensed under the Apache License, Version 2.0. 
-
-
 module Cats.TSWorker {
 
     /**
@@ -29,7 +23,7 @@ module Cats.TSWorker {
     export class LanguageServiceHost implements ts.LanguageServiceHost {
 
         private compilationSettings:ts.CompilerOptions = null;
-        private scripts:Map<ScriptInfo> = {};
+        private scripts:Map<Script> = {};
 
         constructor() {
             this.setCompilationSettings();
@@ -39,23 +33,21 @@ module Cats.TSWorker {
             return Object.keys(this.scripts);
         }
 
+        
+        getScripts() {
+            var result:Array<Script> = []
+            this.getScriptFileNames().forEach((fileName)=> {
+                var script = this.getScript(fileName);
+                result.push(script);
+            });
+            return result;
+        }
+        
+        
         getNewLine() {
             return "\n";
         }
 
-        getScriptIsOpen(fileName: string) {
-            // @FIX generates not-implemented yet error in TypeScript if return true;
-            return this.getScript(fileName).isOpen(); 
-        }
-
-        getCancellationToken(): ts.CancellationToken {
-            // @TODO find out what this is used for
-            return ts.CancellationTokenObject.None;
-        }
-        
-        getLocalizedDiagnosticMessages() {
-            // console.log("Called getLocalizedDiagnosticMessages");
-        }
         
         getCurrentDirectory(): string {
             return "";
@@ -79,11 +71,9 @@ module Cats.TSWorker {
        public error(s: string): void {
        }
        
-    
-         public getCompilationSettings(): ts.CompilerOptions {
+        public getCompilationSettings(): ts.CompilerOptions {
             return this.compilationSettings; 
         }
-
 
         public getScriptVersion(fileName: string): string {
             var script = this.scripts[fileName];            
@@ -98,29 +88,18 @@ module Cats.TSWorker {
         }
         
         public addScript(fileName: string, content: string, ls:ts.LanguageService) {
-            var script = new ScriptInfo(fileName, content, ls);
+            var script = new Script(fileName, content, ls);
             this.scripts[fileName] = script;
             return script;
         }
 
-        public updateScript(fileName: string, content: string) {
-            var script =  this.scripts[fileName];
-            if (script) {
-                script.updateContent(content);
-            } 
-        }
 
-        /*
-        public editScript(fileName: string, minChar: number, limChar: number, newText: string) {
-             var script =  this.scripts[fileName];
-            if (script) {
-                script.editContent(minChar, limChar, newText);
-            } else {
-                throw new Error("No script with name '" + fileName + "'");
-            }
-        }
-        */
 
+        /**
+         * Set the various compiler settings. For options not provided default values will be used
+         * 
+         * @param compilerOptions The options you want to set. 
+         */ 
         public setCompilationSettings(compilerOptions: ts.CompilerOptions={}) {
              var options = ts.getDefaultCompilerOptions();
  
@@ -132,7 +111,6 @@ module Cats.TSWorker {
             // Set values to avoid the compiler trying to load/resolve files
             options.emitBOM = false;
             options.noLib = true;
-            options.noLibCheck = true;
             options.noResolve = true;
             this.compilationSettings = options;
         }

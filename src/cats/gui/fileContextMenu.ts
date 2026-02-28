@@ -20,7 +20,7 @@ module Cats.Gui {
  */ 
 export class FileContextMenu extends qx.ui.menu.Menu {
 
-    private gui = require("nw.gui");
+   
     private searchDialog = new SearchDialog();
 
     constructor(private fileNavigator:FileNavigator) {
@@ -29,13 +29,15 @@ export class FileContextMenu extends qx.ui.menu.Menu {
     }
 
     private openInApp() {
+        var gui = getNWGui();
         var osPath = OS.File.join(this.getFullPath(),"", true);
-        if (osPath) this.gui.Shell.openItem(osPath);
+        if (osPath) gui.Shell.openItem(osPath);
     }
     
     private showInFolder() {
+        var gui = getNWGui();
         var osPath = OS.File.join(this.getFullPath(),"", true);
-        if (osPath) this.gui.Shell.showItemInFolder(osPath);
+        if (osPath) gui.Shell.showItemInFolder(osPath);
     }
 
     private search() {
@@ -47,9 +49,9 @@ export class FileContextMenu extends qx.ui.menu.Menu {
     }
 
  
-    private getFullPath() {
-        var fileName = this.getSelectedItem().getFullPath();
-        return fileName;
+    private getFullPath():string {
+        var item = this.getSelectedItem();
+        if (item) return item.getFullPath();
     }
 
 

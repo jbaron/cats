@@ -24,7 +24,7 @@ module Cats.Gui {
         autoSelect = false;
 
         constructor(public id: string, widget: qx.ui.core.LayoutItem, tooltipText?: string) {
-            super(super.tr(id), IDE.icons.tab[id]);
+            super(translate(id), IDE.icons.tab[id]);
             this.setLayout(new qx.ui.layout.Canvas());
 
             if (tooltipText) {
@@ -78,7 +78,7 @@ module Cats.Gui {
             var menu = new qx.ui.menu.Menu();
             var directions = ["top", "left", "right", "bottom"];
             directions.forEach((dir) => {
-                var item = new qx.ui.menu.Button(this.tr(dir));
+                var item = new qx.ui.menu.Button(translate(dir));
                 item.addListener("execute", () => { this.setBarPosition(dir) });
                 menu.add(item);
             });

@@ -37,11 +37,11 @@ module Cats.Gui.Editor {
     
     
     export function getCompleters(editor:SourceEditor, memberCompletionOnly:boolean) {
-            if (memberCompletionOnly && editor.isTypeScript()) {
+            if (memberCompletionOnly && editor.hasProject()) {
                 return [new TSCompleter(editor)]
             } 
             
-            if (editor.isTypeScript()) {
+            if (editor.hasProject()) {
                 return  [new TSCompleter(editor ), snippetCompleter];
             }
             
@@ -61,7 +61,7 @@ module Cats.Gui.Editor {
             var fileName = this.editor.filePath;
             if (! fileName) cb(null,[]);
             
-            IDE.project.iSense.getCompletions(fileName, pos, (err:any, completes: ts.CompletionEntry[]) => {
+            this.editor.project.iSense.getCompletions(fileName, pos, (err:any, completes: ts.CompletionEntry[]) => {
                     var result:Array<Cats.CompletionEntry> = [];
                     if (! completes) return result;
                     completes.forEach((entry) => {

@@ -13,10 +13,10 @@
 //
 
 module Cats.Gui {
-    
+ 
     /**
      * Basic Qooxdoo-powered replacement for native `prompt` usage in
-     * CATS.
+     * CATS. Main difference is that this is an asynchronous prompt.
      */
     export class PromptDialog extends qx.ui.window.Window {
         onSuccess: (value: string) => void;
@@ -51,7 +51,7 @@ module Cats.Gui {
             });
 
             // Success command
-            var successCommand = new qx.ui.core.Command("Enter");
+            var successCommand = new qx.ui.command.Command("Enter");
             successCommand.addListener("execute", () => {
                 if (form.validate()) {
                     if (this.onSuccess) {
@@ -62,7 +62,7 @@ module Cats.Gui {
             });
 
             // Cancel command
-            var cancelCommand = new qx.ui.core.Command("Escape");
+            var cancelCommand = new qx.ui.command.Command("Escape");
             cancelCommand.addListener("execute", () => {
                 this.close();
             });

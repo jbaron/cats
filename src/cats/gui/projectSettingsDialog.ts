@@ -29,14 +29,14 @@ module Cats.Gui {
         private tslintSettings:TSLintSettings;
 
         constructor(private project: Cats.Project) {
-            super(super.tr("project_settings"));
+            super(translate("project_settings"));
             this.loadValues();
         }
 
         private loadValues() {
             var config = this.project.config;
             this.projectSettings.setData(config);
-            this.compilerSettings.setData(config.compiler);
+            this.compilerSettings.setData(config.compilerOptions);
             this.codeFormatSettings.setData(config.codeFormat);
             this.tslintSettings.setData(config.tslint);
             this.customBuild.setData(config.customBuild);
@@ -53,7 +53,7 @@ module Cats.Gui {
             config.customRun = this.customRun.getData();
             config.documentation = this.documentationSettings.getData();
             config.tslint = this.tslintSettings.getData();
-            IDE.project.updateConfig(config);
+            this.project.updateConfig(config);
         }
 
         protected addTabs() {
@@ -93,14 +93,30 @@ module Cats.Gui {
         private moduleGenTarget = [
             { label: "none", model: ts.ModuleKind.None },
             { label: "commonjs", model: ts.ModuleKind.CommonJS },
-            { label: "amd", model: ts.ModuleKind.AMD }
+            { label: "amd", model: ts.ModuleKind.AMD },
+            { label: "umd", model: ts.ModuleKind.UMD },
+            { label: "system", model: ts.ModuleKind.System },
+            { label: "es2015", model: ts.ModuleKind.ES2015 }
         ];
 
         private jsTarget = [
             { label: "es3", model: ts.ScriptTarget.ES3 },
             { label: "es5", model: ts.ScriptTarget.ES5 },
-            { label: "es6", model: ts.ScriptTarget.ES6 }
+            { label: "es2015", model: ts.ScriptTarget.ES2015},
+            { label: "latest", model: ts.ScriptTarget.Latest }
         ];
+        
+        private newLineKind = [
+            { label: "OSX/Linux", model: ts.NewLineKind.LineFeed },
+            { label: "Windows", model: ts.NewLineKind.CarriageReturnLineFeed },
+        ];
+        
+        private jsxEmit = [
+            { label: "None", model: ts.JsxEmit.None },
+            { label: "Preserve (jsx)", model: ts.JsxEmit.Preserve },
+            { label: "Generate React code (js)", model:ts.JsxEmit.React }  
+        ];   
+    
 
         constructor() {
             super("Compiler");
@@ -112,13 +128,22 @@ module Cats.Gui {
             this.addCheckBox("noLib");
             this.addCheckBox("removeComments");
             this.addCheckBox("noImplicitAny");
+            this.addCheckBox("noEmitHelpers");
             this.addCheckBox("declaration");
             this.addCheckBox("sourceMap");
             this.addCheckBox("propagateEnumConstants");
             this.addCheckBox("allowAutomaticSemicolonInsertion");
+            this.addCheckBox("allowSyntheticDefaultImports");
+            this.addCheckBox("experimentalDecorators");
+            this.addCheckBox("emitDecoratorMetadata");
+            this.addCheckBox("allowUnusedLabels");
+            this.addCheckBox("allowUnreachableCode");
             this.addSelectBox("target", this.jsTarget);
             this.addSelectBox("module", this.moduleGenTarget);
+            this.addSelectBox("newLine", this.newLineKind);
+            this.addSelectBox("jsx", this.jsxEmit);
             this.addTextField("outDir");
+            this.addTextField("rootDir");
             this.addTextField("out");
         }
     }

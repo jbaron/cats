@@ -31,6 +31,13 @@ module Cats.Gui.Editor {
     }
     
 
+    interface EntryData {
+        getCaption():string;
+        meta: any;
+        snippet: any;
+        getValue() : any;
+    }
+
     /** 
      * This class takes care of the autocomplete popup and deals with 
      * the key events and filtering of the results while you are typing
@@ -38,7 +45,7 @@ module Cats.Gui.Editor {
     export class AutoCompletePopup extends qx.ui.popup.Popup {
 
         private listModel: any;
-        private handler;
+        private handler : ace.HashHandler;
         private changeListener: Function;
         private list: qx.ui.list.List;
         private filtered: any[];
@@ -48,6 +55,9 @@ module Cats.Gui.Editor {
         private sourceEditor: SourceEditor;
         private editor: ace.Editor;
 
+        /**
+         * Create the new Autocomplete popup window
+         */ 
         constructor() {
             super(new qx.ui.layout.Flow());
             // this.setDecorator(null);
@@ -55,6 +65,7 @@ module Cats.Gui.Editor {
             this.setMargin(0, 0, 0, 0);
             this.setWidth(300);
             this.setHeight(200);
+            // this.setBackgroundColor("transparent");
             this.createList();
             this.initHandler();
             this.changeListener = (ev:Event) => this.onChange(ev);
@@ -77,7 +88,7 @@ module Cats.Gui.Editor {
                 labelPath: "caption",
                 iconPath: "meta",
                 iconOptions: {
-                    converter: (data) => {
+                    converter: (data:string) => {
                         var icon = IDE.icons.kind[data] || IDE.icons.kind["default"];
                         return icon;
                     }
@@ -85,6 +96,7 @@ module Cats.Gui.Editor {
             });
 
             list.setDecorator(null);
+            list.setBackgroundColor("transparent");
             this.add(list);
             this.list = list;
             this.list.addListener("click" , this.insertSelectedItem.bind(this));
@@ -137,22 +149,23 @@ module Cats.Gui.Editor {
             var counter = 0;
 
             this.filtered = [];
-            var delegate = {};
-            delegate["filter"] = (data) => {
-                var value = data.getCaption().toLowerCase();
-                var result = matchFunction(text, value); 
-                if (result) this.filtered.push(data);
-                if (data === lastItem) {
-                    // IDE.console.log("filtered items: " + this.filtered.length);
-                    // @TODO check for selected
-                    var selection = this.list.getSelection().getItem(0);
-                    if (!(selection && (this.filtered.indexOf(selection) > -1))) {
-                        this.cursorPos = 0;
-                        this.moveCursor(0);
+            var delegate = {
+                filter : (data:EntryData) => {
+                    var value = data.getCaption().toLowerCase();
+                    var result = matchFunction(text, value); 
+                    if (result) this.filtered.push(data);
+                    if (data === lastItem) {
+                        // IDE.console.log("filtered items: " + this.filtered.length);
+                        // @TODO check for selected
+                        var selection = this.list.getSelection().getItem(0);
+                        if (!(selection && (this.filtered.indexOf(selection) > -1))) {
+                            this.cursorPos = 0;
+                            this.moveCursor(0);
+                        }
                     }
+                    return result;
                 }
-                return result;
-            };
+            }
             this.list.setDelegate(delegate);
 
         }
@@ -188,8 +201,8 @@ module Cats.Gui.Editor {
         }
 
         /**
-         * Setup the different keybindings that would go to the 
-         * popup window and not the editor
+         * Setup the the keybindings so when typed the key events go to the 
+         * popup window and not the editor.
          */
         private initHandler() {
             this.handler = new HashHandler();
@@ -204,14 +217,14 @@ module Cats.Gui.Editor {
         }
 
    
-        private isExecutable(kind) {
+        private isExecutable(kind:string) {
             if (kind === "method" || kind === "function" || kind === "constructor") return true;
             return false;
         }
 
 
         /**
-         * Show the popup and make sure the keybinding is in place
+         * Show the popup and make sure the keybindings are in place.
          * 
          */
         private showPopup(completions: CompletionEntry[]) {
@@ -261,7 +274,7 @@ module Cats.Gui.Editor {
         }
 
         /**
-         * Hide the popup and remove all keybindings
+         * Hide the popup and remove all the keybindings
          */
         private hidePopup() {
             this.editor.keyBinding.removeKeyboardHandler(this.handler);
@@ -295,12 +308,13 @@ module Cats.Gui.Editor {
             this.updateFilter();
         }
 
+
         /**
          * Check wether the typed character is reason to stop
-         * the auto-complete task
+         * the code completion
          */
         private onChange(ev:any) {
-            var key: string = ev.data.text;
+            var key: string = ev.lines.join("");
 
             if ((key == null) || (!AutoCompletePopup.isJsIdentifierPart(key.charCodeAt(0)))) {
                 this.hidePopup();
@@ -312,13 +326,10 @@ module Cats.Gui.Editor {
         }
 
 
- 
-        
-
         /**
-         * The method called form the editor to start the code completion process. 
+         * This method is called from the editor to start the code completion process. 
          */ 
-        complete(memberCompletionOnly:boolean, sourceEditor, editor) {
+        complete(memberCompletionOnly:boolean, sourceEditor:SourceEditor, editor:ace.Editor) {
             this.editor = editor;
             this.sourceEditor = sourceEditor;
             var session = editor.getSession();
@@ -327,14 +338,14 @@ module Cats.Gui.Editor {
 
             var line = session.getLine(pos.row);
             var prefix = retrievePrecedingIdentifier(line, pos.column);
-
+ 
             // this.base = session.doc.createAnchor(pos.row, pos.column - prefix.length);
 
-            var matches = [];
+            var matches:CompletionEntry[] = [];
             var completers = getCompleters(sourceEditor, memberCompletionOnly);
             var total = completers.length;
             completers.forEach((completer, i) => {
-                completer.getCompletions(editor, session, pos, prefix, (err, results) => {
+                completer.getCompletions(editor, session, pos, prefix, (err:any, results:CompletionEntry[]) => {
                     total--;
                     if (!err) matches = matches.concat(results);
                     if (total === 0) {

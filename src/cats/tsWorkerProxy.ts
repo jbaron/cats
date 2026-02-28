@@ -27,12 +27,15 @@ module Cats {
         private messageId = 0;
         private registry:Map<CB<any>> = {};
 
-        constructor(private project: Project) {
+        constructor() {
             // Create a new webworker
             this.worker = new Worker("lib/tsworker.js");
             this.initWorker();
         }
 
+        /**
+         * Stop the worker and release any resources maintained. 
+         */
         stop() {
             this.worker.terminate();
         }
@@ -44,6 +47,7 @@ module Cats {
             this.perform("getErrors", fileName, cb);
         }
 
+ 
         getNavigateToItems(search: string, cb: CB<NavigateToItem[]>) {
             this.perform("getNavigateToItems", search, cb);
         }
@@ -62,6 +66,11 @@ module Cats {
 
         getDefinitionAtPosition(sessionName: string, cursor: Cats.Position, cb: (err: any, data: FileRange) => void) {
             this.perform("getDefinitionAtPosition", sessionName, cursor, cb);
+        }
+
+
+       getTypeDefinitionAtPosition(sessionName: string, cursor: Cats.Position, cb: (err: any, data: FileRange) => void) {
+            this.perform("getTypeDefinitionAtPosition", sessionName, cursor, cb);
         }
 
 
@@ -89,14 +98,17 @@ module Cats {
             this.perform("getRenameInfo", name, docPos, cb);
         }
 
+        insertDocComments(fileName: string, position: Cats.Position, cb: (err: any, data:ts.TextInsertion) => void) {
+            this.perform("insertDocComments", fileName, position, cb);
+        }
 
         getObjectModel(cb:CB<any>) {
             this.perform("getObjectModel", cb);
         }
 
-        setSettings(compilerSettings:ts.CompilerOptions, editorSettings:ts.FormatCodeOptions) {
-            this.perform("setSettings", compilerSettings, editorSettings, null);
-        }
+        setConfigFile(path:string,content:string) {
+            this.perform("setConfigFile", path,content, null); 
+         }
 
         addScript(fileName: string, content: string) {
             this.perform("addScript", fileName, content, null);
@@ -144,8 +156,6 @@ module Cats {
             // Setup the message handler
             this.worker.onmessage = (e) => {
                 var msg = e.data;
-                // console.log("Received message " + JSON.stringify(msg) + " from worker");
-                // console.log("Received message reply " + msg.id + " from worker.");
                 if (msg.error) {
                     console.error("Got error back !!! ");
                     console.error(msg.error.stack);

@@ -46,19 +46,26 @@ declare module Cats {
     }
 
  
+    interface EditorConfig {
+            rightMargin?: number;
+            // fontSize?: number;
+            completionMode?:string;
+            // IndentSize: number;
+            // TabSize: number;
+            // NewLineCharacter: string;
+            // ConvertTabsToSpaces: boolean;
+    }
+ 
+ 
     /**
      * Interface for the possible IDE specific settings
      */
     interface IDEConfiguration {
         version: string;
-        theme?: string;
-        editor?: {
-            rightMargin?: number;
-            fontSize?: number;
-            theme?: string;
-            completionMode?:string;
-        };
-        rememberOpenFile?: boolean;
+        theme: string;
+        fontSize: number;
+        editor?: EditorConfig;
+        rememberOpenFiles?: boolean;
         locale?:string;
         projects: string[];
         sessions: {
@@ -89,7 +96,7 @@ declare module Cats {
         buildOnSave?: boolean;
         customBuild?:RunExternal;
         customRun?:RunExternal;
-        compiler: ts.CompilerOptions;
+        compiler: any;
         codeFormat: ts.FormatCodeOptions;
         tslint : {
             useLint?: boolean; // false by default
@@ -104,6 +111,14 @@ declare module Cats {
        
     }
 
+
+    interface Theme {
+        background: string;
+        ace : string;
+        name: string;
+        color: string;
+    }
+
     interface Position {
         row: number;
         column: number;
@@ -115,7 +130,7 @@ declare module Cats {
     }
 
     interface CompileResults {
-        source: { fileName: string; content: string; }[];
+        outputFiles: ts.OutputFile[];
         errors: FileRange[];
     }
 

@@ -14,6 +14,7 @@
 //
 
 
+
 /**
  * Main module of the CATS IDE
  */
@@ -21,6 +22,35 @@ module Cats {
 
     // Variable used everywhere for accessing the singleton IDE instance
     export var IDE: Cats.Ide;
+    // const child_process = require('child_process');
+    
+    export function getNWWindow() {
+        if (typeof nw != "undefined") {
+            return nw["Window"].get();
+        } else {
+            var GUI = require('nw.gui');
+            return GUI.Window.get();
+        }
+    }
+    
+    export function getNWGui() : any {
+        if (typeof nw != "undefined") {
+            return nw;
+        } else {
+            global.nw = require( 'nw.gui' );
+            return nw;
+        }
+    }
+
+    var localeManager = qx.locale.Manager.getInstance();
+
+    export function translate2(msg:string, options=[]) {
+        return localeManager.translate(msg,[])
+    }
+
+    export function translate(msg:string) {
+        return qx.locale.Manager.tr(msg);
+    }
 
     /**
      * Get a parameter from the URL. This is used when a new project is opened from within
@@ -34,55 +64,69 @@ module Cats {
         }
     }
 
-    /**
-     * Determine which project(s) we should load during 
-     * startup. This is used when the IDE is started from the command line
-     */
-    function determineProject(args:string[]): string {
-        var projectName = getParameterByName("project");
-        if (!projectName) {
-            var i = args.indexOf("--project");
-            if (i > -1) projectName = args[i + 1];
-        }
-        return projectName;
+ 
+    function startWebServer() {
+        var http = require("http");
+        var PORT = 8080;
+        var server = http.createServer((req,res)=>{
+                 var content = OS.File.readTextFile(IDE.rootDir + "/public/manifest.json");
+                 res.end(content);
+        });
+        server.listen(PORT, function(){
+             //Callback triggered when server is successfully listening. Hurray!
+            console.log("Server listening on: http://localhost:%s", PORT);
+        });
     }
-
-
-
+ 
+ 
     /**
      * This is the functions that kicks it all of. When Qooxdoo is loaded it will 
      * call this main to start the application. 
      */
     function main(app: qx.application.Standalone) {
-        var GUI = require('nw.gui');
+        
+        const GUI = getNWGui(); // require('nw.gui');
 
-        var args:string[] = GUI.App.argv;
+        const args:string[] = GUI.App.argv;
         if (args.indexOf("--debug") === -1) {
             console.info = function() { /* NOP */};
             console.debug = function() { /* NOP */};
         } 
         
         IDE = new Cats.Ide();
+        IDE.init(<qx.ui.container.Composite>app.getRoot());
+        
+        
         if (args.indexOf("--debug") > -1) {
             IDE.debug = true;
         }
 
-       IDE.init(<qx.ui.container.Composite>app.getRoot());
-
-        var prjDir = determineProject(args);
-        if (prjDir) {
-            IDE.addProject(prjDir);
-        } else {
-            if (args.indexOf("--restore") > -1) IDE.restorePreviousProjects();
+        if (args.indexOf("--project") > -1) {
+           let dir = args[args.indexOf("--project") + 1];
+           IDE.setDirectory(dir);
         }
+
+        if (args.indexOf("--restore") > -1) {
+            IDE.restorePreviousProjects();
+        }
+        
+        startWebServer();
     }
+
 
     // Catch unhandled expections so they don't stop the process.
     process.on("uncaughtException", function(err: any) {
-        console.error("Uncaught exception occured: " + err);
-        console.error(err.stack);
-        if (IDE.console) IDE.console.error(err.stack);
+            console.error("Uncaught exception occured: " + err);
+            console.error(err.stack);
+            if (IDE && IDE.console) IDE.console.error(err.stack);
     });
+
+   /*    
+   var worker_process = child_process.fork("tsserver.js", []);	
+   worker_process.on('close', function (code) {
+      console.log('child process exited with code ' + code);
+   });
+    */
 
     // Register the main method that once Qooxdoo is loaded is called
     qx.registry.registerMainMethod(main);

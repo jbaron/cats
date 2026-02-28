@@ -55,7 +55,7 @@ module Cats.Gui.Editor {
         private widget: qx.ui.core.Widget;
         private contextMenu: SourceEditorContextMenu;
 
-        constructor( fileName?: string ) {
+        constructor( fileName?: string) {
             super( fileName );
             this.createEditSession();
             this.createWidget();
@@ -64,6 +64,9 @@ module Cats.Gui.Editor {
             IDE.on( "config", () => { this.configureEditor(); });
         }
 
+        get project() {
+            return IDE.getProject(this.filePath);
+        }
 
         private createWidget() {
             var widget = new qx.ui.core.Widget();
@@ -95,13 +98,13 @@ module Cats.Gui.Editor {
         }
 
         private createEditSession() {
-            this.editSession = new EditSession( this );
+            this.editSession = new EditSession( this);
 
             this.editSession.on( "changeAnnotation", () => {
                 this.emit( "errors", this.editSession.getMaxAnnotationLevel() );
             });
 
-            this.editSession.on( "changeOverwrite", ( a ) => {
+            this.editSession.on( "changeOverwrite", () => {
                 this.informWorld();
             });
 
@@ -111,8 +114,11 @@ module Cats.Gui.Editor {
 
         }
 
+        getAceEditor() {
+            return this.aceEditor;
+        }
 
-        private setHasUnsavedChanges( value: boolean ) {
+        setHasUnsavedChanges( value: boolean ) {
             if ( value === this.unsavedChanges ) return;
             this.unsavedChanges = value;
             this.emit( "changed", value );
@@ -147,9 +153,15 @@ module Cats.Gui.Editor {
             }
         }
 
-        isTypeScript() {
-            return this.editSession.isTypeScript() && this.project.hasScriptFile(this.filePath);
+        /**
+         * Is the file being part of a tsconfig project. This is used to determine 
+         * wehter all type of features specific to TS will be enabled.
+         * 
+         */ 
+        hasProject() {
+            return this.project != null;
         }
+
 
         getType() {
             return registryEntryName;
@@ -173,14 +185,13 @@ module Cats.Gui.Editor {
 
         private formatText() {
             var r:Range = null;
-            if ( this.isTypeScript() ) {
+            if ( this.hasProject() ) {
                 var range: ace.Range = this.aceEditor.selection.getRange();
                 if ( !range.isEmpty() ) r = { start: range.start, end: range.end };
-                IDE.project.iSense.getFormattedTextForRange( this.filePath, r, ( err: Error, result: string ) => {
+                this.project.iSense.getFormattedTextForRange( this.filePath, r, ( err: Error, result: string ) => {
                     if ( !err ) this.setContent( result );
                 });
             }
-
         }
 
 
@@ -207,13 +218,11 @@ module Cats.Gui.Editor {
          *
          */
         private configureEditor() {
-            var config = IDE.config.editor;
+            var config = IDE.config;
             if ( config.fontSize ) this.aceEditor.setFontSize( config.fontSize + "px" );
-            if ( config.rightMargin ) this.aceEditor.setPrintMarginColumn( config.rightMargin );
-            if ( config.theme ) this.aceEditor.setTheme( "ace/theme/" + config.theme );
+            if ( config.editor && config.editor.rightMargin ) this.aceEditor.setPrintMarginColumn( config.editor.rightMargin );
+            if ( IDE.theme ) this.aceEditor.setTheme( IDE.theme.ace );
         }
-
-
 
         /**
          * Inform the world about current status of the editor
@@ -347,14 +356,14 @@ module Cats.Gui.Editor {
          */
         showAutoComplete( memberCompletionOnly = false ) {
             // Any pending changes that are not yet send to the worker?
-            if (this.isTypeScript()) {
+            if (this.hasProject()) {
                 this.project.iSense.updateScript( this.filePath, this.getContent() );
             }
             autoCompletePopup.complete( memberCompletionOnly, this, this.aceEditor );
         }
 
         private liveAutoComplete( e ) {
-            if (! this.isTypeScript()) return;
+            if (! this.hasProject()) return;
             var text = e.args || "";
             if ( ( e.command.name === "insertstring" ) && ( text === "." ) ) {
                 this.showAutoComplete( true );
@@ -368,6 +377,7 @@ module Cats.Gui.Editor {
          */
         private createAceEditor( rootElement: HTMLElement ): ace.Editor {
             var editor: ace.Editor = ace.edit( rootElement );
+            editor["$blockScrolling"] = Infinity; // surpresses ACE warning
             editor.setSession( this.editSession );
             editor.on( "changeSelection", () => {
                 this.clearSelectedTextMarker();

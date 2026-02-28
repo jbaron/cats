@@ -15,16 +15,24 @@
 
 importScripts("../resource/typescriptServices.js");
 
+/**
+ * TSWorker contains all the code that runs in the webworker and not the main UI thread.
+ * All the compiling and code completion is done in a webworker so the UI in not blocked.
+ */ 
 module Cats.TSWorker {
+
+    function respond(message:any) {
+        postMessage(message,<any>[]);
+    }
 
     /**
      * Simple function to stub console.log functionality since this is 
-     * not available in a worker.
+     * not available in a webworker.
      */
     export var console = {
-        log: function(str: string) { postMessage({ method: "console", params: ["log",str] }); },
-        error: function(str: string) { postMessage({ method: "console", params: ["error",str] }); },
-        info: function(str: string) { postMessage({ method: "console", params: ["info",str] }); }
+        log: function(str: string) { respond({ method: "console", params: ["log",str] }); },
+        error: function(str: string) { respond({ method: "console", params: ["error",str] }); },
+        info: function(str: string) { respond({ method: "console", params: ["info",str] }); }
     };
     
     /**
@@ -39,10 +47,6 @@ module Cats.TSWorker {
         return 0;
     }
 
-
-    export function spanEnd(span:ts.TextSpan) {
-        return span.start + span.length;
-    }
 
     class ISense {
 
@@ -67,15 +71,18 @@ module Cats.TSWorker {
         private getDefaultFormatOptions(): ts.FormatCodeOptions {
             return { 
                 IndentSize: 4,
+                IndentStyle: ts.IndentStyle.Smart,
                 TabSize: 4,
                 NewLineCharacter: "\n",
                 ConvertTabsToSpaces: true,
                 InsertSpaceAfterCommaDelimiter: true,
                 InsertSpaceAfterSemicolonInForStatements: true,
                 InsertSpaceBeforeAndAfterBinaryOperators: true,
+                InsertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: true,
                 InsertSpaceAfterKeywordsInControlFlowStatements: true,
                 InsertSpaceAfterFunctionKeywordForAnonymousFunctions: true,
                 InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: false,
+                InsertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: false,
                 PlaceOpenBraceOnNewLineForFunctions: false,
                 PlaceOpenBraceOnNewLineForControlBlocks: false
             };
@@ -96,6 +103,23 @@ module Cats.TSWorker {
         }
 
 
+       getTypeDefinitionAtPosition(fileName: string, pos: Position): Cats.FileRange {
+            var script = this.lsHost.getScript(fileName);
+            var chars = script.getPositionFromCursor(pos);
+            var infos = this.ls.getTypeDefinitionAtPosition(fileName, chars);
+            if (infos) {
+                var info = infos[0];
+                var script2 = this.lsHost.getScript(info.fileName);
+                // TODO handle better
+                return {
+                    fileName: info.fileName,
+                    range: script2.getRangeFromSpan(info.textSpan)
+                };
+            } else {
+                return null;
+            }
+        }
+
 
         getDefinitionAtPosition(fileName: string, pos: Position): Cats.FileRange {
             var script = this.lsHost.getScript(fileName);
@@ -103,48 +127,18 @@ module Cats.TSWorker {
             var infos = this.ls.getDefinitionAtPosition(fileName, chars);
             if (infos) {
                 var info = infos[0];
-                var infoScript = this.lsHost.getScript(info.fileName);
+                var script2 = this.lsHost.getScript(info.fileName);
                 // TODO handle better
                 return {
                     fileName: info.fileName,
-                    range: infoScript.getRangeFromSpan(info.textSpan)
+                    range: script2.getRangeFromSpan(info.textSpan)
                 };
             } else {
                 return null;
             }
         }
 
-        /**
-         * Create a Class Model for project that can be used for example in the 
-         * UML viewer.
-         */ 
-        public getObjectModel() {
-            //Force all symbols to be created.
-            this.getAllDiagnostics();
-  
-           var mc = new ModelCreator();
-            this.lsHost.getScriptFileNames().forEach((scriptName) => {
-                if (scriptName.indexOf("lib.d.ts") > 0) return;
-                var script = this.lsHost.getScript(scriptName);
-                // var doc:ts.SourceFile = ts.createSourceFile(scriptName, script.getContent(),
-                //        this.lsHost.getCompilationSettings().target, script.getVersion());
-                /*
-                var doc = this.documentRegistry.acquireDocument(
-                    scriptName, 
-                    this.lsHost.getCompilationSettings(), 
-                    script.getScriptSnapshot(),
-                    script.getVersion(), 
-                    script.isOpen()
-                );
-                */
-                var doc = script.getSourceFile();
-    
-                mc.parse(doc);
-                
-                this.documentRegistry.releaseDocument(scriptName, this.lsHost.getCompilationSettings());
-            });
-            return mc.getModel();
-        }
+ 
 
   
         /**
@@ -165,162 +159,159 @@ module Cats.TSWorker {
         /**
          * Convert the errors from a TypeScript format into Cats format 
          */
-        private convertErrors(errors: ts.Diagnostic[], severity= Severity.Error): Cats.FileRange[] {
+        private convertError(error: ts.Diagnostic): Cats.FileRange {
 
-            if (!(errors && errors.length)) return [];
-        
-            return errors.map((error) => {
-                var script = this.lsHost.getScript(error.file.fileName);  
-                return {
-                    range: script.getRange(error.start, error.length),
-                    severity: severity,
-                    message: <string>error.messageText,
-                    fileName: error.file.fileName
+                var message =  ts.flattenDiagnosticMessageText(error.messageText, "\n");
+                
+                var severity:Severity;
+                switch (error.category) {
+                    case ts.DiagnosticCategory.Warning:
+                        severity = Severity.Warning;
+                        return;
+                        
+                    case ts.DiagnosticCategory.Message:
+                        severity = Severity.Info;
+                        return;
+                    
+                    case ts.DiagnosticCategory.Error:
+                    default:
+                        severity = Severity.Error;    
+                            
+                }
+                
+                var result:Cats.FileRange = {
+                    message: message + "",
+                    severity: severity
                 };
-            });
-            
+                
+                if (error.file) {
+                    var script = this.lsHost.getScript(error.file.fileName);
+                    result.range = script.getRange(error.start, error.length);
+                    result.fileName= error.file.fileName
+                }
+                
+                return result;
         }
 
+
+
+        
         /**
-         * Get the errors for either one script or for 
-         * all the scripts
+         * Get the diagnostic messages for one source file
          * 
-         * @param fileName name of the script. If none provided the errors
-         * for all scripts will be returned.
+         * @param fileName name of the script. 
          */
         getErrors(fileName: string): FileRange[] {
-            var errors: Cats.FileRange[] = [];
-            var fileErrors = this.ls.getSyntacticDiagnostics(fileName);
+            var script = this.lsHost.getScript(fileName);
+            var errors = script.getErrors();
 
-            var newErrors = this.convertErrors(fileErrors, Severity.Error);
-            errors = errors.concat(newErrors);
-
-            fileErrors = this.ls.getSemanticDiagnostics(fileName);
-            newErrors = this.convertErrors(fileErrors, Severity.Warning);
-
-            errors = errors.concat(newErrors);
-
-            return errors;
+            var result = errors.map((error) => {return this.convertError(error)});
+            return result;  
         }
 
         /**
-         * Get the diagnostic messages for all the files that 
-         * are registered in this worker
+         * Get the diagnostic messages for all the files and compiler.
          */
         getAllDiagnostics() {
             
             var errors: FileRange[] = [];
 
+            // Let's first get the errors related to the source files
             this.lsHost.getScriptFileNames().forEach((fileName) => {
                 errors = errors.concat(this.getErrors(fileName));
             });
 
+            // And then let's see if one or more compiler setttings are wrong
             var compilerSettingsErrors = this.ls.getCompilerOptionsDiagnostics();
-            var newErrors = this.convertErrors(compilerSettingsErrors, Severity.Error);
+            var newErrors = compilerSettingsErrors.map(this.convertError);
 
             errors = errors.concat(newErrors);
 
             return errors;
         }
 
-        private convertTodoNavigate(fileName:string, todos:ts.TodoComment[]):FileRange[] {
-            var script = this.lsHost.getScript(fileName);
-            return todos.map((todo) => {
-                var entry:FileRange = {
-                    range: script.getRange(todo.position, todo.descriptor.text.length),
-                    fileName: fileName,
-                    message: todo.message
-                };
-                return entry;
-            });
-        }
+    
 
         /**
          * Get the various annotations in the comments, like TODO items.
          */ 
         getTodoItems() {
-            var descriptors = [
-                {text: "@TODO",  priority: 1},
-                {text: "@BUG",  priority: 1},
-                {text: "@FIXME",  priority: 1},
-                {text: "TODO",  priority: 1},
-            ];
-            
             var result:FileRange[] = [];
-            this.lsHost.getScriptFileNames().forEach((fileName)=> {
-                var comments = this.ls.getTodoComments(fileName, descriptors);
-                var entries = this.convertTodoNavigate(fileName, comments);
+           
+            this.lsHost.getScripts().forEach((script)=> {
+                var entries = script.getTodoItems();
                 result = result.concat(entries);
             });
             return result;
         }
 
 
+        insertDocComments(fileName: string, position: Cats.Position) {
+            var script = this.lsHost.getScript(fileName);
+            var t = script.insertDoc(position);
+            return t;
+        }
+
         /**
          * Compile the loaded TS files and return the 
-         * compiles JS sources and errors (if any).
+         * compiles JS sources, mapfiles and errors (if any).
          */
         compile(): Cats.CompileResults {
             var scripts = this.lsHost.getScriptFileNames();
 
-            var result: { fileName: string; content: string; }[] = [];
+            var outputFiles: ts.OutputFile[] = [];
             var errors: FileRange[] = [];
+            var alreadyProcessed :{ [fileName: string]: boolean; } = {}
 
-            for (var x=0;x<scripts.length;x++) {
+            
+            this.lsHost.getScripts().forEach((script) => {
                 try {
-                    var fileName = scripts[x];
-                    var emitOutput = this.ls.getEmitOutput(fileName);
+                    var emits = script.emitOutput();
 
-                    emitOutput.outputFiles.forEach((file) => {
-                        result.push({
-                            fileName: file.name,
-                            content: file.text
-                        });
+                    emits.forEach((file) => {
+                        if (! alreadyProcessed[file.name]) outputFiles.push(file);
+                        alreadyProcessed[file.name] = true;
                     });
 
                     // No need to request other files if there is only one output file
-                    if (result.length > 0 && this.lsHost.getCompilationSettings().out) {
-                        break;
-                    }
-                } catch (err) {/*ignore */}
+                    // if (outputFiles.length > 0 && this.lsHost.getCompilationSettings().out) {
+                    //    break;
+                    // }
+                } catch (err) {/* ignore */}
 
 
-            };
+            });
 
             errors = this.getAllDiagnostics();
             console.info("Errors found: " + errors.length);
             return {
-                source: result,
+                outputFiles: outputFiles,
                 errors: errors
             };
         }
 
-
         /**
-         * Configure the compilation and format settings. 
-         * Tthis method uses a simple mixin to overwrite only the values
-         * that are set, leave the other ones at the default value.
-         */
-        setSettings(compilerOptions:ts.CompilerOptions, editorOptions:ts.FormatCodeOptions) {
-            this.lsHost.setCompilationSettings(compilerOptions);
-
+         * Use the TSConfig file to set the compiler options
+         */ 
+        setConfigFile(path:string,content) {
+            var result = ts.readConfigFile(path,(path) => {return content});
+            var options = result.config.compilerOptions;
+            
+            this.lsHost.setCompilationSettings(options);
             
             this.formatOptions = this.getDefaultFormatOptions();
-            // Do a quick mixin
+            let editorOptions = options.formatCodeOptions || {};
             for (var i in editorOptions) {
                 this.formatOptions[i] = editorOptions[i];
             }
-            
         }
 
-
+  
        private isExecutable(kind:string) {
             if (kind === "method" || kind === "function" || kind === "constructor") return true;
             return false;
         }
 
-
-    
 
         /**
          * Convert the data for outline usage.
@@ -352,85 +343,7 @@ module Cats.TSWorker {
         }
 
 
-        /** 
-         * Normalize an array of edits by removing overlapping entries and 
-         * sorting entries on the minChar position. 
-         * 
-         * Copied from TypeScript shim 
-         */
-        private normalizeEdits(edits: ts.TextChange[]): ts.TextChange[] {
-            var result: ts.TextChange[] = [];
-
-            function mapEdits(edits: ts.TextChange[]): { edit: ts.TextChange; index: number; }[] {
-                var result: { edit: ts.TextChange; index: number; }[] = [];
-                for (var i = 0; i < edits.length; i++) {
-                    result.push({ edit: edits[i], index: i });
-                }
-                return result;
-            }
-
-            var temp = mapEdits(edits).sort(function(a, b) {
-                var result = a.edit.span.start - b.edit.span.start;
-                if (result === 0)
-                    result = a.index - b.index;
-                return result;
-            });
-
-            var current = 0;
-            var next = 1;
-            while (current < temp.length) {
-                var currentEdit = temp[current].edit;
-
-                // Last edit
-                if (next >= temp.length) {
-                    result.push(currentEdit);
-                    current++;
-                    continue;
-                }
-                var nextEdit = temp[next].edit;
-                var gap = nextEdit.span.start - spanEnd(currentEdit.span);
-
-                // non-overlapping edits
-                if (gap >= 0) {
-                    result.push(currentEdit);
-                    current = next;
-                    next++;
-                    continue;
-                }
-
-                // overlapping edits: for now, we only support ignoring an next edit 
-                // entirely contained in the current edit.
-                if (spanEnd(currentEdit.span) >= spanEnd(nextEdit.span)) {
-                    next++;
-                    continue;
-                }
-                else {
-                    throw new Error("Trying to apply overlapping edits");
-                }
-            }
-
-            return result;
-        }
-
-
-        /**
-         * Apply an array of text edits to a string, and return the resulting string.
-         * 
-         * Copied from TypeScript shim
-         */
-        private applyEdits(content: string, edits: ts.TextChange[]): string {
-            var result = content;
-            edits = this.normalizeEdits(edits);
-
-            for (var i = edits.length - 1; i >= 0; i--) {
-                var edit = edits[i];
-                var prefix = result.substring(0, edit.span.start);
-                var middle = edit.newText;
-                var suffix = result.substring(edit.span.start + edit.span.length);
-                result = prefix + middle + suffix;
-            }
-            return result;
-        }
+ 
 
         public getFormattedTextForRange(fileName: string, range?:Cats.Range): string {
             var start:number, end:number;
@@ -447,7 +360,7 @@ module Cats.TSWorker {
             }
             
             var edits = this.ls.getFormattingEditsForRange(fileName, start, end, this.formatOptions);
-            var result = this.applyEdits(content, edits);
+            var result = applyEdits(content, edits);
             return result;
         }
 
@@ -465,7 +378,8 @@ module Cats.TSWorker {
 
         // updated the content of a script
         public updateScript(fileName: string, content: string) {
-            this.lsHost.updateScript(fileName, content);
+            var script = this.lsHost.getScript(fileName);
+            if (script) script.updateContent(content);
         }
 
 
@@ -475,20 +389,9 @@ module Cats.TSWorker {
          */ 
         public getInfoAtPosition(fileName: string, coord: Cats.Position):TypeInfo {
             var script = this.lsHost.getScript(fileName);
-            var pos = script.getPositionFromCursor(coord);
-            if (!pos) return;
-            var info = this.ls.getQuickInfoAtPosition(fileName, pos);
-            if (! info) return {};
-            
-            var result = {
-                description : ts.displayPartsToString(info.displayParts),
-                docComment : ts.displayPartsToString(info.documentation)
-            };
-            return result;
+            return script.getInfoAtPosition(coord);
         }
 
-
-     
 
         public getNavigateToItems(search: string) {
             var results = this.ls.getNavigateToItems(search);
@@ -504,9 +407,7 @@ module Cats.TSWorker {
 
         public getRenameInfo(fileName:string, cursor: Position) {
             var script = this.lsHost.getScript(fileName);
-            var pos = script.getPositionFromCursor(cursor);
-            var result = this.ls.getRenameInfo(fileName, pos);
-            return result;
+            return script.getRenameInfo(cursor);
         }
 
 
@@ -550,9 +451,6 @@ module Cats.TSWorker {
                  case "getOccurrencesAtPosition":
                         entries = this.ls.getOccurrencesAtPosition(fileName, pos);
                         break;
-                case "getImplementorsAtPosition":
-                        entries = []; // @TODO this.ls.getImplementorsAtPosition(fileName, pos);
-                        break;
             } 
             if (! entries) return result;
             
@@ -573,17 +471,10 @@ module Cats.TSWorker {
          */
         public getCompletions(fileName: string, cursor: Position): ts.CompletionEntry[] {
             var script = this.lsHost.getScript(fileName);
-            
             if (!script) return [];
-            var pos = script.getPositionFromCursor(cursor);
-            var memberMode = false;
-            var type = script.determineMemeberMode(pos);
-
-            // Lets find out what autocompletion there is possible		
-            var completions = this.ls.getCompletionsAtPosition(fileName, type.pos) || <ts.CompletionInfo>{};
-            if (!completions.entries) return []; // @Bug in TS
-            completions.entries.sort(caseInsensitiveSort); // Sort case insensitive
-            return completions.entries;
+            var completions = script.getCompletions(cursor) ;
+            completions.sort(caseInsensitiveSort); // Sort case insensitive
+            return completions;
         }
     }
 
@@ -594,7 +485,7 @@ module Cats.TSWorker {
      * @param value true is busy, false othewise
      */
     function setBusy(value: boolean, methodName:string) {
-        postMessage({ method: "setBusy", params: [value,methodName] });
+        respond({ method: "setBusy", params: [value,methodName] });
     }
 
     /*******************************************************************
@@ -614,7 +505,7 @@ module Cats.TSWorker {
         try {
             var fn:Function = tsh[methodName];
             var result = fn.apply(tsh,params);
-            postMessage({ id: msg.id, result: result });
+            respond({ id: msg.id, result: result });
         } catch (err) {
             var error = {
                 description: err.description,
@@ -622,7 +513,7 @@ module Cats.TSWorker {
                 method: methodName
             };
             console.error("Error during processing message " + methodName);
-            postMessage({ id: msg.id, error: error });
+            respond({ id: msg.id, error: error });
         } finally {
             setBusy(false, methodName);
         }

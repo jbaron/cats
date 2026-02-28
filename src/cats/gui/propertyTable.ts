@@ -24,17 +24,17 @@ module Cats.Gui {
 
         constructor() {
             var tableModel = new qx.ui.table.model.Simple();
-            var headers = [super.tr("tableheader_name"), super.tr("tableheader_value")];
+            var headers = [translate("tableheader_name"), translate("tableheader_value")];
             tableModel.setColumns(headers);
             tableModel.setData([]);
-            this.setStatusBarVisible(false); 
 
             var custom: any = {
                 tableColumnModel: function(obj) {
                     return new qx.ui.table.columnmodel.Resize();
                 }
             };
-            super(tableModel, custom);
+            super(tableModel, custom);      
+            this.setStatusBarVisible(false); 
             this.setDecorator(null);
             this.setPadding(0, 0, 0, 0);
             

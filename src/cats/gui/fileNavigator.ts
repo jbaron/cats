@@ -51,12 +51,77 @@ module Cats.Gui {
             super(null, "label", "children");
             this.setDecorator(null);
             this.setPadding(0, 0, 0, 0);
+            this.setBackgroundColor("transparent");
             var contextMenu = new FileContextMenu(this);
             this.setContextMenu(contextMenu);
+            this.setupDragAndDrop();
         }
 
-        setProject(project: Cats.Project) {
-            this.projectDir = project.projectDir;
+        /**
+         * Enable drag and drop on the FileNavigator
+         * @TODO finalized implementation
+         */ 
+        private setupDragAndDrop2() {
+             this.setDraggable(true);
+             this.setDroppable(true);
+
+             // @TODO Issue because <cntrl> is also right click.            
+             // this.setSelectionMode("multi");
+
+             this.addListener("dragstart", (e:qx.event.type.Drag) => { 
+                IDE.console.log("drag started. Not yet implemented!!!"); 
+                e.addAction("move"); 
+                e.addType("tree-items"); 
+                e.addData("tree-items", this.getSelection());
+            }, this); 
+            
+            this.addListener("drop", (e:qx.event.type.Event) => { 
+                IDE.console.log("Target path:" + e.getRelatedTarget());
+     
+                for(var i = 0; i < this.getSelection().getLength(); i++) { 
+                  IDE.console.log("To be moved:" + this.getSelection().getItem(i));
+                }   
+    
+            }, this);
+        }
+
+
+        private setupDragAndDrop() {
+ 
+             this.setDraggable(true);
+             this.setDroppable(true);
+       
+            this.addListener("dragstart", (e) => {
+                e.addAction("move");
+                e.addType("tree-items"); 
+                e.addData("tree-items", this.getSelection());
+            });
+            
+            this.addListener("drop", (e) =>
+            {
+              // Using the selection sorted by the original index in the list
+              var sel = e.getData("tree-items");
+            
+              console.log("Drag and Drop");
+              console.log(e);
+            
+              // This is the original target hovered
+              var orig = e.getOriginalTarget();
+              console.log(orig);
+    
+              for (var i=0, l=sel.length; i<l; i++)
+              {
+                // Insert before the marker
+                console.log(sel[i]);
+                // Recover selection as it gets lost during child move
+                // this.addToSelection(sel[i]);
+              }
+            });
+        }
+
+
+        setRootDir(dir: string) {
+            this.projectDir = dir;
 
             this.watcher = OS.File.getWatcher();
             this.watcher.on("change", (dir:string) => {
@@ -64,7 +129,7 @@ module Cats.Gui {
                 if (parent) this.readDir(parent);
             });
 
-            var directory = project.projectDir;
+            var directory = dir;
             this.rootTop.fullPath = directory;
             this.rootTop.label = OS.File.PATH.basename(directory);
             var root = qx.data.marshal.Json.createModel(this.rootTop, true);
@@ -135,11 +200,11 @@ module Cats.Gui {
         private setupDelegate() {
             var self = this;
             var delegate = {
-                bindItem: function(controller, item, index:number) {
+                bindItem: function(controller:qx.ui.tree.core.MWidgetController, item:qx.ui.core.Widget, index:number) {
                     controller.bindDefaultProperties(item, index);
 
                     controller.bindProperty("", "open", {
-                        converter: function(value, model, source, target) {
+                        converter: function(value:any, model:any, source:qx.ui.tree.core.AbstractItem, target:qx.ui.tree.core.AbstractItem) {
                             var isOpen = target.isOpen();
                             if (isOpen && !value.getLoaded()) {
                                 value.setLoaded(true);

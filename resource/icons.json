@@ -75,6 +75,8 @@
         
         "ide_history_next": "icon/22/actions/go-next.png",
         "ide_history_prev": "icon/22/actions/go-previous.png",
+        "ide_theme": "icon/22/categories/graphics.png",
+     
         
         "project_open": "icon/22/actions/project-open.png",
         "project_close": "icon/22/actions/project-development-close.png",

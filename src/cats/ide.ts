@@ -15,27 +15,24 @@
 
 module Cats {
 
-    var GUI = require('nw.gui');
+    var glob = require("glob");
 
     /**
-     * This class represents the total IDE. The CATS is started a single isntance will be
-     * created that takes care of rendering all the components and open a project if applicable.
-     * 
+     * This class represents the total IDE. Wehn CATS is started a single instance of this class 
+     * will be created that takes care of rendering all the components and open a project 
+     * if applicable. 
      */ 
     export class Ide  extends qx.event.Emitter{
 
         // List of different themes that are available
-        private themes = {                  
-            cats : cats.theme.Default,
-            gray: cats.theme.Grey,
-            classic: qx.theme.Classic,
-            indigo: qx.theme.Indigo,
-            modern:qx.theme.Modern,
-            simple:qx.theme.Simple
-        };
+        private themes:Array<Theme>;
+        
+        theme:Theme;
+        
+        private recentProjects:Array<string>;
 
-        recentProjects:Array<string>;
-
+        rootDir: string;
+        projects: Project[] = [];
         resultPane: Gui.TabView;
         toolBar: Gui.ToolBar;
         contextPane: Gui.TabView;
@@ -53,11 +50,11 @@ module Cats {
         debug:boolean= false;
 
         catsHomeDir: string;
-        project: Project;
         config:IDEConfiguration;
         private static STORE_KEY = "cats.config";
         private lastEntry = <any>{}; 
         
+
         icons:IconMap;
 
         constructor() {
@@ -68,33 +65,38 @@ module Cats {
             this.recentProjects = Array.isArray(this.config.projects) ?  this.config.projects : [];
             
             this.icons = this.loadIconsMap();
-            this.configure();
+	        this.themes = this.loadThemes();	
             
             window.onpopstate = (data) => {
                 if (data && data.state) this.goto(data.state);
             }
             
             this.loadShortCuts();
-            
+            qx.theme.manager.Meta.getInstance().setTheme(cats.theme.Default);
+            this.setTheme(this.config.theme);
         }
 
         private loadShortCuts() {
-            var fileName = OS.File.join(this.catsHomeDir, "resource/shortcuts.json");
-            var c = OS.File.readTextFile(fileName);
-            var shortCutSets:{} = JSON.parse(c);
-            var os = "linux";
-            if (Cats.OS.File.isWindows()) {
-              os = "win";
-            } else if (Cats.OS.File.isOSX()) {
-              os = "osx";
-            }
-            var shortCuts = shortCutSets[os];
-            for (var shortCut in shortCuts) {
-                var commandName = shortCuts[shortCut];
-                var cmd = new qx.ui.core.Command(shortCut);
-                cmd.addListener("execute", (function(commandName: string) {
-                  Cats.Commands.CMDS[commandName].command();
-                }).bind(null, commandName));
+            try {
+                var fileName = OS.File.join(this.catsHomeDir, "resource/shortcuts.json");
+                var c = OS.File.readTextFile(fileName);
+                var shortCutSets:{} = JSON.parse(c);
+                var os = "linux";
+                if (Cats.OS.File.isWindows()) {
+                  os = "win";
+                } else if (Cats.OS.File.isOSX()) {
+                  os = "osx";
+                }
+                var shortCuts = shortCutSets[os];
+                for (var shortCut in shortCuts) {
+                    var commandName = shortCuts[shortCut];
+                    var cmd = new qx.ui.command.Command(shortCut);
+                    cmd.addListener("execute", (function(commandName: string) {
+                      Cats.Commands.commandRegistry.runCommand(commandName);
+                    }).bind(null, commandName));
+                }
+            } catch (err) {
+                console.error("Error loading shortcuts" + err);   
             }
             
         }
@@ -107,8 +109,31 @@ module Cats {
         }
 
 
-        setColors() {
+        /**
+         * Load the themes from the file.
+         */ 
+        private loadThemes() {
+            return JSON.parse(OS.File.readTextFile("resource/themes.json"));
+        }
+
+        setFont(size=14) {
+            var theme = cats.theme.Font;
+            theme.fonts.default.size = size; 
+            var manager = qx.theme.manager.Font.getInstance();
+            // @TODO hack to make Qooxdoo aware there is a change
+            manager.setTheme(cats.theme.Font16);
+            // manager.setTheme(null);
+            manager.setTheme(theme);
+            this.emit("config");
+        }
+
+        setColors(colorTheme = cats.theme.ColorDark) {
             var manager = qx.theme.manager.Color.getInstance();
+            qx.theme.manager.Color.getInstance().setTheme(colorTheme);
+            // document.body.style.color = "black";
+            document.body.style.color = colorTheme.colors.text;
+            
+            /*
             var colors = manager.getTheme()["colors"];
             var jcolors = JSON.stringify(colors.__proto__,null,4);
             IDE.console.log(jcolors);
@@ -123,6 +148,7 @@ module Cats {
                 var dyn = manager.isDynamic(c);
                 IDE.console.log(c + ":" + colors[c] + ":" + dyn);
             }
+            */
         }
 
 
@@ -132,9 +158,9 @@ module Cats {
          * @param locale The locale you want to retrieve the messages for 
          */ 
         private loadMessages(locale="en") {
-            var fileName = "resource/locales/" + locale + "/messages.json";
-            var messages = JSON.parse(OS.File.readTextFile(fileName));
-            var map:IMap = {};
+            const fileName = "resource/locales/" + locale + "/messages.json";
+            const messages = JSON.parse(OS.File.readTextFile(fileName));
+            let map:IMap = {};
             for (var key in messages) {
                 map[key] = messages[key].message;
             }
@@ -145,9 +171,9 @@ module Cats {
 
 
         private goto(entry) {
-            var hash = entry.hash;
+            const hash = entry.hash;
             this.lastEntry = entry;
-            var page = <Gui.EditorPage>qx.core.ObjectRegistry.fromHashCode(hash);
+            const page = <Gui.EditorPage>qx.core.ObjectRegistry.fromHashCode(hash);
             if (page) IDE.editorTabView.navigateToPage(page, entry.pos);
         }
 
@@ -157,9 +183,12 @@ module Cats {
          */ 
         init(rootDoc:qx.ui.container.Composite) {
             Cats.Commands.init();
-            var layouter = new Gui.Layout(rootDoc);
+            const layouter = new Gui.Layout(rootDoc);
+            rootDoc.setBackgroundColor("transparent");
             layouter.layout(this);
             this.menuBar = new Gui.MenuBar();
+
+            // @TODO fix for 1.4
             this.initFileDropArea();
             this.handleCloseWindow();
         }
@@ -168,7 +197,7 @@ module Cats {
          * Add an entry to the history list
          */ 
         addHistory(editor:Editor, pos?:any) {
-             var page = this.editorTabView.getPageForEditor(editor);
+             const page = this.editorTabView.getPageForEditor(editor);
              if ((this.lastEntry.hash === page.toHashCode()) && (this.lastEntry.pos === pos)) return;
             
              var entry ={
@@ -180,19 +209,17 @@ module Cats {
         }
 
 
-        /**
-         * Configure the IDE based on the settings
-         */ 
-        configure() {
-            var config = this.config;
-            if (config.theme) {
-                var theme = this.themes[config.theme] || this.themes.cats;
-                if (theme !== qx.theme.manager.Meta.getInstance().getTheme()) {
-                    qx.theme.manager.Meta.getInstance().setTheme(theme);
-                }
-            }
+        getCurrentTheme() :Theme {
+            const themeName = this.config.theme || "default"; 
+            var theme = this.themes.find((theme) => {return theme.name == themeName});
+            if (theme) return theme;
+            return this.getDefaultTheme();
         }
 
+
+        getThemes() {
+            return this.themes;
+        }
  
         /**
          * Attach the drag n' drop event listeners to the document
@@ -201,7 +228,7 @@ module Cats {
          */
         private initFileDropArea(): void {
             // Listen onto file drop events
-            document.documentElement.addEventListener("drop", this.acceptFileDrop.bind(this), false);
+            document.documentElement.addEventListener("drop", (ev) => this.acceptFileDrop(ev), false);
 
             // Prevent the browser from redirecting to the file
             document.documentElement.addEventListener("dragover", (event: DragEvent) => {
@@ -224,7 +251,7 @@ module Cats {
 
             // Loop over each file dropped. More than one file
             // can be added at a time
-            var files: FileList = event.dataTransfer.files;
+            const files: FileList = event.dataTransfer.files;
 
             for(var i = 0; i < files.length; i++) {
                 var path:string = (<any>files[i]).path;
@@ -240,8 +267,8 @@ module Cats {
         restorePreviousProjects() {
             console.info("restoring previous project and sessions.");
             if (this.config.projects && this.config.projects.length) { 
-                var projectDir = this.config.projects[0]; 
-                this.addProject(projectDir);
+                const projectDir = this.config.projects[0]; 
+                this.setDirectory(projectDir);
             
                 if (this.config.sessions) {
                     console.info("Found previous sessions: ", this.config.sessions.length);
@@ -258,18 +285,41 @@ module Cats {
             }
         }
 
+        private getDefaultTheme() : Theme {
+            return {
+                "name" : "default",
+                "background" : "linear-gradient(to right, #666 , #888)",
+                "color" : "Color",
+                "ace" : "ace/theme/eclipse"          
+            }
+        }
+   
+   
+        private findTheme(name:string) : Theme {
+            return this.themes.find((theme) => {return theme.name == name});
+        } 
+    
+        /**
+         * CLose the current project
+         */
+        close() {
+            this.projects.forEach((project) => project.close());
+            this.fileNavigator.clear();
+            this.todoList.clear();
+            this.problemResult.clear();
+            this.console.clear();
+            this.projects=[];
+        }
 
         /**
-         * Load the configuration for the IDE. If there is no configuration
-         * found, create the default one to use.
-         */ 
-        private loadPreferences() {
-            
+         * Get a set of default preferences.
+         */
+        private getDefaultPreferences() {
             var defaultConfig:IDEConfiguration = {
-                version: "1.1",
-                theme: "cats",
+                version: "2.0",
+                theme: "default",
+                fontSize: 13,
                 editor : {
-                    fontSize: 13,
                     rightMargin: 100
                 },
                 locale: "en",
@@ -277,29 +327,60 @@ module Cats {
                 sessions: [],
                 projects:[]
             };
+            return defaultConfig;
+        }
+
+        /**
+         * Load the configuration for the IDE. If there is no configuration
+         * found or it is an old version, use the default one to use.
+         */ 
+        private loadPreferences() {
             
             var configStr = localStorage[Ide.STORE_KEY];
             
             if (configStr) {
                     try {
                         var config:IDEConfiguration = JSON.parse(configStr);
-                        if (config.version === "1.1") return config;
+                        if (config.version === "2.0") return config;
                     } catch (err) {
                         console.error("Error during parsing config " + err);
                     }
             }
             
-            return defaultConfig;
+            return this.getDefaultPreferences();
         }
+
+        /**
+         * Set the theme for this IDE
+         */
+        setTheme(name="default") {
+            var theme = this.findTheme(name);
+            if (! theme) {
+                IDE.console.error(`Theme with name ${name} not found.`);
+                theme = this.getDefaultTheme();
+            }
+            
+            this.theme = theme;
+            const colorTheme = cats.theme[theme.color] || cats.theme.Color;
+            
+            document.body.style.background = theme.background;
+            var manager = qx.theme.manager.Color.getInstance();
+            qx.theme.manager.Color.getInstance().setTheme(colorTheme);
+            document.body.style.color = colorTheme.colors.text
+            
+            this.setFont(this.config.fontSize);
+            this.emit("config");
+        }
+
 
         /**
          * Update the configuration for IDE
          * 
          */ 
-        updatePreferences(config) {
+        updatePreferences(config:IDEConfiguration) {
             this.config = config;
+            this.setTheme(config.theme);
             this.emit("config", config);
-            this.configure();
             this.savePreferences();
         }
 
@@ -308,11 +389,11 @@ module Cats {
          */ 
         savePreferences() {
             try {
-                var config = this.config;
-                config.version = "1.1";
+                let config = this.config;
+                config.version = "2.0";
                 config.sessions = [];
                 config.projects = this.recentProjects;
-                if (this.project) {
+  
                     this.editorTabView.getEditors().forEach((editor)=>{ 
                         var state = editor.getState();
                         if ((state !== null) && (editor.getType())) {
@@ -322,7 +403,7 @@ module Cats {
                             });
                         }
                     });
-                };
+                
                 
                 var configStr = JSON.stringify(config);
                 localStorage[Ide.STORE_KEY] = configStr;
@@ -333,28 +414,72 @@ module Cats {
 
 
         /**
-         * Add a new project to the IDE
-         * 
-         * @param projectDir the directory of the new project
+         * For a given file get the first project it belongs to.
          */
-        addProject(projectDir: string) {
-            projectDir = OS.File.PATH.resolve(this.catsHomeDir,projectDir);
-            if (this.recentProjects.indexOf(projectDir) === -1) {
-                this.recentProjects.push(projectDir);
+        getProject(fileName:string) {
+            for (var x=0;x<this.projects.length;x++) {
+                let project = this.projects[x];
+                if (project.hasScriptFile(fileName)) return project;
             }
-            if (! this.project) {
-                this.project = new Project(projectDir);
-                this.fileNavigator.setProject(this.project);
-            } else {
-                var param = encodeURIComponent(projectDir);
-                window.open('index.html?project=' + param);
+        }
+         
+        /**
+         * Find all possible TSConfig files from a certain base directory.
+         */
+        private getTSConfigs(dir:string) {
+            var configs:string[] = glob.sync(dir + "/" + "**/tsconfig*.json");
+            if (configs.length === 0) {
+                this.console.log("No tsconfig file found, creating a default one");
+                let fileName = OS.File.PATH.join(dir,"tsconfig.json");
+                OS.File.writeTextFile(fileName,"{}");
+                configs = [fileName];
             }
+            return configs;
+        }
+         
+         
+        refresh() {
+            this.setDirectory(this.rootDir, false);
+        }
+         
+        /**
+         * Set the working directory. CATS will start scanning the directory and subdirectories for
+         * tsconfig files and for each one found create a TS Project. If none found it will create 
+         * the default config file and use that one instead.
+         * 
+         * @param directory the directory of the new project
+         * @param refreshFileNavigator should the fileNavigator also be refreshed.
+         */
+        setDirectory(directory: string, refreshFileNavigator = true) {
+            this.projects = [];
+            this.rootDir = OS.File.PATH.resolve(this.catsHomeDir,directory);
+
+            var index = this.recentProjects.indexOf(directory);
+            if (index !== -1) {
+                this.recentProjects.splice(index,1);
+            }
+            this.recentProjects.push(directory);
+            
+            
+            var name = OS.File.PATH.basename(directory);
+            document.title = "CATS | " + name;
+
+            if (refreshFileNavigator) this.fileNavigator.setRootDir(directory);
+            var configs:string[] = this.getTSConfigs(directory);
+    
+            configs.forEach((config) => {
+                let path = OS.File.PATH.resolve(config);
+                path = OS.File.switchToForwardSlashes(path);
+                let p = new Project(path);
+                this.projects.push(p);
+            });
         }
         
         
         private handleCloseWindow() {
+            
             // Catch the close of the windows in order to save any unsaved changes
-            var win = GUI.Window.get();
+            var win = getNWWindow();
             win.on("close", function() {
                 var doClose = () => {
                     IDE.savePreferences();
@@ -379,6 +504,8 @@ module Cats {
          * want to quit.
          */ 
         quit() {
+            var GUI = getNWGui();
+  
             var doClose = () => {
                 this.savePreferences();
                 GUI.App.quit();

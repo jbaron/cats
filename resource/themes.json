@@ -1,0 +1,111 @@
+[
+     {
+        "name" : "default",
+        "qx" : "cats.theme.Default",
+        "background" : "linear-gradient(to right, #666 , #888)",
+        "color" : "Color",
+        "ace" : "ace/theme/eclipse"
+    },
+
+
+     {
+        "name" : "gradient-blue-light", 
+        "qx" : "cats.theme.Default",
+        "background" : "linear-gradient(to right, #4B79A1 , #283E51)",
+        "color" : "Color",
+        "ace" : "ace/theme/chrome"
+    },
+
+     {
+        "name" : "gradient-blue-dark", 
+        "qx" : "cats.theme.Default",
+        "background" : "linear-gradient(to right, #4B79A1 , #283E51)",
+        "color" : "ColorDark",
+        "ace" : "ace/theme/monokai"
+    },
+
+
+
+    {
+        "name" : "Blue 1",
+        "qx" : "cats.theme.Default",
+        "background" : "center/cover url(resource/bg/abstract_blue-1.jpg)",
+        "color" : "Color",
+        "ace" : "ace/theme/eclipse"
+    },
+
+    {
+        "name" : "Blue 2",
+        "qx" : "cats.theme.Default",
+        "background" : "center/cover url(resource/bg/abstract_blue-2.jpg)",
+        "color" : "ColorDark",
+        "ace" : "ace/theme/monokai"
+    },
+
+    {
+        "name" : "Abstract Red",
+        "qx" : "cats.theme.Default",
+        "background" : "center/cover url(resource/bg/abstract_red-1.jpg)",
+        "ace" : "ace/theme/chrome"
+    },
+
+   {
+        "name" : "Blue 3",
+        "qx" : "cats.theme.Default",
+        "background" : "center/cover url(https://raw.githubusercontent.com/jbaron/cats-themes/master/bg/abstract_blue-3.jpg)",
+        "color" : "Color",
+        "ace" : "ace/theme/eclipse"
+    },
+    
+   {
+        "name" : "Blue 4",
+        "qx" : "cats.theme.Default",
+        "background" : "center/cover url(https://raw.githubusercontent.com/jbaron/cats-themes/master/bg/abstract_blue-4.jpg)",
+        "color" : "Color",
+        "ace" : "ace/theme/chrome"
+    },
+    
+   {
+        "name" : "Blue 5",
+        "qx" : "cats.theme.Default",
+        "background" : "center/cover url(https://raw.githubusercontent.com/jbaron/cats-themes/master/bg/abstract_blue-5.jpg)",
+        "color" : "Color",
+        "ace" : "ace/theme/dawn"
+    },
+
+   {
+        "name" : "Green Parrot",
+        "qx" : "cats.theme.Default",
+        "background" : "center/cover url(https://raw.githubusercontent.com/jbaron/cats-themes/master/bg/green_parrot.jpg)",
+        "color" : "ColorLight2",
+        "ace" : "ace/theme/chrome"
+    },
+
+   {
+        "name" : "Elegant Background 1",
+        "qx" : "cats.theme.Default",
+        "background" : "center/cover url(https://raw.githubusercontent.com/jbaron/cats-themes/master/bg/elegant_background-1.jpg)",
+        "color" : "Color",
+        "ace" : "ace/theme/chrome"
+    },
+
+   {
+        "name" : "Elegant Background 2",
+        "qx" : "cats.theme.Default",
+        "background" : "center/cover url(https://raw.githubusercontent.com/jbaron/cats-themes/master/bg/elegant_background-2.jpg)",
+        "color" : "Color",
+        "ace" : "ace/theme/chrome"
+    },
+
+ 
+    {
+        "name" : "Classic Painting",
+        "qx" : "cats.theme.Default",
+        "background" : "center/cover url(https://raw.githubusercontent.com/jbaron/cats-themes/master/bg/classic_painting-1.jpg)",
+        "color" : "ColorDark2",
+        "ace" : "ace/theme/monokai"
+    }
+
+  
+   
+]

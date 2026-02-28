@@ -178,7 +178,11 @@
         "message": "Previous",
         "description": "Menu item for Previous"
     },
-    
+     "ide_theme": {
+        "message": "Next theme",
+        "description": "try the next theme"
+    },
+   
     
     "project_settings" : {
         "message": "Project Settings",
@@ -204,6 +208,7 @@
     "info_tab" : { "message": "Info" },
     
     "tableheader_message" : { "message": "Message" },
+    "tableheader_project" : { "message": "Project" },
     "tableheader_file" : { "message": "File" },
     "tableheader_position" : { "message": "Position" },
     "tableheader_bookmark" : { "message": "Bookmark" },
@@ -222,7 +227,10 @@
     "config_module" : { "message": "Compile for module"},
     "config_noLib" : { "message": "Don't include lib.d.ts"},
     "config_outDir" : { "message": "Output to directory"},
-    "config_out" : { "message": "Output to single file"}
-    
+    "config_out" : { "message": "Output to single file"},
+    "config_rootDir" : { "message": "Root directory of source file"},
+    "config_noImplicitAny" : { "message": "No implicit any casting"},
+    "config_noEmitHelpers" : { "message": "Don't emit any helper code"},
+    "config_newLine" : { "message": "Newline character to use"}
     
 }

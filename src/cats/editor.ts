@@ -14,19 +14,21 @@
 
 module Cats {
 
-
     /**
      * BaseClass for Editors. Editors should extend this class. The rest of the codebase is only 
      * dependent on this small subset of methods and properties.
      */
     export class Editor extends qx.event.Emitter {
         
-        private static Registry:Map<Function> = {}; 
+        private static Registry:Map<Function> = {};
         
-        label = "Untitled"; // Label to be used on the tab page
+        /**
+         * Label used on the tab page
+         */ 
+        label = "Untitled"; 
  
         // The project this editor belongs to
-        project = IDE.project;
+        // project:Project;
         
         protected properties:Map<any> = {};
 
@@ -41,6 +43,7 @@ module Cats {
         static RegisterEditor(name:string,restoreFn:(state:any)=>Editor) {
            Editor.Registry[name] = restoreFn;
         }
+        
         /**
          * Save the content of the editor. Not all editors imeplement this method.
          */
@@ -68,7 +71,7 @@ module Cats {
          * Used during startup of CATS to restore same editors as before CATS was closed.
          */
         static Restore(type:string, state: any): Editor {
-            var restoreFn = Editor.Registry[type];
+            const restoreFn = Editor.Registry[type];
             if (! restoreFn) {
                 console.error("No restore function found for " + type);
                 return null;
@@ -142,13 +145,14 @@ module Cats {
 
         constructor(filePath: string) {
             super();
-            if (filePath) this.setFilePath(filePath);
+            if (filePath) this.setFilePath(OS.File.switchToForwardSlashes(filePath));
         }
 
-        protected updateFileInfo() {
+        updateFileInfo() {
             if (this.filePath) {
                 try {
-                    this.set("info", OS.File.getProperties(this.filePath));
+                    var prop = OS.File.getProperties(this.filePath);
+                    this.set("info", prop);
                 } catch (err) { /* NOP */ }
             }
         }
@@ -188,15 +192,15 @@ module Cats {
          * a new FileEditor suitable for the file selected.
          */
         static OpenEditor(fileName: string, pos: ace.Position = { row: 0, column: 0 }): FileEditor {
-            var editor: FileEditor;
-            var pages: Gui.EditorPage[] = [];
-            pages = IDE.editorTabView.getPagesForFile(fileName);
+            let editor: FileEditor;
+            // var pages: Gui.EditorPage[] = [];
+            const pages = IDE.editorTabView.getPagesForFile(fileName);
             if (!pages.length) {
                 editor = this.CreateEditor(fileName);
                 if (editor) {
                     IDE.editorTabView.addEditor(editor, pos);
                 } else {
-                    var dialog = new Gui.ConfirmDialog("No suitable editor found for this file type, open with source editor?");
+                    var dialog = new Gui.ConfirmDialog("No suitable editor found for this file type, open with default editor?");
                     dialog.onConfirm = () => {
                       var editor = new Gui.Editor.SourceEditor(fileName);
                       IDE.editorTabView.addEditor(editor, pos);

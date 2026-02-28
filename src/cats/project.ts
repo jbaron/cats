@@ -16,66 +16,86 @@
 
 module Cats {
 
-    var GUI = require('nw.gui');
-    var typedoc: any;
+   var tsconfig = require("tsconfig");
+
+    export interface CompilerOptions {
+    [key: string]: any;
+        noLib?: boolean;
+        target?: string;
+    }
+    
+    export interface TSConfig {
+        compilerOptions?: CompilerOptions;
+        compileOnSave?: boolean;
+        validateOnSave?: boolean;
+        files?: string[];
+        exclude?: string[];
+        filesGlob?: string[];
+        customBuild?: any;
+        customRun?: any;
+        main?: any;
+        name?: string;
+        tslint?: any;
+        codeFormat?:any;
+        documentation?:any;
+        
+        [key: string]: any;
+    }
     
     /**
-     * The project hold the informaiton related to a single project. This include 
-     * a reference to a worker thread that does much of the TypeScript intelli sense.
+     * The project hold the information related to a single TypeScript project. 
+     * This include a reference to a workerthread that does much of the TypeScript 
+     * intellisense.
      */
     export class Project extends qx.event.Emitter {
 
         // The home directory of the project
-        projectDir: string;
         name: string;
 
         private tsfiles: Array<string> = [];
-
+        public projectDir;
+        
         // The singleton TSWorker handler instance
         iSense: TSWorkerProxy;
-
-        private settings: ProjectSettings;
-
-        linter: Linter;
-
         private refreshInterval: number;
+        config:TSConfig;
 
         /**    
          * Create a new project.
          */
-        constructor(projectDir: string) {
+        constructor(public tsConfigFile:string) {
             super();
-            // IDE.project = this;
-            var dir = OS.File.PATH.resolve(projectDir);
-            this.projectDir = OS.File.switchToForwardSlashes(dir);
+            this.projectDir = OS.File.PATH.dirname(tsConfigFile);
             this.refresh();
-            if (this.config.tslint.useLint) this.linter = new Linter(this);
-            
             // @TODO optimize only refresh in case of changes
-            this.refreshInterval = setInterval(() => { this.refreshTodoList() }, 30000);
+            this.refreshInterval = setInterval(() => { this.refreshTodoList() }, 60000);
         }
 
-        /**
-         * Get the project settings
-         */
-        get config() {
-            return this.settings.value;
+
+        private readConfigFile(fileName) {
+            try {
+                return tsconfig.readFileSync(fileName);
+            } catch (err) {
+                IDE.console.error(`Error reading config file ${fileName}`);
+            }
         }
 
         /**
          * Save the project configuration
          */
         updateConfig(config: ProjectConfiguration) {
+            return ; /*
             this.settings.value = config;
             this.emit("config", config);
             if (this.config.tslint.useLint) this.linter = new Linter(this);
             this.settings.store();
             this.iSense.setSettings(this.config.compiler, this.config.codeFormat);
+            */
         }
 
         refreshTodoList() {
             this.iSense.getTodoItems((err, data) => {
-                IDE.todoList.setData(data);
+                IDE.todoList.setData(data, this);
             });
         }
     
@@ -107,7 +127,7 @@ module Cats {
             IDE.todoList.clear();
             if (this.iSense) this.iSense.stop();
             clearInterval(this.refreshInterval);
-            IDE.project = null;
+            IDE.projects = [];
         }
 
         /**
@@ -116,14 +136,11 @@ module Cats {
         validate(verbose = true) {
             this.iSense.getAllDiagnostics((err, data) => {
                 if (data) {
-                    IDE.problemResult.setData(data);
-                    if (data.length === 0) {
-                        if (verbose) {
-                            IDE.console.log("Project has no errors");
-                        }
+                    IDE.problemResult.setData(data,this);
+                    if ((data.length === 0) && verbose) {
+                            IDE.console.log(`Project ${this.name} has no errors`);
                     }
                 }
-
             });
         }
 
@@ -149,86 +166,61 @@ module Cats {
                 this.iSense.compile((err: Error, data: CompileResults) => {
                     this.showCompilationResults(data);
                     if (data.errors && (data.errors.length > 0)) return;
-                    var sources = data.source;
-                    sources.forEach((source) => {
-                        OS.File.writeTextFile(source.fileName, source.content);
+                    var files = data.outputFiles;
+                    files.forEach((file) => {
+                        if (!OS.File.PATH.isAbsolute(file.name)) {
+                            file.name = OS.File.PATH.join(this.projectDir,file.name);
+                            file.name = OS.File.PATH.normalize(file.name);
+                        }
+                        OS.File.writeTextFile(file.name, file.text);
                     });
                     IDE.console.log("Done building project " + this.name + ".");
                 });
             }
         }
 
-        /**
-         * Generate the documentation for this project
-         */
-        document() {
-            var outputDir = this.config.documentation.outputDirectory;
-            if (!outputDir) {
-                alert("Please configure a output directoty Project -> Settings");
-                return;
-            }
-
-            var win = new Gui.BusyWindow("Generating Documentation");
-            win.show();
-            win.addListenerOnce("ready", () => {
-                try {
-
-                    if (!typedoc) typedoc = require('typedoc');
-
-                    var settings = new typedoc.Settings();
-                    settings.name = this.name;
-                    settings.compiler = JSON.parse(JSON.stringify(this.config.compiler));
-                    settings.compiler.codepage = null;
-                    settings.compiler.noLib = true;
-                    settings.compiler.noResolve = true;
-                    settings.compiler.mapRoot = "";
-                    settings.compiler.sourceRoot = "";
-
-                    var readme = "none";
-                    if (this.config.documentation.readme && (this.config.documentation.readme !== "none")) {
-                        readme = OS.File.join(this.projectDir, this.config.documentation.readme);
-                    }
-
-                    settings.readme = readme;
-                    settings.includeDeclarations = this.config.documentation.includeDeclarations || false;
-                    settings.verbose = false;
-                    settings.theme = this.config.documentation.theme || "default";
-                    var app = new typedoc.Application(settings);
-                    var dest = OS.File.join(this.projectDir, outputDir);
-                    app.generate(this.tsfiles, dest);
-                } finally {
-                    win.hide();
-                }
-            });
-        }
+ 
 
         /**
          *  Refresh the project and loads required artifacts
          *  again from the filesystem to be fully in sync
          */
         refresh() {
-            this.settings = new ProjectSettings(this.projectDir);
-            this.settings.load();
+            this.config = this.readConfigFile(this.tsConfigFile);
+            IDE.console.log(`Found TypeScript project configuration at ${this.tsConfigFile} containing ${this.config.files.length} files`);
+            this.tsfiles = this.config.files; 
             this.name = this.config.name || OS.File.PATH.basename(this.projectDir);
-            document.title = "CATS | " + this.name;
 
+            if (!this.config.compilerOptions) this.config.compilerOptions = {};
+ 
             if (this.iSense) this.iSense.stop();
-            this.iSense = new TSWorkerProxy(this);
-
-
-            this.iSense.setSettings(this.config.compiler, this.config.codeFormat);
-
-            if (!this.config.compiler.noLib) {
-                var fullName = OS.File.join(IDE.catsHomeDir, "resource/typings/lib.d.ts");
+            this.iSense = new TSWorkerProxy();
+            
+            var content = JSON.stringify(this.config);
+            this.iSense.setConfigFile(this.tsConfigFile,content);
+            
+             if (!this.config.compilerOptions.noLib) {
+                let libFile:string;
+                switch (this.config.compilerOptions.target) {
+                    case "es6":
+                    case "ES6":
+                        libFile = "resource/typings/lib.es6.d.ts";
+                        break;
+                    case "es7":
+                    case "ES7":
+                        libFile = "resource/typings/lib.es7.d.ts";
+                        break;
+                    default:
+                        libFile = "resource/typings/lib.d.ts";
+                        break;
+                }
+                var fullName = OS.File.join(IDE.catsHomeDir, libFile);
                 var libdts = OS.File.readTextFile(fullName);
                 this.addScript(fullName, libdts);
             }
 
-            var srcs = new Array<string>().concat(this.config.src);
-            srcs.forEach((src: string) => {
-                this.loadTypeScriptFiles(src);
-            });
 
+            this.loadProjectSourceFiles();
             this.refreshTodoList();
 
         }
@@ -244,12 +236,12 @@ module Cats {
 
         private showCompilationResults(data: CompileResults) {
             if (data.errors && (data.errors.length > 0)) {
-                IDE.problemResult.setData(data.errors);
+                IDE.problemResult.setData(data.errors, this);
                 return;
             }
 
             IDE.problemResult.clear();
-            IDE.console.log("Successfully compiled " + Object.keys(data.source).length + " file(s).");
+            IDE.console.log("Successfully generated " + data.outputFiles.length + " file(s).");
         }
 
         /**
@@ -259,22 +251,22 @@ module Cats {
         run() {
             if (this.config.customRun && this.config.customRun.command) {
 
-                var cmd = this.config.customRun.command;
+                const cmd = this.config.customRun.command;
                 var options = this.config.customRun.options || { cwd: null };
                 if (!options.cwd) {
                     options.cwd = this.projectDir;
                 }
                 OS.File.runCommand(cmd, options);
             } else {
-
-                var main = this.config.main;
+                const GUI = require('nw.gui');
+                const main = this.config.main;
                 if (!main) {
                     alert("Please specify the main html file or customRun in the project settings.");
                     return;
                 }
-                var startPage = this.getStartURL();
+                const startPage = this.getStartURL();
                 console.info("Opening file: " + startPage);
-                var win2 = GUI.Window.open(startPage, {
+                const win2 = GUI.Window.open(startPage, {
                     toolbar: true,
                     // nodejs: true,
                     // "new-instance": true,
@@ -289,12 +281,16 @@ module Cats {
          * Get the URL for running the project
          */
         private getStartURL(): string {
-            var url = OS.File.join(this.projectDir, this.config.main);
+            const url = OS.File.join(this.projectDir, this.config.main);
             return "file://" + url;
         }
 
         hasScriptFile(fileName: string) {
             return this.tsfiles.indexOf(fileName) > -1;
+        }
+
+        updateScript(fullName: string, content: string) {
+            this.iSense.updateScript(fullName, content);
         }
 
         addScript(fullName: string, content: string) {
@@ -306,26 +302,25 @@ module Cats {
             return this.tsfiles;
         }
 
+
         /**
-         * Load the TypeScript source files that match the pattern into the tsworker
-         * @param pattern The pattern to apply when searching for files
+         * Load the source files that are part of this project. Typically
+         * files ending with ts, tsx or js.
          */
-        private loadTypeScriptFiles(pattern: string) {
-            if (!pattern) pattern = "**/*.ts";
-            OS.File.find(pattern, this.projectDir, (err: Error, files: Array<string>) => {
-                files.forEach((file) => {
-                    try {
-                        var fullName = OS.File.join(this.projectDir, file);
-                        var content = OS.File.readTextFile(fullName);
-                        this.addScript(fullName, content);
-                    } catch (err) {
-                        console.error("Got error while handling file " + fullName);
-                        console.error(err);
-                    }
-                });
+        private loadProjectSourceFiles() {
+            this.config.files.forEach((file) => {
+                try {
+                    var fullName = OS.File.switchToForwardSlashes(file); // OS.File.join(this.projectDir, file);
+                    var content = OS.File.readTextFile(fullName);
+                    this.addScript(fullName, content);
+                } catch (err) {
+                    console.error("Got error while handling file " + fullName);
+                    console.error(err);
+                }
             });
         }
 
+   
 
     }
 

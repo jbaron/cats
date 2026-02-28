@@ -53,20 +53,18 @@ module Cats.Gui {
         }
     }
 
+
+    interface Theme {
+        model:string;
+        label:string;
+    }
+
     /**
      * This class contains the configuration page for the overal IDE
      */
     class GenericPreferences extends ConfigDialogPage {
 
-        private themes = [
-            { label: "CATS", model: "cats" },
-            { label: "Gray", model: "gray" },
-            { label: "Classic", model: "classic" },
-            { label: "Modern", model: "modern" },
-            { label: "Indigo", model: "indigo" },
-            { label: "Simple", model: "simple" }
-        ];
-
+ 
         private locales = [
             { label: "English", model: "en" }
         ];
@@ -77,8 +75,18 @@ module Cats.Gui {
             this.finalStep();
         }
 
+
+        private getThemes() {
+            var themes = IDE.getThemes().map((theme) =>  { return {
+                label: theme.name,
+                model: theme.name
+            }});
+            return themes;
+        }
+
         createForm() {
-            this.addSelectBox("theme", this.themes);
+            this.addSelectBox("theme", this.getThemes());
+            this.addSpinner("fontSize", 6, 24);
             this.addSelectBox("locale", this.locales);
             this.addCheckBox("rememberOpenFiles");
             this.addCheckBox("rememberLayout");
@@ -94,24 +102,19 @@ module Cats.Gui {
             { label: "forgiven", model: "forgiven" }
         ];
 
-        private theme = [
-            { model: "chrome", label: "Chrome" },
-            { model: "clouds", label: "Clouds" },
-            { model: "crimson_editor", label: "Crimson Editor" },
-            { model: "dreamweaver", label: "Dreamweaver" },
-            { model: "eclipse", label: "Eclipse" },
-            { model: "github", label: "GitHub" },
-            { model: "textmate", label: "TextMate" },
-            { model: "xcode", label: "XCode" },
+        private newLineMode = [
+            { label: "Linux/OSX", model: "\n" },
+            { label: "Dos/Windows", model: "\r\n" },
         ];
 
 
         private getThemes() {
-            var themelist = ace.require("ace/ext/themelist");
-            var result = [];
+            var themelist:ace.ThemeList = ace.require("ace/ext/themelist");
+            var result:Array<Theme> = [];
             themelist.themes.forEach((x) => { 
-                var name = OS.File.PATH.basename(x.theme);
-                result.push({model:name, label:name}); 
+                var label = x.caption;
+                if (x.isDark) label += " (dark)";
+                result.push({model:x.theme, label:label}); 
             });
             return result;
         }
@@ -125,8 +128,12 @@ module Cats.Gui {
         createForm() {
             this.addSpinner("fontSize", 6, 24);
             this.addSpinner( "rightMargin", 40, 240);
-            this.addSelectBox("theme", this.getThemes());
             this.addSelectBox("completionMode", this.completionMode);
+            // this.addSelectBox("NewLineCharacter", this.newLineMode);
+            // this.addCheckBox("ConvertTabsToSpaces");
+            // this.addSpinner("IndentSize", 1, 16);
+            // this.addSpinner("TabSize", 1, 16);
+
 
         }
     }

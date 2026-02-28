@@ -14,11 +14,16 @@
 //
 
 module Cats.Gui {
-    var GUI = require( 'nw.gui' );
+    
+    if (typeof nw != "undefined") {
+        var GUI:any = nw;
+    } else {
+        var GUI = require( 'nw.gui' );
+    }
 
-    var CMDS = Cats.Commands.CMDS;
 
-    function getItem( cmd: Cats.Commands.Command ) {
+    function getItem( command: Commands.COMMANDNAME ) {
+        var cmd = Commands.commandRegistry.getCommand(command);
         var item = {
             label: cmd.label,
             click: cmd.command
@@ -26,10 +31,13 @@ module Cats.Gui {
         return new GUI.MenuItem( item );
     }
 
+
+
     /**
      * This class creates the main menubar. This is the only GUI component that 
-     * is not using Qooxdoo but an API exposed by nodewebkit. 
-     * This makes it possible to have the feeling of a native menubar.
+     * is not using Qooxdoo/HTML5 but an API exposed by NW.js. 
+     * This makes it possible to have a native menubar.
+     * 
      */
     export class MenuBar {
 
@@ -80,12 +88,13 @@ module Cats.Gui {
             }
         }
 
+
         /**
          * Create an item in the main menu bar. Optional the position can be passed
          * for this item.
          */
         private createMenuBarItem( name: string, position?: number ) {
-            var label = qx.locale.Manager.tr( name + "_menu_name" );
+            var label = translate( name + "_menu_name" );
             var menu = new GUI.Menu();
             this.menus[name] = menu;
             if ( position ) {
@@ -97,22 +106,22 @@ module Cats.Gui {
 
         private createSourceMenu() {
             var source = this.menus.source;
-            source.append( getItem( CMDS.edit_toggleComment ) );
-            source.append( getItem( CMDS.edit_toggleInvisibles ) );
+            source.append( getItem( Commands.COMMANDNAME.edit_toggleComment ) );
+            source.append( getItem( Commands.COMMANDNAME.edit_toggleInvisibles ) );
             source.append( new GUI.MenuItem( { type: "separator" }) );
-            source.append( getItem( CMDS.edit_indent ) );
-            source.append( getItem( CMDS.edit_outdent ) );
+            source.append( getItem( Commands.COMMANDNAME.edit_indent ) );
+            source.append( getItem( Commands.COMMANDNAME.edit_outdent ) );
             source.append( new GUI.MenuItem( { type: "separator" }) );
-            source.append( getItem( CMDS.source_format ) );
-            source.append( getItem( CMDS.edit_gotoLine ) );
+            source.append( getItem( Commands.COMMANDNAME.source_format ) );
+            source.append( getItem( Commands.COMMANDNAME.edit_gotoLine ) );
         }
 
         private createHelpMenu() {
             var help = this.menus["help"];
-            help.append( getItem( CMDS.help_shortcuts ) );
-            help.append( getItem( CMDS.help_processInfo ) );
-            help.append( getItem( CMDS.help_devTools ) );
-            help.append( getItem( CMDS.help_about ) );
+            help.append( getItem( Commands.COMMANDNAME.help_shortcuts ) );
+            help.append( getItem( Commands.COMMANDNAME.help_processInfo ) );
+            help.append( getItem( Commands.COMMANDNAME.help_devTools ) );
+            help.append( getItem( Commands.COMMANDNAME.help_about ) );
         }
 
         private createEditMenu() {
@@ -120,42 +129,42 @@ module Cats.Gui {
 
             // Already done by native OSX menu
             if ( !OS.File.isOSX() ) {
-                edit.append( getItem( CMDS.edit_undo ) );
-                edit.append( getItem( CMDS.edit_redo ) );
+                edit.append( getItem( Commands.COMMANDNAME.edit_undo ) );
+                edit.append( getItem( Commands.COMMANDNAME.edit_redo ) );
                 edit.append( new GUI.MenuItem( { type: "separator" }) );
-                edit.append( getItem( CMDS.edit_cut ) );
-                edit.append( getItem( CMDS.edit_copy ) );
-                edit.append( getItem( CMDS.edit_paste ) );
+                edit.append( getItem( Commands.COMMANDNAME.edit_cut ) );
+                edit.append( getItem( Commands.COMMANDNAME.edit_copy ) );
+                edit.append( getItem( Commands.COMMANDNAME.edit_paste ) );
             }
 
             edit.append( new GUI.MenuItem( { type: "separator" }) );
-            edit.append( getItem( CMDS.edit_find ) );
-            edit.append( getItem( CMDS.edit_findNext ) );
-            edit.append( getItem( CMDS.edit_findPrev ) );
-            edit.append( getItem( CMDS.edit_replace ) );
-            edit.append( getItem( CMDS.edit_replaceAll ) );
+            edit.append( getItem( Commands.COMMANDNAME.edit_find ) );
+            edit.append( getItem( Commands.COMMANDNAME.edit_findNext ) );
+            edit.append( getItem( Commands.COMMANDNAME.edit_findPrev ) );
+            edit.append( getItem( Commands.COMMANDNAME.edit_replace ) );
+            edit.append( getItem( Commands.COMMANDNAME.edit_replaceAll ) );
 
             edit.append( new GUI.MenuItem( { type: "separator" }) );
-            edit.append( getItem( CMDS.edit_toggleRecording ) );
-            edit.append( getItem( CMDS.edit_replayMacro ) );
+            edit.append( getItem( Commands.COMMANDNAME.edit_toggleRecording ) );
+            edit.append( getItem( Commands.COMMANDNAME.edit_replayMacro ) );
         }
 
         private createFileMenu() {
             var file = this.menus.file;
-            file.append( getItem( CMDS.file_new ) );
+            file.append( getItem( Commands.COMMANDNAME.file_new ) );
             file.append( new GUI.MenuItem( { type: "separator" }) );
-            file.append( getItem( CMDS.file_save ) );
-            file.append( getItem( CMDS.file_saveAs ) );
-            file.append( getItem( CMDS.file_saveAll ) );
+            file.append( getItem( Commands.COMMANDNAME.file_save ) );
+            file.append( getItem( Commands.COMMANDNAME.file_saveAs ) );
+            file.append( getItem( Commands.COMMANDNAME.file_saveAll ) );
             file.append( new GUI.MenuItem( { type: "separator" }) );
-            file.append( getItem( CMDS.file_close ) );
-            file.append( getItem( CMDS.file_closeAll ) );
-            file.append( getItem( CMDS.file_closeOther ) );
+            file.append( getItem( Commands.COMMANDNAME.file_close ) );
+            file.append( getItem( Commands.COMMANDNAME.file_closeAll ) );
+            file.append( getItem( Commands.COMMANDNAME.file_closeOther ) );
             file.append( new GUI.MenuItem( { type: "separator" }) );
-            file.append( getItem( CMDS.ide_configure ) );
+            file.append( getItem( Commands.COMMANDNAME.ide_configure ) );
 
             if ( !OS.File.isOSX() ) {
-                file.append( getItem( CMDS.ide_quit ) );
+                file.append( getItem( Commands.COMMANDNAME.ide_quit ) );
             }
         }
 
@@ -166,7 +175,7 @@ module Cats.Gui {
                 if (! project) return;
                 var item = {
                     label: project,
-                    click: () => { IDE.addProject(project); }
+                    click: () => { IDE.setDirectory(project); }
                 };
                 menu.append(new GUI.MenuItem(item));
             });
@@ -179,31 +188,27 @@ module Cats.Gui {
 
         private createProjectMenu() {
             var proj = this.menus.project;
-            proj.append( getItem( CMDS.project_open ) );
-            proj.append( getItem( CMDS.project_close ) );
-            proj.append( getItem( CMDS.project_new ) );
+            proj.append( getItem( Commands.COMMANDNAME.project_open ) );
+            proj.append( getItem( Commands.COMMANDNAME.project_close ) );
+            proj.append( getItem( Commands.COMMANDNAME.project_new ) );
             proj.append(this.recentProjects());
 
             proj.append( new GUI.MenuItem( { type: "separator" }) );
-            proj.append( getItem( CMDS.project_build ) );
-            proj.append( getItem( CMDS.project_run ) );
-            proj.append( getItem( CMDS.project_validate ) );
-            proj.append( getItem( CMDS.project_refresh ) );
+            proj.append( getItem( Commands.COMMANDNAME.project_build ) );
+            proj.append( getItem( Commands.COMMANDNAME.project_run ) );
+            proj.append( getItem( Commands.COMMANDNAME.project_validate ) );
+            proj.append( getItem( Commands.COMMANDNAME.project_refresh ) );
 
-            proj.append( new GUI.MenuItem( { type: "separator" }) );
-            proj.append(getItem(CMDS.project_classDiagram));
-            proj.append( getItem( CMDS.project_document ) );
-
-            proj.append( new GUI.MenuItem( { type: "separator" }) );
-            proj.append( getItem( CMDS.project_configure ) );
+            // proj.append( new GUI.MenuItem( { type: "separator" }) );
+            // proj.append( getItem( Commands.COMMANDNAME.project_configure ) );
         }
 
         private createViewMenu() {
             var view = this.menus.view;
-            view.append( getItem( CMDS.ide_toggle_toolbar ) );
-            view.append( getItem( CMDS.ide_toggle_statusbar ) );
-            view.append( getItem( CMDS.ide_toggle_context ) );
-            view.append( getItem( CMDS.ide_toggle_result ) );
+            view.append( getItem( Commands.COMMANDNAME.ide_toggle_toolbar ) );
+            view.append( getItem( Commands.COMMANDNAME.ide_toggle_statusbar ) );
+            view.append( getItem( Commands.COMMANDNAME.ide_toggle_context ) );
+            view.append( getItem( Commands.COMMANDNAME.ide_toggle_result ) );
         }
 
     }

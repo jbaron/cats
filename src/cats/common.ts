@@ -13,7 +13,6 @@
 // limitations under the License.
 //
 
-
 module Cats {
 
     export class Attribute {
@@ -63,10 +62,9 @@ module Cats {
     }
 
     
-
     export interface FileRange {
-        fileName: string;
-        range: Range;
+        fileName?: string;
+        range?: Range;
         message?: string;
         context?: string;
         severity?: Severity;

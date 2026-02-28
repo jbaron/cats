@@ -16,7 +16,6 @@ module Cats.Gui {
     
     /**
      * This class takes care of the layout of the IDE.
-     * @TODO should not instantiate navigators etc, only do the layout.
      */
     export class Layout {
 
@@ -33,6 +32,7 @@ module Cats.Gui {
 
             // main container
             var mainContainer = new qx.ui.container.Composite(layout);
+            mainContainer.setBackgroundColor("transparent");
             this.rootDoc.add(mainContainer, { edge: 0 });
 
             ide.toolBar = new ToolBar();
@@ -70,7 +70,7 @@ module Cats.Gui {
             ide.contextPane.setSelection([outlineTab]);
             
             
-            infoSplit.add(ide.contextPane, 1); // todo
+            infoSplit.add(ide.contextPane, 1);
 
             editorSplit.add(infoSplit, 4);
 

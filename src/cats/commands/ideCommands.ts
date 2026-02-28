@@ -19,6 +19,9 @@
  */
 module Cats.Commands {
 
+    var styleNr = 0;
+
+
     /**
      * Quit CATS
      */
@@ -51,19 +54,31 @@ module Cats.Commands {
     }
 
     /**
+     * Cycle trhough the themes and set the next one.
+     */ 
+    function setTheme() {
+            const themes = IDE.getThemes();
+            if (styleNr >= themes.length) styleNr = 0;
+            const theme = themes[styleNr];
+            IDE.setTheme(theme.name);
+            styleNr++;
+    }
+
+    /**
      * Register the IDE commands
      */
     export class IdeCommands {
-        static init(registry: (cmd: Command, fn:Function) => void) {
-            registry(CMDS.ide_quit,  quit );
-            registry( CMDS.ide_toggle_toolbar,  () => toggleView(IDE.toolBar) );
-            registry( CMDS.ide_toggle_statusbar,  () => toggleView(IDE.statusBar) );
-            registry( CMDS.ide_toggle_result,  () => toggleView(IDE.resultPane) );
-            registry( CMDS.ide_toggle_context,  () => toggleView(IDE.contextPane) );
+        static init(registry: (cmd: COMMANDNAME, fn:Function) => void) {
+            registry(COMMANDNAME.ide_quit,  quit );
+            registry( COMMANDNAME.ide_toggle_toolbar,  () => toggleView(IDE.toolBar) );
+            registry( COMMANDNAME.ide_toggle_statusbar,  () => toggleView(IDE.statusBar) );
+            registry( COMMANDNAME.ide_toggle_result,  () => toggleView(IDE.resultPane) );
+            registry( COMMANDNAME.ide_toggle_context,  () => toggleView(IDE.contextPane) );
             
-            registry( CMDS.ide_configure,  configureIde );
-            registry( CMDS.ide_history_next, next);
-            registry(CMDS.ide_history_prev,  prev);
+            registry( COMMANDNAME.ide_configure,  configureIde );
+            registry( COMMANDNAME.ide_history_next, next);
+            registry(COMMANDNAME.ide_history_prev,  prev);
+            registry(COMMANDNAME.ide_theme, setTheme);
         }
     }
 

@@ -76,7 +76,7 @@ module Cats.Gui {
 
 
         /**
-         * Create a new botton 
+         * Create a new button 
          * 
          */ 
         private createButton(label?: string, icon?: string) {
@@ -112,7 +112,7 @@ module Cats.Gui {
 
         /**
          * Indicate if the worker is busy or not
-         * 
+         * @TODO fix for when multiple projects
          */
         setBusy(busy: boolean, activity:string) {
             if (busy) {

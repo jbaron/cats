@@ -42,7 +42,7 @@ module Cats.Gui {
             form.addGroupHeader(text);
 
             // Confirm command
-            var confirmCommand = new qx.ui.core.Command("Enter");
+            var confirmCommand = new qx.ui.command.Command("Enter");
             confirmCommand.addListener("execute", () => {
                 if (this.onConfirm) {
                   this.onConfirm();
@@ -51,7 +51,7 @@ module Cats.Gui {
             });
 
             // Cancel command
-            var cancelCommand = new qx.ui.core.Command("Escape");
+            var cancelCommand = new qx.ui.command.Command("Escape");
             cancelCommand.addListener("execute", () => {
                 if (this.onCancel) {
                   this.onCancel();

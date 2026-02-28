@@ -14,11 +14,11 @@
 
 module Cats.Gui {
 
+
+
     /**      
-     * Provide an outline view of the source code.
-     * 
-     * When you click on an entry wihin the outline, the corresponding source file will be opened 
-     * at the righ position.
+     * Provide an outline view of the source code. When you click on an entry within the outline, 
+     * the editor will jump the corresponding position.
      */
     export class OutlineNavigator extends qx.ui.tree.VirtualTree {
 
@@ -32,9 +32,10 @@ module Cats.Gui {
             this.setDecorator(null);
             this.setPadding(0, 0, 0, 0);
             this.setHideRoot(true);
+            this.setBackgroundColor("transparent");
 
             this.setDecorator(null);
-            this.addListener("click", (data) => {
+            this.addListener("click", () => {
                 var item = <any>this.getSelectedItem();
                 if (item && item.getPos) {
                     var position = JSON.parse(qx.util.Serializer.toJson(item.getPos())); 
@@ -43,7 +44,7 @@ module Cats.Gui {
             });
             this.setIconPath("kind");
             this.setIconOptions({
-                converter: (value) => {
+                converter: (value:string) => {
                     var icon = IDE.icons.kind[value] || IDE.icons.kind["default"];
                     return icon;
                 }
@@ -55,7 +56,7 @@ module Cats.Gui {
         }
 
 
-        private register(editor:Editor.SourceEditor, page) {
+        private register(editor:Editor.SourceEditor, page:EditorPage) {
             if (this.editor) {
                 this.editor.off("outline",  this.updateOutline, this);
             }
@@ -85,7 +86,7 @@ module Cats.Gui {
         }
 
 
-        private expandAll(root,count=0) {
+        private expandAll(root:any,count=0) {
             if (root && root.getKids) {
                 this.openNode(root);
                 var children = root.getKids();
@@ -105,7 +106,7 @@ module Cats.Gui {
          * Lets check the worker if something changed in the outline of the source.
          * But lets not call this too often.
          */
-        private updateOutline(data=[]) {
+        private updateOutline(data:any[]=[]) {
             // IDE.console.log("Received outline info:" + data.length);
             var root = {
                 label : "root",

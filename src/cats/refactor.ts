@@ -21,6 +21,7 @@ module Cats.Refactor {
     
     var Range: ace.Range = ace.require("ace/range").Range;
 
+
     function renameOccurences(edits:FileRange[],name:string) {
         for (var i = edits.length - 1; i >= 0; i--) {
             var data = edits[i];
@@ -46,7 +47,7 @@ module Cats.Refactor {
             
             var dialog = new Gui.PromptDialog("Rename " + data.displayName +  " into:");
             dialog.onSuccess = (newName: string) => {
-                project.iSense.findRenameLocations(fileName, pos, false, false, (err, data: Cats.FileRange[]) => {
+                project.iSense.findRenameLocations(fileName, pos, false, false, (err:any, data: Cats.FileRange[]) => {
                     renameOccurences(data, newName);
                 });
             };

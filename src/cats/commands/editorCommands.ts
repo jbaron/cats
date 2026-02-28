@@ -42,31 +42,31 @@ module Cats.Commands {
 
     export class EditorCommands {
 
-        static init( registry: ( cmd: Command, fn: Function ) => void ) {
+        static init( registry: ( cmd: COMMANDNAME, fn: Function ) => void ) {
 
-            registry( CMDS.edit_undo, editorCommand( "undo" ) );
-            registry( CMDS.edit_redo, editorCommand( "redo" ) );
+            registry( COMMANDNAME.edit_undo, editorCommand( "undo" ) );
+            registry( COMMANDNAME.edit_redo, editorCommand( "redo" ) );
 
-            registry( CMDS.edit_indent, editorCommand( "indent" ) );
-            registry( CMDS.edit_outdent, editorCommand( "outdent" ) );
+            registry( COMMANDNAME.edit_indent, editorCommand( "indent" ) );
+            registry( COMMANDNAME.edit_outdent, editorCommand( "outdent" ) );
 
-            registry( CMDS.edit_find, editorCommand( "find" ) );
-            registry( CMDS.edit_findNext, editorCommand( "findnext" ) );
-            registry( CMDS.edit_findPrev, editorCommand( "findprevious" ) );
-            registry( CMDS.edit_replace, editorCommand( "replace" ) );
-            registry( CMDS.edit_replaceAll, editorCommand( "replaceall" ) );
+            registry( COMMANDNAME.edit_find, editorCommand( "find" ) );
+            registry( COMMANDNAME.edit_findNext, editorCommand( "findnext" ) );
+            registry( COMMANDNAME.edit_findPrev, editorCommand( "findprevious" ) );
+            registry( COMMANDNAME.edit_replace, editorCommand( "replace" ) );
+            registry( COMMANDNAME.edit_replaceAll, editorCommand( "replaceall" ) );
 
-            registry( CMDS.edit_toggleComment, editorCommand( "togglecomment" ) );
-            registry( CMDS.edit_toggleRecording, editorCommand( "togglerecording" ) );
-            registry( CMDS.edit_replayMacro, editorCommand( "replaymacro" ) );
+            registry( COMMANDNAME.edit_toggleComment, editorCommand( "togglecomment" ) );
+            registry( COMMANDNAME.edit_toggleRecording, editorCommand( "togglerecording" ) );
+            registry( COMMANDNAME.edit_replayMacro, editorCommand( "replaymacro" ) );
 
-            registry( CMDS.edit_gotoLine, editorCommand( "gotoline" ) );
+            registry( COMMANDNAME.edit_gotoLine, editorCommand( "gotoline" ) );
 
-            registry( CMDS.edit_toggleInvisibles, toggleInvisibles );
-            registry( CMDS.source_format, formatText );
-            registry( CMDS.edit_cut, () => { document.execCommand( "cut" ); });
-            registry( CMDS.edit_copy, () => { document.execCommand( "copy" ); });
-            registry( CMDS.edit_paste, () => { document.execCommand( "paste" ); });
+            registry( COMMANDNAME.edit_toggleInvisibles, toggleInvisibles );
+            registry( COMMANDNAME.source_format, formatText );
+            registry( COMMANDNAME.edit_cut, () => { document.execCommand( "cut" ); });
+            registry( COMMANDNAME.edit_copy, () => { document.execCommand( "copy" ); });
+            registry( COMMANDNAME.edit_paste, () => { document.execCommand( "paste" ); });
 
         }
 

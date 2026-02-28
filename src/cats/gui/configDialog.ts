@@ -90,7 +90,7 @@ module Cats.Gui {
         private getLabelString(model:string) {
             if (!model) return "<model undefined>";
             var labelId = "config_" + model;
-            var label = this.tr(labelId);
+            var label = translate(labelId);
             if (label != labelId) return label;
             
             return model.split(/(?=[A-Z])/).join(" ");
@@ -124,7 +124,7 @@ module Cats.Gui {
         setData(data: any) {
             for (var key in data) {
                 try {
-                    this.model.set(key, data[key]);
+                    this.model.set(<any>key, data[key]);
                 } catch (err) { /* NOP */ }
             }
         }

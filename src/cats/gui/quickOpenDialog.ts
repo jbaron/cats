@@ -128,7 +128,7 @@ module Cats.Gui {
             });
 
             // Success command
-            var successCommand = new qx.ui.core.Command("Enter");
+            var successCommand = new qx.ui.command.Command("Enter");
             successCommand.addListener("execute", () => {
                 var results = filelist.getSelection();
                 if (results.length > 0) {
@@ -144,7 +144,7 @@ module Cats.Gui {
             });
 
             // Cancel command
-            var cancelCommand = new qx.ui.core.Command("Escape");
+            var cancelCommand = new qx.ui.command.Command("Escape");
             cancelCommand.addListener("execute", () => {
                 this.close();
             });

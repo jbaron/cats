@@ -17,9 +17,9 @@ module Cats.Gui {
 
     /**      
      * Overview of started processes. Also provides the controls so these processes can be paused,
-     * stopped or killed.
+     * stopped or killed. Especially with custom build and run scripts this provides a bit more 
+     * control from within CATS.
      * 
-     * @TODO provide feedback of the actuall status of a process
      */
     export class ProcessTable extends qx.ui.container.Composite {
 
@@ -68,7 +68,7 @@ module Cats.Gui {
 
         private createTable() {
             var tableModel = new qx.ui.table.model.Simple();
-            var headers = [super.tr("tableheader_pid"), super.tr("tableheader_command")];
+            var headers = [translate("tableheader_pid"), translate("tableheader_command")];
             tableModel.setColumns(headers);
             tableModel.setData([]);
 

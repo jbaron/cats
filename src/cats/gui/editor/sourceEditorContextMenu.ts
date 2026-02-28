@@ -45,6 +45,14 @@ module Cats.Gui.Editor {
             });
         }
 
+        gotoTypeDeclaration() {
+            this.getIsense().getTypeDefinitionAtPosition(this.editor.filePath, this.getPos(), (err:any, data: Cats.FileRange) => {
+                if (data && data.fileName)
+                    FileEditor.OpenEditor(data.fileName, data.range.start);
+            });
+        }
+
+
         private getPos() {
             return this.editor.getPosition();
         }
@@ -56,7 +64,7 @@ module Cats.Gui.Editor {
                 var resultTable = new ResultTable();
                 var page = IDE.resultPane.addPage("info_tab", resultTable);
                 page.setShowCloseButton(true);
-                resultTable.setData(data);
+                resultTable.setData(data,this.editor.project);
             });
         }
 
@@ -71,6 +79,12 @@ module Cats.Gui.Editor {
 
         private findImplementors() {
             return this.getInfoAt("getImplementorsAtPosition");
+        }
+        
+        private insertDoc() {
+            this.getIsense().insertDocComments(this.editor.filePath, this.getPos(), (err,data) => {
+                if (data) this.editor.getAceEditor().insert(data.newText);
+            });
         }
 
 
@@ -113,13 +127,17 @@ module Cats.Gui.Editor {
 
         private init() {
 
-            if (this.editor.isTypeScript()) {
+            if (this.editor.project) {
                 this.add(this.createContextMenuItem("Goto Declaration", this.gotoDeclaration, this));
+                this.add(this.createContextMenuItem("Goto Type Declaration", this.gotoTypeDeclaration, this));
+
                 this.add(this.createContextMenuItem("Find References", this.findReferences, this));
                 this.add(this.createContextMenuItem("Find Occurences", this.findOccurences, this));
                 // this.add(this.createContextMenuItem("Find Implementations", this.findImplementors, this));
                 this.addSeparator();
                 this.add(this.createContextMenuItem("Rename", this.refactor, this));
+                this.addSeparator();
+                this.add(this.createContextMenuItem("Insert doc comments", this.insertDoc, this));
                 this.addSeparator();
             }
             this.add(this.createContextMenuItem("Bookmark", this.bookmark, this));

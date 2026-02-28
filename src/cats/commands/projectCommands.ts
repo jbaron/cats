@@ -22,39 +22,30 @@ module Cats.Commands {
      * Close all open projects
      */ 
     function closeAllProjects() {
-        if (IDE.project) IDE.project.close();
+       IDE.close();
     }
 
     /**
      * Close the project
      */ 
     function closeProject() { 
-        if (IDE.project) IDE.project.close();
+        IDE.close();
     }
 
     /**
      * Run the project
      */ 
     function runProject() {
-        if (IDE.project) IDE.project.run();
+        IDE.projects.forEach((project) => project.run());
     };
 
 
     /**
-     * Show a class diagram of the project. 
-     */ 
-    function showDiagram() {
-       if (IDE.project) IDE.editorTabView.addEditor(new Gui.Editor.UMLEditor("Class Diagram"));
-    }
-
-    /**
      * Shows a quick open dialog for the project.
      */
-    function quickOpen() {
-      if (IDE.project) {
-        var dialog = new Gui.QuickOpenDialog(IDE.project);
+    function quickOpen(project) {
+        var dialog = new Gui.QuickOpenDialog(project);
         dialog.show();
-      }
     }
  
     /**
@@ -62,31 +53,26 @@ module Cats.Commands {
      * to see if there are any issues popping up.
      */ 
     function validateProject() {
-        if (IDE.project) IDE.project.validate();
+        IDE.projects.forEach((project) => project.validate());
     }
+
 
     /**
      * Build the project
      */ 
     function buildProject() {
-        if (IDE.project) IDE.project.build();
+        IDE.projects.forEach((project) => project.build());
     }
 
-    /**
-     * Generate the API documentation for the project
-     */ 
-    function documentProject() {
-        if (IDE.project) IDE.project.document();
-    }
-
+ 
     /**
      * Provide the user with an UI to configure the project settings
      */ 
-    function configureProject() {
-        if (IDE.project) {
-            var w = new Gui.ProjectSettingsDialog(IDE.project);
+    function configureProject(project) {
+        
+            var w = new Gui.ProjectSettingsDialog(project);
             w.show();
-        }
+        
     }
 
     /**
@@ -94,19 +80,16 @@ module Cats.Commands {
      * filesystem changes are done (like renaming TS files etc).
      */ 
     function refreshProject() {
-        if (IDE.project) IDE.project.refresh();
+        IDE.refresh();
     }
 
     /**
-     * Open a project. If current windows doesn't have a project yet, opene there.
-     * Otherwise open the project in a new window.
-     * 
-     * @TODO: for a new project provide template capabilities
+     * Open a new project. Thsi can be any directory on the filesystem.
      */ 
     function newProject() {
         var chooser: HTMLElement = document.getElementById('fileDialog');
         chooser.onchange = function(evt:Event) {
-            IDE.addProject(<string>this.value);
+            IDE.setDirectory(<string>this["value"]);
         };
         chooser.click();
     };
@@ -119,26 +102,24 @@ module Cats.Commands {
     function openProject() {
         var chooser: HTMLElement= document.getElementById('fileDialog');
         chooser.onchange = function(evt:Event) {
-            IDE.addProject(<string>this.value);
+            IDE.setDirectory(<string>this["value"]);
         };
         chooser.click();
     };
 
 
     export class ProjectCommands {
-        static init(registry: (cmd: Command, fn:Function) => void) {
-            registry(CMDS.project_open,openProject);
-            registry(CMDS.project_new,newProject);
-            registry(CMDS.project_close,closeProject);
-            registry(CMDS.project_build,buildProject);
-            registry(CMDS.project_validate, validateProject);
-            registry(CMDS.project_refresh, refreshProject);
-            registry(CMDS.project_run, runProject);
+        static init(registry: (cmd: COMMANDNAME, fn:Function) => void) {
+            registry(COMMANDNAME.project_open,openProject);
+            registry(COMMANDNAME.project_new,newProject);
+            registry(COMMANDNAME.project_close,closeProject);
+            registry(COMMANDNAME.project_build,buildProject);
+            registry(COMMANDNAME.project_validate, validateProject);
+            registry(COMMANDNAME.project_refresh, refreshProject);
+            registry(COMMANDNAME.project_run, runProject);
             // registry(CMDS.project_debug, label: "Debug Project",null, icon: "debug.png" });
-            registry(CMDS.project_quickOpen, quickOpen);
-            registry(CMDS.project_classDiagram, showDiagram);
-            registry(CMDS.project_configure, configureProject);
-            registry(CMDS.project_document, documentProject);
+            registry(COMMANDNAME.project_quickOpen, quickOpen);
+            registry(COMMANDNAME.project_configure, configureProject);
         }
 
     }
